@@ -1,0 +1,112 @@
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Eloquent\Factories\Factory;
+
+use App\Models\Brand;
+use App\Models\Category;
+use Illuminate\Database\Seeder;
+
+use App\Models\Client;
+use App\Models\Product;
+use App\Models\Provider;
+use App\Models\UnidadMedida;
+use Modules\Mantenimiento\Entities\TipoEquipo;
+
+class DatabaseSeeder extends Seeder
+{
+    /**
+     * Seed the application's database.
+     *
+     * @return void
+     */
+    public function run()
+    {
+        $this->call(EmpresaSeeder::class);
+        $this->call(PermissionSeeder::class);
+        $this->call(RoleSeeder::class);
+        $this->call(UserSeeder::class);
+
+
+        UnidadMedida::create([
+            'name'      => 'N/A'
+        ]);
+
+        //Marcas
+
+        Brand::create([
+            'name'      => 'N/A',
+        ]);
+
+      /*   Brand::create([
+            'name'      => 'Suzuki',
+        ]);
+
+        Brand::create([
+            'name'      => 'Yamaha',
+        ]); */
+
+        //Categorias
+
+        Category::create([
+            'name'      => 'N/A',
+        ]);
+
+        Category::create([
+            'name'      => 'Servicios',
+        ]);
+
+      /*   Category::create([
+            'name'      => 'Salud',
+        ]); */
+
+        //Cliente
+
+        Client::create([
+            'type_document'     => null,
+            'number_document'   => null,
+            'name'              => 'Venta rapida',
+            'phone'             => null,
+            'address'           => null,
+            'email'             => null,
+        ]);
+
+        //Proveedor
+
+        Provider::create([
+            'nit'               => null,
+            'name'              => 'N/A',
+            'phone'             => null,
+            'address'           => null,
+            'email'             => null,
+        ]);
+
+     /*    Product::factory(1000)->create(); */
+     Product::create([
+        'code'                      => '00001',
+        'name'                      => 'Servicio',
+        'stock'                     => '1',
+        'stock_min'                 => '1',
+        'stock_max'                 => '1',
+        'sell_price'                => '0',
+        'sell_price_tecnico'        => '0',
+        'sell_price_distribuidor'   => '0',
+        'status'                    => 'ACTIVE',
+        'category_id'               => 1,
+        'medida_id'                 => 1,
+    ]);
+
+
+     TipoEquipo::create([
+        'descripcion'      => 'Monturas',
+    ]);
+    TipoEquipo::create([
+        'descripcion'      => 'Lentes',
+    ]);
+    TipoEquipo::create([
+        'descripcion'      => 'Gafas',
+    ]);
+
+    }
+}
