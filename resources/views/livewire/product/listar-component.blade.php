@@ -49,10 +49,9 @@
                     <tr>
                         <th>Codigo</th>
                         <th>Producto</th>
-                        <th>Imagen</th>
-                        <th>Precio cliente</th>
-                        <th>Precio técnico</th>
-                        <th>Precio mayorista</th>
+                        <th>Precio caja</th>
+                        <th>Precio blister</th>
+                        <th>Precio unidad</th>
                         <th>Stock</th>
                         <th>Estado</th>
                         <th class="text-center">Acciones</th>
@@ -63,13 +62,6 @@
                     <tr>
                         <td>{{ $product->code }}</td>
                         <td><a href="{{ route('inventarios.product.show',  $product->id ) }}" target="_blank"> {{ $product->producto }} </a></td>
-                        <td> @if($product->image)
-                            <img src="{!! Config::get('app.URL') !!}/storage/{{ $product->image }}" width="50px" height="50px">
-
-                            @else
-                            <img src="{!! Config::get('app.URL') !!}/storage/livewire-tem/sin_image_product.jpg" width="50px">
-                            @endif
-                        </td>
                         <td class="text-end">{{ $product->cliente }}</td>
                         <td class="text-end">{{ $product->tecnico}} </td>
                         <td class="text-end">{{ $product->distribuidor}}</td>

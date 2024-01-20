@@ -12,6 +12,7 @@ use App\Models\Provider;
 use App\Models\Laboratorio;
 use App\Models\Presentacion;
 use App\Models\Subcategoria;
+use App\Models\Ubicacion;
 use App\Models\UnidadMedida;
 use Illuminate\Database\Seeder;
 use Modules\Mantenimiento\Entities\TipoEquipo;
@@ -133,6 +134,11 @@ class DatabaseSeeder extends Seeder
 
         Brand::create([
             'name'      => 'N/A',
+        ]);
+
+        Ubicacion::create([
+            'name'      => 'N/A',
+            'status'    => 'ACTIVE'
         ]);
 
       /*   Brand::create([

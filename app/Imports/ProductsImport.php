@@ -20,71 +20,81 @@ class ProductsImport implements ToModel
     public function model(array $row)
     {
 
+        if(!is_null($row['0'])){
+
+            if($row['3'] == ''){
+                $laboratorio = 1;
+
+            }else{
+                $laboratorio = $this->crearlaboratorios($row['3']);
+            }
+
+            if($row['4'] == ''){
+                $ubicacion = 1;
+            }else{
+                $ubicacion = $this->crearubicacion($row['4']);
+            }
+
+            if($row['2'] == ''){
+                $presentacion =  1;
+            }else{
+                $presentacion = $this->crearpresentaciones($row['2']);
+            }
 
 
-        if($row['4'] == ''){
-            $laboratorio = 1;
 
-        }else{
-            $laboratorio = $this->crearlaboratorios($row['4']);
+
+
+            return new Product([
+                'code'                      => $row['0'],
+                'name'                      => $row['1'],
+                'stock'                     => 0,
+                'stock_min'                 => 0,
+                'stock_max'                 => 0,
+                'image'                     => 'imag/sinimagen.jpg',
+                'sell_price'                => $row['25'],
+                'sell_price_tecnico'        => 0,
+                'sell_price_distribuidor'   => 0,
+                'status'                    => 'ACTIVE',
+                'last_price'                => $row['17'],
+                'category_id'               => 1,
+                'medida_id'                 => 1,
+                'brand_id'                  => 1,
+                'laboratorio_id'            => $laboratorio,
+                'presentacion_id'           => $presentacion,
+                'ubicacion_id'              => $ubicacion,
+                'expiration'                => Null,
+                'exento'                    => $row['5'],
+                'excluido'                  => $row['6'],
+                'no_gravado'                => $row['7'],
+                'gravado'                   => $row['8'],
+                'contenido_interno_caja'    => $row['9'],
+                'contenido_interno_blister' => $row['10'],
+                'contenido_interno_unidad'  => $row['11'],
+                'inventario_caja'           => $row['12'],
+                'inventario_blister'        => $row['13'],
+                'inventario_unidad'         => $row['15'],
+                'costo_caja'                => $row['17'],
+                'costo_blister'             => $row['18'],
+                'costo_unidad'              => $row['19'],
+                'valor_iva_caja'            => $row['20'],
+                'valor_iva_blister'         => $row['21'],
+                'valor_iva_unidad'          => $row['22'],
+                'iva_product'               => $row['16'],
+
+            ]);
+
+
+
         }
 
-        if($row['5'] == ''){
-            $ubicacion = 1;
-        }else{
-            $ubicacion = $this->crearubicacion($row['5']);
-        }
-
-        if($row['3'] == ''){
-            $presentacion =  1;
-        }else{
-            $presentacion = $this->crearpresentaciones($row['3']);
-        }
 
 
-
-
-
-        return new Product([
-            'code'                      => $row['1'],
-            'name'                      => $row['2'],
-            'stock'                     => 0,
-            'stock_min'                 => 0,
-            'stock_max'                 => 0,
-            'image'                     => null,
-            'sell_price'                => null,
-            'sell_price_tecnico'        => null,
-            'sell_price_distribuidor'   => null,
-            'status'                    => 'ACTIVE',
-            'last_price'                => $row['18'],
-            'category_id'               => 1,
-            'medida_id'                 => 1,
-            'brand_id'                  => 1,
-            'laboratorio_id'            => $laboratorio,
-            'presentacion_id'           => $presentacion,
-            'ubicacion_id'              => $ubicacion,
-            'expiration'                => Null,
-            'exento'                    => $row['6'],
-            'excluido'                  => $row['7'],
-            'no_gravado'                => $row['8'],
-            'gravado'                   => $row['9'],
-            'contenido_interno_caja'    => $row['10'],
-            'contenido_interno_blister' => $row['11'],
-            'contenido_interno_unidad'  => $row['12'],
-            'inventario_caja'           => $row['14'],
-            'inventario_blister'        => $row['15'],
-            'inventario_unidad'         => $row['16'],
-            'costo_caja'                => $row['18'],
-            'costo_blister'             => $row['19'],
-            'costo_unidad'              => $row['20'],
-            'valor_iva_caja'            => $row['21'],
-            'valor_iva_blister'         => $row['22'],
-            'valor_iva_unidad'          => $row['23'],
-            'iva_product'               => $row['17'],
-            'expiration'                => Null,
-
-        ]);
     }
+
+
+
+
 
     public function crearlaboratorios($row){
 
