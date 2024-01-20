@@ -84,7 +84,6 @@ class ProductsImport implements ToModel
         $presentacion = Presentacion::where('name', $row)->first();
     // Si no existe, crea un nuevo laboratorio
 
-    dd($row);
     if (!$presentacion) {
         $presentacion = Presentacion::create([
             'name'   => $row,
