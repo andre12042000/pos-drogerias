@@ -9,8 +9,10 @@ use App\Models\Category;
 use Illuminate\Database\Seeder;
 
 use App\Models\Client;
+use App\Models\Presentacion;
 use App\Models\Product;
 use App\Models\Provider;
+use App\Models\Subcategoria;
 use App\Models\UnidadMedida;
 use Modules\Mantenimiento\Entities\TipoEquipo;
 
@@ -33,6 +35,96 @@ class DatabaseSeeder extends Seeder
             'name'      => 'N/A'
         ]);
 
+        UnidadMedida::create([
+            'name'      => 'CAJA'
+        ]);
+
+        UnidadMedida::create([
+            'name'      => 'GOTAS'
+        ]);
+
+        UnidadMedida::create([
+            'name'      => 'UNIDAD'
+        ]);
+
+        UnidadMedida::create([
+            'name'      => 'AMPOLLA'
+        ]);
+
+        UnidadMedida::create([
+            'name'      => 'BOLSA'
+        ]);
+
+        UnidadMedida::create([
+            'name'      => 'PAQUETE'
+        ]);
+
+        UnidadMedida::create([
+            'name'      => 'OFERTA'
+        ]);
+
+        UnidadMedida::create([
+            'name'      => 'FRASCO'
+        ]);
+
+        UnidadMedida::create([
+            'name'      => 'TARRO'
+        ]);
+
+        UnidadMedida::create([
+            'name'      => 'TUBO'
+        ]);
+
+        UnidadMedida::create([
+            'name'      => 'POTE'
+        ]);
+
+        UnidadMedida::create([
+            'name'      => 'SOBRES'
+        ]);
+
+        UnidadMedida::create([
+            'name'      => 'TABLETAS'
+        ]);
+
+        UnidadMedida::create([
+            'name'      => 'CAPSULA'
+        ]);
+
+        UnidadMedida::create([
+            'name'      => 'DISPENSADOR'
+        ]);
+
+        UnidadMedida::create([
+            'name'      => 'CA'
+        ]);
+
+        UnidadMedida::create([
+            'name'      => 'KIT'
+        ]);
+
+        UnidadMedida::create([
+            'name'      => 'BOTELLA'
+        ]);
+
+        UnidadMedida::create([
+            'name'      => 'ESTUCHE'
+        ]);
+
+        UnidadMedida::create([
+            'name'      => 'DOC'
+        ]);
+
+        UnidadMedida::create([
+            'name'      => 'BLISTER'
+        ]);
+        UnidadMedida::create([
+            'name'      => 'BTO'
+        ]);
+
+
+
+
         //Marcas
 
         Brand::create([
@@ -53,9 +145,9 @@ class DatabaseSeeder extends Seeder
             'name'      => 'N/A',
         ]);
 
-        Category::create([
+      /*   Category::create([
             'name'      => 'Servicios',
-        ]);
+        ]); */
 
       /*   Category::create([
             'name'      => 'Salud',
@@ -81,9 +173,20 @@ class DatabaseSeeder extends Seeder
             'address'           => null,
             'email'             => null,
         ]);
+        Presentacion::create([
+            'name'      => 'N/A',
+            'status'    => 'ACTIVE'
+        ]);
+
+        Subcategoria::create([
+            'name'          => 'N/A',
+            'status'        => 'ACTIVE',
+            'category_id'   => 1,
+        ]);
+
 
      /*    Product::factory(1000)->create(); */
-     Product::create([
+   /*   Product::create([
         'code'                      => '00001',
         'name'                      => 'Servicio',
         'stock'                     => '1',
@@ -107,6 +210,6 @@ class DatabaseSeeder extends Seeder
     TipoEquipo::create([
         'descripcion'      => 'Gafas',
     ]);
-
+*/
     }
 }
