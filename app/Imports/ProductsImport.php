@@ -20,12 +20,10 @@ class ProductsImport implements ToModel
     public function model(array $row)
     {
 
-        $this->obtenerprecios($row['8']);
+
         $laboratorio = $this->crearlaboratorios($row['4']);
         $presentacion = $this->crearpresentaciones($row['3']);
         $ubicacion = $this->crearubicacion($row['5']);
-
-
 
         return new Product([
             'code'                      => $row['1'],
@@ -34,11 +32,11 @@ class ProductsImport implements ToModel
             'stock_min'                 => 0,
             'stock_max'                 => 0,
             'image'                     => null,
-            'sell_price'                => $row['27'],
-            'sell_price_tecnico'        => $row['27'],
-            'sell_price_distribuidor'   => $row['27'],
+            'sell_price'                => null,
+            'sell_price_tecnico'        => null,
+            'sell_price_distribuidor'   => null,
             'status'                    => 'ACTIVE',
-            'last_price'                => $this->precio_compra,
+            'last_price'                => $row['18'],
             'category_id'               => 1,
             'medida_id'                 => 1,
             'brand_id'                  => 1,
@@ -46,37 +44,25 @@ class ProductsImport implements ToModel
             'presentacion_id'           => $presentacion,
             'ubicacion_id'              => $ubicacion,
             'expiration'                => Null,
+            'exento'                    => $row['6'],
+            'excluido'                  => $row['7'],
+            'no_gravado'                => $row['8'],
+            'gravado'                   => $row['9'],
+            'contenido_interno_caja'    => $row['10'],
+            'contenido_interno_blister' => $row['11'],
+            'contenido_interno_unidad'  => $row['12'],
+            'inventario_caja'           => $row['14'],
+            'inventario_blister'        => $row['15'],
+            'inventario_unidad'         => $row['16'],
+            'costo_caja'                => $row['18'],
+            'costo_blister'             => $row['19'],
+            'costo_unidad'              => $row['20'],
+            'valor_iva_caja'            => $row['21'],
+            'valor_iva_blister'         => $row['22'],
+            'valor_iva_unidad'          => $row['23'],
+            'iva_product'               => $row['17'],
+            'expiration'                => Null,
 
-
-
-            $table->double('sell_price',12,0)->nullable();
-            $table->double('sell_price_tecnico',12,0)->nullable();
-            $table->double('sell_price_distribuidor',12,0)->nullable();
-            $table->enum('status',['ACTIVE','DESACTIVE'])->default('ACTIVE');
-            $table->double('last_price',12,0)->nullable();
-            $table->unsignedBigInteger('category_id')->nullable();
-            $table->foreign('category_id')->references('id')->on('categories')->onDelete('set null');
-            $table->unsignedBigInteger('medida_id')->nullable();
-            $table->foreign('medida_id')->references('id')->on('unidad_medidas')->onDelete('set null');
-            $table->unsignedBigInteger('brand_id')->nullable();
-            $table->foreign('brand_id')->references('id')->on('brands')->onDelete('set null');
-            $table->double('exento',12,0)->nullable();
-            $table->double('excluido',12,0)->nullable();
-            $table->double('no_gravado',12,0)->nullable();
-            $table->double('gravado',12,0)->nullable();
-            $table->integer('contenido_interno_caja ')->nullable();
-            $table->integer('contenido_interno_blister')->nullable();
-            $table->integer('contenido_interno_unidad')->nullable();
-            $table->integer('inventario_caja ')->nullable();
-            $table->integer('inventario_blister')->nullable();
-            $table->integer('inventario_unidad')->nullable();
-            $table->integer('costo_caja ')->nullable();
-            $table->integer('costo_blister')->nullable();
-            $table->integer('costo_unidad')->nullable();
-            $table->integer('valor_iva_caja ')->nullable();
-            $table->integer('valor_iva_blister')->nullable();
-            $table->integer('valor_iva_unidad')->nullable();
-            $table->date('expiration')->nullable();
         ]);
     }
 
@@ -90,20 +76,21 @@ class ProductsImport implements ToModel
             'status' => 'ACTIVE',
         ]);
     }
+
     return $laboratorio->id;
     }
 
     public function crearpresentaciones($row){
         $presentacion = Presentacion::where('name', $row)->first();
-
     // Si no existe, crea un nuevo laboratorio
+
+    dd($row);
     if (!$presentacion) {
         $presentacion = Presentacion::create([
             'name'   => $row,
             'status' => 'ACTIVE',
         ]);
     }
-
     return $presentacion->id;
     }
 
@@ -134,16 +121,7 @@ class ProductsImport implements ToModel
     return $unidad->id;
     }
 
-    public function obtenerprecios($sell_price)
-    {
 
-       $this->precio_compra = ($sell_price - (($sell_price * 80) / 100));
-       $this->precio_tecnico = ($sell_price - (($sell_price * 10) / 100));
-       $this->precio_distribuidor = ($sell_price - (($sell_price * 15) / 100));
-
-
-
-    }
 }
 
 

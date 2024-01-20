@@ -14,7 +14,7 @@ class AddIvaToProducts extends Migration
     public function up()
     {
         Schema::table('products', function (Blueprint $table) {
-            $table->integer('iva_product')->nullable();
+            $table->string('iva_product')->nullable();
         });
     }
 
