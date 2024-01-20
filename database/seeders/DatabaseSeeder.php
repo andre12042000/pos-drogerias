@@ -2,19 +2,20 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
-
 use App\Models\Brand;
-use App\Models\Category;
-use Illuminate\Database\Seeder;
 
 use App\Models\Client;
-use App\Models\Presentacion;
 use App\Models\Product;
+use App\Models\Category;
+
 use App\Models\Provider;
+use App\Models\Laboratorio;
+use App\Models\Presentacion;
 use App\Models\Subcategoria;
 use App\Models\UnidadMedida;
+use Illuminate\Database\Seeder;
 use Modules\Mantenimiento\Entities\TipoEquipo;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class DatabaseSeeder extends Seeder
 {
@@ -123,7 +124,10 @@ class DatabaseSeeder extends Seeder
         ]);
 
 
-
+        Laboratorio::create([
+            'name'      => 'N/A',
+            'status'    => 'ACTIVE'
+        ]);
 
         //Marcas
 

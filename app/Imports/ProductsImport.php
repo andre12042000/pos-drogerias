@@ -21,9 +21,29 @@ class ProductsImport implements ToModel
     {
 
 
-        $laboratorio = $this->crearlaboratorios($row['4']);
-        $presentacion = $this->crearpresentaciones($row['3']);
-        $ubicacion = $this->crearubicacion($row['5']);
+
+        if($row['4'] == ''){
+            $laboratorio = 1;
+
+        }else{
+            $laboratorio = $this->crearlaboratorios($row['4']);
+        }
+
+        if($row['5'] == ''){
+            $ubicacion = 1;
+        }else{
+            $ubicacion = $this->crearubicacion($row['5']);
+        }
+
+        if($row['3'] == ''){
+            $presentacion =  1;
+        }else{
+            $presentacion = $this->crearpresentaciones($row['3']);
+        }
+
+
+
+
 
         return new Product([
             'code'                      => $row['1'],
@@ -67,6 +87,8 @@ class ProductsImport implements ToModel
     }
 
     public function crearlaboratorios($row){
+
+
         $laboratorio = Laboratorio::where('name', $row)->first();
 
     // Si no existe, crea un nuevo laboratorio
@@ -83,13 +105,13 @@ class ProductsImport implements ToModel
     public function crearpresentaciones($row){
         $presentacion = Presentacion::where('name', $row)->first();
     // Si no existe, crea un nuevo laboratorio
-
-    if (!$presentacion) {
+    if (is_null($presentacion)) {
         $presentacion = Presentacion::create([
             'name'   => $row,
             'status' => 'ACTIVE',
         ]);
     }
+
     return $presentacion->id;
     }
 
