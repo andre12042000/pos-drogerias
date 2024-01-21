@@ -449,12 +449,12 @@ class CreateComponent extends Component
     }
 
 
-    public function updatedPresentacionId($value){
+   /*  public function updatedPresentacionId($value){
       dd($value);
         if($value != ''){
             $this->data_presentacion = Presentacion::find($value);
   dd($this->data_presentacion);
         }
 
-    }
+    } */
 }
