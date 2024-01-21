@@ -342,18 +342,8 @@ class CreateComponent extends Component
     {
         $this->validate(
             [
-                'codigo'                => 'required|min:3|max:100|unique:products,code,' . $this->selected_id,
-                'producto'              => 'required|min:2|max:100|unique:products,name,' . $this->selected_id,
-                'stock_actual'          => 'numeric|required|min:0|max:10000',
-                'stock_minimo'          => 'numeric|required|min:0|max:10000',
-                'stock_maximo'          => 'numeric|required|min:0|max:10000',
-                'precio_compra'         => 'numeric|required|min:0|max:100000000',
-                'unidad_medida'         => 'nullable',
-                'marca'                 => 'nullable',
-                'fecha_vencimiento'     => 'nullable',
-                'iva_product.numeric'   => 'Este campo debe ser numerico',
-                'iva_product.min'       => 'El IVA debe ser al menos 0',
-                'iva_product.max'       => 'El IVA no puede superar 30% ',
+                'code'                => 'required|min:3|max:100|unique:products,code,' . $this->selected_id,
+
             ]
 
         );
@@ -367,19 +357,39 @@ class CreateComponent extends Component
         }
 
         $products->update([
-            'code'                      => $this->codigo,
-            'name'                      => strtolower($this->producto),
-            'stock'                     => $this->stock_actual,
-            'stock_min'                 => $this->stock_minimo,
-            'stock_max'                 => $this->stock_maximo,
-            'sell_price'                => $this->precioventacliente,
-            'last_price'                => $this->precio_compra ,
-            'category_id'               => $this->categoria,
-            'sell_price_tecnico'        => $this->precioventatecnico,
-            'sell_price_distribuidor'   => $this->precioventadistribuidor,
-            'image'                     => $photo,
-            'status'                     => $this->status,
-            'iva_product'                => $this->iva_product,
+            'code'                      => $this->code,
+            'name'                      => strtolower($this->name),
+            'stock'                     => $this->stock,
+            'stock_min'                 => $this->stock_min,
+            'stock_max'                 => $this->stock_max,
+            'sell_price'                => $this->sell_price,
+            'last_price'                => $this->last_price ,
+            'category_id'               => $this->categoriy_id,
+            'sell_price_tecnico'        => $this->sell_price_tecnico,
+            'sell_price_distribuidor'   => $this->sell_price_distribuidor,
+            'image'                     => 'imag/sinimagen.jpg',
+            'status'                    => $this->status,
+            'iva_product'               => $this->iva_product,
+            'laboratorio_id'            => $this->laboratorio_id,
+            'presentacion_id'           => $this->presentacion_id,
+            'ubicacion_id'              => $this->ubicacion_id,
+            'expiration'                => null,
+            'exento'                    => $this->exento,
+            'excluido'                  => $this->excluido,
+            'no_gravado'                => $this->no_gravado,
+            'gravado'                   => $this->gravado,
+            'contenido_interno_caja'    => $this->contenido_interno_caja,
+            'contenido_interno_blister' => $this->contenido_interno_blister,
+            'contenido_interno_unidad'  => $this->contenido_interno_unidad,
+            'inventario_caja'           => $this->inventario_caja,
+            'inventario_blister'        => $this->inventario_blister,
+            'inventario_unidad'         => $this->inventario_unidad,
+            'costo_caja'                => $this->costo_caja,
+            'costo_blister'             => $this->costo_blister,
+            'costo_unidad'              => $this->costo_unidad,
+            'valor_iva_caja'            => $this->valor_iva_caja,
+            'valor_iva_blister'         => $this->valor_iva_blister,
+            'valor_iva_unidad'          => $this->valor_iva_unidad,
 
         ]);
 

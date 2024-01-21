@@ -31,99 +31,14 @@ class DatabaseSeeder extends Seeder
         $this->call(PermissionSeeder::class);
         $this->call(RoleSeeder::class);
         $this->call(UserSeeder::class);
+        $this->call(PresentacionSeeder::class);
+        $this->call(UbicacionSeeder::class);
+
 
 
         UnidadMedida::create([
             'name'      => 'N/A'
         ]);
-
-        UnidadMedida::create([
-            'name'      => 'CAJA'
-        ]);
-
-        UnidadMedida::create([
-            'name'      => 'GOTAS'
-        ]);
-
-        UnidadMedida::create([
-            'name'      => 'UNIDAD'
-        ]);
-
-        UnidadMedida::create([
-            'name'      => 'AMPOLLA'
-        ]);
-
-        UnidadMedida::create([
-            'name'      => 'BOLSA'
-        ]);
-
-        UnidadMedida::create([
-            'name'      => 'PAQUETE'
-        ]);
-
-        UnidadMedida::create([
-            'name'      => 'OFERTA'
-        ]);
-
-        UnidadMedida::create([
-            'name'      => 'FRASCO'
-        ]);
-
-        UnidadMedida::create([
-            'name'      => 'TARRO'
-        ]);
-
-        UnidadMedida::create([
-            'name'      => 'TUBO'
-        ]);
-
-        UnidadMedida::create([
-            'name'      => 'POTE'
-        ]);
-
-        UnidadMedida::create([
-            'name'      => 'SOBRES'
-        ]);
-
-        UnidadMedida::create([
-            'name'      => 'TABLETAS'
-        ]);
-
-        UnidadMedida::create([
-            'name'      => 'CAPSULA'
-        ]);
-
-        UnidadMedida::create([
-            'name'      => 'DISPENSADOR'
-        ]);
-
-        UnidadMedida::create([
-            'name'      => 'CA'
-        ]);
-
-        UnidadMedida::create([
-            'name'      => 'KIT'
-        ]);
-
-        UnidadMedida::create([
-            'name'      => 'BOTELLA'
-        ]);
-
-        UnidadMedida::create([
-            'name'      => 'ESTUCHE'
-        ]);
-
-        UnidadMedida::create([
-            'name'      => 'DOC'
-        ]);
-
-        UnidadMedida::create([
-            'name'      => 'BLISTER'
-        ]);
-        UnidadMedida::create([
-            'name'      => 'BTO'
-        ]);
-
 
         Laboratorio::create([
             'name'      => 'N/A',
@@ -136,18 +51,7 @@ class DatabaseSeeder extends Seeder
             'name'      => 'N/A',
         ]);
 
-        Ubicacion::create([
-            'name'      => 'N/A',
-            'status'    => 'ACTIVE'
-        ]);
 
-      /*   Brand::create([
-            'name'      => 'Suzuki',
-        ]);
-
-        Brand::create([
-            'name'      => 'Yamaha',
-        ]); */
 
         //Categorias
 
@@ -155,13 +59,6 @@ class DatabaseSeeder extends Seeder
             'name'      => 'N/A',
         ]);
 
-      /*   Category::create([
-            'name'      => 'Servicios',
-        ]); */
-
-      /*   Category::create([
-            'name'      => 'Salud',
-        ]); */
 
         //Cliente
 
@@ -183,13 +80,7 @@ class DatabaseSeeder extends Seeder
             'address'           => null,
             'email'             => null,
         ]);
-        Presentacion::create([
-            'name'                  => 'N/A',
-            'disponible_caja'       => false,
-            'disponible_blister'    => false,
-            'disponible_unidad'     => false,
-            'status'                => 'ACTIVE'
-        ]);
+
 
         Subcategoria::create([
             'name'          => 'N/A',
