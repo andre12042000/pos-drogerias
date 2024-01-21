@@ -75,7 +75,7 @@
                             <select
                                 class="form-select @if ($presentacion_id == '') @else @error('presentacion_id') is-invalid @else is-valid @enderror @endif"
                                 id="presentacion_id" name="presentacion_id" aria-label="Floating label select example"
-                                wire:model.defer="presentacion_id">
+                                wire:model.lazy="presentacion_id">
                                 <option selected>Seleccionar </option>
                                 @foreach ($presentaciones as $pre)
                                     <option value="{{ $pre }}">{{ $pre->name }}</option>

@@ -31,6 +31,7 @@ class CreateComponent extends Component
     public $sell_price_tecnico, $sell_price_distribuidor, $last_price, $subcategorias, $subcategory_id, $exento, $excluido, $no_gravado, $gravado, $contenido_interno_caja;
     public $contenido_interno_blister, $contenido_interno_unidad, $costo_caja, $costo_blister, $costo_unidad, $ubicacion_id, $laboratorio_id, $presentacion_id ;
     public $laboratorios, $ubicaciones, $presentaciones;
+    public $data_presentacion = '';
 
     /*--------------------------------------------------------------------------------------
     ----------- Procesos disponibles solo mientras se cargan el inventario inicial        --
@@ -445,5 +446,15 @@ class CreateComponent extends Component
     public function updatedCategoryId(){
 
         $this->subcategorias = Subcategoria::where('status', 'ACTIVE')->where('category_id', $this->category_id)->orderBy('name', 'asc')->get();
+    }
+
+
+    public function updatedPresentacionId($value){
+      dd($value);
+        if($value != ''){
+            $this->data_presentacion = Presentacion::find($value);
+  dd($this->data_presentacion);
+        }
+
     }
 }
