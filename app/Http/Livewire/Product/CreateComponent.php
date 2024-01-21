@@ -6,10 +6,14 @@ use App\Models\Brand;
 use App\Models\Product;
 use Livewire\Component;
 use App\Models\Category;
+use App\Models\Laboratorio;
+use App\Models\Presentacion;
 use App\Models\Provider;
 use App\Models\UnidadMedida;
 use Livewire\WithFileUploads;
 use App\Models\PurchaseDetail;
+use App\Models\Subcategoria;
+use App\Models\Ubicacion;
 use Illuminate\Support\Facades\Storage;
 
 class CreateComponent extends Component
@@ -23,6 +27,10 @@ class CreateComponent extends Component
     public $name, $code, $stock, $stock_max, $stock_min, $image, $sell_price, $category_id, $medida_id, $brand_id, $expiration, $selected_id;
     public $cliente, $tecnico, $distribuidor;
     public $iva_product = 0;
+
+    public $sell_price_tecnico, $sell_price_distribuidor, $last_price, $subcategorias, $subcategory_id, $exento, $excluido, $no_gravado, $gravado, $contenido_interno_caja;
+    public $contenido_interno_blister, $contenido_interno_unidad, $costo_caja, $costo_blister, $costo_unidad, $ubicacion_id, $laboratorio_id, $presentacion_id ;
+    public $laboratorios, $ubicaciones, $presentaciones;
 
     /*--------------------------------------------------------------------------------------
     ----------- Procesos disponibles solo mientras se cargan el inventario inicial        --
@@ -252,6 +260,12 @@ class CreateComponent extends Component
         $this->providers = Provider::all();
         $this->unidades = UnidadMedida::all();
         $this->marcas = Brand::all();
+        $this->subcategorias = Subcategoria::where('status', 'ACTIVE') ->orderBy('name', 'asc')->get();
+        $this->ubicaciones = Ubicacion::where('status', 'ACTIVE') ->orderBy('name', 'asc')->get();
+        $this->presentaciones = Presentacion::where('status', 'ACTIVE') ->orderBy('name', 'asc')->get();
+        $this->laboratorios = Laboratorio::where('status', 'ACTIVE') ->orderBy('name', 'asc')->get();
+
+
 
         return view('livewire.product.create-component');
     }
@@ -414,5 +428,10 @@ class CreateComponent extends Component
 
         $this->nuevamarca = '';
         $this->emit('BrandEvent', $marca);
+    }
+
+    public function updatedCategoryId(){
+
+        $this->subcategorias = Subcategoria::where('status', 'ACTIVE')->where('category_id', $this->category_id)->orderBy('name', 'asc')->get();
     }
 }

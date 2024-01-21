@@ -1,253 +1,365 @@
-<div class="modal-dialog modal-lg">
-  <div class="modal-content">
-    <div class="modal-header bg-primary">
-      <h5 class="modal-title " id="staticBackdropLabel"> <strong>Gestión de productos</strong> </h5>
-      <button type="button" class="btn-close" data-dismiss="modal" wire:click="cancel" aria-label="Close"></button>
+<div class="modal-dialog modal-xl">
+    <div class="modal-content">
+        <div class="modal-header bg-info">
+            <h5 class="modal-title " id="staticBackdropLabel"> <strong>Gestión de productos</strong> </h5>
+            <button type="button" class="btn-close" data-dismiss="modal" wire:click="cancel" aria-label="Close"></button>
+        </div>
+        <div class="modal-body " style="background-color: #f5fbfb">
+
+            <div class="row">
+                <div class="col-lg-6 " >
+
+                    <div class="row">
+                        <div class="form-floating mb-1 mt-2 col-6">
+                            <input type="text"
+                                class="form-control @if ($code == '') @else @error('code') is-invalid @else is-valid @enderror @endif"
+                                id="code" name="code" placeholder="Código del producto" wire:model.lazy="code">
+                            <label for="floatingInput">Código</label>
+                            @error('code')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div class="form-floating mb-1 mt-2 col-6">
+                            <input type="text"
+                                class="form-control  @if ($name == '') @else @error('name') is-invalid @else is-valid @enderror @endif"
+                                id="name" name="name" placeholder="Código del producto" wire:model.lazy="name">
+                            <label for="floatingInput">Nombre </label>
+                            @error('name')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div class="form-floating mb-1  col-3">
+                            <input type="number"
+                                class="form-control  @if ($stock == '') @else @error('stock') is-invalid @else is-valid @enderror @endif"
+                                id="stock" name="stock" placeholder="Código del producto" wire:model.lazy="stock">
+                            <label for="floatingInput">Stock </label>
+                            @error('stock')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div class="form-floating mb-1  col-3">
+                            <input type="number"
+                                class="form-control  @if ($stock_min == '') @else @error('stock_min') is-invalid @else is-valid @enderror @endif"
+                                id="stock_min" name="stock_min" placeholder="Código del producto" wire:model.lazy="stock_min">
+                            <label for="floatingInput">Stock mínimo </label>
+                            @error('stock_min')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div class="form-floating mb-1  col-3">
+                            <input type="number"
+                                class="form-control  @if ($stock_max == '') @else @error('stock_max') is-invalid @else is-valid @enderror @endif"
+                                id="stock_max" name="stock_max" placeholder="Código del producto" wire:model.lazy="stock_max">
+                            <label for="floatingInput">Stock máximo </label>
+                            @error('stock_max')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div class="form-floating mb-1  col-3">
+                            <input type="number"
+                                class="form-control  @if ($iva_product == '') @else @error('iva_product') is-invalid @else is-valid @enderror @endif"
+                                id="iva_product" name="iva_product" placeholder="Código del producto" wire:model.lazy="iva_product">
+                            <label for="floatingInput">% IVA </label>
+                            @error('iva_product')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+                        <div class="form-floating col-6 mb-1">
+                            <select
+                                class="form-select @if ($ubicacion_id == '') @else @error('ubicacion_id') is-invalid @else is-valid @enderror @endif"
+                                id="ubicacion_id" name="ubicacion_id" aria-label="Floating label select example"
+                                wire:model.lazy="ubicacion_id">
+                                <option selected>Seleccionar </option>
+                                @foreach ($ubicaciones as $ubicacion)
+                                    <option value="{{ $ubicacion->id }}">{{ $ubicacion->name }}</option>
+                                @endforeach
+                            </select>
+                            <label for="floatingSelect" class="ml-2">Ubicación</label>
+
+                            @error('ubicacion_id')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+
+                        <div class="form-floating col-6 mb-1">
+                            <select
+                                class="form-select @if ($presentacion_id == '') @else @error('presentacion_id') is-invalid @else is-valid @enderror @endif"
+                                id="presentacion_id" name="presentacion_id" aria-label="Floating label select example"
+                                wire:model.lazy="presentacion_id">
+                                <option selected>Seleccionar </option>
+                                @foreach ($presentaciones as $pre)
+                                    <option value="{{ $pre }}">{{ $pre->name }}</option>
+                                @endforeach
+                            </select>
+                            <label for="floatingSelect" class="ml-2">Presentación</label>
+
+                            @error('presentacion_id')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div class="form-floating col-6 mb-1">
+                            <select
+                                class="form-select @if ($category_id == '') @else @error('category_id') is-invalid @else is-valid @enderror @endif"
+                                id="category_id" name="category_id" aria-label="Floating label select example"
+                                wire:model.lazy="category_id">
+                                <option selected>Seleccionar </option>
+                                @foreach ($categories as $categoria)
+                                    <option value="{{ $categoria->id }}">{{ $categoria->name }}</option>
+                                @endforeach
+                            </select>
+                            <label for="floatingSelect" class="ml-2">Categorias</label>
+
+                            @error('category_id')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div class="form-floating col-6 mb-1">
+                            <select
+                                class="form-select @if ($subcategory_id == '') @else @error('subcategory_id') is-invalid @else is-valid @enderror @endif"
+                                id="subcategory_id" name="subcategory_id" aria-label="Floating label select example"
+                                wire:model.lazy="subcategory_id"  @if ($category_id == '')    disabled   @endif>
+                                <option selected>Seleccionar </option>
+                                @foreach ($subcategorias as $sub)
+                                    <option value="{{ $sub->id }}">{{ $sub->name }}</option>
+                                @endforeach
+                            </select>
+                            <label for="floatingSelect" class="ml-2">Sub-categorias</label>
+
+                            @error('subcategory_id')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div class="form-floating mb-1  col-3">
+                            <input type="number"
+                                class="form-control  @if ($last_price == '') @else @error('last_price') is-invalid @else is-valid @enderror @endif"
+                                id="last_price" name="last_price" placeholder="Código del producto" wire:model.lazy="last_price">
+                            <label for="floatingInput">Precio compra </label>
+                            @error('last_price')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+                        <div class="form-floating mb-1  col-3">
+                            <input type="number"
+                                class="form-control  @if ($sell_price == '') @else @error('sell_price') is-invalid @else is-valid @enderror @endif"
+                                id="sell_price" name="sell_price" placeholder="Código del producto" wire:model.lazy="sell_price">
+                            <label for="floatingInput">Precio caja </label>
+                            @error('sell_price')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+
+
+                        <div class="form-floating mb-1  col-3">
+                            <input type="number"
+                                class="form-control  @if ($sell_price_tecnico == '') @else @error('sell_price_tecnico') is-invalid @else is-valid @enderror @endif"
+                                id="sell_price_tecnico" name="sell_price_tecnico"  placeholder="Código del producto"
+                                wire:model.lazy="sell_price_tecnico">
+                            <label for="floatingInput">Precio blister </label>
+                            @error('sell_price_tecnico')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+
+                        <div class="form-floating mb-1 col-3">
+                            <input type="number"
+                                class="form-control  @if ($sell_price_distribuidor == '') @else @error('sell_price_distribuidor') is-invalid @else is-valid @enderror @endif"
+                                id="sell_price_distribuidor" name="sell_price_distribuidor" placeholder="Código del producto"
+                                wire:model.lazy="sell_price_distribuidor">
+                            <label for="floatingInput">Precio unidad </label>
+                            @error('sell_price_distribuidor')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+
+
+
+                    </div>
+
+
+
+                </div>
+                <div class="col-lg-6" >
+                    <div class="row">
+                        <div class="form-floating  mt-2 col-4">
+                            <input type="number"
+                                class="form-control  @if ($contenido_interno_caja == '') @else @error('contenido_interno_caja') is-invalid @else is-valid @enderror @endif"
+                                id="contenido_interno_caja" name="contenido_interno_caja" placeholder="Código del producto"
+                                wire:model.lazy="contenido_interno_caja">
+                            <label for="floatingInput">Contenido caja </label>
+                            @error('contenido_interno_caja')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div class="form-floating  mt-2 col-4">
+                            <input type="number"
+                                class="form-control  @if ($contenido_interno_blister == '') @else @error('contenido_interno_blister') is-invalid @else is-valid @enderror @endif"
+                                id="contenido_interno_blister" name="contenido_interno_blister" placeholder="Código del producto"
+                                wire:model.lazy="contenido_interno_blister">
+                            <label for="floatingInput">Contenido blister </label>
+                            @error('contenido_interno_blister')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div class="form-floating  mt-2 col-4">
+                            <input type="number"
+                                class="form-control  @if ($contenido_interno_unidad == '') @else @error('contenido_interno_unidad') is-invalid @else is-valid @enderror @endif"
+                                id="contenido_interno_unidad" name="contenido_interno_unidad" placeholder="Código del producto"
+                                wire:model.lazy="contenido_interno_unidad">
+                            <label for="floatingInput">Contenido unidad </label>
+                            @error('contenido_interno_unidad')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div class="form-floating  mt-1 col-4">
+                            <input type="number"
+                                class="form-control  @if ($costo_caja == '') @else @error('costo_caja') is-invalid @else is-valid @enderror @endif"
+                                id="costo_caja" name="costo_caja" placeholder="Código del producto" wire:model.lazy="costo_caja">
+                            <label for="floatingInput">Costo caja </label>
+                            @error('costo_caja')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div class="form-floating  mt-1 col-4">
+                            <input type="number"
+                                class="form-control  @if ($costo_blister == '') @else @error('costo_blister') is-invalid @else is-valid @enderror @endif"
+                                id="costo_blister" name="costo_blister" placeholder="Código del producto" wire:model.lazy="costo_blister">
+                            <label for="floatingInput">Costo blister </label>
+                            @error('costo_blister')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div class="form-floating  mt-1 col-4">
+                            <input type="number"
+                                class="form-control  @if ($costo_unidad == '') @else @error('costo_unidad') is-invalid @else is-valid @enderror @endif"
+                                id="costo_unidad" name="costo_unidad" placeholder="Código del producto"
+                                wire:model.lazy="contenido_interno_unidad">
+                            <label for="floatingInput">Costo unidad </label>
+                            @error('costo_unidad')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div class="form-floating mt-1  col-3">
+                            <input type="number"
+                                class="form-control  @if ($exento == '') @else @error('exento') is-invalid @else is-valid @enderror @endif"
+                                id="extento" name="extento" placeholder="Código del producto" wire:model.lazy="exento">
+                            <label for="floatingInput">Exento </label>
+                            @error('exento')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+                        <div class="form-floating mt-1 col-3">
+                            <input type="number"
+                                class="form-control  @if ($excluido == '') @else @error('excluido') is-invalid @else is-valid @enderror @endif"
+                                id="excluido" name="excluido" placeholder="Código del producto" wire:model.lazy="excluido">
+                            <label for="floatingInput">Excluido </label>
+                            @error('excluido')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+
+                        <div class="form-floating mt-1 col-3">
+                            <input type="number"
+                                class="form-control  @if ($no_gravado == '') @else @error('no_gravado') is-invalid @else is-valid @enderror @endif"
+                                id="no_gravado" name="no_gravado" placeholder="Código del producto" wire:model.lazy="name">
+                            <label for="floatingInput">No gravado </label>
+                            @error('no_gravado')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+
+                        <div class="form-floating mt-1 col-3">
+                            <input type="number"
+                                class="form-control  @if ($gravado == '') @else @error('gravado') is-invalid @else is-valid @enderror @endif"
+                                id="gravado" name="gravado" placeholder="Código del producto" wire:model.lazy="gravado">
+                            <label for="floatingInput">Gravado </label>
+                            @error('gravado')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+
+                        <div class="form-floating col-6 mt-1">
+                            <select
+                                class="form-select @if ($laboratorio_id == '') @else @error('laboratorio_id ') is-invalid @else is-valid @enderror @endif"
+                                id="laboratorio_id" name="laboratorio_id" aria-label="Floating label select example"
+                                wire:model.lazy="presentacion_id">
+                                <option selected>Seleccionar </option>
+                                @foreach ($laboratorios as $laboratorio)
+                                    <option value="{{ $laboratorio->id }}">{{ $laboratorio->name }}</option>
+                                @endforeach
+                            </select>
+                            <label for="floatingSelect" class="ml-2">Laboratorio</label>
+
+                            @error('laboratorio_id ')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div class="form-group col-6 ">
+                            <label for="staticEmail" class="col-sm-4 col-form-label">Estado</label>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="active_si"
+                                            id="active_si" value="ACTIVE" wire:model.lazy = "status">
+                                        <label class="form-check-label" for="inlineRadio1">Activo</label>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="active_no"
+                                            id="active_no" value="DESACTIVE" wire:model.lazy = "status">
+                                        <label class="form-check-label" for="inlineRadio2">Inactivo</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            @error('status')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+
+                        </div>
+                    </div>
+
+                    <button type="button" class="btn btn-success float-right ml-2 mb-1"
+                    wire:click="storeOrupdate">Guardar</button>
+                <x-adminlte-button class="float-right" wire:click="cancel" theme="danger" label="Cancelar"
+                    data-dismiss="modal" />
+                </div>
+            </div>
+
+
+
+
+
+        </div>
     </div>
-    <div class="modal-body ">
 
-      <div>
-        @include('includes.alert')
-        @include('popper::assets')
-
-        <div class="form-row mb-0" x-data="{
-        open: false,
-        get isOpen() { return this.open },
-        toggle() { this.open = !this.open },
-     }">
-          <div class="form-group col-md-4">
-            <label for="inputEmail4">Código</label>
-            <input type="text" id="code" name="code" class="form-control @if($codigo == '') @else @error('codigo') is-invalid @else is-valid @enderror @endif" id="inputEmail4" wire:model.lazy="codigo" placeholder="Código del producto" autocomplete="off">
-            @error('codigo')
-            <span class="text-danger">{{ $message }}</span>
-            @enderror
-          </div>
-          <div class="form-group col-md-4">
-            <label for="inputPassword4">Producto</label>
-            <input type="text" class="form-control @if($producto == '') @else @error('producto') is-invalid @else is-valid @enderror @endif" id="inputPassword4" wire:model.lazy="producto" placeholder="Nombre del producto" autocomplete="off">
-            @error('producto')
-            <span class="text-danger">{{ $message }}</span>
-            @enderror
-          </div>
-
-
-          <div class="form-group col-md-4">
-            <label for="inputEmail4">Categoría <i @popper(Crear categoría) class="bi bi-plus-circle-fill ml-1 text-success" style="cursor: pointer" @click="toggle()"></i> </label>
-            <div x-show="isOpen">
-              <input type="text" class="form-control @if($nuevacategoria == '') @else @error('nuevacategoria') is-invalid @else is-valid @enderror @endif mb-2" placeholder="Nueva categoría" wire:keydown.enter="guardarCategoria" wire:model.lazy="nuevacategoria" autocomplete="off">
-              @error('nuevacategoria')
-              <span class="text-danger">{{ $message }}</span>
-              @enderror
-            </div>
-            <select class="form-select @if($categoria == '') @else @error('categoria') is-invalid @else is-valid @enderror @endif" id="exampleFormControlSelect1" wire:model.lazy="categoria">
-              <option value="">Seleccione una categoría</option>
-              @foreach ($categories as $category)
-              <option value="{{ $category->id }}">{{ ucwords($category->name) }}</option>
-              @endforeach
-            </select>
-            @error('categoria')
-            <span class="text-danger">{{ $message }}</span>
-            @enderror
-
-          </div>
-
-        </div>
-
-
-
-
-
-
-        <div class="form-row">
-        <div class="form-group col-md-3">
-            <label for="inputEmail4">% IVA</label>
-            <input type="number" min:0 max:30 class="form-control @if($iva_product == '') @else @error('iva_product') is-invalid @else is-valid @enderror @endif" id="inputEmail4" wire:model.lazy="iva_product" placeholder="Ingresa el iva" autocomplete="off">
-            @error('iva_product')
-            <span class="text-danger">{{ $message }}</span>
-            @enderror
-          </div>
-        <div class="form-group col-md-3">
-            <label for="inputEmail4">Stock actual</label>
-            <input type="number" class="form-control @if($stock_actual == '') @else @error('stock_actual') is-invalid @else is-valid @enderror @endif" id="inputEmail4" wire:model.lazy="stock_actual" placeholder="Productos en stock" autocomplete="off">
-            @error('stock_actual')
-            <span class="text-danger">{{ $message }}</span>
-            @enderror
-          </div>
-
-          <div class="form-group col-md-3">
-            <label for="inputPassword4">Stock mínimo</label>
-            <input type="number" class="form-control @if($stock_minimo == '') @else @error('stock_minimo') is-invalid @else is-valid @enderror @endif" id="inputPassword4" wire:model.lazy="stock_minimo" placeholder="Ej: 5" autocomplete="off">
-            @error('stock_minimo')
-            <span class="text-danger">{{ $message }}</span>
-            @enderror
-          </div>
-          <div class="form-group col-md-3">
-            <label for="inputPassword4">Stock máximo</label>
-            <input type="number" class="form-control @if($stock_maximo == '') @else @error('stock_maximo') is-invalid @else is-valid @enderror @endif" id="inputPassword4" wire:model.lazy="stock_maximo" placeholder="Ej: 20" autocomplete="off">
-            @error('stock_maximo')
-            <span class="text-danger">{{ $message }}</span>
-            @enderror
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group col-md-3">
-            <label for="inputEmail4">Precio de compra</label>
-            <input type="number" id="preciocompra" name="preciocompra" class="form-control @if($precio_compra == '') @else @error('precio_compra') is-invalid @else is-valid @enderror @endif" id="inputEmail4" wire:model.lazy="precio_compra" placeholder="Ej: 50000">
-            @error('precio_compra')
-            <span class="text-danger">{{ $message }}</span>
-            @enderror
-          </div>
-          <div class="form-group col-md-3">
-            <label for="inputPassword4">% Cliente</label>
-            <input type="number" id="cliente" name="cliente" class="form-control" id="inputPassword4" placeholder="Ej: 40" onchange="calcular()" wire:model.lazy='cliente'>
-          </div>
-          <div class="form-group col-md-3">
-            <label for="inputPassword4">% Técnico</label>
-            <input type="number" id="tecnico" name="tecnico" class="form-control" id="inputPassword4" placeholder="Ej: 30" onchange="calcular()" wire:model.lazy='tecnico'>
-          </div>
-          <div class="form-group col-md-3">
-            <label for="inputPassword4">% Distribuidor</label>
-            <input type="number" id="distribuidor" name="distribuidor" class="form-control" id="inputPassword4" placeholder="Ej: 15" onchange="calcular()" wire:model.lazy='distribuidor'>
-          </div>
-
-        </div>
-
-        <div class="row">
-          <div class="form-group col-md-4">
-            <label for="inputPassword4">Precio Cliente</label>
-            <input type="number" id="precioventacliente" name="precioventacliente" class="form-control @if($precioventacliente == '') @else @error('precioventacliente') is-invalid @else is-valid @enderror @endif" id="inputPassword4" wire:model.lazy="precioventacliente" placeholder="Ej: 75000" readonly>
-            @error('precioventacliente')
-            <span class="text-danger">{{ $message }}</span>
-            @enderror
-          </div>
-
-          <div class="form-group col-md-4">
-            <label for="inputPassword4">Precio Técnico</label>
-            <input type="number" id="precioventatecnico" name="precioventatecnico" class="form-control @if($precioventatecnico == '') @else @error('precioventatecnico') is-invalid @else is-valid @enderror @endif" id="inputPassword4" wire:model.lazy="precioventatecnico" placeholder="Ej: 45000" readonly>
-            @error('precioventatecnico')
-            <span class="text-danger">{{ $message }}</span>
-            @enderror
-          </div>
-
-          <div class="form-group col-md-4">
-            <label for="inputPassword4">Precio Distribuidor</label>
-            <input type="number" id="precioventadistribuidor" name="precioventadistribuidor" class="form-control @if($precioventadistribuidor == '') @else @error('precioventadistribuidor') is-invalid @else is-valid @enderror @endif" id="inputPassword4" wire:model.lazy="precioventadistribuidor" placeholder="Ej: 25000" readonly>
-            @error('precioventadistribuidor')
-            <span class="text-danger">{{ $message }}</span>
-            @enderror
-          </div>
-        </div>
-
-        <div class="form-row" style="display: none">
-          <div class="form-group col-md-4">
-            <label for="inputEmail4">Unidad Medida</label>
-            <select class="form-control @if($unidad_medida == '') @else @error('unidad_medida') is-invalid @else is-valid @enderror @endif" id="exampleFormControlSelect1" wire:model.lazy="unidad_medida" autocomplete="off">
-              <option value="">Seleccione una opción</option>
-              @foreach ($unidades as $unidad)
-              <option value="{{ $unidad->id }}">{{ $unidad->name }}</option>
-              @endforeach
-            </select>
-            @error('unidad_medida')
-            <span class="text-danger">{{ $message }}</span>
-            @enderror
-          </div>
-          <div class="form-group col-md-4" x-data="{
-            open: false,
-            get isOpen() { return this.open },
-            toggle() { this.open = !this.open },
-         }">
-            <label for="inputPassword4">Marca<i @popper(Crear marca) class="bi bi-plus-circle-fill ml-1 text-success" style="cursor: pointer" @click="toggle()"></i></label>
-            <div x-show="isOpen">
-              <input type="text" class="form-control @if($nuevamarca == '') @else @error('nuevamarca') is-invalid @else is-valid @enderror @endif mb-2" placeholder="Nueva marca" wire:keydown.enter="guardarMarca" wire:model.lazy="nuevamarca" autocomplete="off">
-              @error('nuevamarca')
-              <span class="text-danger">{{ $message }}</span>
-              @enderror
-            </div>
-            <select class="form-control @if($marca == '') @else @error('marca') is-invalid @else is-valid @enderror @endif" id="exampleFormControlSelect1" wire:model.lazy="marca" autocomplete="off">
-              @foreach ($marcas as $marca)
-              <option value="{{ $marca->id }}">{{ $marca->name }}</option>
-              @endforeach
-            </select>
-            @error('marca')
-            <span class="text-danger">{{ $message }}</span>
-            @enderror
-          </div>
-          <div class="form-group col-md-4">
-            <label for="inputPassword4">Fecha de vencimiento</label>
-            <input type="date" class="form-control @if($fecha_vencimiento == '') @else @error('fecha_vencimiento') is-invalid @else is-valid @enderror @endif" id="inputPassword4" wire:model.lazy="fecha_vencimiento" autocomplete="off">
-            @error('fecha_vencimiento')
-            <span class="text-danger">{{ $message }}</span>
-            @enderror
-          </div>
-
-        </div>
-
-        <div class="form-row">
-          <div class="form-group col-md-8">
-            <label for="inputEmail4">Imagen</label>
-            <input type="file" class="form-control @if($image == '') @else @error('image') is-invalid @else is-valid @enderror @endif" id="image" name="image" wire:model.lazy="image">
-            @error('image')
-            <span class="text-danger">{{ $message }}</span>
-            @enderror
-          </div>
-
-     {{--      <div class="form-group col-md-4">
-            <label for="inputEmail4">Estado </label>
-
-            <select class="form-control @if($status == '') @else @error('status') is-invalid @else is-valid @enderror @endif" id="exampleFormControlSelect1" wire:model.lazy="status">
-              <option value="ACTIVE">ACTIVO</option>
-              <option value="DESACTIVE">DESACTIVADO</option>
-            </select>
-            @error('status')
-            <span class="text-danger">{{ $message }}</span>
-            @enderror
-
-          </div>
-
-
-      <div class="form-group col-md-4">
-            <label for="inputEmail4">Precio venta actual </label>
-
-            <input type="number" class="form-control" id="precio_venta_actual" name="precio_venta_actual" wire:model.lazy="precio_venta_actual">
-            @error('status')
-            <span class="text-danger">{{ $message }}</span>
-            @enderror
-
-          </div>--}}
-
-
-        </div>
-
-
-        @if($photo)
-            <div class="mb-4"> <img style="height: 150px; width: 150px;" src="{!! Config::get('app.URL') !!}/storage/{{ $photo }}"
-                alt="">
-            </div>
-
-        @elseif($image)
-            <div class="mb-4"> <img style="height: 150px; width: 150px;" src="{{ $image->temporaryUrl() }}"
-                    alt="">
-            </div>
-
-        @endif
-
-
-        <button type="button" class="btn btn-success float-right ml-2" wire:click="storeOrupdate">Guardar</button>
-        <x-adminlte-button class="float-right" wire:click="cancel" theme="danger" label="Cancelar" data-dismiss="modal" />
-
-        <x-slot name="footerSlot" class="mt-0 mb-0 p-0">
-          <small id="emailHelp" class="form-text text-muted">* Campo obligatorio</small>
-        </x-slot>
-      </div>
-    </div>
-
-  </div>
 </div>
-
+</div>
+<script src="{{ asset('js/productos/validacionesProduct.js')}}"></script>
 <script>
-
- window.addEventListener('alert', event => {
+    window.addEventListener('alert', event => {
 
         Swal.fire(
             'Producto actualizado correctamente',
@@ -255,14 +367,12 @@
             'success'
         )
     })
-
-
 </script>
-        <script>
-            window.addEventListener('close-modal', event => {
-                     //alert('Hola mundo');
-                        $('#productomodal').hide();
-                        $('body').removeClass('modal-open');
-                        $('.modal-backdrop').remove();
-                    })
-        </script>
+<script>
+    window.addEventListener('close-modal', event => {
+        //alert('Hola mundo');
+        $('#productomodal').hide();
+        $('body').removeClass('modal-open');
+        $('.modal-backdrop').remove();
+    })
+</script>
