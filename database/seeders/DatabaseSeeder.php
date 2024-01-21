@@ -184,8 +184,11 @@ class DatabaseSeeder extends Seeder
             'email'             => null,
         ]);
         Presentacion::create([
-            'name'      => 'N/A',
-            'status'    => 'ACTIVE'
+            'name'                  => 'N/A',
+            'disponible_caja'       => false,
+            'disponible_blister'    => false,
+            'disponible_unidad'     => false,
+            'status'                => 'ACTIVE'
         ]);
 
         Subcategoria::create([

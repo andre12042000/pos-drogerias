@@ -359,11 +359,13 @@ class CreateComponent extends Component
         );
 
         $products = Product::find($this->selected_id);
+
         if($this->image){
             $photo = $this->image->store('livewire-tem');
         }else{
             $photo = null;
         }
+
         $products->update([
             'code'                      => $this->codigo,
             'name'                      => strtolower($this->producto),
