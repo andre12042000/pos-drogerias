@@ -43,10 +43,6 @@ class SaleComponent extends Component
     public $productorandom = false;
     public $impresora = null;
 
-
-
-
-
     protected $listeners = ['ClientEvent', 'ProductEvent'];
 
     public function ClientEvent($client)
@@ -72,7 +68,6 @@ class SaleComponent extends Component
     public function render()
     {
         $empresa = Empresa::find(1);
-
 
         return view('livewire.sale.sale-component', compact('empresa'));
     }

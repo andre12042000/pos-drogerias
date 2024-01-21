@@ -19,6 +19,16 @@ class Product extends Model
 
     //relaciones
 
+    public function laboratorio()
+    {
+        return $this->belongsTo(Laboratorio::class);
+    }
+
+    public function ubicacion()
+    {
+        return $this->belongsTo(Ubicacion::class);
+    }
+
     public function brand()
     {
         return $this->belongsTo(Brand::class);

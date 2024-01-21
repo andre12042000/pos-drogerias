@@ -14,18 +14,33 @@ class SearchComponent extends Component
 
     public function render()
     {
-        $products = Product::search($this->buscar)->active('ACTIVE')->paginate('5');
+        $products = Product::search($this->buscar)
+                            ->orderBy('name', 'asc')
+                            ->active()
+                            ->paginate('10');
 
         return view('livewire.product.search-component', compact('products'));
     }
 
-    public function selectProduct($product, $precio )
+    public function selectProduct($tipo, $product, $precio )
     {
-        $this->emit('ProductEvent', $product, $precio);
+        if($precio > 0){
+            $this->emit('ProductEvent',$tipo, $product, $precio);
+        }else{
+            $this->dispatchBrowserEvent('error-venta-presentacion', ['producto' => $tipo, $product]);
+        }
+
     }
     public function cancel()
     {
             $this->reset();
             $this->resetErrorBag();
     }
+
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+
+
 }
