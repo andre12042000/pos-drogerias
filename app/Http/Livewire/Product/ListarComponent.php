@@ -13,6 +13,7 @@ use Livewire\WithPagination;
 class ListarComponent extends Component
 {
     public $products, $buscar, $filter_estado, $filter_category;
+
     use WithPagination;
     protected $paginationTheme = 'bootstrap';
 
@@ -68,6 +69,10 @@ class ListarComponent extends Component
         }
     }
 
+    public function datomodal($product){
+        $this->emit('ProductstockEventEdit', $product);
+
+    }
 
 
 

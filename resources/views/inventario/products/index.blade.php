@@ -33,6 +33,7 @@
     @include('modals.products.create')
     @include('modals.products.acciones.agregar')
     @include('modals.products.acciones.descontar')
+    @include('modals.products.updatedstock')
 
 
 
