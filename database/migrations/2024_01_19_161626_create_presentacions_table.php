@@ -16,9 +16,6 @@ class CreatePresentacionsTable extends Migration
         Schema::create('presentacions', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
-            $table->boolean('disponible_caja')->default(false);
-            $table->boolean('disponible_blister')->default(false);
-            $table->boolean('disponible_unidad')->default(false);
             $table->string('por_caja')->nullable();
             $table->string('por_blister')->nullable();
             $table->string('por_unidad')->nullable();

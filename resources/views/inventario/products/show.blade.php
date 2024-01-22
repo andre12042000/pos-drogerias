@@ -30,20 +30,20 @@
     @include('popper::assets')
     @include('includes.alert')
 
-<strong><h2>{{$product->name}}</h2></strong> 
+<strong><h2>{{$product->name}}</h2></strong>
 <span class="text-secondary">Código: {{$product->code}}</span>
 
 <div class="row mt-3">
     <div class="col-lg-6">
         <div class="card card-secondary">
             <div class="card-header">
-              <strong>Detalles</strong>  
+              <strong>Detalles</strong>
                 </div>
                 <div class="card-body">
                 {{$product->code}}
-                {{$product->last_price}}
+                {{$product->precio_compra}}
                 </div>
-            
+
         </div>
     </div>
     <div class="col-lg-6"></div>
@@ -58,5 +58,5 @@
     <script>
         console.log('Hi!');
     </script>
-  
+
 @stop

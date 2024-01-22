@@ -56,7 +56,7 @@ class ProductsImport implements ToModel
                 'precio_blister'        => 0,
                 'precio_unidad'   => 0,
                 'status'                    => 'ACTIVE',
-                'last_price'                => $row['17'],
+                'precio_compra'                => $row['17'],
                 'category_id'               => 1,
                 'medida_id'                 => 1,
                 'brand_id'                  => 1,

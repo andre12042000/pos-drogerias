@@ -23,7 +23,7 @@
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     <label class="form-control-label" for="num_compra"><strong>Precio compra</strong></label>
-                                    <p>{{$producto->last_price}}</p>
+                                    <p>{{$producto->precio_compra}}</p>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     <label class="form-control-label" for="num_compra"><strong>Stock</strong></label>
