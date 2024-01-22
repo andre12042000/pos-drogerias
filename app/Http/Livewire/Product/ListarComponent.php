@@ -39,7 +39,6 @@ class ListarComponent extends Component
     {
         $productos= Product::search($this->buscar)
                             ->status($this->filter_estado)
-                            ->category($this->filter_category)
                             ->orderBy('name', 'ASC')
                             ->orderBy('status', 'ASC')
                             ->paginate($this->cantidad_registros);
