@@ -172,11 +172,10 @@ class CreateComponent extends Component
 
     function save($validatedData)
     {
-        $nuevoProducto = Product::create($validatedData);
-
-        $this->emit('reloadProductos');
-
+        $producto = Product::create($validatedData);
     }
+
+
 
 
 }

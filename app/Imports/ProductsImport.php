@@ -2,12 +2,14 @@
 
 namespace App\Imports;
 
+use App\Models\Inventario;
 use App\Models\Product;
 use App\Models\Laboratorio;
 use App\Models\Presentacion;
 use App\Models\Ubicacion;
 use App\Models\UnidadMedida;
 use Maatwebsite\Excel\Concerns\ToModel;
+use App\Events\NuevoProductoCreado;
 
 class ProductsImport implements ToModel
 {
@@ -20,7 +22,8 @@ class ProductsImport implements ToModel
     public function model(array $row)
     {
 
-        if(!is_null($row['0'])){
+
+    if(!is_null($row['0'])){
 
             if($row['3'] == ''){
                 $laboratorio = 1;
@@ -42,28 +45,23 @@ class ProductsImport implements ToModel
             }
 
 
-
-
-
-            return new Product([
+            return  new Product([
                 'code'                      => $row['0'],
                 'name'                      => $row['1'],
                 'stock'                     => 0,
                 'stock_min'                 => 0,
                 'stock_max'                 => 0,
                 'image'                     => 'imag/sinimagen.jpg',
-                'precio_caja'                => $row['25'],
-                'precio_blister'        => 0,
-                'precio_unidad'   => 0,
+                'precio_caja'               => $row['25'],
+                'precio_blister'            => 0,
+                'precio_unidad'             => 0,
                 'status'                    => 'ACTIVE',
-                'precio_compra'                => $row['17'],
                 'category_id'               => 1,
                 'medida_id'                 => 1,
                 'brand_id'                  => 1,
                 'laboratorio_id'            => $laboratorio,
                 'presentacion_id'           => $presentacion,
                 'ubicacion_id'              => $ubicacion,
-                'expiration'                => Null,
                 'exento'                    => $row['5'],
                 'excluido'                  => $row['6'],
                 'no_gravado'                => $row['7'],
@@ -81,19 +79,17 @@ class ProductsImport implements ToModel
                 'valor_iva_blister'         => $row['21'],
                 'valor_iva_unidad'          => $row['22'],
                 'iva_product'               => $row['16'],
+                'disponible_caja'           => 1,
+                'disponible_blister'        => 1,
+                'disponible_unidad'         => 1,
 
             ]);
-
-
 
         }
 
 
 
     }
-
-
-
 
 
     public function crearlaboratorios($row){
