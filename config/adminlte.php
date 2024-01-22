@@ -453,12 +453,20 @@ return [
                     'icon_color' => 'white',
                     'route'      => 'parametros.category',
                 ],
-                [
+               /*  [
                     'text'       => 'Marcas',
                     'classes'    => 'text-white',
                     'icon'       => 'bi bi-bookmarks',
                     'icon_color' => 'white',
                     'route'      => 'parametros.brand',
+                ], */
+
+                [
+                    'text'       => 'Presentaciones',
+                    'classes'    => 'text-white',
+                    'icon'       => 'bi bi-bookmarks',
+                    'icon_color' => 'white',
+                    'route'      => 'parametros.presentaciones',
                 ],
             ],
         ],
