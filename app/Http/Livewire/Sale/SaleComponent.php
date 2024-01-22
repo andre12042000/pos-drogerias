@@ -86,6 +86,8 @@ class SaleComponent extends Component
 
             // Emitir el evento Livewire para notificar que se ha encontrado un producto
             $this->dispatchBrowserEvent('agregarProductoAlArrayCode', ['producto' => $product]);
+            $product = '';
+            $this->codigo_de_producto = '';
         } else {
             $this->addError('codigo_de_producto', 'Producto no encontrado');
         }

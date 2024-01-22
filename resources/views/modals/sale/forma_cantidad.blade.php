@@ -8,7 +8,7 @@
         <div class="modal-body">
 
             <div class="row">
-                <label for="cantidadInput">Presentación</label>
+                <label for="selectPresentacion">Presentación</label>
                     <select class="form-select" id="selectPresentacion" aria-label="Floating label select example">
                       <option value="">Seleccione una opción</option>
                       <option value="disponible_caja">Caja</option>
@@ -24,19 +24,19 @@
             </div>
 
             <div class="row">
-                <label for="cantidadInput">Precio Unitario:</label>
+                <label for="precioUnitarioInput">Precio Unitario:</label>
                 <input type="number" id="precioUnitarioInput" class="form-control" min="1" value="1">
             </div>
 
             <div class="row">
-                <label for="totalInput">Total:</label>
+                <label for="totalPrecioCompraInput">Total:</label>
                 <input type="number" id="totalPrecioCompraInput" class="form-control" min="1" value="1">
             </div>
 
 
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary" id="agregarBtn">Agregar</button>
+          <button type="button" class="btn btn-primary" id="agregarProductosArrayVenta">Agregar</button>
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
         </div>
       </div>
