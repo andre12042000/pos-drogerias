@@ -9,4 +9,11 @@ class Presentacion extends Model
 {
     use HasFactory;
     protected $guarded= ['id'];
+
+
+     public function scopeActive($query)
+       {
+            return $query->where('status', 'ACTIVE');
+       }
+
 }

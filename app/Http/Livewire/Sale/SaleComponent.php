@@ -84,7 +84,7 @@ class SaleComponent extends Component
 
         if (!is_null($product)) {
             $this->codigo_de_producto = null;
-            $this->precio = $product->sell_price;
+            $this->precio = $product->precio_caja;
             $this->verifyProduct($product);
 
         } else {

@@ -28,8 +28,8 @@ class CreatePurchaseDetailsTable extends Migration
             $table->bigInteger('purchase_price')->nullable();
             $table->bigInteger('sales_price');
 
-            $table->decimal('sell_price_tecnico',12,0)->nullable();
-            $table->decimal('sell_price_distribuidor',12,0)->nullable();
+            $table->decimal('precio_blister',12,0)->nullable();
+            $table->decimal('precio_unidad',12,0)->nullable();
 
 
             $table->timestamps();

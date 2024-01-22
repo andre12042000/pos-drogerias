@@ -21,9 +21,9 @@ class CreateProductsTable extends Migration
             $table->integer('stock_min')->nullable();
             $table->integer('stock_max')->nullable();
             $table->string('image')->nullable();
-            $table->double('sell_price',12,0)->nullable();
-            $table->double('sell_price_tecnico',12,0)->nullable();
-            $table->double('sell_price_distribuidor',12,0)->nullable();
+            $table->double('precio_caja',12,0)->nullable();
+            $table->double('precio_blister',12,0)->nullable();
+            $table->double('precio_unidad',12,0)->nullable();
             $table->enum('status',['ACTIVE','DESACTIVE'])->default('ACTIVE');
             $table->double('last_price',12,0)->nullable();
             $table->unsignedBigInteger('category_id')->nullable();

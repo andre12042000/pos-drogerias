@@ -47,9 +47,9 @@ trait UpdateProduct
         $producto = Product::find($product['product_id']);
         $producto->update([
             'last_price'                    => $product['purchase_price'],
-            'sell_price'                    => $product['sales_price'],
-            'sell_price_tecnico'            => $product['sell_price_tecnico'],
-            'sell_price_distribuidor'       => $product['sell_price_distribuidor'],
+            'precio_caja'                    => $product['sales_price'],
+            'precio_blister'            => $product['precio_blister'],
+            'precio_unidad'       => $product['precio_unidad'],
         ]);
 
     }

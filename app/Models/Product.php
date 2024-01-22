@@ -44,17 +44,17 @@ class Product extends Model
 
     public function getClienteAttribute()
     {
-        return '$' . number_format($this->sell_price, 0);
+        return '$' . number_format($this->precio_caja, 0);
     }
 
     public function getTecnicoAttribute()
     {
-        return '$' . number_format($this->sell_price_tecnico, 0);
+        return '$' . number_format($this->precio_blister, 0);
     }
 
     public function getDistribuidorAttribute()
     {
-        return '$' . number_format($this->sell_price_distribuidor, 0);
+        return '$' . number_format($this->precio_unidad, 0);
     }
 
 

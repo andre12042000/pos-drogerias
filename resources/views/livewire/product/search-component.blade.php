@@ -31,13 +31,13 @@
                                 <td>{{ $product->name }}</td>
                                 <td>{{ Illuminate\Support\Str::limit($product->laboratorio->name, 15) }}</td>
                                 <td class="text-end table-success"><a style="cursor: pointer" title="Cantidad presentación: {{ $product->contenido_interno_caja }}"
-                                        wire:click="selectProduct('caja', {{ $product }}, {{ $product->sell_price }})">{{ $product->cliente }}</a>
+                                        wire:click="selectProduct('caja', {{ $product }}, {{ $product->precio_caja }})">{{ $product->cliente }}</a>
                                 </td>
                                 <td class="text-end table-warning"><a style="cursor: pointer"
-                                        wire:click="selectProduct('blister', {{ $product }}, {{ $product->sell_price_tecnico }})">{{ $product->tecnico }}
+                                        wire:click="selectProduct('blister', {{ $product }}, {{ $product->precio_blister }})">{{ $product->tecnico }}
                                     </a></td>
                                 <td class="text-end table-danger"><a style="cursor: pointer"
-                                        wire:click="selectProduct('unidad', {{ $product }}, {{ $product->sell_price_distribuidor }})">{{ $product->distribuidor }}</a>
+                                        wire:click="selectProduct('unidad', {{ $product }}, {{ $product->precio_unidad }})">{{ $product->distribuidor }}</a>
                                 </td>
                             </tr>
 

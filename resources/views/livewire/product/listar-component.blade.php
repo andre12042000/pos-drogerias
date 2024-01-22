@@ -65,7 +65,7 @@
                         <td class="text-end">{{ $product->cliente }}</td>
                         <td class="text-end">{{ $product->tecnico}} </td>
                         <td class="text-end">{{ $product->distribuidor}}</td>
-                        <td class="text-center">@if  ($product->sell_price == 0 && $product->stock_min == 0 &&  $product->stock_max == 0) <span class="badge badge-pill badge-secondary"> 0</span> @elseif ($product->stock < $product->stock_min) <span class="badge badge-pill badge-danger"> {{ $product->stock }} </span> @elseif ($product->stock == $product->stock_min) <span class="badge badge-pill badge-warning"> {{ $product->stock }} </span> @else {{ $product->stock }} @endif </td>
+                        <td class="text-center">@if  ($product->precio_caja == 0 && $product->stock_min == 0 &&  $product->stock_max == 0) <span class="badge badge-pill badge-secondary"> 0</span> @elseif ($product->stock < $product->stock_min) <span class="badge badge-pill badge-danger"> {{ $product->stock }} </span> @elseif ($product->stock == $product->stock_min) <span class="badge badge-pill badge-warning"> {{ $product->stock }} </span> @else {{ $product->stock }} @endif </td>
                         <td>@if($product->status == 'ACTIVE') <span class="badge badge-pill badge-success">Activo</span>
                             @else <span class="badge badge-pill bg-dark">Inactivo</span> @endif</td>
                         <td class="text-center">

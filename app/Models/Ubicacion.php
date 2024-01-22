@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Ubicacion extends Model
 {
     use HasFactory;
-    protected $guarded= ['id'];
+    protected $guarded = ['id'];
 
     /*-------------Relaciones -------------------------*/
 
@@ -17,5 +17,9 @@ class Ubicacion extends Model
         return $this->hasMany(Product::class);
     }
 
-
+    /*----------------Scopes -----------------*/
+    public function scopeActive($query)
+    {
+        return $query->where('status', 'ACTIVE');
+    }
 }

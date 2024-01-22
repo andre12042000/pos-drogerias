@@ -20,7 +20,6 @@ class Category extends Model
         }else{
             return $query;
         }
-
- 
     }
+
 }

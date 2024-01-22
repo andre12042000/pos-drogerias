@@ -14,8 +14,7 @@
                         <div class="form-floating mt-2 col-6">
                             <input type="text"
                                 class="form-control @if ($code == '') @else @error('code') is-invalid @else is-valid @enderror @endif"
-                                id="code" name="code" placeholder="Código del producto" wire:model.lazy="code"
-                                autocomplete="off">
+                                id="code" name="code" wire:model.lazy="code" autocomplete="off">
                             <label for="codigo" id="for_code" name="for_code">Código *</label>
                             @error('code')
                                 <span class="text-danger">{{ $message }}</span>
@@ -75,10 +74,11 @@
                             <select
                                 class="form-select @if ($presentacion_id == '') @else @error('presentacion_id') is-invalid @else is-valid @enderror @endif"
                                 id="presentacion_id" name="presentacion_id" aria-label="Floating label select example"
-                                wire:model.lazy="presentacion_id">
+                                wire:model.defer="presentacion_id">
                                 <option selected>Seleccionar </option>
                                 @foreach ($presentaciones as $pre)
-                                    <option value="{{ $pre }}">{{ $pre->name }}</option>
+                                    <option value="{{ $pre->id }}" data-presentacion="{{ json_encode($pre) }}">
+                                        {{ $pre->name }}</option>
                                 @endforeach
                             </select>
                             <label for="floatingSelect" class="ml-2">Presentación *</label>
@@ -92,35 +92,37 @@
 
                     <div class="row mb-3" x-data="{ categorySelected: @entangle('category_id').defer }">
 
-                            <div class="form-floating mt-1 col-4">
-                                <select class="form-select @if ($category_id == '') @else @error('category_id') is-invalid @else is-valid @enderror @endif"
-                                    id="category_id" name="category_id" aria-label="Floating label select example" wire:model.defer="category_id"
-                                    @change="categorySelected = $event.target.value">
-                                    <option selected>Seleccionar</option>
-                                    @foreach ($categories as $categoria)
-                                        <option value="{{ $categoria->id }}">{{ $categoria->name }}</option>
-                                    @endforeach
-                                </select>
-                                <label for="floatingSelect" class="ml-2">Categoria</label>
-                                @error('category_id')
-                                    <span class="text-danger">{{ $message }}</span>
-                                @enderror
-                            </div>
+                        <div class="form-floating mt-1 col-4">
+                            <select
+                                class="form-select @if ($category_id == '') @else @error('category_id') is-invalid @else is-valid @enderror @endif"
+                                id="category_id" name="category_id" aria-label="Floating label select example"
+                                wire:model.defer="category_id" @change="categorySelected = $event.target.value">
+                                <option selected>Seleccionar</option>
+                                @foreach ($categories as $categoria)
+                                    <option value="{{ $categoria->id }}">{{ $categoria->name }}</option>
+                                @endforeach
+                            </select>
+                            <label for="floatingSelect" class="ml-2">Categoria</label>
+                            @error('category_id')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
 
-                            <div class="form-floating mt-1 col-4">
-                                <select class="form-select @if ($subcategory_id == '' || $category_id == '') @else @error('subcategory_id') is-invalid @else is-valid @enderror @endif"
-                                    id="subcategory_id" name="subcategory_id" aria-label="Floating label select example" wire:model.lazy="subcategory_id"
-                                    :disabled="!categorySelected">
-                                    <option selected>Seleccionar</option>
-                                    @foreach ($subcategorias as $sub)
-                                        <option value="{{ $sub->id }}">{{ $sub->name }}</option>
-                                    @endforeach
-                                </select>
-                                <label for="floatingSelect" class="ml-2">Subcategoría</label>
-                                @error('subcategory_id')
-                                    <span class="text-danger">{{ $message }}</span>
-                                @enderror
-                            </div>
+                        <div class="form-floating mt-1 col-4">
+                            <select
+                                class="form-select @if ($subcategory_id == '' || $category_id == '') @else @error('subcategory_id') is-invalid @else is-valid @enderror @endif"
+                                id="subcategory_id" name="subcategory_id" aria-label="Floating label select example"
+                                wire:model.lazy="subcategory_id" :disabled="!categorySelected">
+                                <option selected>Seleccionar</option>
+                                @foreach ($subcategorias as $sub)
+                                    <option value="{{ $sub->id }}">{{ $sub->name }}</option>
+                                @endforeach
+                            </select>
+                            <label for="floatingSelect" class="ml-2">Subcategoría</label>
+                            @error('subcategory_id')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
 
 
                         <div class="form-floating mt-1 col-4">
@@ -150,8 +152,7 @@
                         <div class="form-floating mt-1 col-3">
                             <input type="number"
                                 class="form-control  @if ($stock_min == '') @else @error('stock_min') is-invalid @else is-valid @enderror @endif"
-                                id="stock_min" name="stock_min" placeholder="Código del producto"
-                                wire:model.defer="stock_min">
+                                id="stock_min" name="stock_min" wire:model.defer="stock_min">
                             <label for="floatingInput">Stock mínimo </label>
                             @error('stock_min')
                                 <span class="text-danger">{{ $message }}</span>
@@ -161,8 +162,7 @@
                         <div class="form-floating mt-1 col-3">
                             <input type="number"
                                 class="form-control  @if ($stock_max == '') @else @error('stock_max') is-invalid @else is-valid @enderror @endif"
-                                id="stock_max" name="stock_max" placeholder="Código del producto"
-                                wire:model.defer="stock_max">
+                                id="stock_max" name="stock_max" wire:model.defer="stock_max">
                             <label for="floatingInput">Stock máximo </label>
                             @error('stock_max')
                                 <span class="text-danger">{{ $message }}</span>
@@ -172,8 +172,7 @@
                         <div class="form-floating mt-1 col-3">
                             <input type="number"
                                 class="form-control  @if ($stock == '') @else @error('stock') is-invalid @else is-valid @enderror @endif"
-                                id="stock" name="stock" placeholder="Código del producto"
-                                wire:model.defer="stock">
+                                id="stock" name="stock" wire:model.defer="stock" disabled>
                             <label for="floatingInput">Stock actual </label>
                             @error('stock')
                                 <span class="text-danger">{{ $message }}</span>
@@ -183,8 +182,8 @@
                         <div class="form-floating mt-1 col-3">
                             <input type="number"
                                 class="form-control  @if ($iva_product == 0) @else @error('iva_product') is-invalid @else is-valid @enderror @endif"
-                                id="iva_product" name="iva_product" placeholder="Código del producto"
-                                wire:model.defer="iva_product" min="0" max="100">
+                                id="iva_product" name="iva_product" wire:model.defer="iva_product" min="0"
+                                max="100">
                             <label for="floatingInput">% IVA </label>
                             @error('iva_product')
                                 <span class="text-danger">{{ $message }}</span>
@@ -194,13 +193,58 @@
                 </div>
 
                 <div class="col-lg-6">
+
+                    <div class="row mb-3">
+                        <div class="form-floating mt-2 col-4">
+                            <div class="form-floating">
+                                <select class="form-select"  id="disponible_caja" name="disponible_caja"
+                                    aria-label="Floating label select example" wire:model.defer = 'disponible_caja' disabled>
+                                    <option selected>Seleccione una opción</option>
+                                    <option value="1">Si</option>
+                                    <option value="0">No</option>
+                                </select>
+                                <label for="floatingSelect">Disp. caja</label>
+                            </div>
+                        </div>
+
+                        <div class="form-floating mt-2 col-4">
+
+                            <div class="form-floating">
+                                <select class="form-select"  id="disponible_blister" name="disponible_blister" disabled
+                                    aria-label="Floating label select example" wire:model.defer = 'disponible_blister'>
+                                    <option selected>Seleccione una opción</option>
+                                    <option value="1">Si</option>
+                                    <option value="0">No</option>
+                                </select>
+                                <label for="floatingSelect">Disp. blister</label>
+                            </div>
+
+
+                        </div>
+
+                        <div class="form-floating mt-2 col-4">
+
+                            <div class="form-floating">
+                                <select class="form-select"  id="disponible_unidad" name="disponible_unidad" disabled
+                                    aria-label="Floating label select example"  wire:model.defer = 'disponible_unidad'>
+                                    <option selected>Seleccione una opción</option>
+                                    <option value="1">Si</option>
+                                    <option value="0">No</option>
+                                </select>
+                                <label for="floatingSelect">Disp. unidad</label>
+                            </div>
+
+                        </div>
+                    </div>
+
+
                     <div class="row mb-3">
                         <div class="form-floating mt-2 col-4">
                             <input type="number"
                                 class="form-control  @if ($contenido_interno_caja == '') @else @error('contenido_interno_caja') is-invalid @else is-valid @enderror @endif"
                                 id="contenido_interno_caja" name="contenido_interno_caja"
-                                placeholder="Código del producto" wire:model.defer="contenido_interno_caja">
-                            <label for="floatingInput">Contenido caja </label>
+                                min="0" wire:model.defer="contenido_interno_caja" disabled>
+                            <label for="floatingInput">Cantidad caja </label>
                             @error('contenido_interno_caja')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
@@ -209,8 +253,8 @@
                         <div class="form-floating mt-2 col-4">
                             <input type="number"
                                 class="form-control  @if ($contenido_interno_blister == '') @else @error('contenido_interno_blister') is-invalid @else is-valid @enderror @endif"
-                                id="contenido_interno_blister" name="contenido_interno_blister"
-                                placeholder="Código del producto" wire:model.defer="contenido_interno_blister">
+                                id="contenido_interno_blister" name="contenido_interno_blister" value="0"
+                                min="0" wire:model.defer="contenido_interno_blister" disabled>
                             <label for="floatingInput">Contenido blister </label>
                             @error('contenido_interno_blister')
                                 <span class="text-danger">{{ $message }}</span>
@@ -220,8 +264,8 @@
                         <div class="form-floating mt-2 col-4">
                             <input type="number"
                                 class="form-control  @if ($contenido_interno_unidad == '') @else @error('contenido_interno_unidad') is-invalid @else is-valid @enderror @endif"
-                                id="contenido_interno_unidad" name="contenido_interno_unidad"
-                                placeholder="Código del producto" wire:model.defer="contenido_interno_unidad">
+                                id="contenido_interno_unidad" name="contenido_interno_unidad" value="0"
+                                min="0" wire:model.defer="contenido_interno_unidad" disabled>
                             <label for="floatingInput">Contenido unidad </label>
                             @error('contenido_interno_unidad')
                                 <span class="text-danger">{{ $message }}</span>
@@ -230,13 +274,12 @@
                     </div>
 
 
-
                     <div class="row mb-3">
                         <div class="form-floating mt-1 col-4">
                             <input type="number"
                                 class="form-control  @if ($costo_caja == '') @else @error('costo_caja') is-invalid @else is-valid @enderror @endif"
-                                id="costo_caja" name="costo_caja" placeholder="Código del producto"
-                                wire:model.defer="costo_caja">
+                                id="costo_caja" name="costo_caja" value="0" min="0"
+                                wire:model.defer="costo_caja" disabled>
                             <label for="floatingInput">Costo caja </label>
                             @error('costo_caja')
                                 <span class="text-danger">{{ $message }}</span>
@@ -244,10 +287,9 @@
                         </div>
 
                         <div class="form-floating mt-1 col-4">
-                            <input type="number"
+                            <input type="number" value="0" min="0"
                                 class="form-control  @if ($costo_blister == '') @else @error('costo_blister') is-invalid @else is-valid @enderror @endif"
-                                id="costo_blister" name="costo_blister" placeholder="Código del producto"
-                                wire:model.defer="costo_blister">
+                                id="costo_blister" name="costo_blister" wire:model.defer="costo_blister" disabled>
                             <label for="floatingInput">Costo blister </label>
                             @error('costo_blister')
                                 <span class="text-danger">{{ $message }}</span>
@@ -255,10 +297,10 @@
                         </div>
 
                         <div class="form-floating mt-1 col-4">
-                            <input type="number"
+                            <input type="number" value="0" min="0"
                                 class="form-control  @if ($costo_unidad == '') @else @error('costo_unidad') is-invalid @else is-valid @enderror @endif"
-                                id="costo_unidad" name="costo_unidad" placeholder="Código del producto"
-                                wire:model.defer="contenido_interno_unidad">
+                                id="costo_unidad" name="costo_unidad" wire:model.defer="contenido_interno_unidad"
+                                disabled>
                             <label for="floatingInput">Costo unidad </label>
                             @error('costo_unidad')
                                 <span class="text-danger">{{ $message }}</span>
@@ -268,38 +310,36 @@
 
                     <div class="row mb-3">
                         <div class="form-floating mt-1 col-4">
-                            <input type="number"
-                                class="form-control @if ($sell_price == '') @else @error('sell_price') is-invalid @else is-valid @enderror @endif"
-                                id="sell_price" name="sell_price" placeholder="Código del producto"
-                                wire:model.defer="sell_price">
-                            <label for="floatingInput">Precio caja</label>
-                            @error('sell_price')
+                            <input type="number" value="0" min="0"
+                                class="form-control @if ($precio_caja == '') @else @error('precio_caja') is-invalid @else is-valid @enderror @endif"
+                                id="precio_caja" name="precio_caja" wire:model.defer="precio_caja" disabled>
+                            <label for="floatingInput">Precio venta caja</label>
+                            @error('precio_caja')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>
 
                         <div class="form-floating mt-1 col-4">
-                            <input type="number"
-                                class="form-control  @if ($sell_price_tecnico == '') @else @error('sell_price_tecnico') is-invalid @else is-valid @enderror @endif"
-                                id="sell_price_tecnico" name="sell_price_tecnico" placeholder="Código del producto"
-                                wire:model.defer="sell_price_tecnico">
-                            <label for="floatingInput">Precio blister </label>
-                            @error('sell_price_tecnico')
+                            <input type="number" value="0" min="0"
+                                class="form-control  @if ($precio_blister == '') @else @error('precio_blister') is-invalid @else is-valid @enderror @endif"
+                                id="precio_blister" name="precio_blister" wire:model.defer="precio_blister" disabled>
+                            <label for="floatingInput">Precio venta blister </label>
+                            @error('precio_blister')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>
 
                         <div class="form-floating mt-1 col-4">
-                            <input type="number"
-                                class="form-control  @if ($sell_price_distribuidor == '') @else @error('sell_price_distribuidor') is-invalid @else is-valid @enderror @endif"
-                                id="sell_price_distribuidor" name="sell_price_distribuidor"
-                                placeholder="Código del producto" wire:model.defer="sell_price_distribuidor">
-                            <label for="floatingInput">Precio unidad </label>
-                            @error('sell_price_distribuidor')
+                            <input type="number" value="0" min="0"
+                                class="form-control  @if ($precio_unidad == '') @else @error('precio_unidad') is-invalid @else is-valid @enderror @endif"
+                                id="precio_unidad" name="precio_unidad" wire:model.defer="precio_unidad" disabled>
+                            <label for="floatingInput">Precio venta unidad </label>
+                            @error('precio_unidad')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>
                     </div>
+
 
                 </div>
             </div>
@@ -317,7 +357,7 @@
 
 </div>
 </div>
-<script src="{{ asset('js/productos/validacionesProduct.js') }}"></script>
+<script src="{{ asset('js/productos/validacionesProductCreate.js') }}"></script>
 <script>
     window.addEventListener('alert', event => {
 
@@ -336,7 +376,3 @@
         $('.modal-backdrop').remove();
     })
 </script>
-
-
-
-
