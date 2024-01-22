@@ -47,23 +47,9 @@ class CreateProductsTable extends Migration
             $table->double('precio_blister',15,0)->nullable();
             $table->double('precio_unidad',15,0)->nullable();
 
-            $table->double('precio_compra',15,0)->nullable();
-
-
-
-
-
-
-
-
 
             $table->unsignedBigInteger('medida_id')->nullable();
             $table->foreign('medida_id')->references('id')->on('unidad_medidas')->onDelete('set null');
-
-
-
-
-
 
             $table->unsignedBigInteger('brand_id')->nullable();
             $table->foreign('brand_id')->references('id')->on('brands')->onDelete('set null');

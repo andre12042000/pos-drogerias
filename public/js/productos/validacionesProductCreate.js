@@ -1,4 +1,9 @@
 var presentacionData;
+var valor_iva_caja = 0;
+var valor_iva_blister = 0;
+var valor_iva_unidad = 0;
+
+
 
 /*----------------------Metodos para habilitar o deshabilitar inputs ----------*/
 document
@@ -111,6 +116,10 @@ function calcularPrecioVentaCaja() {
     var ganancia = parseFloat(costo_caja * (gananciaPorcentaje / 100));
     var iva = parseFloat(costo_caja * ivaPorcentaje);
     precio_caja.value = costo_caja + ganancia + iva;
+   // var nuevoPrecioCaja = costo_caja + ganancia + iva;
+    valor_iva_caja = iva;
+
+   // Livewire.emit('actualizarPrecioCaja', nuevoPrecioCaja);
 
     if(cantidad_Blister.value > 0){
         calcularPreciosBlister();
@@ -129,7 +138,7 @@ function calcularPreciosBlister(){
     ivaPorcentaje = convertirPorcentajeADecimal(iva_product.value);
     gananciaPorcentaje = presentacionData.por_blister;
 
-    console.log(gananciaPorcentaje);
+
 
     costo_blister.value = parseFloat(costo_caja.value / cantidad_Blister.value);
     costoBlisterValue = parseFloat(costo_blister.value);
@@ -140,6 +149,8 @@ function calcularPreciosBlister(){
 
     var iva = parseFloat(costoBlisterValue * ivaPorcentaje);
     precio_blister.value = costoBlisterValue + ganancia + iva;
+
+    valor_iva_blister = iva;
 
 }
 
@@ -162,6 +173,7 @@ function calcularPreciosUnidad(){
 
     var iva = parseFloat(costoUnidadValue * ivaPorcentaje);
     precio_unidad.value = costoUnidadValue + ganancia + iva;
+    valor_iva_unidad = iva;
 
 }
 
@@ -174,4 +186,24 @@ function convertirPorcentajeADecimal(ivaPorcentaje) {
     }
 
     return ivaPorcentaje / 100;
+}
+
+/*----------------Capturar datos procesados para enviar al backend -------*/
+
+function capturarYEnviarDatos() {
+    var datos = {
+        costo_caja: document.getElementById("costo_caja").value,
+        iva_product: document.getElementById("iva_product").value,
+        precio_caja: document.getElementById("precio_caja").value,
+        precio_blister: document.getElementById("precio_blister").value,
+        costo_blister: document.getElementById("costo_blister").value,
+        costo_unidad: document.getElementById("costo_unidad").value,
+        precio_unidad: document.getElementById("precio_unidad").value,
+        valor_iva_caja: valor_iva_caja,
+        valor_iva_blister: valor_iva_blister,
+        valor_iva_unidad: valor_iva_unidad,
+        // Agrega los demás campos aquí
+    };
+
+    Livewire.emit('guardarDatosEvent', datos);
 }
