@@ -10,4 +10,11 @@ class Inventario extends Model
     use HasFactory;
 
     protected $guarded= ['id'];
+
+    /*----------------Relaciones -------------------*/
+
+    public function user()
+    {
+        return $this->belongsTo(Product::class);
+    }
 }

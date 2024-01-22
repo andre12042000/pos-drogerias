@@ -19,6 +19,11 @@ class Product extends Model
 
     //relaciones
 
+    public function inventario()
+    {
+        return $this->hasOne(Inventario::class);
+    }
+
     public function laboratorio()
     {
         return $this->belongsTo(Laboratorio::class);
