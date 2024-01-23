@@ -107,10 +107,6 @@ class ProductManager {
 
 
 
-
-
-
-
         // Crear un objeto con los datos
         const datosVenta = {
             granTotal: granTotal,

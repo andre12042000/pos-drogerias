@@ -24,6 +24,7 @@ use Mike42\Escpos\Printer;
 use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
 use Illuminate\Support\Str;
 use Intervention\Image\Facades\Image;
+use App\Events\VentaRealizada;
 
 class SaleComponent extends Component
 {
@@ -145,6 +146,8 @@ class SaleComponent extends Component
                 ]);
 
                 $this->detallesVenta($venta, $dataVenta['productosParaVenta']);
+
+                event(new VentaRealizada($venta));
 
                 return redirect('/ventas/pos')->with('venta_exitosa' , $venta->id);
 
