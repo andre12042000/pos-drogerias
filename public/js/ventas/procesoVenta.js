@@ -1,9 +1,23 @@
 
 var productosParaVenta = [];
 var productoActual;
+let granTotal = 0;
+let subTotalGlobal = 0;
+let ivaTotalGlobal = 0;
+
 
 class ProductManager {
     constructor() {
+        const granTotalFormateado = granTotal;
+        const granIvaFormateado = ivaTotalGlobal;
+        const subTotalGlobalFormateado = subTotalGlobal; //
+
+        // Asignar el valor al elemento span con la clase granTotal
+        document.querySelector('.granTotal').textContent = granTotalFormateado;
+        document.querySelector('.ivaTotalGlobal').textContent = granIvaFormateado;
+        document.querySelector('.subTotalGlobal').textContent = subTotalGlobalFormateado;
+
+
         this.productosParaVenta = [];
         this.productoActual;
         this.cantidadModal = new bootstrap.Modal(document.getElementById('cantidadModal'));
@@ -68,12 +82,12 @@ class ProductManager {
 
         // Crear un nuevo producto
          const nuevoProducto = {
-            item: 3,  // Puedes gestionar este valor según tus necesidades
+            item: productosParaVenta.length + 1, // Puedes gestionar este valor según tus necesidades
             id_producto: producto.id,
             codigo: producto.code,
             descripcion: producto.name,
             forma: presentacionSeleccionada,
-            precio_unitario: precioUnitario,
+            precio_unitario: parseFloat(precioUnitario),
             cantidad: cantidadIngresada,
             descuento: 0,  // Puedes gestionar este valor según tus necesidades
             subtotal: subtotal,
@@ -89,6 +103,13 @@ class ProductManager {
         this.cantidadModal.hide();
 
     }
+
+    handleLimpiarFormatoMoneda = (valorMoneda) => {
+        // Eliminar cualquier carácter no numérico o símbolo de moneda
+        const valorNumerico = valorMoneda.replace(/[^\d.-]/g, '');
+        // Convertir a número
+        return parseFloat(valorNumerico);
+    };
 
 
     handlePrecioUnitarioInputChange() {
@@ -155,22 +176,79 @@ class ProductManager {
         this.displayPrecioUnitarioYTotal(precioUnitario, cantidadIngresada);
     }
 
+    handleActualizarOAgregarProducto(producto, presentacionSeleccionada, precioUnitario, cantidadIngresada) {
+
+        // Buscar el producto en productosParaVenta
+        const productoExistente = productosParaVenta.find(item =>
+            item.id_producto === producto.id && item.forma === presentacionSeleccionada
+        );
+
+        if (productoExistente) {
+
+            // El producto ya existe, actualizar cantidad y subtotal
+            productoExistente.cantidad += cantidadIngresada;
+            productoExistente.subtotal = productoExistente.cantidad * precioUnitario;
+
+        } else {
+            // El producto no existe, agregar un nuevo producto
+            const nuevoProducto = {
+                item: productosParaVenta.length + 1,
+                id_producto: producto.id,
+                codigo: producto.code,
+                descripcion: producto.name,
+                forma: presentacionSeleccionada,
+                precio_unitario: precioUnitario,
+                cantidad: cantidadIngresada,
+                descuento: 0,
+                subtotal: cantidadIngresada * precioUnitario,
+            };
+
+            // Agregar el nuevo producto al array
+            productosParaVenta.push(nuevoProducto);
+        }
+
+        this.reinicializarVariables();
+        this.actualizarTabla();
+    }
+
+
+
     handleAgregarProducto(event) {
+
         productoActual = event.detail.producto;
         const producto = event.detail.producto;
-        const cantidadIngresada = parseInt(document.getElementById('cantidadInput').value);
 
-        this.showCantidadModal(producto);
+        if(event.detail.opcionSeleccionada != null){
 
-        this.disableAllOptions();
-        this.enableOptionsBasedOnProduct(producto);
+            const cantidadIngresada = 1;
+            const presentacionSeleccionada = event.detail.opcionSeleccionada;
+            const precioUnitario = this.getPrecioUnitario(producto, presentacionSeleccionada);
 
-        this.autoSelectOption();
+            if(precioUnitario === 0){
+                return;
+            }
 
-        const presentacionSeleccionada = this.selectPresentacion.value;
-        const precioUnitario = this.getPrecioUnitario(producto, presentacionSeleccionada);
+            this.handleActualizarOAgregarProducto(producto, presentacionSeleccionada, precioUnitario, cantidadIngresada);
 
-        this.displayPrecioUnitarioYTotal(precioUnitario, cantidadIngresada);
+        }else{
+
+
+
+            const cantidadIngresada = parseInt(document.getElementById('cantidadInput').value);
+
+            this.showCantidadModal(producto);
+
+            this.disableAllOptions();
+            this.enableOptionsBasedOnProduct(producto);
+
+            this.autoSelectOption();
+
+            const presentacionSeleccionada = this.selectPresentacion.value;
+            const precioUnitario = this.getPrecioUnitario(producto, presentacionSeleccionada);
+
+            this.displayPrecioUnitarioYTotal(precioUnitario, cantidadIngresada);
+
+        }
 
     }
 
@@ -228,12 +306,31 @@ class ProductManager {
         this.totalPrecioCompraInput.value = totalPrecioProducts;
     }
 
+
+
     actualizarTabla() {
         // Obtener la referencia del cuerpo de la tabla
         var tbody = document.querySelector('#tablaProductos tbody');
 
         // Limpiar el contenido actual del cuerpo de la tabla
         tbody.innerHTML = '';
+
+        function formatearForma(valor) {
+            switch (valor) {
+                case 'disponible_caja':
+                    return 'Caja';
+                case 'disponible_blister':
+                    return 'Blister';
+                case 'disponible_unidad':
+                    return 'Unidad';
+                // Agrega más casos según sea necesario
+                default:
+                    return valor;
+            }
+        }
+
+
+        let subGranTotal = 0;
 
         // Iterar sobre el array y agregar filas al cuerpo de la tabla
         productosParaVenta.forEach(function(producto) {
@@ -246,8 +343,38 @@ class ProductManager {
                 if (key === 'id_producto') {
                     celda.classList.add('ocultar-columna-id');
                 }
+
+                if (['precio_unitario', 'descuento', 'subtotal'].includes(key)) {
+                    celda.style.textAlign = 'right';
+
+                   // celda.textContent = formatearMoneda(producto[key]);
+                }
+
+                if (key === 'subtotal') {
+                    subGranTotal += parseFloat(producto[key]);
+                }
+
+                if(key === 'cantidad'){
+                    celda.classList.add('text-center');
+                }
+
+                if (key === 'forma') {
+                    // Formatear el valor del campo 'forma'
+                    celda.textContent = formatearForma(producto[key]);
+                }
+
             }
         });
+
+        granTotal = subGranTotal;
+
+        const granTotalFormateado = granTotal;
+
+        // Asignar el valor al elemento span con la clase granTotal
+        document.querySelector('.granTotal').textContent = granTotalFormateado;
+        document.querySelector('.subTotalGlobal').textContent = granTotalFormateado;
+
+
     }
 
 

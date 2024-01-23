@@ -110,16 +110,16 @@
                   <div class="col-4">
                     <div class="costo-compra">
                         <label>Subtotal:</label>
-                        <span class="valor">$150.00</span>
+                        <span class="subTotalGlobal"></span>
                     </div>
                     <div class="costo-compra">
                         <label>IVA:</label>
-                        <span class="valor">$24.00</span>
+                        <span class="ivaTotalGlobal"></span>
                     </div>
                     <div class="costo-compra total">
-                        <label style=" font-size: 30px;
-                        font-weight: bold;">Total:</label>
-                        <span class="valor">$174.00</span>
+                        <label>Total:</label>
+                        <span class="granTotal" style="font-size: 30px;
+                        font-weight: bold;"></span>
                     </div>
 
                     <div class="d-grid gap-2">
@@ -176,27 +176,35 @@
         background-color: #45a049;
     }
 
-/* Estilo de los campos relacionados al costo de la compra */
+/* Agrega estilos generales a los elementos de clase costo-compra */
 .costo-compra {
+    margin-bottom: 10px;
     display: flex;
     justify-content: space-between;
-    margin-bottom: 5px; /* Reducir el margen inferior */
+    align-items: center;
 }
 
+/* Estilo específico para la etiqueta (label) */
 .costo-compra label {
     font-weight: bold;
-    color: #333;
-    margin-right: 10px; /* Reducir el margen derecho */
+    margin-right: 10px;
 }
 
-.costo-compra .valor {
-    color: #4CAF50;
+/* Estilo específico para el span */
+.costo-compra span {
+    font-size: 16px; /* Ajusta el tamaño de fuente según tus preferencias */
 }
 
-/* Estilo para el campo Total */
-.costo-compra.total .valor {
+/* Estilo específico para el elemento total */
+.costo-compra.total label,
+.costo-compra.total span {
     font-size: 30px;
     font-weight: bold;
+}
+
+/* Alineación del texto en el elemento total */
+.costo-compra.total {
+    text-align: right;
 }
 
 </style>

@@ -114,8 +114,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 productData = null;
                 selectedOption = null;
 
-                row.removeAttribute('data-product');
-                this.removeAttribute('data-option');
 
             });
         });

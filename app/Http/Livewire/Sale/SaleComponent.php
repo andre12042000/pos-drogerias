@@ -46,10 +46,10 @@ class SaleComponent extends Component
     protected $listeners = ['ClientEvent', 'ProductEvent', 'agregarProductoEvent'];
 
     function agregarProductoEvent($product, $opcionSeleccionada){
-        dump($product, $opcionSeleccionada);
-        $this->dispatchBrowserEvent('agregarProductoAlArraySearch', ['producto' => $product, 'opcionSeleccionada' => $opcionSeleccionada]);
-        $producto = '';
-        $opcionSeleccionada = '';
+
+
+        $this->dispatchBrowserEvent('agregarProductoAlArrayCode', ['producto' => $product, 'opcionSeleccionada' => $opcionSeleccionada]);
+
 
     }
 
@@ -93,7 +93,7 @@ class SaleComponent extends Component
         if ($product) {
 
             // Emitir el evento Livewire para notificar que se ha encontrado un producto
-            $this->dispatchBrowserEvent('agregarProductoAlArrayCode', ['producto' => $product]);
+            $this->dispatchBrowserEvent('agregarProductoAlArrayCode', ['producto' => $product, 'opcionSeleccionada' => null]);
             $product = '';
             $this->codigo_de_producto = '';
         } else {
