@@ -30,14 +30,17 @@ class CreateSalesTable extends Migration
 
             $table->dateTime('sale_date');
 
-            $table->decimal('discount');
-            $table->decimal('tax'); //Total de iva de toda la compra
-            $table->decimal('total',15,0);
+            $table->double('discount' ,15,0);
+            $table->double('tax' ,15,0); //Total de iva de toda la compra
+            $table->double('total',15,0);
 
-            $table->enum('type_sale', [Sale::debito, Sale::credito])->default(Sale::debito);
+            $table->string('tipo_operacion', 20);
+          //  $table->enum('type_sale', [Sale::debito, Sale::credito])->default(Sale::debito);
 
-            $table->enum('payment_method', [Sale::efectivo, Sale::tarjeta, Sale::transferencia, Sale::cheque, Sale::deposito])->default(Sale::efectivo);
+            $table->unsignedBigInteger('metodo_pago_id');
+            $table->foreign('metodo_pago_id')->references('id')->on('metodo_pagos');
 
+            $table->string('status', 20);
 
             $table->timestamps();
         });

@@ -52,7 +52,7 @@
 <div class="alert alert-success" role="alert">
     <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:"><use xlink:href="#check-circle-fill"/></svg>
     Venta registrada correctamente, <a href=" {{ route('ventas.pos.details', session('venta_exitosa')) }}" class="alert-link" target="_blank">Ver comprobante</a>.
-    <a href=" {{ route('ventas.pos.imprimir.recibo', session('venta_exitosa')) }}" class="btn btn-secondary float-end" > <i class="bi bi-printer"></i> Imprimir recibo</a>
+    <a href="{{ route('ventas.pos.imprimir.recibo', session('venta_exitosa')) }}" class="alert-link float-end" target="_blank"> <i class="bi bi-printer"></i> Imprimir recibo</a>
   </div>
 @endif
 

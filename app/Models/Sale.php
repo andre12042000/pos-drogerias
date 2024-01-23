@@ -11,26 +11,6 @@ class Sale extends Model
 
     protected $guarded= ['id'];
 
-    const efectivo      = 1;
-    const tarjeta       = 2;
-    const transferencia = 3;
-    const cheque        = 4;
-    const deposito      = 5;
-
-    const debito        = 1;
-    const credito       = 2;
-
-    public function getTipoVentaAttribute()
-    {
-        if($this->type_sale == 1)
-        {
-            $tipo = 'Contado';
-        }else{
-            $tipo = 'Crédito';
-        }
-
-        return $tipo;
-    }
 
     public function user(){
         return $this->belongsTo(User::class);
