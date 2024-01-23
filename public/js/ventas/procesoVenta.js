@@ -253,7 +253,7 @@ class ProductManager {
 
     reinicializarVariables() {
         // Reinicializar las variables según sea necesario
-        this.cantidadInput.value = '';  // Limpiar el campo de cantidad
+        this.cantidadInput.value = 1;  // Limpiar el campo de cantidad
         this.selectPresentacion.value = '';  // Reiniciar el select de presentación
         this.precioUnitarioInput.value = '';  // Limpiar el campo de precio unitario
         this.totalPrecioCompraInput.value = '';  // Limpiar el campo de total
@@ -264,8 +264,23 @@ class ProductManager {
 
 }
 
+document.addEventListener('livewire:load', function () {
+    // Escuchar un evento de Livewire
+    Livewire.on('agregarProductoAlArraySearch', function (producto, opcionSeleccionada) {
+        // Manejar el evento en JavaScript
+        console.log('Producto agregado:', producto);
+
+        // Puedes realizar acciones adicionales aquí
+    });
+});
+
+
 // Crear una instancia de la clase para empezar el proceso
 const productManager = new ProductManager();
+
+
+/*---------------------Script que recibe los datos desde el modal de busqueda  ------------*/
+
 
 
 

@@ -75,7 +75,7 @@
         </div>
     </div>
 
-    <div class="card" style="height: 400px">
+    <div class="card">
         <div class="card-body">
             <div class="table-responsive-md">
                 <table class="table" id="tablaProductos" wire:ignore>
@@ -92,7 +92,7 @@
                             <th scope="col">Opciones</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody style="height: 270px;">
 
                     </tbody>
 
@@ -101,13 +101,34 @@
 
         </div>
         <div class="card-footer">
-            <div class="col">
-                       {{--  <p><strong>Descuento: $ {{ $total_descuento }}</strong></p> --}}
-                        <p><strong>Total venta: $ </strong></p>
 
+            <div class="container">
+                <div class="row">
+                  <div class="col-8">
+
+                  </div>
+                  <div class="col-4">
+                    <div class="costo-compra">
+                        <label>Subtotal:</label>
+                        <span class="valor">$150.00</span>
                     </div>
-            <x-adminlte-button label="" theme="success" icon="fas fa-check" class="float-right ml-3" wire:click="pay" />
-            </div>
+                    <div class="costo-compra">
+                        <label>IVA:</label>
+                        <span class="valor">$24.00</span>
+                    </div>
+                    <div class="costo-compra total">
+                        <label style=" font-size: 30px;
+                        font-weight: bold;">Total:</label>
+                        <span class="valor">$174.00</span>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-primary btn-pagar" id="btn-pagar" type="button"><strong>Pagar</strong></button>
+                    </div>
+                </div>
+                </div>
+              </div>
+        </div>
 
             @include('modals.sale.forma_cantidad')
 
@@ -125,9 +146,62 @@
 
 </div>
 
+
+@section('css')
 <style>
+
     .ocultar-columna-id {
         display: none;
     }
+
+    .table-responsive-md {
+    max-height: 400px; /* Establece la altura máxima que prefieras */
+    overflow-y: auto; /* Añade un scrollbar vertical cuando sea necesario */
+    }
+
+    /* Estilo del botón de pago */
+    button.btn-pagar {
+        background-color: #4CAF50; /* Color de fondo */
+        color: #ffffff; /* Color del texto */
+        border: none; /* Sin borde */
+        border-radius: 5px; /* Esquinas redondeadas */
+        padding: 10px 20px; /* Relleno interno */
+        font-size: 16px; /* Tamaño del texto */
+        cursor: pointer; /* Cambia el cursor al pasar sobre el botón */
+        transition: background-color 0.3s ease; /* Animación de transición suave */
+    }
+
+    /* Cambia el color de fondo cuando el mouse está sobre el botón */
+    button.btn-pagar:hover {
+        background-color: #45a049;
+    }
+
+/* Estilo de los campos relacionados al costo de la compra */
+.costo-compra {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px; /* Reducir el margen inferior */
+}
+
+.costo-compra label {
+    font-weight: bold;
+    color: #333;
+    margin-right: 10px; /* Reducir el margen derecho */
+}
+
+.costo-compra .valor {
+    color: #4CAF50;
+}
+
+/* Estilo para el campo Total */
+.costo-compra.total .valor {
+    font-size: 30px;
+    font-weight: bold;
+}
+
 </style>
+@stop
+
+
+
 

@@ -43,7 +43,15 @@ class SaleComponent extends Component
     public $productorandom = false;
     public $impresora = null;
 
-    protected $listeners = ['ClientEvent', 'ProductEvent'];
+    protected $listeners = ['ClientEvent', 'ProductEvent', 'agregarProductoEvent'];
+
+    function agregarProductoEvent($product, $opcionSeleccionada){
+        dump($product, $opcionSeleccionada);
+        $this->dispatchBrowserEvent('agregarProductoAlArraySearch', ['producto' => $product, 'opcionSeleccionada' => $opcionSeleccionada]);
+        $producto = '';
+        $opcionSeleccionada = '';
+
+    }
 
     public function ClientEvent($client)
     {
