@@ -66,10 +66,40 @@ class DescontarInventario
         } elseif ($disponibilidad['disponible_caja'] == '1' && $disponibilidad['disponible_blister'] == '1' && $disponibilidad['disponible_unidad'] == '0') {
             // Si el producto se puede vender  por caja y por blisters
             $this->descuentosCajaBlister($producto, $detalleVenta, $cantidades);
+        } elseif ($disponibilidad['disponible_caja'] == '1' && $disponibilidad['disponible_blister'] == '0' && $disponibilidad['disponible_unidad'] == '1') {
+            $this->descuentosCajaUnidad($producto, $detalleVenta, $cantidades);
         } else {
             // si el producto se puede vender por caja solamente
             $this->descuentosCaja($producto, $detalleVenta);
         }
+    }
+
+    function descuentosCajaUnidad($producto, $detalleVenta, $cantidades){
+
+        $formaVenta = $detalleVenta->forma;
+
+        switch ($formaVenta) {
+            case 'disponible_caja';
+                $descontar_caja = $detalleVenta->quantity;
+                $descontar_blisters = 0;
+                $unidadesPorCaja = $cantidades['contenido_interno_unidad'];
+                $descontar_unidad = $descontar_caja * $unidadesPorCaja;
+                break;
+            case 'disponible_unidad';
+                $descontar_unidad = $detalleVenta->quantity;
+                $unidadesPorCaja = $cantidades['contenido_interno_unidad'];
+
+                $cantidadCajasActuales = $producto->inventario->cantidad_caja; // obtiene las cantidad de cajas que hay actualmente en el inventario
+                $cantidadActualUnidades = $producto->inventario->cantidad_unidad; //cantidad actual de unidades en inventario
+
+                $cantidadCajasDespuesCompra = intval(floor(($cantidadActualUnidades - $descontar_unidad) / $unidadesPorCaja)); // Calcula la cantidad de cajas despues de la compra
+                $descontar_caja = intval($cantidadCajasActuales - $cantidadCajasDespuesCompra); //Compara la cantidad si la cantidad de cajas es congruente con los blister
+                $descontar_blisters = 0;
+                break;
+        }
+
+        $this->updateInventario($producto, $descontar_caja, $descontar_blisters, $descontar_unidad);
+
     }
 
     function descuentosCajaBlisterUnidad($producto, $detalleVenta, $cantidades)
@@ -145,13 +175,14 @@ class DescontarInventario
                 $cantidadActualBlisters = $producto->inventario->cantidad_blister;
                 $blisterPorCaja = $cantidades['contenido_interno_blister'];
                 $blisterComprados = $detalleVenta->quantity;
-                $cantidadCajasDespuesCompra = round($cantidadActualBlisters - $blisterComprados) / $blisterPorCaja;
-                $descontar_caja_round = round($cantidadCajasActuales - $cantidadCajasDespuesCompra, 0);
-                $descontar_caja = intval($descontar_caja_round);
+
+                $cantidadCajasDespuesCompra = intval(floor(($cantidadActualBlisters - $blisterComprados) / $blisterPorCaja)); //redondeamos hacia abajo pues si se descompleta la caja
+                $descontar_caja = intval(round($cantidadCajasActuales - $cantidadCajasDespuesCompra)); // Cantidad de cajas que debemos descontar
+                $descontar_blister = $detalleVenta->quantity;
                 $descontar_unidad = 0;
 
 
-                $this->updateInventario($producto, $descontar_caja, $blisterComprados, $descontar_unidad);
+              //  $this->updateInventario($producto, $descontar_caja, $blisterComprados, $descontar_unidad);
                 break;
             case 'disponible_unidad';
 
