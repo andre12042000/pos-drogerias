@@ -124,8 +124,6 @@ class SaleComponent extends Component
 
             DB::transaction(function () use ($dataVenta) {
 
-              //  dump($dataVenta);
-
                 $prefijo = 'RE';
                 $nuevoNro = $this->obtenerProximoNumero($prefijo);
                 $full_nro = $prefijo . $nuevoNro;
@@ -140,12 +138,23 @@ class SaleComponent extends Component
                     'discount'          => $dataVenta['descuentoGlobal'],
                     'tax'               => $dataVenta['ivaTotalGlobal'],
                     'total'             => $dataVenta['granTotal'],
-                    'tipo_operacion'    => 'VENTA',
+                    'tipo_operacion'    => $this->tipo_operacion,
                     'metodo_pago_id'    => $dataVenta['metodoPago'],
                     'status'            => 'PAGADA',
                 ]);
 
                 $this->detallesVenta($venta, $dataVenta['productosParaVenta']);
+
+                if($this->tipo_operacion == 'VENTA'){
+                    $this->ventaContado($venta);
+                }elseif($this->tipo_operacion == 'VENTA_CREDITO'){
+                    $this->ventaCredito($venta);
+                    $credito =  $this->crearCredito($venta);
+                    $this->historiaPagos($credito);
+                    $this->registrarSaldo($credito);
+                }
+
+
 
                 event(new VentaRealizada($venta));
 
@@ -208,6 +217,27 @@ class SaleComponent extends Component
         // Combinar el prefijo y el número formateado
 
         return $numeroFormateado;
+    }
+
+
+    public function ventaContado($sale)
+    {
+        $sale->cashs()->create([
+            'user_id'           => Auth::user()->id,
+            'cashesable_id'     => $sale['id'],
+            'quantity'          => $sale['total'],
+        ]);
+
+    }
+
+    public function ventaCredito($sale)
+    {
+        $sale->cashs()->create([
+            'user_id'           => Auth::user()->id,
+            'cashesable_id'     => $sale['id'],
+            'quantity'          => $sale['total'],
+        ]);
+
     }
 
 
