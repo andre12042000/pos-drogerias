@@ -3,10 +3,14 @@
 namespace App\Http\Livewire\Product;
 
 use App\Models\Category;
+use App\Models\Laboratorio;
 use App\Models\OrdersDetails;
+use App\Models\Presentacion;
 use App\Models\Product;
 use App\Models\PurchaseDetail;
 use App\Models\SaleDetail;
+use App\Models\Subcategoria;
+use App\Models\Ubicacion;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -44,10 +48,14 @@ class ListarComponent extends Component
                             ->orderBy('status', 'ASC')
                             ->paginate($this->cantidad_registros);
 
-        $categorias = Category::orderBy('name', 'ASC')->get();
+        $categorias     = Category::orderBy('name', 'ASC')->get();
+        $subcategorias  = Subcategoria::orderBy('name', 'ASC')->get();
+        $ubicaciones    = Ubicacion::orderBy('name', 'ASC')->get();
+        $presentaciones  = Presentacion::orderBy('name', 'ASC')->get();
+        $laboratorios  = Laboratorio::orderBy('name', 'ASC')->get();
 
 
-        return view('livewire.product.listar-component', compact('productos', 'categorias'));
+        return view('livewire.product.listar-component', compact('laboratorios', 'productos', 'categorias', 'subcategorias', 'ubicaciones', 'presentaciones'));
     }
 
     public function destroy($id)
