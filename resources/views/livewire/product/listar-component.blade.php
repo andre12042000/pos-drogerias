@@ -72,9 +72,9 @@
                             <td>{{ $product->code }}</td>
                             <td><a href="{{ route('inventarios.product.show', $product->id) }}" target="_blank">
                                     {{ $product->producto }} </a></td>
-                            <td class="text-end">{{$product->contenido_interno_caja}}</td>
-                            <td class="text-end">{{$product->contenido_interno_blister}} </td>
-                            <td class="text-end">{{$product->contenido_interno_unidad}}</td>
+                            <td class="text-end">{{ $product->contenido_interno_caja }}</td>
+                            <td class="text-end">{{ $product->contenido_interno_blister }} </td>
+                            <td class="text-end">{{ $product->contenido_interno_unidad }}</td>
 
                             <td class="text-end">@money($product->precio_caja, 'COP', 0)</td>
                             <td class="text-end">@money($product->precio_blister, 'COP', 0)</td>
@@ -98,9 +98,15 @@
                                     <!-- Button trigger modal -->
                                     <a onclick="abrirModal(
                                         {{ json_encode($product) }},
-                                        {{ json_encode($categorias) }}
-                                    )" role="button"
-                                        class="btn btn-outline-warning btn-sm">
+                                        {{ json_encode($categorias) }},
+                                        {{ json_encode($subcategorias) }},
+                                        {{ json_encode($presentaciones) }},
+                                        {{ json_encode($ubicaciones) }},
+                                        {{ json_encode($laboratorios) }}
+
+
+                                    )"
+                                        role="button" class="btn btn-outline-warning btn-sm">
                                         <i class="bi bi-plus-slash-minus"></i>
                                     </a>
                                 @endcan
@@ -140,44 +146,121 @@
 
 @section('js')
 
-<script>
-    function abrirModal(product, categorias) {
-        var modal = document.getElementById('stockModal');
-        var contenidoModal = document.getElementById('contenidoModal');
+    <script>
+        function abrirModal(product, categorias, subcategorias, presentaciones, ubicaciones, laboratorios) {
+            var modal = document.getElementById('stockModal');
+            var contenidoModal = document.getElementById('contenidoModal');
 
-        document.getElementById('inputCodigo').value = product.code;
-        document.getElementById('inputName').value = product.name;
-        document.getElementById('inputStockMinimo').value = product.stock_min;
-        document.getElementById('inputStockMaximo').value = product.stock_max;
+            document.getElementById('inputCodigo').value = product.code;
+            document.getElementById('inputName').value = product.name;
+            document.getElementById('inputStockMinimo').value = product.stock_min;
+            document.getElementById('inputStockMaximo').value = product.stock_max;
+            document.getElementById('inputIva').value = product.iva_product;
+            document.getElementById('inputCanCaja').value = product.contenido_interno_caja;
+            document.getElementById('inputCanBlister').value = product.contenido_interno_blister;
+            document.getElementById('inputCanUnidad').value = product.contenido_interno_unidad;
+            document.getElementById('inputCosCaja').value = product.costo_caja;
+            document.getElementById('inputCosBlister').value = product.costo_blister;
+            document.getElementById('inputCosUnidad').value = product.costo_unidad;
+            document.getElementById('inputPreCaja').value = product.precio_caja;
+            document.getElementById('inputPreBlister').value = product.precio_blister;
+            document.getElementById('inputPreUnidad').value = product.precio_unidad;
 
-        var categoriaSelect = document.getElementById('categoriaSelect');
 
-        // Limpiar opciones existentes en el select
-        categoriaSelect.innerHTML = '';
 
-        // Crear opciones para el select basadas en las categorías proporcionadas
-        categorias.forEach(function(categoria) {
-            var option = document.createElement('option');
-            option.value = categoria.id;
-            option.text = categoria.name;
-            categoriaSelect.appendChild(option);
-        });
 
-        console.log('Categorías:', categorias);
 
-        // Mostrar los datos en el contenido del modal
-       //  contenidoModal.innerHTML = '<p>ID: ' + product.id + '</p><p>Codigo: ' + product.code + '</p>';
 
-        // Mostrar el modal
-        modal.style.display = 'block';
-    }
+            var categoriaSelect = document.getElementById('categoriaSelect');
+            var subcategoriaSelect = document.getElementById('subcategoriaSelect');
+            var presentacionesSelect = document.getElementById('presentacionesSelect');
+            var ubicacionesSelect = document.getElementById('ubicacionesSelect');
+            var laboratoriosSelect = document.getElementById('laboratoriosSelect');
 
-    function cerrarModal() {
-        // Cerrar el modal
-        var modal = document.getElementById('stockModal');
-        modal.style.display = 'none';
-    }
-</script>
+            // Limpiar opciones existentes en el select
+            categoriaSelect.innerHTML = '';
+            subcategoriaSelect.innerHTML = '';
+            presentacionesSelect.innerHTML = '';
+            ubicacionesSelect.innerHTML = '';
+            laboratoriosSelect.innerHTML = '';
+
+
+            // Crear opciones para el select basadas en las categorías proporcionadas
+            var defaultLaboratoriosOption = document.createElement('option');
+            defaultLaboratoriosOption.value = '';
+            defaultLaboratoriosOption.text = 'Selecciona una opción';
+            laboratoriosSelect.appendChild(defaultLaboratoriosOption);
+
+            laboratorios.forEach(function(laboratorios) {
+                var option = document.createElement('option');
+                option.value = laboratorios.id;
+                option.text = laboratorios.name;
+                laboratoriosSelect.appendChild(option);
+            })
+
+
+            var defaultcategoriaOption = document.createElement('option');
+            defaultcategoriaOption.value = '';
+            defaultcategoriaOption.text = 'Selecciona una opción';
+            categoriaSelect.appendChild(defaultcategoriaOption);
+
+            categorias.forEach(function(categoria) {
+                var option = document.createElement('option');
+                option.value = categoria.id;
+                option.text = categoria.name;
+                categoriaSelect.appendChild(option);
+            });
+
+            var defaultSubcategoriaOption = document.createElement('option');
+            defaultSubcategoriaOption.value = '';
+            defaultSubcategoriaOption.text = 'Selecciona una opción';
+            subcategoriaSelect.appendChild(defaultSubcategoriaOption);
+
+            subcategorias.forEach(function(subcategoria) {
+                var option = document.createElement('option');
+                option.value = subcategoria.id;
+                option.text = subcategoria.name;
+                subcategoriaSelect.appendChild(option);
+            });
+
+            var defaultOption = document.createElement('option');
+            defaultOption.value = '';
+            defaultOption.text = 'Selecciona una opción';
+            presentacionesSelect.appendChild(defaultOption);
+
+            // Iterar sobre las presentaciones y agregar opciones
+            presentaciones.forEach(function(presentacion) {
+                var option = document.createElement('option');
+                option.value = presentacion.id;
+                option.text = presentacion.name;
+                presentacionesSelect.appendChild(option);
+            });
+
+            var defaultUbicacionOption = document.createElement('option');
+            defaultUbicacionOption.value = '';
+            defaultUbicacionOption.text = 'Selecciona una opción';
+            ubicacionesSelect.appendChild(defaultUbicacionOption);
+
+            ubicaciones.forEach(function(ubicaciones) {
+                var option = document.createElement('option');
+                option.value = ubicaciones.id;
+                option.text = ubicaciones.name;
+                ubicacionesSelect.appendChild(option);
+            });
+
+            console.log('Categorías:', categorias);
+
+            // Mostrar los datos en el contenido del modal
+            //  contenidoModal.innerHTML = '<p>ID: ' + product.id + '</p><p>Codigo: ' + product.code + '</p>';
+
+            // Mostrar el modal
+            modal.style.display = 'block';
+        }
+
+        function cerrarModal() {
+            // Cerrar el modal
+            var modal = document.getElementById('stockModal');
+            modal.style.display = 'none';
+        }
+    </script>
 @stop
-
-
