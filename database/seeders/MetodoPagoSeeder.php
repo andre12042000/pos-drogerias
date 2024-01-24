@@ -20,7 +20,7 @@ class MetodoPagoSeeder extends Seeder
         ]);
 
         MetodoPago::create([
-            'name'          => 'Efectivo',
+            'name'          => 'EFECTIVO',
             'status'        => 'ACTIVE',
         ]);
     }

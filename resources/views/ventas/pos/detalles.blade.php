@@ -103,7 +103,8 @@
                         <thead>
                             <tr>
                                 <th class="text-center">Producto</th>
-                                <th class="text-right">Precio Unitario</th>
+                                <th class="text-right">Forma</th>
+                                <th class="text-center">Precio Unitario</th>
                                 <th class="text-right">Cantidad</th>
                                 <th class="text-right"> Subtotal</th>
 
@@ -112,6 +113,14 @@
                         <tbody> @foreach ($detailsales as $detalles)
                             <tr>
                                 <td class="text-center">{{ $detalles->product->name}}</td>
+                                <td class="text-center">@if ($detalles->forma == 'disponible_caja')
+                                    Caja
+                                @elseif ($detalles->forma == 'disponible_unidad')
+                                    Unidad
+                                    @else
+                                    Blister
+                                @endif</td>
+
                                 <td class="text-right"> $ {{number_format( $detalles->price,0)}}</td>
                                 <td class="text-right">{{ $detalles->quantity}}</td>
                                 <td class="text-right">$ {{  $detalles->price *  $detalles->quantity}}</td><br>
