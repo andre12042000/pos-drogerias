@@ -79,10 +79,6 @@
                             <td class="text-end">@money($product->precio_caja, 'COP', 0)</td>
                             <td class="text-end">@money($product->precio_blister, 'COP', 0)</td>
                             <td class="text-end">@money($product->precio_unidad, 'COP', 0)</td>
-
-
-
-
                             <td>
                                 @if ($product->status == 'ACTIVE')
                                     <span class="badge badge-pill badge-success">Activo</span>
@@ -100,9 +96,11 @@
 
                                 @can('Acceso Inventario Corregir')
                                     <!-- Button trigger modal -->
-                                    <a wire:click="datomodal({{ $product }})" role="button"
-                                        class="btn btn-outline-warning btn-sm" data-toggle="modal"
-                                        data-target="#stockModal">
+                                    <a onclick="abrirModal(
+                                        {{ json_encode($product) }},
+                                        {{ json_encode($categorias) }}
+                                    )" role="button"
+                                        class="btn btn-outline-warning btn-sm">
                                         <i class="bi bi-plus-slash-minus"></i>
                                     </a>
                                 @endcan
@@ -139,3 +137,47 @@
         </div>
     </div>
 </div>
+
+@section('js')
+
+<script>
+    function abrirModal(product, categorias) {
+        var modal = document.getElementById('stockModal');
+        var contenidoModal = document.getElementById('contenidoModal');
+
+        document.getElementById('inputCodigo').value = product.code;
+        document.getElementById('inputName').value = product.name;
+        document.getElementById('inputStockMinimo').value = product.stock_min;
+        document.getElementById('inputStockMaximo').value = product.stock_max;
+
+        var categoriaSelect = document.getElementById('categoriaSelect');
+
+        // Limpiar opciones existentes en el select
+        categoriaSelect.innerHTML = '';
+
+        // Crear opciones para el select basadas en las categorías proporcionadas
+        categorias.forEach(function(categoria) {
+            var option = document.createElement('option');
+            option.value = categoria.id;
+            option.text = categoria.name;
+            categoriaSelect.appendChild(option);
+        });
+
+        console.log('Categorías:', categorias);
+
+        // Mostrar los datos en el contenido del modal
+       //  contenidoModal.innerHTML = '<p>ID: ' + product.id + '</p><p>Codigo: ' + product.code + '</p>';
+
+        // Mostrar el modal
+        modal.style.display = 'block';
+    }
+
+    function cerrarModal() {
+        // Cerrar el modal
+        var modal = document.getElementById('stockModal');
+        modal.style.display = 'none';
+    }
+</script>
+@stop
+
+
