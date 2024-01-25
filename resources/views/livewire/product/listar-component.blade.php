@@ -106,13 +106,12 @@
 
 
                                     )"
-                                        role="button" class="btn btn-outline-warning btn-sm">
+                                        role="button" class="btn btn-outline-secondary btn-sm">
                                         <i class="bi bi-plus-slash-minus"></i>
                                     </a>
                                 @endcan
 
-                                <button @popper(Eliminar) class="btn btn-outline-danger btn-sm"
-                                    wire:click="destroy( {{ $product->id }} )"><i class="bi bi-trash3"></i></button>
+
 
                                 @include('popper::assets')
                             </td>
