@@ -29,7 +29,7 @@ class ListarComponent extends Component
     {
         try {
 
-            $product = $this->guardarDataProduct($dataEvent['dataProductsssss']);
+            $product = $this->guardarDataProduct($dataEvent['datosProducto']);
             $this->guardarDatosInventario($product, $dataEvent['datosInventario']);
 
             $this->dispatchBrowserEvent('cerrarModal');

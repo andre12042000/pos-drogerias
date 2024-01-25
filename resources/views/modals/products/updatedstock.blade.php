@@ -86,7 +86,7 @@
 
                                     <div class="col">
                                         <div class="form-floating mb-3">
-                                            <input type="text" class="form-control" id="inputIva" name="inputIva"
+                                            <input type="number" class="form-control" id="inputIva" name="inputIva" value="0"
                                                 placeholder="name@example.com">
                                             <label for="floatingInput">% IVA</label>
                                         </div>
@@ -167,15 +167,14 @@
                                 <div class="row ">
                                     <div class="col">
                                         <div class="form-floating mb-3">
-                                            <input type="text" class="form-control" id="puntoReferenciaCaja"
+                                            <input type="hidden" class="form-control" id="puntoReferenciaCaja"
                                                 name="puntoReferenciaCaja" placeholder="name@example.com"
                                                 value="1" disabled>
-                                            <label for="floatingInput">Caja referencia</label>
                                         </div>
                                     </div>
                                     <div class="col">
                                         <div class="form-floating mb-3">
-                                            <input type="text" class="form-control" id="inputBlisterPorCaja"
+                                            <input type="number" class="form-control" id="inputBlisterPorCaja"
                                                 name="inputBlisterPorCaja" placeholder="name@example.com" disabled>
                                             <label for="floatingInput">Blister * caja</label>
                                         </div>
@@ -183,8 +182,8 @@
 
                                     <div class="col">
                                         <div class="form-floating mb-3">
-                                            <input type="text" class="form-control" id="inputCanUnidad"
-                                                name="inputCanUnidad" placeholder="name@example.com" disabled>
+                                            <input type="number" class="form-control" id="inputUnidadesPorCaja"
+                                                name="inputUnidadesPorCaja" placeholder="name@example.com" disabled>
                                             <label for="floatingInput">Unidades * caja</label>
                                         </div>
                                     </div>
@@ -192,51 +191,28 @@
 
 
 
-                                <div class="row ">
-                                    <div class="col">
-                                        <div class="form-floating mb-3">
-                                            <input type="text" class="form-control" id="inputCanCaja"
-                                                name="inputCanCaja" placeholder="name@example.com" disabled>
-                                            <label for="floatingInput">Stock caja</label>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="form-floating mb-3">
-                                            <input type="text" class="form-control" id="inputStockBlister"
-                                                name="inputStockBlister" placeholder="name@example.com" disabled>
-                                            <label for="floatingInput">Stock blister</label>
-                                        </div>
-                                    </div>
 
-                                    <div class="col">
-                                        <div class="form-floating mb-3">
-                                            <input type="text" class="form-control" id="inputStockUnidad"
-                                                name="inputCanUnidad" placeholder="name@example.com" disabled>
-                                            <label for="floatingInput">Stock unidad</label>
-                                        </div>
-                                    </div>
-                                </div>
 
                                 <div class="row ">
                                     <div class="col">
                                         <div class="form-floating mb-3">
-                                            <input type="text" class="form-control" id="inputCosCaja"
-                                                name="inputCosCaja" placeholder="name@example.com" disabled>
+                                            <input type="number" class="form-control" id="inputCostoPorCaja"
+                                                name="inputCostoPorCaja" placeholder="name@example.com" disabled>
                                             <label for="floatingInput">Costo caja</label>
                                         </div>
                                     </div>
                                     <div class="col">
                                         <div class="form-floating mb-3">
-                                            <input type="text" class="form-control" id="inputCosBlister"
-                                                name="inputCosBlister" placeholder="name@example.com" disabled>
+                                            <input type="number" class="form-control" id="inputCostoPorBlister"
+                                                name="inputCostoPorBlister" placeholder="name@example.com" disabled>
                                             <label for="floatingInput">Costo blister</label>
                                         </div>
                                     </div>
 
                                     <div class="col">
                                         <div class="form-floating mb-3">
-                                            <input type="text" class="form-control" id="inputCosUnidad"
-                                                name="inputCosUnidad" placeholder="name@example.com" disabled>
+                                            <input type="number" class="form-control" id="inputCostoPorUnidad"
+                                                name="inputCostoPorUnidad" placeholder="name@example.com" disabled>
                                             <label for="floatingInput">Costo unidad</label>
                                         </div>
                                     </div>
@@ -245,24 +221,49 @@
                                 <div class="row ">
                                     <div class="col">
                                         <div class="form-floating mb-3">
-                                            <input type="number" class="form-control" id="inputPreCaja"
-                                                name="inputPreCaja" placeholder="name@example.com" disabled>
+                                            <input type="number" class="form-control" id="inputPrecioVentaCaja"
+                                                name="inputPrecioVentaCaja" placeholder="name@example.com" disabled>
                                             <label for="floatingInput">Precio venta caja</label>
                                         </div>
                                     </div>
                                     <div class="col">
                                         <div class="form-floating mb-3">
-                                            <input type="text" class="form-control" id="inputPreBlister"
-                                                name="inputPreBlister" placeholder="name@example.com" disabled>
+                                            <input type="number" class="form-control" id="inputPrecioVentaBlister"
+                                                name="inputPrecioVentaBlister" placeholder="name@example.com" disabled>
                                             <label for="floatingInput">Precio venta blister</label>
                                         </div>
                                     </div>
 
                                     <div class="col">
                                         <div class="form-floating mb-3">
-                                            <input type="text" class="form-control" id="inputPreUnidad"
-                                                name="inputPreUnidad" placeholder="name@example.com" disabled>
+                                            <input type="number" class="form-control" id="inputPrecioVentaUnidad"
+                                                name="inputPrecioVentaUnidad" placeholder="name@example.com" disabled>
                                             <label for="floatingInput">Precio venta unidad</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row ">
+                                    <div class="col">
+                                        <div class="form-floating mb-3">
+                                            <input type="number" class="form-control" id="inputStockActualEnCajas"
+                                                name="inputStockActualEnCajas" placeholder="name@example.com" disabled>
+                                            <label for="floatingInput">Stock caja</label>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="form-floating mb-3">
+                                            <input type="number" class="form-control" id="inputStockBlister"
+                                                name="inputStockBlister" placeholder="name@example.com" disabled>
+                                            <label for="floatingInput">Stock blister</label>
+                                        </div>
+                                    </div>
+
+                                    <div class="col">
+                                        <div class="form-floating mb-3">
+                                            <input type="number" class="form-control" id="inputStockUnidad"
+                                                name="inputUnidadesPorCaja" placeholder="name@example.com" disabled>
+                                            <label for="floatingInput">Stock unidad</label>
                                         </div>
                                     </div>
                                 </div>
@@ -277,7 +278,7 @@
 
                                     <div class="col">
                                         <div class="d-grid gap-2">
-                                            <a class="btn btn-outline-success float-end mt-4" onclick="actualizarInventario()">Actualizar</a>
+                                            <button class="btn btn-outline-success float-end mt-4" onclick="actualizarInventario()" id="btnActualizar" disabled>Actualizar</button>
                                         </div>
                                     </div>
                                 </div>

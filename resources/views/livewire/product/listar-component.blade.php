@@ -151,6 +151,7 @@
             var modal = document.getElementById('stockModal');
             var contenidoModal = document.getElementById('contenidoModal');
 
+
             // Función para crear y añadir una opción a un select
             function agregarOpcion(select, value, text, selected = false) {
                 var option = document.createElement('option');
@@ -176,11 +177,47 @@
                 });
             }
 
+            function llenarSelectPresentacion(select, array, selectedId, additionalAttributes) {
+                limpiarSelect(select);
+                agregarOpcion(select, '', 'Selecciona una opción');
+
+                array.forEach(function(item) {
+                    // Crear un objeto de opción con atributos adicionales
+                    var optionAttributes = {
+                        value: item.id,
+                        text: item.name,
+                        selected: item.id === selectedId,
+                        // Agregar atributos adicionales
+                        por_caja: item.por_caja,
+                        por_blister: item.por_blister,
+                        por_unidad: item.por_unidad
+                    };
+
+                    // Agregar la opción al select
+                    agregarOpcion(select, optionAttributes);
+                });
+            }
+
+            function agregarOpcion(select, optionAttributes) {
+                var option = document.createElement('option');
+                option.value = optionAttributes.value;
+                option.text = optionAttributes.text;
+                option.selected = optionAttributes.selected || false;
+
+                // Agregar atributos adicionales
+                option.por_caja = optionAttributes.por_caja;
+                option.por_blister = optionAttributes.por_blister;
+                option.por_unidad = optionAttributes.por_unidad;
+
+                select.appendChild(option);
+            }
+
             // Llenar selects con datos
+            llenarSelectPresentacion(document.getElementById('presentacionesSelect'), presentaciones, product
+                .presentacion_id);
             llenarSelect(document.getElementById('laboratoriosSelect'), laboratorios, product.laboratorio_id);
             llenarSelect(document.getElementById('categoriaSelect'), categorias, product.category_id);
             llenarSelect(document.getElementById('subcategoriaSelect'), subcategorias, product.subcategoria_id);
-            llenarSelect(document.getElementById('presentacionesSelect'), presentaciones, product.presentacion_id);
             llenarSelect(document.getElementById('ubicacionesSelect'), ubicaciones);
 
             // Mostrar los datos en el contenido del modal
@@ -203,17 +240,19 @@
 
         window.addEventListener('alert-registro-actualizado', () => {
             Swal.fire({
-            icon: "success",
-            title: "Registro actualizado correctamente",
-            showConfirmButton: false,
-            timer: 1500
+                icon: "success",
+                title: "Registro actualizado correctamente",
+                showConfirmButton: false,
+                timer: 1500
             });
 
 
         });
 
-         window.addEventListener('alert-error', event => {
-            const { errorCode } = event.detail;
+        window.addEventListener('alert-error', event => {
+            const {
+                errorCode
+            } = event.detail;
             console.log(event);
             Swal.fire({
                 icon: "error",
@@ -221,7 +260,5 @@
                 text: `Código del error: ${errorCode}`,
             });
         });
-
-
     </script>
 @stop
