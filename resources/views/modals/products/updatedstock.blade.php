@@ -197,14 +197,14 @@
                                     <div class="col">
                                         <div class="form-floating mb-3">
                                             <input type="number" class="form-control" id="inputCostoPorCaja"
-                                                name="inputCostoPorCaja" placeholder="name@example.com" disabled>
+                                                name="inputCostoPorCaja" placeholder="name@example.com" disabled min="0" value="0">
                                             <label for="floatingInput">Costo caja</label>
                                         </div>
                                     </div>
                                     <div class="col">
                                         <div class="form-floating mb-3">
                                             <input type="number" class="form-control" id="inputCostoPorBlister"
-                                                name="inputCostoPorBlister" placeholder="name@example.com" disabled>
+                                                name="inputCostoPorBlister" placeholder="name@example.com" disabled min="0" value="0">
                                             <label for="floatingInput">Costo blister</label>
                                         </div>
                                     </div>
@@ -212,7 +212,7 @@
                                     <div class="col">
                                         <div class="form-floating mb-3">
                                             <input type="number" class="form-control" id="inputCostoPorUnidad"
-                                                name="inputCostoPorUnidad" placeholder="name@example.com" disabled>
+                                                name="inputCostoPorUnidad" placeholder="name@example.com" disabled min="0" value="0">
                                             <label for="floatingInput">Costo unidad</label>
                                         </div>
                                     </div>
@@ -222,14 +222,14 @@
                                     <div class="col">
                                         <div class="form-floating mb-3">
                                             <input type="number" class="form-control" id="inputPrecioVentaCaja"
-                                                name="inputPrecioVentaCaja" placeholder="name@example.com" disabled>
+                                                name="inputPrecioVentaCaja" placeholder="name@example.com" disabled min="0" value="0">
                                             <label for="floatingInput">Precio venta caja</label>
                                         </div>
                                     </div>
                                     <div class="col">
                                         <div class="form-floating mb-3">
                                             <input type="number" class="form-control" id="inputPrecioVentaBlister"
-                                                name="inputPrecioVentaBlister" placeholder="name@example.com" disabled>
+                                                name="inputPrecioVentaBlister" placeholder="name@example.com" disabled min="0" value="0">
                                             <label for="floatingInput">Precio venta blister</label>
                                         </div>
                                     </div>
@@ -237,7 +237,7 @@
                                     <div class="col">
                                         <div class="form-floating mb-3">
                                             <input type="number" class="form-control" id="inputPrecioVentaUnidad"
-                                                name="inputPrecioVentaUnidad" placeholder="name@example.com" disabled>
+                                                name="inputPrecioVentaUnidad" placeholder="name@example.com" disabled min="0" value="0">
                                             <label for="floatingInput">Precio venta unidad</label>
                                         </div>
                                     </div>

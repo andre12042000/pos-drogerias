@@ -151,7 +151,6 @@
             var modal = document.getElementById('stockModal');
             var contenidoModal = document.getElementById('contenidoModal');
 
-
             // Función para crear y añadir una opción a un select
             function agregarOpcion(select, value, text, selected = false) {
                 var option = document.createElement('option');
@@ -168,14 +167,6 @@
                 select.innerHTML = '';
             }
 
-            // Función para llenar un select con opciones basadas en un array de objetos
-            function llenarSelect(select, array, selectedId) {
-                limpiarSelect(select);
-                agregarOpcion(select, '', 'Selecciona una opción');
-                array.forEach(function(item) {
-                    agregarOpcion(select, item.id, item.name, item.id === selectedId);
-                });
-            }
 
             function llenarSelectPresentacion(select, array, selectedId, additionalAttributes) {
                 limpiarSelect(select);
@@ -215,17 +206,81 @@
             // Llenar selects con datos
             llenarSelectPresentacion(document.getElementById('presentacionesSelect'), presentaciones, product
                 .presentacion_id);
-            llenarSelect(document.getElementById('laboratoriosSelect'), laboratorios, product.laboratorio_id);
-            llenarSelect(document.getElementById('categoriaSelect'), categorias, product.category_id);
-            llenarSelect(document.getElementById('subcategoriaSelect'), subcategorias, product.subcategoria_id);
-            llenarSelect(document.getElementById('ubicacionesSelect'), ubicaciones);
+
 
             // Mostrar los datos en el contenido del modal
             document.getElementById('inputId').value = product.id;
             document.getElementById('inputCodigo').value = product.code;
             document.getElementById('inputName').value = product.name;
             document.getElementById('inputStockMinimo').value = product.stock_min;
-            // Resto de asignaciones de valores
+
+
+            //Pasamos datos a los select excepto a Presentacion
+
+            var categoriaSelect = document.getElementById('categoriaSelect');
+            var subcategoriaSelect = document.getElementById('subcategoriaSelect');
+            var ubicacionesSelect = document.getElementById('ubicacionesSelect');
+            var laboratoriosSelect = document.getElementById('laboratoriosSelect');
+
+               // Limpiar opciones existentes en el select
+            categoriaSelect.innerHTML = '';
+            subcategoriaSelect.innerHTML = '';
+            ubicacionesSelect.innerHTML = '';
+            laboratoriosSelect.innerHTML = '';
+
+            // Crear opciones para el select basadas en las categorías proporcionadas
+            var defaultLaboratoriosOption = document.createElement('option');
+            defaultLaboratoriosOption.value = '';
+            defaultLaboratoriosOption.text = 'Selecciona una opción';
+            laboratoriosSelect.appendChild(defaultLaboratoriosOption);
+
+            laboratorios.forEach(function(laboratorios) {
+                var option = document.createElement('option');
+                option.value = laboratorios.id;
+                option.text = laboratorios.name;
+                laboratoriosSelect.appendChild(option);
+            })
+
+
+            var defaultcategoriaOption = document.createElement('option');
+            defaultcategoriaOption.value = '';
+            defaultcategoriaOption.text = 'Selecciona una opción';
+            categoriaSelect.appendChild(defaultcategoriaOption);
+
+            categorias.forEach(function(categoria) {
+                var option = document.createElement('option');
+                option.value = categoria.id;
+                option.text = categoria.name;
+                categoriaSelect.appendChild(option);
+            });
+
+            var defaultSubcategoriaOption = document.createElement('option');
+            defaultSubcategoriaOption.value = '';
+            defaultSubcategoriaOption.text = 'Selecciona una opción';
+            subcategoriaSelect.appendChild(defaultSubcategoriaOption);
+
+            subcategorias.forEach(function(subcategoria) {
+                var option = document.createElement('option');
+                option.value = subcategoria.id;
+                option.text = subcategoria.name;
+                subcategoriaSelect.appendChild(option);
+            });
+
+
+            var defaultUbicacionOption = document.createElement('option');
+            defaultUbicacionOption.value = '';
+            defaultUbicacionOption.text = 'Selecciona una opción';
+            ubicacionesSelect.appendChild(defaultUbicacionOption);
+
+            ubicaciones.forEach(function(ubicaciones) {
+                var option = document.createElement('option');
+                option.value = ubicaciones.id;
+                option.text = ubicaciones.name;
+                ubicacionesSelect.appendChild(option);
+            });
+
+
+
 
             // Mostrar el modal
             modal.style.display = 'block';

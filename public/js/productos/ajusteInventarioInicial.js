@@ -3,13 +3,21 @@ var inputUnidadesPorCaja = document.getElementById("inputUnidadesPorCaja");
 var inputCostoPorCaja = document.getElementById("inputCostoPorCaja");
 var inputCostoPorCaja = document.getElementById("inputCostoPorCaja");
 
-var inputStockActualEnCajas = document.getElementById("inputStockActualEnCajas");
+var inputStockActualEnCajas = document.getElementById(
+    "inputStockActualEnCajas"
+);
 
 // Asigna el evento input para ejecutar la función cuando el valor cambie
-inputBlisterPorCaja.addEventListener("input", cambiarValidacionInputBlisterPorCaja);
+inputBlisterPorCaja.addEventListener(
+    "input",
+    cambiarValidacionInputBlisterPorCaja
+);
 
 // Asigna el evento input para ejecutar la función cuando el valor cambie de unidades por caja
-inputUnidadesPorCaja.addEventListener("input", cambiarValidacionInputUnidadesPorCaja);
+inputUnidadesPorCaja.addEventListener(
+    "input",
+    cambiarValidacionInputUnidadesPorCaja
+);
 
 // Asigna el evento input para ejecutar la función cuando el valor cambie de costo por caja
 inputCostoPorCaja.addEventListener("input", realizarCalculosPreciosDeVentas);
@@ -20,12 +28,44 @@ function permitirActualizar() {
     var inputPrecioVentaCaja = document.getElementById("inputPrecioVentaCaja");
     var precioVentaCajaValue = parseFloat(inputPrecioVentaCaja.value);
 
+    var inputBlisterPorCaja = parseFloat(
+        document.getElementById("inputBlisterPorCaja").value
+    );
+    var inputUnidadesPorCaja = parseFloat(
+        document.getElementById("inputUnidadesPorCaja").value
+    );
+    var totalCajasParaCalcularItems = parseFloat(
+        document.getElementById("inputStockActualEnCajas").value
+    );
+
+    if (
+        !isNaN(inputBlisterPorCaja) &&
+        !isNaN(totalCajasParaCalcularItems) &&
+        inputBlisterPorCaja > 0 &&
+        totalCajasParaCalcularItems > 0
+    ) {
+        var inputStockBlister = document.getElementById("inputStockBlister");
+        inputStockBlister.value =
+            totalCajasParaCalcularItems * inputBlisterPorCaja;
+    }
+
+    if (
+        !isNaN(inputUnidadesPorCaja) &&
+        !isNaN(totalCajasParaCalcularItems) &&
+        inputUnidadesPorCaja > 0 &&
+        totalCajasParaCalcularItems > 0
+    ) {
+        var inputStockUnidad = document.getElementById("inputStockUnidad");
+        inputStockUnidad.value =
+            totalCajasParaCalcularItems * inputUnidadesPorCaja;
+    }
+
     if (isNaN(precioVentaCajaValue) || precioVentaCajaValue <= 0) {
         // Si el valor no es un número o es menor o igual a cero
-        inputPrecioVentaCaja.classList.add('is-invalid');
+        inputPrecioVentaCaja.classList.add("is-invalid");
     } else {
         // Si el valor es válido, quita la clase 'is-invalid'
-        inputPrecioVentaCaja.classList.remove('is-invalid');
+        inputPrecioVentaCaja.classList.remove("is-invalid");
 
         // Habilita el botón de actualizar
         var btnActualizar = document.getElementById("btnActualizar");
@@ -33,69 +73,87 @@ function permitirActualizar() {
     }
 }
 
-
-
 function realizarCalculosPreciosDeVentas() {
-
-    var inputBlisterPorCaja = parseFloat(document.getElementById("inputBlisterPorCaja").value);
-    var inputUnidadesPorCaja = parseFloat(document.getElementById("inputUnidadesPorCaja").value);
-    var inputCostoPorCaja = parseFloat(document.getElementById("inputCostoPorCaja").value);
-    var inputCostoPorCaja = parseFloat(document.getElementById("inputCostoPorCaja").value);
+    var inputBlisterPorCaja = parseFloat(
+        document.getElementById("inputBlisterPorCaja").value
+    );
+    var inputUnidadesPorCaja = parseFloat(
+        document.getElementById("inputUnidadesPorCaja").value
+    );
+    var inputCostoPorCaja = parseFloat(
+        document.getElementById("inputCostoPorCaja").value
+    );
+    var inputCostoPorCaja = parseFloat(
+        document.getElementById("inputCostoPorCaja").value
+    );
 
     var inputPrecioVentaCaja = document.getElementById("inputPrecioVentaCaja");
 
-    inputPrecioVentaCaja.value = calculardoraPreciosVenta(inputCostoPorCaja, 'Caja');
+    inputPrecioVentaCaja.value = calculardoraPreciosVenta(
+        inputCostoPorCaja,
+        "Caja"
+    );
 
     if (!isNaN(inputBlisterPorCaja) && inputBlisterPorCaja > 0) {
-        var inputCostoPorBlister = document.getElementById("inputCostoPorBlister");
-        var inputPrecioVentaBlister = document.getElementById("inputPrecioVentaBlister");
+        var inputCostoPorBlister = document.getElementById(
+            "inputCostoPorBlister"
+        );
+        var inputPrecioVentaBlister = document.getElementById(
+            "inputPrecioVentaBlister"
+        );
         inputCostoPorBlister.value = CalculosPreciosVentaBlister();
-        inputPrecioVentaBlister.value = calculardoraPreciosVenta(inputCostoPorBlister.value, 'Blister');
+        inputPrecioVentaBlister.value = calculardoraPreciosVenta(
+            inputCostoPorBlister.value,
+            "Blister"
+        );
     }
 
     if (!isNaN(inputUnidadesPorCaja) && inputUnidadesPorCaja > 0) {
-        var inputCostoPorUnidad = document.getElementById("inputCostoPorUnidad");
-        var inputPrecioVentaUnidad = document.getElementById("inputPrecioVentaUnidad");
+        var inputCostoPorUnidad = document.getElementById(
+            "inputCostoPorUnidad"
+        );
+        var inputPrecioVentaUnidad = document.getElementById(
+            "inputPrecioVentaUnidad"
+        );
 
         inputCostoPorUnidad.value = calcularPrecosVentasUnidad();
-        inputPrecioVentaUnidad.value = calculardoraPreciosVenta(inputCostoPorUnidad.value, 'Unidad');
-
+        inputPrecioVentaUnidad.value = calculardoraPreciosVenta(
+            inputCostoPorUnidad.value,
+            "Unidad"
+        );
     }
 }
 
-function calcularPrecosVentasUnidad()
-{
-    var inputCostoPorCaja = parseFloat(document.getElementById("inputCostoPorCaja").value);
-    var inputUnidadesPorCaja = parseFloat(document.getElementById("inputUnidadesPorCaja").value);
-
+function calcularPrecosVentasUnidad() {
+    var inputCostoPorCaja = parseFloat(
+        document.getElementById("inputCostoPorCaja").value
+    );
+    var inputUnidadesPorCaja = parseFloat(
+        document.getElementById("inputUnidadesPorCaja").value
+    );
 
     var costoPorBlister = parseFloat(inputCostoPorCaja / inputUnidadesPorCaja);
 
     return costoPorBlister;
-
 }
 
-
-function CalculosPreciosVentaBlister()
-{
-    var inputCostoPorCaja = parseFloat(document.getElementById("inputCostoPorCaja").value);
-    var inputBlisterPorCaja = parseFloat(document.getElementById("inputBlisterPorCaja").value);
-
+function CalculosPreciosVentaBlister() {
+    var inputCostoPorCaja = parseFloat(
+        document.getElementById("inputCostoPorCaja").value
+    );
+    var inputBlisterPorCaja = parseFloat(
+        document.getElementById("inputBlisterPorCaja").value
+    );
 
     var costoPorBlister = parseFloat(inputCostoPorCaja / inputBlisterPorCaja);
 
     return costoPorBlister;
-
-
-
-
 }
 
-function calculardoraPreciosVenta(monto_calcular, tipo)
-{
-
+function calculardoraPreciosVenta(monto_calcular, tipo) {
     // Obtenemos el valor del iva del input
-    var ivaPorcentaje = parseFloat(document.getElementById('inputIva').value) / 100;
+    var ivaPorcentaje =
+        parseFloat(document.getElementById("inputIva").value) / 100;
     var montoNumerico = parseFloat(monto_calcular);
 
     var selectedIndex = presentacionesSelect.selectedIndex;
@@ -106,9 +164,10 @@ function calculardoraPreciosVenta(monto_calcular, tipo)
 
         // Acceder a los atributos
         var porcentajeGananciaCaja = parseFloat(selectedOption.por_caja) / 100;
-        var porcentajeGananciaBlister = parseFloat(selectedOption.por_blister) / 100;
-        var porcentajeGananciaUnidad = parseFloat(selectedOption.por_unidad) / 100;
-
+        var porcentajeGananciaBlister =
+            parseFloat(selectedOption.por_blister) / 100;
+        var porcentajeGananciaUnidad =
+            parseFloat(selectedOption.por_unidad) / 100;
     } else {
         var porcentajeGananciaCaja = parseFloat(15) / 100;
         var porcentajeGananciaBlister = parseFloat(20) / 100;
@@ -118,37 +177,29 @@ function calculardoraPreciosVenta(monto_calcular, tipo)
     var porcentajeGanancia;
 
     switch (tipo) {
-    case "Caja":
-        // Código a ejecutar si tipo es igual a "Caja"
-        porcentajeGanancia = porcentajeGananciaCaja;
-        break;
+        case "Caja":
+            // Código a ejecutar si tipo es igual a "Caja"
+            porcentajeGanancia = porcentajeGananciaCaja;
+            break;
 
-    case "Blister":
-        // Código a ejecutar si tipo es igual a "Blister"
-        porcentajeGanancia = porcentajeGananciaBlister;
-        break;
+        case "Blister":
+            // Código a ejecutar si tipo es igual a "Blister"
+            porcentajeGanancia = porcentajeGananciaBlister;
+            break;
 
-    case "Unidad":
-        // Código a ejecutar si tipo es igual a "Unidad"
-        porcentajeGanancia = porcentajeGananciaUnidad;
-        break;
+        case "Unidad":
+            // Código a ejecutar si tipo es igual a "Unidad"
+            porcentajeGanancia = porcentajeGananciaUnidad;
+            break;
     }
-
 
     var ivaCantidad = montoNumerico * ivaPorcentaje;
     var gananciaCantidad = montoNumerico * porcentajeGanancia;
 
-
-
-    var precioVenta = parseFloat(montoNumerico + ivaCantidad + gananciaCantidad);
-
+    var precioVenta = montoNumerico + ivaCantidad + gananciaCantidad;
 
     return precioVenta;
 }
-
-
-
-
 
 /* function calcularPreciosVentas(IVA, ganancia, monto_calcular) {
     var ivaPorcentaje = parseFloat(IVA) / 100;
@@ -165,31 +216,26 @@ function calculardoraPreciosVenta(monto_calcular, tipo)
     return precioVenta;
 } */
 
-
-
 // Definición de la función cambiarValidacionInputBlisterPorCaja
 function cambiarValidacionInputBlisterPorCaja() {
     var inputBlisterPorCaja = document.getElementById("inputBlisterPorCaja");
 
-
     if (inputBlisterPorCaja.value > 0) {
-        inputBlisterPorCaja.classList.remove('is-invalid');
+        inputBlisterPorCaja.classList.remove("is-invalid");
     } else {
-        inputBlisterPorCaja.classList.add('is-invalid');
+        inputBlisterPorCaja.classList.add("is-invalid");
     }
 }
 
 function cambiarValidacionInputUnidadesPorCaja() {
     var inputUnidadesPorCaja = document.getElementById("inputUnidadesPorCaja");
 
-
     if (inputUnidadesPorCaja.value > 0) {
-        inputUnidadesPorCaja.classList.remove('is-invalid');
+        inputUnidadesPorCaja.classList.remove("is-invalid");
     } else {
-        inputUnidadesPorCaja.classList.add('is-invalid');
+        inputUnidadesPorCaja.classList.add("is-invalid");
     }
 }
-
 
 document
     .getElementById("presentacionesSelect")
@@ -207,11 +253,15 @@ document
     });
 
 function verificarSeleccionBlisterSelect() {
-    var disponibleBlisterSelect = document.getElementById("disponibleBlisterSelect");
+    var disponibleBlisterSelect = document.getElementById(
+        "disponibleBlisterSelect"
+    );
     var inputBlisterPorCaja = document.getElementById("inputBlisterPorCaja");
     var inputStockBlister = document.getElementById("inputStockBlister");
     var inputCostoPorBlister = document.getElementById("inputCostoPorBlister");
-    var inputPrecioVentaBlister = document.getElementById("inputPrecioVentaBlister");
+    var inputPrecioVentaBlister = document.getElementById(
+        "inputPrecioVentaBlister"
+    );
 
     if (disponibleBlisterSelect.value !== "1") {
         // Si el valor del select no es 1, desactivar los inputs
@@ -225,14 +275,16 @@ function verificarSeleccionBlisterSelect() {
         inputStockBlister.disabled = false;
         inputCostoPorBlister.disabled = false;
         inputPrecioVentaBlister.disabled = false;
-        inputBlisterPorCaja.classList.add('is-invalid');
+        inputBlisterPorCaja.classList.add("is-invalid");
     }
 
     this.desbloquearInputsIniciales();
 }
 
 function verificarSeleccionUnidadSelect() {
-    var disponibleUnidadSelect = document.getElementById("disponibleUnidadSelect");
+    var disponibleUnidadSelect = document.getElementById(
+        "disponibleUnidadSelect"
+    );
     var inputUnidadesPorCaja = document.getElementById("inputUnidadesPorCaja");
     var inputStockUnidad = document.getElementById("inputStockUnidad");
     var inputCostoPorUnidad = document.getElementById("inputCostoPorUnidad");
@@ -244,46 +296,44 @@ function verificarSeleccionUnidadSelect() {
         inputStockUnidad.disabled = true;
         inputCostoPorUnidad.disabled = true;
         input4Element.disabled = true;
-
     } else {
         // Si el valor del select es 1, habilitar los inputs
         inputUnidadesPorCaja.disabled = false;
         inputStockUnidad.disabled = false;
         inputCostoPorUnidad.disabled = false;
         input4Element.disabled = false;
-        inputUnidadesPorCaja.classList.add('is-invalid');
-
+        inputUnidadesPorCaja.classList.add("is-invalid");
     }
 
     this.desbloquearInputsIniciales();
 }
 
-
-
 function desbloquearInputsIniciales() {
-    var disponibleUnidadSelect = document.getElementById("disponibleUnidadSelect").value;
-    var disponibleBlisterSelect = document.getElementById("disponibleBlisterSelect").value;
+    var disponibleUnidadSelect = document.getElementById(
+        "disponibleUnidadSelect"
+    ).value;
+    var disponibleBlisterSelect = document.getElementById(
+        "disponibleBlisterSelect"
+    ).value;
 
     var inputCostoPorCaja = document.getElementById("inputCostoPorCaja");
     var inputPrecioVentaCaja = document.getElementById("inputPrecioVentaCaja");
-    var inputStockActualEnCajas = document.getElementById("inputStockActualEnCajas");
+    var inputStockActualEnCajas = document.getElementById(
+        "inputStockActualEnCajas"
+    );
 
-
-    if(disponibleUnidadSelect != "Seleccionar" && disponibleBlisterSelect != "Seleccionar"){
-
+    if (
+        disponibleUnidadSelect != "Seleccionar" &&
+        disponibleBlisterSelect != "Seleccionar"
+    ) {
         inputCostoPorCaja.disabled = false;
         inputPrecioVentaCaja.disabled = false;
         inputStockActualEnCajas.disabled = false;
-
-    }else {
-
+    } else {
         inputCostoPorCaja.disabled = true;
         inputPrecioVentaCaja.disabled = true;
         inputStockActualEnCajas.disabled = true;
-
     }
-
-
 }
 
 function getElementValue(elementId) {
@@ -294,10 +344,6 @@ function isValidPositiveNumber(value) {
     return value !== "" && !isNaN(value) && parseInt(value) > 0;
 }
 
-
-
-
-
 function validateAndToggleClass(elementId, isValid) {
     var element = document.getElementById(elementId);
     if (isValid) {
@@ -307,7 +353,60 @@ function validateAndToggleClass(elementId, isValid) {
     }
 }
 
+function validarSelects() {
+    var categorySelect = document.getElementById("categoriaSelect");
+    var subcategoriaSelect = document.getElementById("subcategoriaSelect");
+    var ubicacionesSelect = document.getElementById("ubicacionesSelect");
+    var presentacionesSelect = document.getElementById("presentacionesSelect");
+    var laboratoriosSelect = document.getElementById("laboratoriosSelect");
+
+    // Verificar y agregar la clase 'is-invalid' a los select vacíos
+    if (categorySelect.value === "") {
+        categorySelect.classList.add("is-invalid");
+    } else {
+        categorySelect.classList.remove("is-invalid");
+    }
+
+    if (subcategoriaSelect.value === "") {
+        subcategoriaSelect.classList.add("is-invalid");
+    } else {
+        subcategoriaSelect.classList.remove("is-invalid");
+    }
+
+    if (ubicacionesSelect.value === "") {
+        ubicacionesSelect.classList.add("is-invalid");
+    } else {
+        ubicacionesSelect.classList.remove("is-invalid");
+    }
+
+    if (presentacionesSelect.value === "") {
+        presentacionesSelect.classList.add("is-invalid");
+    } else {
+        presentacionesSelect.classList.remove("is-invalid");
+    }
+
+    if (laboratoriosSelect.value === "") {
+        laboratoriosSelect.classList.add("is-invalid");
+    } else {
+        laboratoriosSelect.classList.remove("is-invalid");
+    }
+
+    // Verificar si algún select está vacío
+    var algunSelectVacio =
+        categorySelect.value === "" ||
+        subcategoriaSelect.value === "" ||
+        ubicacionesSelect.value === "" ||
+        presentacionesSelect.value === "" ||
+        laboratoriosSelect.value === "";
+
+    // Realizar acciones adicionales si es necesario
+    if (algunSelectVacio) {
+        return;
+    }
+}
+
 function actualizarInventario() {
+    validarSelects();
     //variables para ajustar el producto
     var id = document.getElementById("inputId").value;
     var code = document.getElementById("inputCodigo").value;
@@ -322,6 +421,7 @@ function actualizarInventario() {
         document.getElementById("inputStockMinimo").value,
         10
     );
+
     var stock_max = parseInt(
         document.getElementById("inputStockMaximo").value,
         10
@@ -358,7 +458,7 @@ function actualizarInventario() {
         10
     );
     var precio_caja = parseInt(
-        document.getElementById("inputPrecioVentaBlister").value,
+        document.getElementById("inputPrecioVentaCaja").value,
         10
     );
     var precio_blister = parseInt(
@@ -386,25 +486,30 @@ function actualizarInventario() {
         10
     );
 
+    /*-------------- Validaciones -------------------------*/
 
-    if(stock_min <= 0){
-        var inputStockMinimo = document.getElementById("inputStockMinimo");
-        inputStockMinimo.classList.add('is-invalid');
+    var inputStockMinimo = document.getElementById("inputStockMinimo");
+    if (inputStockMinimo.value <= 0) {
+        inputStockMinimo.classList.add("is-invalid");
         return;
     }
 
-    if(stock_max <= 0){
+    var inputStockMaximo = document.getElementById("inputStockMaximo");
+
+    if (inputStockMaximo.value <= 0) {
         var inputStockMaximo = document.getElementById("inputStockMaximo");
-        inputStockMaximo.classList.add('is-invalid');
+        inputStockMaximo.classList.add("is-invalid");
         return;
     }
 
-    if(precio_caja <= 0){
-        var inputPrecioVentaCaja = document.getElementById("inputPrecioVentaCaja");
-        inputPrecioVentaCaja.classList.add('is-invalid');
+    var inputPrecioVentaCaja = document.getElementById("inputPrecioVentaCaja");
+
+    if (inputPrecioVentaCaja.value <= 0) {
+        inputPrecioVentaCaja.classList.add("is-invalid");
         return;
     }
 
+    /*------------------ Fin validaciones ------------------------*/
 
     let datosInventario = {
         product_id: id,

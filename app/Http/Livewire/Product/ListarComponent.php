@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Product;
 
 use App\Models\Category;
+use App\Models\Inventario;
 use App\Models\Laboratorio;
 use App\Models\OrdersDetails;
 use App\Models\Presentacion;
@@ -27,13 +28,15 @@ class ListarComponent extends Component
 
     function ajusteInventarioEvent($dataEvent)
     {
+
+
         try {
 
-            $product = $this->guardarDataProduct($dataEvent['datosProducto']);
-            $this->guardarDatosInventario($product, $dataEvent['datosInventario']);
+            $product = $this->guardarDataProduct($dataEvent['dataProduct']);
+            $this->guardarDatosInventario($dataEvent['datosInventario']);
 
-            $this->dispatchBrowserEvent('cerrarModal');
-            $this->dispatchBrowserEvent('alert-registro-actualizado');
+            return redirect()->route('inventarios.product')->with('success', 'Se ha actualizado correctamente el producto: ' . $product['name'] );
+
         } catch (\Exception $e) {
 
             $errorCode = $e->getCode();
@@ -47,16 +50,78 @@ class ListarComponent extends Component
 
     private function guardarDataProduct($dataProduct)
     {
+
         $product = Product::findOrFail($dataProduct['id']);
 
-        $product->update($dataProduct);
+        if($dataProduct['contenido_interno_blister'] == null){
+            $contenido_interno_blister = 0;
+        }else{
+            $contenido_interno_blister = $dataProduct['contenido_interno_blister'];
+        }
+
+        if($dataProduct['contenido_interno_unidad'] == null){
+            $contenido_interno_unidad = 0;
+        }else{
+            $contenido_interno_unidad = $dataProduct['contenido_interno_unidad'];
+        }
+
+        $data = $product->update([
+            'name'                      => $dataProduct['name'],
+            'status'                    => 'ACTIVE',
+            'iva_product'               => $dataProduct['iva_product'],
+            'valor_iva_caja'            => $dataProduct['valor_iva_caja'],
+            'valor_iva_blister'         => $dataProduct['valor_iva_blister'],
+            'valor_iva_unidad'          => $dataProduct['valor_iva_unidad'],
+            'stock'                     => '0',
+            'stock_min'                 => $dataProduct['stock_min'],
+            'stock_max'                 => $dataProduct['stock_max'],
+            'disponible_caja'           => $dataProduct['disponible_caja'],
+            'disponible_blister'        => $dataProduct['disponible_blister'],
+            'disponible_unidad'         => $dataProduct['disponible_unidad'],
+            'contenido_interno_caja'    => $dataProduct['contenido_interno_caja'],
+            'contenido_interno_blister' => $contenido_interno_blister,
+            'contenido_interno_unidad'  => $contenido_interno_unidad,
+            'costo_caja'                => $dataProduct['costo_caja'],
+            'costo_blister'             => $dataProduct['costo_blister'],
+            'costo_unidad'              => $dataProduct['costo_unidad'],
+            'precio_caja'               => $dataProduct['precio_caja'],
+            'precio_blister'            => $dataProduct['precio_blister'],
+            'precio_unidad'             => $dataProduct['precio_unidad'],
+            'exento'                    => 0,
+            'excluido'                  => 0,
+            'no_gravado'                => 0,
+            'gravado'                   => 0,
+            'laboratorio_id'            => $dataProduct['laboratorio_id'],
+            'ubicacion_id'              => $dataProduct['ubicacion_id'],
+            'presentacion_id'           => $dataProduct['presentacion_id'],
+            'category_id'               => $dataProduct['category_id'],
+            'subcategoria_id'           => $dataProduct['subcategoria_id'],
+        ]);
 
         return $product;
     }
 
-    private function guardarDatosInventario($product, $datosInventario)
+    private function guardarDatosInventario($datosInventario)
     {
-        $product->inventario->update($datosInventario);
+        $inventario = Inventario::where('product_id', $datosInventario['product_id'])->first();
+
+        if($datosInventario['cantidad_blister'] == null){
+            $cantidad_blister = 0;
+        }else{
+            $cantidad_blister = $datosInventario['cantidad_blister'];
+        }
+
+        if($datosInventario['cantidad_unidad'] == null){
+            $cantidad_unidad = 0;
+        }else{
+            $cantidad_unidad = $datosInventario['cantidad_unidad'];
+        }
+
+         $inventario->update([
+            'cantidad_caja'     => $datosInventario['cantidad_caja'],
+            'cantidad_blister'  => $cantidad_blister,
+            'cantidad_unidad'   => $cantidad_unidad,
+        ]);
         return true;
     }
 
