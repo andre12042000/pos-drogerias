@@ -47,8 +47,6 @@
                             href="{{ route('markAsRead') }}" id="mark-all"><strong><i class="bi bi-check2-all"></i> Marcar
                                 todas como leídas</strong></a>
                     </div>
-
-
                 </div>
             </div>
             <div class="card-body">
@@ -84,8 +82,8 @@
 
                         @empty
                             <tr>
-                                <td colspan="2">
-                                    <p>No se encontraron registros...</p>
+                                <td colspan="5" class="text-center">
+                                    <p class="mt-4 lead">No hay registros disponibles...</p>
                                 </td>
                             </tr>
                         @endforelse

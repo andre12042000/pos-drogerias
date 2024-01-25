@@ -151,116 +151,77 @@
             var modal = document.getElementById('stockModal');
             var contenidoModal = document.getElementById('contenidoModal');
 
+            // Función para crear y añadir una opción a un select
+            function agregarOpcion(select, value, text, selected = false) {
+                var option = document.createElement('option');
+                option.value = value;
+                option.text = text;
+                select.appendChild(option);
+                if (selected) {
+                    option.selected = true;
+                }
+            }
+
+            // Función para limpiar las opciones de un select
+            function limpiarSelect(select) {
+                select.innerHTML = '';
+            }
+
+            // Función para llenar un select con opciones basadas en un array de objetos
+            function llenarSelect(select, array, selectedId) {
+                limpiarSelect(select);
+                agregarOpcion(select, '', 'Selecciona una opción');
+                array.forEach(function(item) {
+                    agregarOpcion(select, item.id, item.name, item.id === selectedId);
+                });
+            }
+
+            // Llenar selects con datos
+            llenarSelect(document.getElementById('laboratoriosSelect'), laboratorios, product.laboratorio_id);
+            llenarSelect(document.getElementById('categoriaSelect'), categorias, product.category_id);
+            llenarSelect(document.getElementById('subcategoriaSelect'), subcategorias, product.subcategoria_id);
+            llenarSelect(document.getElementById('presentacionesSelect'), presentaciones, product.presentacion_id);
+            llenarSelect(document.getElementById('ubicacionesSelect'), ubicaciones);
+
+            // Mostrar los datos en el contenido del modal
+            document.getElementById('inputId').value = product.id;
             document.getElementById('inputCodigo').value = product.code;
             document.getElementById('inputName').value = product.name;
             document.getElementById('inputStockMinimo').value = product.stock_min;
-            document.getElementById('inputStockMaximo').value = product.stock_max;
-            document.getElementById('inputIva').value = product.iva_product;
-            document.getElementById('inputCanCaja').value = product.contenido_interno_caja;
-            document.getElementById('inputCanBlister').value = product.contenido_interno_blister;
-            document.getElementById('inputCanUnidad').value = product.contenido_interno_unidad;
-            document.getElementById('inputCosCaja').value = product.costo_caja;
-            document.getElementById('inputCosBlister').value = product.costo_blister;
-            document.getElementById('inputCosUnidad').value = product.costo_unidad;
-            document.getElementById('inputPreCaja').value = product.precio_caja;
-            document.getElementById('inputPreBlister').value = product.precio_blister;
-            document.getElementById('inputPreUnidad').value = product.precio_unidad;
-
-
-
-
-
-
-            var categoriaSelect = document.getElementById('categoriaSelect');
-            var subcategoriaSelect = document.getElementById('subcategoriaSelect');
-            var presentacionesSelect = document.getElementById('presentacionesSelect');
-            var ubicacionesSelect = document.getElementById('ubicacionesSelect');
-            var laboratoriosSelect = document.getElementById('laboratoriosSelect');
-
-            // Limpiar opciones existentes en el select
-            categoriaSelect.innerHTML = '';
-            subcategoriaSelect.innerHTML = '';
-            presentacionesSelect.innerHTML = '';
-            ubicacionesSelect.innerHTML = '';
-            laboratoriosSelect.innerHTML = '';
-
-
-            // Crear opciones para el select basadas en las categorías proporcionadas
-            var defaultLaboratoriosOption = document.createElement('option');
-            defaultLaboratoriosOption.value = '';
-            defaultLaboratoriosOption.text = 'Selecciona una opción';
-            laboratoriosSelect.appendChild(defaultLaboratoriosOption);
-
-            laboratorios.forEach(function(laboratorios) {
-                var option = document.createElement('option');
-                option.value = laboratorios.id;
-                option.text = laboratorios.name;
-                laboratoriosSelect.appendChild(option);
-            })
-
-
-            var defaultcategoriaOption = document.createElement('option');
-            defaultcategoriaOption.value = '';
-            defaultcategoriaOption.text = 'Selecciona una opción';
-            categoriaSelect.appendChild(defaultcategoriaOption);
-
-            categorias.forEach(function(categoria) {
-                var option = document.createElement('option');
-                option.value = categoria.id;
-                option.text = categoria.name;
-                categoriaSelect.appendChild(option);
-            });
-
-            var defaultSubcategoriaOption = document.createElement('option');
-            defaultSubcategoriaOption.value = '';
-            defaultSubcategoriaOption.text = 'Selecciona una opción';
-            subcategoriaSelect.appendChild(defaultSubcategoriaOption);
-
-            subcategorias.forEach(function(subcategoria) {
-                var option = document.createElement('option');
-                option.value = subcategoria.id;
-                option.text = subcategoria.name;
-                subcategoriaSelect.appendChild(option);
-            });
-
-            var defaultOption = document.createElement('option');
-            defaultOption.value = '';
-            defaultOption.text = 'Selecciona una opción';
-            presentacionesSelect.appendChild(defaultOption);
-
-            // Iterar sobre las presentaciones y agregar opciones
-            presentaciones.forEach(function(presentacion) {
-                var option = document.createElement('option');
-                option.value = presentacion.id;
-                option.text = presentacion.name;
-                presentacionesSelect.appendChild(option);
-            });
-
-            var defaultUbicacionOption = document.createElement('option');
-            defaultUbicacionOption.value = '';
-            defaultUbicacionOption.text = 'Selecciona una opción';
-            ubicacionesSelect.appendChild(defaultUbicacionOption);
-
-            ubicaciones.forEach(function(ubicaciones) {
-                var option = document.createElement('option');
-                option.value = ubicaciones.id;
-                option.text = ubicaciones.name;
-                ubicacionesSelect.appendChild(option);
-            });
-
-            console.log('Categorías:', categorias);
-
-            // Mostrar los datos en el contenido del modal
-            //  contenidoModal.innerHTML = '<p>ID: ' + product.id + '</p><p>Codigo: ' + product.code + '</p>';
+            // Resto de asignaciones de valores
 
             // Mostrar el modal
             modal.style.display = 'block';
         }
+
 
         function cerrarModal() {
             // Cerrar el modal
             var modal = document.getElementById('stockModal');
             modal.style.display = 'none';
         }
+
+        window.addEventListener('alert-registro-actualizado', () => {
+            Swal.fire({
+            icon: "success",
+            title: "Registro actualizado correctamente",
+            showConfirmButton: false,
+            timer: 1500
+            });
+
+
+        });
+
+         window.addEventListener('alert-error', event => {
+            const { errorCode } = event.detail;
+            console.log(event);
+            Swal.fire({
+                icon: "error",
+                title: "Oops... ocurrió un error",
+                text: `Código del error: ${errorCode}`,
+            });
+        });
+
+
     </script>
 @stop

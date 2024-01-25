@@ -29,7 +29,7 @@
                             <tr data-product='{{ json_encode($product) }}'>
                                 <td>{{ $product->code }} </td>
                                 <td>{{ $product->name }}</td>
-                                <td>{{ Illuminate\Support\Str::limit($product->laboratorio->name, 12) }}</td>
+                                <td>@isset($product->laboratorio->name) {{ Illuminate\Support\Str::limit($product->laboratorio->name, 12) }} @else N/R @endisset</td>
 
 
                                 <td class="price-cell" data-option="disponible_caja" style="cursor: pointer">{{ $product->precio_caja != 0 ? '$'.number_format($product->precio_caja, 0, ',', '.') : '0' }}</td>

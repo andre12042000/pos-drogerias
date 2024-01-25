@@ -5,9 +5,10 @@ namespace App\Listeners;
 use App\Events\VentaRealizada;
 use App\Models\Inventario;
 use App\Models\Product;
+use App\Models\User;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Support\Facades\Storage;
+use App\Notifications\LowStockNotification;
 
 class DescontarInventario
 {
@@ -234,12 +235,16 @@ class DescontarInventario
         ]);
 
         if ($nuevo_stock_caja <= $producto->stock_min && $producto->stock_min > 0) {
-            // Aquí puedes agregar la lógica para enviar una notificación
-            // por ejemplo, enviar un correo electrónico, una alerta, etc.
-            // Puedes utilizar las herramientas y métodos que prefieras para notificar.
-            // Ejemplo:
-          //  $this->enviarNotificacionStockBajo($producto, $nuevo_stock_caja, $nuevo_stock_blister, $nuevo_stock_unidad);
+            $this->sendNotifyLowStock($producto);
         }
+    }
+
+    public function sendNotifyLowStock($product)
+    {
+        User::role(['Administrador'])->where('status', 'ACTIVO')
+        ->each(function(User $user) use ($product){
+           $user->notify(new LowStockNotification($product));
+        });
     }
 
     private function calcularNuevoStock($stock_actual, $cantidad_descontar)
@@ -250,24 +255,4 @@ class DescontarInventario
         return $nuevo_stock;
     }
 
-
-
-   /*  function updateInventario($producto, $descontar_caja, $descontar_blister, $descontar_unidad)
-    {
-        $producto_inventario = Inventario::findorfail($producto->id);
-
-        $stock_actual_caja = $producto_inventario->cantidad_caja;
-        $stock_actual_blister = $producto_inventario->cantidad_blister;
-        $stock_actual_unidad = $producto_inventario->cantidad_unidad;
-
-        $nuevo_stock_caja = $stock_actual_caja - $descontar_caja;
-        $nuevo_stock_blister = $stock_actual_blister - $descontar_blister;
-        $nuevo_stock_unidad = $stock_actual_unidad - $descontar_unidad;
-
-        $producto_inventario->update([
-            'cantidad_caja'     => $nuevo_stock_caja,
-            'cantidad_blister'  => $nuevo_stock_blister,
-            'cantidad_unidad'   => $nuevo_stock_unidad,
-        ]);
-    } */
 }

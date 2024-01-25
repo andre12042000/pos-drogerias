@@ -24,7 +24,7 @@ class NotificationComponent extends Component
     {
         $user = User::find(Auth::user()->id);
 
-       /*  $notificaciones =  Notification::where('notifiable_id', Auth::user()->id)
+        /*  $notificaciones =  Notification::where('notifiable_id', Auth::user()->id)
 
                                     ->get(); */
 
@@ -38,8 +38,6 @@ class NotificationComponent extends Component
     public function marcar_leida()
     {
 
-$this->render();
+        $this->render();
     }
-
-
 }

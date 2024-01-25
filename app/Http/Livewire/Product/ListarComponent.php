@@ -23,7 +23,44 @@ class ListarComponent extends Component
 
     public $cantidad_registros = 10;
 
-    protected $listeners = ['ProductsEvent', 'reloadProductos'];
+    protected $listeners = ['ProductsEvent', 'reloadProductos', 'ajusteInventarioEvent'];
+
+    function ajusteInventarioEvent($dataEvent)
+    {
+        try {
+
+            $product = $this->guardarDataProduct($dataEvent['dataProductsssss']);
+            $this->guardarDatosInventario($product, $dataEvent['datosInventario']);
+
+            $this->dispatchBrowserEvent('cerrarModal');
+            $this->dispatchBrowserEvent('alert-registro-actualizado');
+        } catch (\Exception $e) {
+
+            $errorCode = $e->getCode();
+
+            $this->dispatchBrowserEvent('alert-error', ['errorCode' => $errorCode]);
+            // Manejar la excepción, puedes hacer un registro de errores, mostrar un mensaje al usuario, etc.
+            // Ejemplo: Log::error($e->getMessage());
+            // Ejemplo: return redirect()->back()->with('error', 'Hubo un problema al guardar los datos.');
+        }
+    }
+
+    private function guardarDataProduct($dataProduct)
+    {
+        $product = Product::findOrFail($dataProduct['id']);
+
+        $product->update($dataProduct);
+
+        return $product;
+    }
+
+    private function guardarDatosInventario($product, $datosInventario)
+    {
+        $product->inventario->update($datosInventario);
+        return true;
+    }
+
+
 
     public function ProductsEvent()
     {
@@ -42,11 +79,11 @@ class ListarComponent extends Component
 
     public function render()
     {
-        $productos= Product::search($this->buscar)
-                            ->status($this->filter_estado)
-                            ->orderBy('name', 'ASC')
-                            ->orderBy('status', 'ASC')
-                            ->paginate($this->cantidad_registros);
+        $productos = Product::search($this->buscar)
+            ->status($this->filter_estado)
+            ->orderBy('name', 'ASC')
+            ->orderBy('status', 'ASC')
+            ->paginate($this->cantidad_registros);
 
         $categorias     = Category::orderBy('name', 'ASC')->get();
         $subcategorias  = Subcategoria::orderBy('name', 'ASC')->get();
@@ -65,21 +102,20 @@ class ListarComponent extends Component
         $purchase   = PurchaseDetail::where('product_id', $id)->first();
 
 
-        if($purchase  OR $orden OR $sales){
+        if ($purchase  or $orden or $sales) {
             session()->flash('warning', 'Producto esta siendo utilizado no se puede eliminar');
             $this->reloadProductos();
-        }else{
+        } else {
             $product = Product::find($id);
             $product->delete();
             session()->flash('delete', 'Producto eliminado exitosamente');
             $this->reloadProductos();
-
         }
     }
 
-    public function datomodal($product){
+    public function datomodal($product)
+    {
         $this->emit('ProductstockEventEdit', $product);
-
     }
 
 
