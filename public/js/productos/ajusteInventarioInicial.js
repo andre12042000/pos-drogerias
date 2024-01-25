@@ -386,6 +386,26 @@ function actualizarInventario() {
         10
     );
 
+
+    if(stock_min <= 0){
+        var inputStockMinimo = document.getElementById("inputStockMinimo");
+        inputStockMinimo.classList.add('is-invalid');
+        return;
+    }
+
+    if(stock_max <= 0){
+        var inputStockMaximo = document.getElementById("inputStockMaximo");
+        inputStockMaximo.classList.add('is-invalid');
+        return;
+    }
+
+    if(precio_caja <= 0){
+        var inputPrecioVentaCaja = document.getElementById("inputPrecioVentaCaja");
+        inputPrecioVentaCaja.classList.add('is-invalid');
+        return;
+    }
+
+
     let datosInventario = {
         product_id: id,
         cantidad_caja: cantidad_caja,

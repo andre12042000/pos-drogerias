@@ -102,14 +102,14 @@
                                     <div class="col">
                                         <div class="form-floating mb-3">
                                             <input type="number" class="form-control" id="inputStockMinimo"
-                                                placeholder="name@example.com">
+                                                placeholder="name@example.com" value="0" min="0">
                                             <label for="floatingInput">Stock mínimo </label>
                                         </div>
                                     </div>
                                     <div class="col">
                                         <div class="form-floating mb-3">
                                             <input type="number" class="form-control" id="inputStockMaximo"
-                                                placeholder="name@example.com">
+                                                placeholder="name@example.com" value="0" min="0">
                                             <label for="floatingInput">Stock máximo</label>
                                         </div>
                                     </div>
