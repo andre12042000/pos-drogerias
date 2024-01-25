@@ -72,13 +72,13 @@
                             <td>{{ $product->code }}</td>
                             <td><a href="{{ route('inventarios.product.show', $product->id) }}" target="_blank">
                                     {{ $product->producto }} </a></td>
-                            <td class="text-end">{{ $product->contenido_interno_caja }}</td>
-                            <td class="text-end">{{ $product->contenido_interno_blister }} </td>
-                            <td class="text-end">{{ $product->contenido_interno_unidad }}</td>
+                                    <td class="text-end">{{ $product->inventario->cantidad_caja }}</td>
+                                    <td class="text-end">{{ $product->inventario->cantidad_blister }} </td>
+                                    <td class="text-end">{{ $product->inventario->cantidad_unidad }}</td>
 
-                            <td class="text-end">@money($product->precio_caja, 'COP', 0)</td>
-                            <td class="text-end">@money($product->precio_blister, 'COP', 0)</td>
-                            <td class="text-end">@money($product->precio_unidad, 'COP', 0)</td>
+                                    <td class="text-end">{{number_format($product->precio_caja,  0)}}</td>
+                                    <td class="text-end">{{number_format($product->precio_blister,  0)}}</td>
+                                    <td class="text-end">{{number_format($product->precio_unidad,  0)}}</td>
                             <td>
                                 @if ($product->status == 'ACTIVE')
                                     <span class="badge badge-pill badge-success">Activo</span>
