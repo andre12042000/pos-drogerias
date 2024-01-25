@@ -1,6 +1,9 @@
 var inputBlisterPorCaja = document.getElementById("inputBlisterPorCaja");
 var inputUnidadesPorCaja = document.getElementById("inputUnidadesPorCaja");
 var inputCostoPorCaja = document.getElementById("inputCostoPorCaja");
+var inputCostoPorCaja = document.getElementById("inputCostoPorCaja");
+
+var inputStockActualEnCajas = document.getElementById("inputStockActualEnCajas");
 
 // Asigna el evento input para ejecutar la función cuando el valor cambie
 inputBlisterPorCaja.addEventListener("input", cambiarValidacionInputBlisterPorCaja);
@@ -10,6 +13,25 @@ inputUnidadesPorCaja.addEventListener("input", cambiarValidacionInputUnidadesPor
 
 // Asigna el evento input para ejecutar la función cuando el valor cambie de costo por caja
 inputCostoPorCaja.addEventListener("input", realizarCalculosPreciosDeVentas);
+
+inputStockActualEnCajas.addEventListener("input", permitirActualizar);
+
+function permitirActualizar() {
+    var inputPrecioVentaCaja = document.getElementById("inputPrecioVentaCaja");
+    var precioVentaCajaValue = parseFloat(inputPrecioVentaCaja.value);
+
+    if (isNaN(precioVentaCajaValue) || precioVentaCajaValue <= 0) {
+        // Si el valor no es un número o es menor o igual a cero
+        inputPrecioVentaCaja.classList.add('is-invalid');
+    } else {
+        // Si el valor es válido, quita la clase 'is-invalid'
+        inputPrecioVentaCaja.classList.remove('is-invalid');
+
+        // Habilita el botón de actualizar
+        var btnActualizar = document.getElementById("btnActualizar");
+        btnActualizar.disabled = false;
+    }
+}
 
 
 
