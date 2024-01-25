@@ -33,7 +33,7 @@ class ListarComponent extends Component
             $product = $this->guardarDataProduct($dataEvent['dataProduct']);
             $this->guardarDatosInventario($dataEvent['datosInventario']);
 
-            return redirect()->route('inventarios.product')->with('message', 'Se ha actualizado correctamente el producto: ' . $product['name'] );
+            return redirect()->route('inventarios.product')->with('Se ha actualizado correctamente el producto: ' . $product['name'] );
 
         } catch (\Exception $e) {
 

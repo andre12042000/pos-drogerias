@@ -1,0 +1,11 @@
+Starting Laravel development server: http://0.0.0.0:8000
+[Thu Jan 25 17:12:07 2024] PHP 8.1.10 Development Server (http://0.0.0.0:8000) started
+[Thu Jan 25 17:12:37 2024] 192.168.101.57:49801 Accepted
+[Thu Jan 25 17:12:37 2024] 192.168.101.57:49802 Accepted
+[Thu Jan 25 17:12:39 2024] 192.168.101.57:49802 Closing
+[Thu Jan 25 17:12:40 2024] 192.168.101.57:49801 Closing
+[Thu Jan 25 17:12:40 2024] 192.168.101.57:49803 Accepted
+[Thu Jan 25 17:12:40 2024] 192.168.101.57:49803 Closing
+[Thu Jan 25 17:12:40 2024] 192.168.101.57:49805 Accepted
+[Thu Jan 25 17:12:40 2024] 192.168.101.57:49805 [200]: GET /img/far2.jpg
+[Thu Jan 25 17:12:40 2024] 192.168.101.57:49805 Closing
