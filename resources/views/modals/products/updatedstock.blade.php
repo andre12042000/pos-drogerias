@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header bg-info">
-                <h5 class="modal-title" id="exampleModalToggleLabel">Ajuste de inventario inicial</h5>
+                <h4 class="modal-title" id="exampleModalToggleLabel">Ajuste de inventario inicial</h4>
                 <button type="button" class="btn-close" aria-label="Close" onclick="cerrarModal()"></button>
             </div>
             <div id="contenidoModal">
