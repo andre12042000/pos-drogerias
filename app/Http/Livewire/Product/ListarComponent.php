@@ -28,23 +28,18 @@ class ListarComponent extends Component
 
     function ajusteInventarioEvent($dataEvent)
     {
-
-
         try {
 
             $product = $this->guardarDataProduct($dataEvent['dataProduct']);
             $this->guardarDatosInventario($dataEvent['datosInventario']);
 
-            return redirect()->route('inventarios.product')->with('success', 'Se ha actualizado correctamente el producto: ' . $product['name'] );
+            return redirect()->route('inventarios.product')->with('message', 'Se ha actualizado correctamente el producto: ' . $product['name'] );
 
         } catch (\Exception $e) {
 
             $errorCode = $e->getCode();
 
             $this->dispatchBrowserEvent('alert-error', ['errorCode' => $errorCode]);
-            // Manejar la excepción, puedes hacer un registro de errores, mostrar un mensaje al usuario, etc.
-            // Ejemplo: Log::error($e->getMessage());
-            // Ejemplo: return redirect()->back()->with('error', 'Hubo un problema al guardar los datos.');
         }
     }
 
