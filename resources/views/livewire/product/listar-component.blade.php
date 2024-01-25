@@ -76,9 +76,9 @@
                                     <td class="text-end">{{ $product->inventario->cantidad_blister }} </td>
                                     <td class="text-end">{{ $product->inventario->cantidad_unidad }}</td>
 
-                                    <td class="text-end">{{number_format($product->precio_caja,  0)}}</td>
-                                    <td class="text-end">{{number_format($product->precio_blister,  0)}}</td>
-                                    <td class="text-end">{{number_format($product->precio_unidad,  0)}}</td>
+                                    <td class="text-end"> $ {{number_format($product->precio_caja,  0)}}</td>
+                                    <td class="text-end"> $ {{number_format($product->precio_blister,  0)}}</td>
+                                    <td class="text-end"> $ {{number_format($product->precio_unidad,  0)}}</td>
                             <td>
                                 @if ($product->status == 'ACTIVE')
                                     <span class="badge badge-pill badge-success">Activo</span>
