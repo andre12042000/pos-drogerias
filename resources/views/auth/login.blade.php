@@ -22,16 +22,20 @@
                     @enderror
             </div>
 
-            <div class="form-group">
-
-                <input type="password" class="form-control" id="password" required placeholder="Contraseña" name="password">
-
-                @error('password')
-                <span class="invalid-feedback" role="alert">
-                    <strong>{{ $message }}</strong>
-                </span>
-                @enderror
-
+            <div class="form-group row">
+                <div class="col-md-12 input-group">
+                    <input id="password" type="password" placeholder="Contraseña" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="off">
+                    <div class="input-group-append">
+                        <button type="button" class="btn btn-outline-light" onclick="togglePasswordVisibility('password')">
+                            <i class="fas fa-eye-slash" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                    @error('password')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
+                </div>
             </div>
 
             <div class="form-check mt-4 mb-4">
@@ -62,4 +66,14 @@
         </form>
     </div>
 </div>
+<link rel= "stylesheet" href= "https://maxst.icons8.com/vue-static/landings/line-awesome/font-awesome-line-awesome/css/all.min.css" >
+<script>
+    function togglePasswordVisibility(fieldId) {
+        var passwordField = document.getElementById(fieldId);
+        var fieldType = passwordField.type;
+
+        // Cambia el tipo de campo de contraseña a texto o viceversa
+        passwordField.type = (fieldType === 'password') ? 'text' : 'password';
+    }
+</script>
 @endsection
