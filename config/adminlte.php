@@ -453,28 +453,43 @@ return [
                     'icon_color' => 'white',
                     'route'      => 'parametros.category',
                 ],
-               /*  [
+                [
+                    'text'       => 'Subcategorias',
+                    'classes'    => 'text-white',
+                    'icon'       => 'fas fa-stream',
+                    'icon_color' => 'white',
+                    'route'      => 'parametros.subcategoria',
+                ],
+                [
                     'text'       => 'Marcas',
                     'classes'    => 'text-white',
                     'icon'       => 'bi bi-bookmarks',
                     'icon_color' => 'white',
                     'route'      => 'parametros.brand',
-                ], */
+                ],
 
                 [
                     'text'       => 'Presentaciones',
                     'classes'    => 'text-white',
-                    'icon'       => 'bi bi-bookmarks',
+                    'icon'       => 'bi bi-boxes',
                     'icon_color' => 'white',
                     'route'      => 'parametros.presentaciones',
                 ],
                 [
                     'text'       => 'Laboratorios',
                     'classes'    => 'text-white',
-                    'icon'       => 'bi bi-bookmarks',
+                    'icon'       => 'fas fa-flask',
                     'icon_color' => 'white',
                     'route'      => 'parametros.laboratorios',
                 ],
+                [
+                    'text'       => 'Ubicación',
+                    'classes'    => 'text-white',
+                    'icon'       => 'fas fa-map-marker-alt',
+                    'icon_color' => 'white',
+                    'route'      => 'parametros.ubicacion',
+                ],
+
             ],
         ],
 

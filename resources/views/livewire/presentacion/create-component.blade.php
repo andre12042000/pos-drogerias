@@ -34,7 +34,7 @@
                                     <input class="form-check-input" type="radio" name="active_no" id="active_no" value="DESACTIVE" wire:model.lazy = "status">
                                     <label class="form-check-label" for="inlineRadio2">Inactivo</label>
                                   </div>
-                                @error('active')
+                                @error('status')
                                 <span class="text-danger">{{ $message }}</span>
                                 @enderror
                             </div>

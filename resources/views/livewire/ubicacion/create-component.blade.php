@@ -1,7 +1,7 @@
 <div class="modal-dialog" theme="primary">
     <div class="modal-content">
         <div class="modal-header bg-primary">
-            <h5 class="modal-title " id="staticBackdropLabel"> <strong>Gestión de laboratorio</strong> </h5>
+            <h5 class="modal-title " id="staticBackdropLabel"> <strong>Gestión de ubicación</strong> </h5>
             <button type="button" class="btn-close" data-dismiss="modal" wire:click="cancel" aria-label="Close"></button>
         </div>
         @include('popper::assets')
@@ -10,7 +10,7 @@
             <div>
                 @include('includes.alert')
                 <div class="form-group">
-                    <label for="exampleFormControlInput1">Nombre de laboratorio</label>
+                    <label for="exampleFormControlInput1">Nombre de ubiación</label>
                     <input type="text" wire:keydown.enter="storeOrupdate" wire:model.lazy="name" id="name" name="name" class="form-control @if($name == '') @else @error('name') is-invalid @else is-valid @enderror @endif" id="exampleFormControlInput1" placeholder="Ejemplo: productos aseo" autocomplete="off" autofocus>
                     @error('name')
                     <span class="text-danger">{{ $message }}</span>

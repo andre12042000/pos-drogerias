@@ -20,7 +20,7 @@
                             <option value="100">100</option>
                         </select>
                         <span class="input-group-text" id="basic-addon1"><i class="bi bi-search"></i></span>
-                        <input type="text" class="form-control" placeholder="Buscar categoría" aria-label="Username"
+                        <input type="text" class="form-control" placeholder="Buscar laboratorio" aria-label="Username"
                             aria-describedby="basic-addon1" wire:model="buscar">
 
                         <button type="button" class="btn btn-outline-light float-right ml-2" data-toggle="modal"

@@ -1,51 +1,50 @@
 <?php
 
-namespace App\Http\Livewire\Laboratorio;
+namespace App\Http\Livewire\Subcategoria;
 
 use App\Models\Product;
 use Livewire\Component;
-use App\Models\Laboratorio;
+use App\Models\Subcategoria;
 use Livewire\WithPagination;
 
 class ListComponent extends Component
 {
+
     use WithPagination;
     protected $paginationTheme = 'bootstrap';
     public $cantidad_registros = 10;
-    protected $listeners = ['reloadlaboratorios'];
+    protected $listeners = ['reloadsub'];
     public $buscar;
 
-    public function reloadlaboratorios()
+    public function reloadsub()
     {
         $this->render();
     }
-
     public function render()
     {
-        $laboratorios = Laboratorio::search($this->buscar)->orderBy('name', 'ASC')
+
+        $Subcategorias = Subcategoria::search($this->buscar)->orderBy('name', 'ASC')
             ->paginate($this->cantidad_registros);
-
-
-        return view('livewire.laboratorio.list-component', compact('laboratorios'))->extends('adminlte::page');
+            return view('livewire.subcategoria.list-component', compact('Subcategorias'))->extends('adminlte::page');
     }
 
-    public function sendData($laboratorio)
+    public function sendData($sub)
     {
-        $this->emit('LaboratorioEvent', $laboratorio);
+        $this->emit('SubEvent', $sub);
     }
 
     public function destroy($id)
     {
 
-        $products = Product::where('laboratorio_id', $id)->first();
+        $products = Product::where('subcategoria_id', $id)->first();
 
         if ($products) {
-            session()->flash('warning', 'Este laboratorio esta siendo utilizada no se puede eliminar');
+            session()->flash('warning', 'Subcategoria esta siendo utilizada no se puede eliminar');
             return view('livewire.presentacion.list-component');
         } else {
-            $presentacion = Laboratorio::find($id);
-            $presentacion->delete();
-            session()->flash('delete', 'Laboratorio eliminado exitosamente');
+            $sub = Subcategoria::find($id);
+            $sub->delete();
+            session()->flash('delete', 'Subcategoria eliminada exitosamente');
             return view('livewire.presentacion.list-component');
         }
     }

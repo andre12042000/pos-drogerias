@@ -6,7 +6,7 @@
 
             <div class="row">
                 <div class="col-sm-6">
-                    <h3>Presentación</h3>
+                    <h3>Subcategorias</h3>
                 </div>
 
 
@@ -20,11 +20,11 @@
                             <option value="100">100</option>
                         </select>
                         <span class="input-group-text" id="basic-addon1"><i class="bi bi-search"></i></span>
-                        <input type="text" class="form-control" placeholder="Buscar presentación" aria-label="Username"
+                        <input type="text" class="form-control" placeholder="Buscar subcategoría" aria-label="Username"
                             aria-describedby="basic-addon1" wire:model="buscar">
 
                         <button type="button" class="btn btn-outline-light float-right ml-2" data-toggle="modal"
-                            data-target="#presentacionModal">Nueva presentación <i class="las la-plus-circle"></i></button>
+                            data-target="#subModal">Nueva subcategorias <i class="las la-plus-circle"></i></button>
                     </div>
                 </div>
             </div>
@@ -34,22 +34,20 @@
                 <thead>
                     <tr>
                         <th>Nombre</th>
-                        <th>% Caja</th>
-                        <th>% Blister</th>
-                        <th>% Unidad</th>
+                        <th>Categoría</th>
+
                         <th>Estado</th>
                         <th class="text-center">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse ($presentaciones as $presentacion)
+                    @forelse ($Subcategorias as $sub)
                     <tr>
-                        <td>{{ ucwords($presentacion->name) }}</td>
+                        <td>{{ ucwords($sub->name) }}</td>
 
-                        <td>{{ $presentacion->por_caja }} %</td>
-                        <td>{{ $presentacion->por_blister }} %</td>
-                        <td>{{ $presentacion->por_unidad }} %</td>
-                        <td>@if($presentacion->status == 'ACTIVE')
+                        <td>{{ $sub->category_id }}</td>
+
+                        <td>@if($sub->status == 'ACTIVE')
                             <span class="badge bg-success">ACTIVO</span>
                         @else
                         <span class="badge bg-danger">DESHABILITADO</span>
@@ -57,11 +55,11 @@
                         <td class="text-center">
 
                             <a @popper(Actualizar) class="btn btn-outline-success btn-sm" href="#" role="button"
-                                data-toggle="modal" data-target="#presentacionModal"
-                                wire:click="sendData( {{ $presentacion }} )"><i class="bi bi-pencil-square"></i></a>
+                                data-toggle="modal" data-target="#subModal"
+                                wire:click="sendData( {{ $sub }} )"><i class="bi bi-pencil-square"></i></a>
 
                             <button @popper(Eliminar) class="btn btn-outline-danger btn-sm"
-                                wire:click="destroy( {{ $presentacion->id }} )"><i class="bi bi-trash3"></i></button>
+                                wire:click="destroy( {{ $sub->id }} )"><i class="bi bi-trash3"></i></button>
                         </td>
                     </tr>
 
@@ -78,14 +76,14 @@
         <div class="card-footer">
             <nav aria-label="...">
                 <ul class="pagination">
-                    {{ $presentaciones->links() }}
+                    {{ $Subcategorias->links() }}
                 </ul>
             </nav>
 
         </div>
     </div>
 </div>
-@include('modals.presentacion.createpresentacion')
+@include('modals.subcategorias.create')
 <script>
       window.addEventListener('alert', () => {
             Swal.fire({
