@@ -60,7 +60,6 @@ class ProductManager {
             this.handlePresentacionChange()
         );
 
-
         /*-------------Eventos de todos los botones del modal -------------*/
 
         const agregarBtn = document.getElementById(
@@ -74,10 +73,14 @@ class ProductManager {
         pagarBtn.addEventListener("click", () => this.handlePagarButtonClick());
 
         const btnIncrementar = document.getElementById("btnIncrementar");
-        btnIncrementar.addEventListener("click", () => this.handleIncrementarCantidadButtonClick());
+        btnIncrementar.addEventListener("click", () =>
+            this.handleIncrementarCantidadButtonClick()
+        );
 
         const btnDecrementar = document.getElementById("btnDecrementar");
-        btnDecrementar.addEventListener("click", () => this.handleDecrementarCantidadButtonClick());
+        btnDecrementar.addEventListener("click", () =>
+            this.handleDecrementarCantidadButtonClick()
+        );
 
         var valorSeleccionado;
 
@@ -90,68 +93,61 @@ class ProductManager {
         );
     }
 
-    handleIncrementarCantidadButtonClick(){
+    handleIncrementarCantidadButtonClick() {
         const selectElement = document.getElementById("selectPresentacion");
         const selectedIndex = selectElement.selectedIndex;
 
-         if(selectedIndex === 0){
+        if (selectedIndex === 0) {
             selectElement.classList.add("is-invalid");
-        }else{
+        } else {
             selectElement.classList.remove("is-invalid");
 
             const cantidadInput = document.getElementById("cantidadInput");
             cantidadInput.value = parseInt(cantidadInput.value, 10) + 1;
             productManager.handleCantidadInputChange();
         }
-
-
     }
 
-    handleDecrementarCantidadButtonClick(){
+    handleDecrementarCantidadButtonClick() {
         const selectElement = document.getElementById("selectPresentacion");
         const selectedIndex = selectElement.selectedIndex;
 
-
-        if(selectedIndex === 0){
+        if (selectedIndex === 0) {
             selectElement.classList.add("is-invalid");
-        }else{
+        } else {
             selectElement.classList.remove("is-invalid");
 
             const cantidadInput = document.getElementById("cantidadInput");
-            if(cantidadInput.value > 1){
+            if (cantidadInput.value > 1) {
                 cantidadInput.value = parseInt(cantidadInput.value, 10) - 1;
                 productManager.handleCantidadInputChange();
             }
         }
     }
 
-
-
     handlePagarButtonClick() {
+        // Obtener los elementos de los radio buttons
+        const opcionSi = document.getElementById("opcionSi");
+        const opcionNo = document.getElementById("opcionNo");
 
-            // Obtener los elementos de los radio buttons
-            const opcionSi = document.getElementById('opcionSi');
-            const opcionNo = document.getElementById('opcionNo');
+        // Obtener el valor seleccionado
+        const opcionSeleccionada = document.querySelector(
+            'input[name="opcionRadio"]:checked'
+        ).value;
 
-            // Obtener el valor seleccionado
-            const opcionSeleccionada = document.querySelector('input[name="opcionRadio"]:checked').value;
+        const selectMetodoPago = document.getElementById("selectMetodoPago");
+        const metodoPagoSeleccionado = selectMetodoPago.value;
 
-            const selectMetodoPago = document.getElementById('selectMetodoPago');
-            const metodoPagoSeleccionado = selectMetodoPago.value;
+        const descuentoGlobalSpan = document.querySelector(".descuentoGlobal");
+        const subTotalGlobalSpan = document.querySelector(".subTotalGlobal");
+        const ivaTotalGlobalSpan = document.querySelector(".ivaTotalGlobal");
+        const granTotalSpan = document.querySelector(".granTotal");
 
-            const descuentoGlobalSpan = document.querySelector('.descuentoGlobal');
-            const subTotalGlobalSpan = document.querySelector('.subTotalGlobal');
-            const ivaTotalGlobalSpan = document.querySelector('.ivaTotalGlobal');
-            const granTotalSpan = document.querySelector('.granTotal');
-
-            // Obtener los valores de los elementos span
-            const descuentoGlobal = parseFloat(descuentoGlobalSpan.textContent);
-            const subTotalGlobal = parseFloat(subTotalGlobalSpan.textContent);
-            const ivaTotalGlobal = parseFloat(ivaTotalGlobalSpan.textContent);
-            const granTotal = parseFloat(granTotalSpan.textContent);
-
-
-
+        // Obtener los valores de los elementos span
+        const descuentoGlobal = parseFloat(descuentoGlobalSpan.textContent);
+        const subTotalGlobal = parseFloat(subTotalGlobalSpan.textContent);
+        const ivaTotalGlobal = parseFloat(ivaTotalGlobalSpan.textContent);
+        const granTotal = parseFloat(granTotalSpan.textContent);
 
         // Crear un objeto con los datos
         const datosVenta = {
@@ -164,9 +160,8 @@ class ProductManager {
             productosParaVenta: productosParaVenta,
         };
 
-
         // Emitir los datos al componente Livewire
-         Livewire.emit("crearVentaEvent", datosVenta);
+        Livewire.emit("crearVentaEvent", datosVenta);
     }
 
     handleAgregarButtonClick() {
@@ -242,7 +237,6 @@ class ProductManager {
     }
 
     handleCantidadInputChange() {
-
         // Obtener el valor de cantidadInput
         const nuevoValor = parseInt(
             document.getElementById("cantidadInput").value
@@ -313,12 +307,30 @@ class ProductManager {
         );
 
         if (productoExistente) {
+            const iva = productManager.handleObtenerIva(
+                producto,
+                cantidadIngresada,
+                presentacionSeleccionada
+            );
             // El producto ya existe, actualizar cantidad y subtotal
             productoExistente.cantidad += cantidadIngresada;
-            productoExistente.subtotal =
-                productoExistente.cantidad * precioUnitario;
+          //  productoExistente.subtotal =
+            productoExistente.cantidad * precioUnitario;
+            productoExistente.iva = productoExistente.cantidad * iva;
+            productoExistente.subtotal = productoExistente.precio_unitario * productoExistente.cantidad;
+
+
+
         } else {
             // El producto no existe, agregar un nuevo producto
+
+
+            const iva = productManager.handleObtenerIva(
+                producto,
+                cantidadIngresada,
+                presentacionSeleccionada
+            );
+
             const nuevoProducto = {
                 item: productosParaVenta.length + 1,
                 id_producto: producto.id,
@@ -327,10 +339,12 @@ class ProductManager {
                 forma: presentacionSeleccionada,
                 precio_unitario: precioUnitario,
                 cantidad: cantidadIngresada,
-                iva: 0,
+                iva: iva,
                 descuento: 0,
                 subtotal: cantidadIngresada * precioUnitario,
             };
+
+
 
             // Agregar el nuevo producto al array
             productosParaVenta.push(nuevoProducto);
@@ -340,7 +354,30 @@ class ProductManager {
         this.actualizarTabla();
     }
 
+    handleObtenerIva(producto, cantidad, presentacionSeleccionada) {
+        let iva = 0;
+
+        switch (presentacionSeleccionada) {
+            case "disponible_caja":
+                iva = producto.valor_iva_caja * cantidad;
+                break;
+            case "disponible_blister":
+                iva = producto.valor_iva_blister * cantidad;
+                break;
+            case "disponible_unidad":
+                iva = producto.valor_iva_unidad * cantidad;
+                break;
+            default:
+                // Manejar el caso por defecto
+                iva = 0;
+                break;
+        }
+
+        return iva;
+    }
+
     handleAgregarProducto(event) {
+
         productoActual = event.detail.producto;
         const producto = event.detail.producto;
 
@@ -517,7 +554,7 @@ class ProductManager {
                 }
             }
 
-            /* // Agregar una celda para el botón de eliminar
+             // Agregar una celda para el botón de eliminar
             var celdaEliminar = fila.insertCell();
             celdaEliminar.classList.add("celda-eliminar");
 
@@ -529,49 +566,72 @@ class ProductManager {
                 "click",
                 function () {
                     // Llama a EliminarFila sin necesidad de almacenar en una variable
-                    this.EliminarFila(fila.dataset.index);
+                    productManager.EliminarFila(fila.dataset.index);
                 }.bind(this)
             );
 
-            celdaEliminar.appendChild(btnEliminar); */
+            celdaEliminar.appendChild(btnEliminar);
         });
 
         this.calcularDatosGlobales();
+    }
+
+    EliminarFila(fila)
+    {
+        productosParaVenta.splice(fila, 1);
+        productManager.actualizarTabla();
+
 
     }
 
-    calcularDatosGlobales()
-    {
+    calcularDatosGlobales() {
         let descuentoGlobal = 0;
         let subTotalGlobal = 0;
         let ivaTotalGlobal = 0;
         let granTotal = 0;
 
-         // Recorrer el array productosParaVenta
-        productosParaVenta.forEach(producto => {
-            // Realizar cálculos según tus necesidades
+        // Recorrer el array productosParaVenta
+        productosParaVenta.forEach((producto) => {
+
             const subtotal = parseFloat(producto.subtotal);
-            const itemDescuento = subtotal * (parseFloat(producto.descuento) / 100);
-            const itemIva = subtotal * (parseFloat(producto.iva) / 100);
+            const itemDescuento = parseFloat(producto.descuento);
+            const itemIva = parseFloat(producto.iva);
 
             // Acumular valores
             descuentoGlobal += itemDescuento;
-            subTotalGlobal += subtotal;
+            granTotal += subtotal;
             ivaTotalGlobal += itemIva;
+
+
         });
 
-        // Calcular granTotal como la suma de descuentoGlobal, subTotalGlobal e ivaTotalGlobal
-        granTotal = descuentoGlobal + subTotalGlobal + ivaTotalGlobal;
+        subTotalGlobal = granTotal - ivaTotalGlobal;
+        granTotal = granTotal - descuentoGlobal;
 
+
+
+        // Calcular granTotal como la suma de descuentoGlobal, subTotalGlobal e ivaTotalGlobal
 
 
         // Actualizar elementos en el DOM si es necesario
-         const granTotalFormateado = granTotal;
-        document.querySelector('.granTotal').textContent = granTotalFormateado;
-        document.querySelector('.descuentoGlobal').textContent = descuentoGlobal;
-        document.querySelector('.subTotalGlobal').textContent = subTotalGlobal;
-        document.querySelector('.ivaTotalGlobal').textContent = ivaTotalGlobal;
+        const granTotalFormateado = granTotal;
+        document.querySelector(".granTotal").textContent = granTotalFormateado;
+        document.querySelector(".descuentoGlobal").textContent =
+            descuentoGlobal;
+        document.querySelector(".subTotalGlobal").textContent = subTotalGlobal;
+        document.querySelector(".ivaTotalGlobal").textContent = ivaTotalGlobal;
+    }
 
+    formatearMonedaCOP(valor) {
+        // Formatear el valor como moneda colombiana (COP)
+        const valorFormateado = valor.toLocaleString('es-CO', {
+            style: 'currency',
+            currency: 'COP',
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0,
+        });
+
+        return valorFormateado;
     }
 
 
@@ -601,7 +661,5 @@ document.addEventListener("livewire:load", function () {
 
 // Crear una instancia de la clase para empezar el proceso
 const productManager = new ProductManager();
-
-
 
 /*---------------------Script que recibe los datos desde el modal de busqueda  ------------*/

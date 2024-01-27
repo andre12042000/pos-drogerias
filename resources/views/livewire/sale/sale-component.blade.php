@@ -94,7 +94,7 @@
                             <th scope="col">Forma</th>
                             <th scope="col">Precio Unit.</th>
                             <th scope="col">Cant.</th>
-                            <th scope="col">Descuento</th>
+                            <th scope="col">Iva</th>
                             <th scope="col">Total</th>
                             <th scope="col">Opciones</th>
                         </tr>
@@ -146,13 +146,14 @@
                     </div>
                     <div class="col columna-cuentas">
                         <div class="costo-compra mt-2">
-                            <label>Descuento:</label>
-                            <span class="descuentoGlobal"></span>
-                        </div>
-                        <div class="costo-compra mt-2">
                             <label>Subtotal:</label>
                             <span class="subTotalGlobal"></span>
                         </div>
+                        <div class="costo-compra mt-2">
+                            <label>Descuento:</label>
+                            <span class="descuentoGlobal"></span>
+                        </div>
+
                         <div class="costo-compra mt-2">
                             <label>IVA:</label>
                             <span class="ivaTotalGlobal"></span>
