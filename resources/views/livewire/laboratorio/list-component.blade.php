@@ -6,7 +6,7 @@
 
             <div class="row">
                 <div class="col-sm-6">
-                    <h3>Presentación</h3>
+                    <h3>Laboratorios</h3>
                 </div>
 
 
@@ -24,7 +24,7 @@
                             aria-describedby="basic-addon1" wire:model="buscar">
 
                         <button type="button" class="btn btn-outline-light float-right ml-2" data-toggle="modal"
-                            data-target="#presentacionModal">Nueva presentación <i class="las la-plus-circle"></i></button>
+                            data-target="#laboratorioModal">Nuevo laboratorio <i class="las la-plus-circle"></i></button>
                     </div>
                 </div>
             </div>
@@ -34,22 +34,18 @@
                 <thead>
                     <tr>
                         <th>Nombre</th>
-                        <th>% Caja</th>
-                        <th>% Blister</th>
-                        <th>% Unidad</th>
+
                         <th>Estado</th>
                         <th class="text-center">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse ($presentaciones as $presentacion)
+                    @forelse ($laboratorios as $laboratorio)
                     <tr>
-                        <td>{{ ucwords($presentacion->name) }}</td>
+                        <td>{{ ucwords($laboratorio->name) }}</td>
 
-                        <td>{{ $presentacion->por_caja }} %</td>
-                        <td>{{ $presentacion->por_blister }} %</td>
-                        <td>{{ $presentacion->por_unidad }} %</td>
-                        <td>@if($presentacion->status == 'ACTIVE')
+
+                        <td>@if($laboratorio->status == 'ACTIVE')
                             <span class="badge bg-success">ACTIVO</span>
                         @else
                         <span class="badge bg-danger">DESHABILITADO</span>
@@ -57,11 +53,11 @@
                         <td class="text-center">
 
                             <a @popper(Actualizar) class="btn btn-outline-success btn-sm" href="#" role="button"
-                                data-toggle="modal" data-target="#presentacionModal"
-                                wire:click="sendData( {{ $presentacion }} )"><i class="bi bi-pencil-square"></i></a>
+                                data-toggle="modal" data-target="#laboratorioModal"
+                                wire:click="sendData( {{ $laboratorio }} )"><i class="bi bi-pencil-square"></i></a>
 
                             <button @popper(Eliminar) class="btn btn-outline-danger btn-sm"
-                                wire:click="destroy( {{ $presentacion->id }} )"><i class="bi bi-trash3"></i></button>
+                                wire:click="destroy( {{ $laboratorio->id }} )"><i class="bi bi-trash3"></i></button>
                         </td>
                     </tr>
 
@@ -78,14 +74,14 @@
         <div class="card-footer">
             <nav aria-label="...">
                 <ul class="pagination">
-                    {{ $presentaciones->links() }}
+                    {{ $laboratorios->links() }}
                 </ul>
             </nav>
 
         </div>
     </div>
 </div>
-@include('modals.presentacion.createpresentacion')
+@include('modals.laboratorios.create')
 <script>
       window.addEventListener('alert', () => {
             Swal.fire({

@@ -1,30 +1,26 @@
 <?php
 
-namespace App\Http\Livewire\Presentacion;
+namespace App\Http\Livewire\Laboratorio;
 
-use App\Models\Presentacion;
+use App\Models\Laboratorio;
 use Livewire\Component;
 
 class CreateComponent extends Component
 {
     public $name, $selected_id;
     public $status = 'ACTIVE';
-    public $disponible_caja, $disponible_blister, $disponible_unidad, $por_caja, $por_blister, $por_unidad;
 
-    protected $listeners = ['PresentacionEvent'];
+    protected $listeners = ['LaboratorioEvent'];
 
-    public function PresentacionEvent($presentacion)
+    public function LaboratorioEvent($presentacion)
     {
-        $this->selected_id              = $presentacion['id'];
-        $this->name                     = $presentacion['name'];
-        $this->por_caja                 = $presentacion['por_caja'];
-        $this->por_blister              = $presentacion['por_blister'];
-        $this->por_unidad               = $presentacion['por_unidad'];
+        $this->selected_id          = $presentacion['id'];
+        $this->name                 = $presentacion['name'];
         $this->status               = $presentacion['status'];
 
     }
     protected $rules = [
-        'name'                  =>  'required|min:4|max:254|unique:presentacions,name',
+        'name'                  =>  'required|min:4|max:254|unique:laboratorios,name',
 
     ];
 
@@ -35,10 +31,9 @@ class CreateComponent extends Component
         'name.unique'                   => 'Este nombre ya ha sido registrado',
 
     ];
-
     public function render()
     {
-        return view('livewire.presentacion.create-component');
+        return view('livewire.laboratorio.create-component');
     }
 
     public function storeOrupdate()
@@ -48,7 +43,7 @@ class CreateComponent extends Component
         }else{
             $this->save();
         }
-        $this->emit('reloadpresentaciones');
+        $this->emit('reloadlaboratorios');
     }
 
     public function save()
@@ -57,34 +52,26 @@ class CreateComponent extends Component
         $validatedData = $this->validate();
 
 
-         Presentacion::create([
+         Laboratorio::create([
             'name'                  => mb_strtoupper($this->name),
-            'por_caja'              => $this->por_caja,
-            'por_blister'           => $this->por_blister,
-            'por_unidad'            => $this->por_unidad,
             'status'                => $this->status,
         ]);
 
         $this->cancel();
         $this->dispatchBrowserEvent('close-modal');
         $this->dispatchBrowserEvent('alert');
-        session()->flash('message', 'Presentación  creado exitosamente');
     }
 
     public function update()
     {
       $this->validate([
-        'name'       =>  'required|min:4|max:254|unique:presentacions,name,' . $this->selected_id,
+        'name'       =>  'required|min:4|max:254|unique:laboratorios,name,' . $this->selected_id,
       ]);
 
-        $presentacion = Presentacion::find($this->selected_id);
+        $presentacion = Laboratorio::find($this->selected_id);
 
         $presentacion->update([
             'name'                  => mb_strtoupper($this->name),
-
-            'por_caja'              => $this->por_caja,
-            'por_blister'           => $this->por_blister,
-            'por_unidad'            => $this->por_unidad,
             'status'                => $this->status,
         ]);
         $this->cancel();

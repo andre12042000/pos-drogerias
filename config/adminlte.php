@@ -468,6 +468,13 @@ return [
                     'icon_color' => 'white',
                     'route'      => 'parametros.presentaciones',
                 ],
+                [
+                    'text'       => 'Laboratorios',
+                    'classes'    => 'text-white',
+                    'icon'       => 'bi bi-bookmarks',
+                    'icon_color' => 'white',
+                    'route'      => 'parametros.laboratorios',
+                ],
             ],
         ],
 

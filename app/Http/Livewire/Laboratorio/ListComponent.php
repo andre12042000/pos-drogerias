@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Livewire\Presentacion;
+namespace App\Http\Livewire\Laboratorio;
 
 use App\Models\Product;
 use Livewire\Component;
-use App\Models\Presentacion;
+use App\Models\Laboratorio;
 use Livewire\WithPagination;
 
 class ListComponent extends Component
@@ -12,24 +12,26 @@ class ListComponent extends Component
     use WithPagination;
     protected $paginationTheme = 'bootstrap';
     public $cantidad_registros = 10;
-    protected $listeners = ['reloadpresentaciones'];
+    protected $listeners = ['reloadlaboratorios'];
     public $buscar;
 
-    public function reloadpresentaciones()
+    public function reloadlaboratorios()
     {
         $this->render();
     }
+
     public function render()
     {
-
-        $presentaciones = Presentacion::search($this->buscar)->orderBy('name', 'ASC')
+        $laboratorios = Laboratorio::search($this->buscar)->orderBy('name', 'ASC')
             ->paginate($this->cantidad_registros);
-        return view('livewire.presentacion.list-component', compact('presentaciones'))->extends('adminlte::page');
+
+
+        return view('livewire.laboratorio.list-component', compact('laboratorios'))->extends('adminlte::page');
     }
 
-    public function sendData($presentacion)
+    public function sendData($laboratorio)
     {
-        $this->emit('PresentacionEvent', $presentacion);
+        $this->emit('LaboratorioEvent', $laboratorio);
     }
 
     public function destroy($id)
@@ -38,12 +40,12 @@ class ListComponent extends Component
         $products = Product::where('presentacion_id', $id)->first();
 
         if ($products) {
-            session()->flash('warning', 'Presentación esta siendo utilizada no se puede eliminar');
+            session()->flash('warning', 'Este laboratorio esta siendo utilizada no se puede eliminar');
             return view('livewire.presentacion.list-component');
         } else {
-            $presentacion = Presentacion::find($id);
+            $presentacion = Laboratorio::find($id);
             $presentacion->delete();
-            session()->flash('delete', 'Presentación eliminada exitosamente');
+            session()->flash('delete', 'Laboratorio eliminado exitosamente');
             return view('livewire.presentacion.list-component');
         }
     }
