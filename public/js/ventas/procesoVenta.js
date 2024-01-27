@@ -60,6 +60,9 @@ class ProductManager {
             this.handlePresentacionChange()
         );
 
+
+        /*-------------Eventos de todos los botones del modal -------------*/
+
         const agregarBtn = document.getElementById(
             "agregarProductosArrayVenta"
         );
@@ -69,6 +72,12 @@ class ProductManager {
 
         const pagarBtn = document.getElementById("pagarBtn");
         pagarBtn.addEventListener("click", () => this.handlePagarButtonClick());
+
+        const btnIncrementar = document.getElementById("btnIncrementar");
+        btnIncrementar.addEventListener("click", () => this.handleIncrementarCantidadButtonClick());
+
+        const btnDecrementar = document.getElementById("btnDecrementar");
+        btnDecrementar.addEventListener("click", () => this.handleDecrementarCantidadButtonClick());
 
         var valorSeleccionado;
 
@@ -80,6 +89,43 @@ class ProductManager {
             this.handleAgregarProducto(event)
         );
     }
+
+    handleIncrementarCantidadButtonClick(){
+        const selectElement = document.getElementById("selectPresentacion");
+        const selectedIndex = selectElement.selectedIndex;
+
+         if(selectedIndex === 0){
+            selectElement.classList.add("is-invalid");
+        }else{
+            selectElement.classList.remove("is-invalid");
+
+            const cantidadInput = document.getElementById("cantidadInput");
+            cantidadInput.value = parseInt(cantidadInput.value, 10) + 1;
+            productManager.handleCantidadInputChange();
+        }
+
+
+    }
+
+    handleDecrementarCantidadButtonClick(){
+        const selectElement = document.getElementById("selectPresentacion");
+        const selectedIndex = selectElement.selectedIndex;
+
+
+        if(selectedIndex === 0){
+            selectElement.classList.add("is-invalid");
+        }else{
+            selectElement.classList.remove("is-invalid");
+
+            const cantidadInput = document.getElementById("cantidadInput");
+            if(cantidadInput.value > 1){
+                cantidadInput.value = parseInt(cantidadInput.value, 10) - 1;
+                productManager.handleCantidadInputChange();
+            }
+        }
+    }
+
+
 
     handlePagarButtonClick() {
 
@@ -196,7 +242,6 @@ class ProductManager {
     }
 
     handleCantidadInputChange() {
-        console.log("cambie cantidad");
 
         // Obtener el valor de cantidadInput
         const nuevoValor = parseInt(
