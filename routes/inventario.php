@@ -19,7 +19,7 @@ Route::get('low_stock', LowStockComponent::class)->name('low.stock');
 Route::get('productos/detalles/{product}', ShowComponent::class)->name('product.show');
 
 Route::get('compras', [PurchaseController::class, 'index'])->name('purchase');
-Route::get('compras/edit/{purchase}', [PurchaseController::class, 'edit'])->name('purchase.edit')->middleware([ PermissionMiddleware::class.':Acceso Inventario Editar']);
+Route::get('compras/detalles/{purchase}', [PurchaseController::class, 'edit'])->name('purchase.edit')->middleware([ PermissionMiddleware::class.':Acceso Inventario Editar']);
 
 Route::get('productos/import',  [ImportProductsController::class, 'importview'])->name('import.view');
 Route::post('productos/import/data',  [ImportProductsController::class, 'importardata'])->name('import.data');

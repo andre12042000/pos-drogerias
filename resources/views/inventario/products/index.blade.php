@@ -27,7 +27,7 @@
 @section('content')
     @include('popper::assets')
     @include('includes.alert')
-    @livewire('product.listar-component', ['products' => $products])
+    @livewire('product.listar-component')
 
     <!-- Modal para crear producto -->
     @include('modals.products.create')

@@ -39,6 +39,11 @@ class Product extends Model
         return $this->belongsTo(Brand::class);
     }
 
+    public function presentacion()
+    {
+        return $this->belongsTo(Presentacion::class, 'presentacion_id');
+    }
+
 
     //retornar el nombre del producto en mayusculas
     public function getProductoAttribute()

@@ -44,8 +44,8 @@
                     <div class="col">
 
                         <div class="mb-3 row">
-                            <label for="staticEmail" class="col-sm-3 col-form-label">Transacción</label>
-                            <div class="col-sm-9">
+                            <label for="staticEmail" class="col-sm-4 col-form-label">Transacción</label>
+                            <div class="col-sm-8">
                                 <select class="form-select" aria-label="Default select example" wire:model.lazy = 'tipo_operacion' disabled>
                                     <option selected></option>
                                     <option value="VENTA">Venta</option>

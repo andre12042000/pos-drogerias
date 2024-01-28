@@ -26,7 +26,7 @@ class CreatePurchaseDetailsTable extends Migration
 
             $table->integer('quantity');
             $table->bigInteger('purchase_price')->nullable();
-            $table->bigInteger('sales_price');
+            $table->bigInteger('precio_caja');
 
             $table->decimal('precio_blister',12,0)->nullable();
             $table->decimal('precio_unidad',12,0)->nullable();
