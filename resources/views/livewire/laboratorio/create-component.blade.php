@@ -17,9 +17,9 @@
                     @enderror
                 </div>
 
-                <div class="col-lg-6">
+                <div class="col-lg-12">
                     <div class="form-group row">
-                        <label for="staticEmail" class="col-sm-4 ">Estado</label>
+                        <label for="staticEmail" class="col-sm-12 ">Estado</label>
                         <div class="col-sm-8">
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input" type="radio" name="active_si" id="active_si" value="ACTIVE" wire:model.lazy = "status">
