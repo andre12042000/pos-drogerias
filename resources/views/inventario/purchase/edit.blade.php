@@ -15,7 +15,7 @@
         <ol class="breadcrumb">
             <li class="breadcrumb-item">Inventario</li>
             <li class="breadcrumb-item">Compras</li>
-            <li class="breadcrumb-item active" aria-current="page">Editar</li>
+            <li class="breadcrumb-item active" aria-current="page">Detalles</li>
         </ol>
     </nav>
 </div>
@@ -36,6 +36,10 @@
 
 @livewire('purchase.edit-component', ['purchase' => $purchase])
 
+   <!-- Modal para crear producto -->
+   @include('modals.products.create')
+   @include('modals.purchase.search-products')
+
 
 @stop
 
@@ -44,9 +48,19 @@
 @stop
 
 @section('js')
-    <script>
-        console.log('Hi!');
-    </script>
+
+<script>
+    Livewire.on('calcularDatosEvent', (data) => {
+        console.log('Evento personalizado recibido:');
+        // Aquí puedes realizar acciones adicionales con la información recibida
+    });
+</script>
+
+<script>
+    $(document).ready(function(){
+        $('#searchproductsemodal').modal('show'); // Abre el modal al cargar la página
+    });
+</script>
 
 <script>
 

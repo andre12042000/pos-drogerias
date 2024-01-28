@@ -10,6 +10,24 @@ class Presentacion extends Model
     use HasFactory;
     protected $guarded= ['id'];
 
+    /*-------------------Relaciones ---------------------*/
+
+
+    public function products()
+    {
+        return $this->hasMany(Product::class, 'presentacion_id');
+    }
+
+
+
+
+
+
+
+
+
+    /*------------------Scopes -----------------------*/
+
 
      public function scopeActive($query)
        {
