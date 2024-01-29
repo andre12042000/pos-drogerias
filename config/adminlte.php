@@ -483,7 +483,7 @@ return [
                     'route'      => 'parametros.laboratorios',
                 ],
                 [
-                    'text'       => 'Ubicación',
+                    'text'       => 'Ubicaciones',
                     'classes'    => 'text-white',
                     'icon'       => 'fas fa-map-marker-alt',
                     'icon_color' => 'white',

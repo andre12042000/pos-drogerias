@@ -21,7 +21,7 @@
                     get isOpen() { return this.open },
                     toggle() { this.open = !this.open },
                  }">
-                <div class="form-group col-md-4">
+                <div class="form-group col-md-12">
                     <label for="inputEmail4">Categoría <i @popper(Crear categoría) class="bi bi-plus-circle-fill ml-1 text-success" style="cursor: pointer" @click="toggle()"></i> </label>
                     <div x-show="isOpen">
                       <input type="text" class="form-control @if($nuevacategoria == '') @else @error('nuevacategoria') is-invalid @else is-valid @enderror @endif mb-2" placeholder="Nueva categoría" wire:keydown.enter="guardarCategoria" wire:model.lazy="nuevacategoria" autocomplete="off">
@@ -40,7 +40,7 @@
                     @enderror
                 </div>
                   </div>
-                <div class="col-lg-6">
+                <div class="col-lg-12">
                     <div class="form-group row">
                         <label for="staticEmail" class="col-sm-12 ">Estado</label>
                         <div class="col-sm-8">

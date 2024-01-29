@@ -12,7 +12,7 @@ class CreateComponent extends Component
     public $status = 'ACTIVE';
     public $categories, $nuevacategoria;
 
-    protected $listeners = ['SubEvent'];
+    protected $listeners = ['SubEvent', 'CategoryEvent'];
 
     public function SubEvent($sub)
     {
