@@ -19,6 +19,7 @@ trait AddProductsInventario
 
         $nuevos_blister = 0;
         $nuevos_unidad = 0;
+        $cajas_stock_antes_actualizar = $stock_actual->cantidad_caja;
         $nuevas_cajas = $details['quantity'];
 
 
@@ -41,8 +42,8 @@ trait AddProductsInventario
          ]);
 
 
-         if($details['caducidad']){
-            $this->registrarVencimientos($details);
+        if($details['caducidad']){
+            $this->registrarVencimientos($details, $cajas_stock_antes_actualizar);
         }
 
 
@@ -53,7 +54,7 @@ trait AddProductsInventario
 
     }
 
-    function registrarVencimientos($detalles)
+    function registrarVencimientos($detalles, $cajas_stock_antes_actualizar)
     {
         Vencimientos::create([
             'purchase_id'       => $detalles['purchase_id'],
@@ -62,6 +63,7 @@ trait AddProductsInventario
             'lote'              => $detalles['lote'],
             'cantidad_ingresada'=> $detalles['quantity'],
             'cantidad_vendida'  => 0,
+            'cantidad_cajas_stock_anterior' => $cajas_stock_antes_actualizar,
             'status'            => 'ACTIVE',
         ]);
 
