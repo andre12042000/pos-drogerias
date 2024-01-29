@@ -69,6 +69,8 @@ class EditComponent extends Component
             'status' => 'APLICADO',
         ]);
 
+        
+
     }
 
 
