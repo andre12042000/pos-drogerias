@@ -63,7 +63,7 @@
                     <tr>
                         <td>{{ ucwords($sub->name) }}</td>
 
-                        <td>{{ $sub->category_id }}</td>
+                        <td>{{ $sub->categorias->name }}</td>
 
                         <td>@if($sub->status == 'ACTIVE')
                             <span class="badge bg-success">ACTIVO</span>
