@@ -3,7 +3,7 @@ window.addEventListener('calcularDatosEvent', event => {
     var cantidad = document.getElementById('cantidad');
     var precio_compra = document.getElementById('precio_compra');
     var iva = document.getElementById('iva');
-    var descuento = document.getElementById('descuento');
+   // var descuento = document.getElementById('descuento');
     var precio_venta_caja = document.getElementById('precio_venta_caja');
     var name = document.getElementById('name_add');
     var fecha_vencimiento = document.getElementById('fecha_vencimiento');
@@ -17,7 +17,7 @@ window.addEventListener('calcularDatosEvent', event => {
     cantidad.removeAttribute('disabled');
     precio_compra.removeAttribute('disabled');
     iva.removeAttribute('disabled');
-    descuento.removeAttribute('disabled');
+  //  descuento.removeAttribute('disabled');
     precio_venta_caja.removeAttribute('disabled');
 
 
@@ -25,7 +25,7 @@ window.addEventListener('calcularDatosEvent', event => {
     cantidad.classList.add('is-invalid');
     precio_compra.classList.add('is-invalid');
     iva.classList.add('is-invalid');
-    descuento.classList.add('is-invalid');
+  //  descuento.classList.add('is-invalid');
     lote.classList.add('is-invalid');
     fecha_vencimiento.classList.add('is-invalid');
 
@@ -58,6 +58,9 @@ document.addEventListener("DOMContentLoaded", function() {
     var precio_compra = document.getElementById('precio_compra');
     var iva = document.getElementById('iva');
     var descuento = document.getElementById('descuento');
+    var obsequio = document.getElementById('obsequio');
+
+    var submitDataBack = document.getElementById('agregarProductoBtn');
 
      // Agregar listeners para los eventos de cambio
      cantidad.addEventListener('change', activarBotonAgregarProducto);
@@ -80,8 +83,61 @@ document.addEventListener("DOMContentLoaded", function() {
         calcularPreciosVenta();
     }
 
+    submitDataBack.addEventListener('click', function() {
+
+
+        var name = document.getElementById('name_add').value;
+        var lote = document.getElementById('lote').value;
+        var fecha_vencimiento = document.getElementById('fecha_vencimiento').value;
+
+        var cantidad = document.getElementById('cantidad').value;
+        var precio_compra = document.getElementById('precio_compra').value;
+        var iva = document.getElementById('iva').value;
+        var descuento = document.getElementById('descuento').value;
+
+        var precio_venta_caja = document.getElementById('precio_venta_caja').value;
+        var precio_venta_blister = document.getElementById('precio_venta_blister').value;
+        var precio_venta_unidad = document.getElementById('precio_venta_unidad').value;
+
+        var checkbox = document.getElementById("obsequio");
+        var isChecked = checkbox.checked;
+        var ingresaComoObsequio = false;
+
+        // Realizar acciones en consecuencia
+        if (isChecked) {
+           ingresaComoObsequio = true;
+        }
+
+
+        var dataIngresoProducto = {
+            name: name,
+            lote: lote,
+            fecha_vencimiento: fecha_vencimiento,
+            cantidad: cantidad,
+            precio_compra: precio_compra,
+            iva: iva,
+            descuento: descuento,
+            precio_venta_caja: precio_venta_caja,
+            precio_venta_blister: precio_venta_blister,
+            precio_venta_unidad: precio_venta_unidad,
+            ingresaComoObsequio: ingresaComoObsequio,
+        };
+
+
+        Livewire.emit('submitEvent', dataIngresoProducto)
+
+
+
+
+
+
+    });
+
 
 });
+
+
+
 
 
 

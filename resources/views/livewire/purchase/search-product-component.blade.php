@@ -7,6 +7,7 @@
         </div>
         @include('popper::assets')
         <div class="modal-body ">
+            @include('includes.alert')
 
             <div x-data="{ busquedaAvanzada: false }">
                 <div class="row">
@@ -42,16 +43,14 @@
                                 <th scope="col">Código</th>
                                 <th scope="col">Nombre / Descripción</th>
                                 <th scope="col">Laboratorio</th>
-                                <th>Seleccionar</th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse ($productos as $producto)
-                                <tr wire:click="seleccionarProducto({{ $producto }})">
-                                    <th scope="row">{{ $producto->code }}</th>
+                                <tr wire:click="seleccionarProducto({{ $producto }})" style="cursor: pointer">
+                                    <th scope="row" >{{ $producto->code }}</th>
                                     <td>{{ $producto->name }}</td>
                                     <td>{{ $producto->laboratorio->name }}</td>
-                                    <td style="cursor: pointer;"><i class="bi bi-box-arrow-down-left"></i></td>
                                 </tr>
                             @empty
                                 <tr>
@@ -208,6 +207,14 @@
                 <div class="row mt-1">
 
                     <div class="col-4">
+
+                        <div class="form-check mt-2">
+                            <input class="form-check-input" type="checkbox" id="obsequio" value="1">
+                            <label class="form-check-label" for="busquedaAvanzadaInputCheck">
+                                ¡Ingresar como obsequio!
+                            </label>
+                        </div>
+
                     </div>
 
                     <div class="col-4">
@@ -215,7 +222,7 @@
 
                     <div class="col-4">
                         <div class="d-grid gap-2">
-                            <button class="btn btn-outline-success btn-lg" type="button" id="agregarProductoBtn" wire:click="addProduct" disabled>Agregar producto</button>
+                            <button class="btn btn-outline-success btn-lg" type="button" id="agregarProductoBtn" disabled>Agregar producto</button>
                           </div>
 
                     </div>
