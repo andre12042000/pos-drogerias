@@ -6,6 +6,7 @@ use App\Events\VentaRealizada;
 use App\Models\Inventario;
 use App\Models\Product;
 use App\Models\User;
+use App\Models\Vencimientos;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use App\Notifications\LowStockNotification;
@@ -237,6 +238,10 @@ class DescontarInventario
         if ($nuevo_stock_caja <= $producto->stock_min && $producto->stock_min > 0) {
             $this->sendNotifyLowStock($producto);
         }
+
+        if($descontar_caja > 0){
+            $this->descontarItemVencimiento($producto->id, $descontar_caja);
+        }
     }
 
     public function sendNotifyLowStock($product)
@@ -249,10 +254,50 @@ class DescontarInventario
 
     private function calcularNuevoStock($stock_actual, $cantidad_descontar)
     {
+
         // Asegurarse de que el nuevo stock no sea negativo
         $nuevo_stock = max(0, $stock_actual - $cantidad_descontar);
 
         return $nuevo_stock;
+    }
+
+    function descontarItemVencimiento($product_id, $cantidad_descontar)
+    {
+
+        $vencimiento = Vencimientos::where('product_id', $product_id)
+                                    ->where('status', 'ACTIVE')
+                                    ->orderBy('id', 'asc')
+                                    ->first();
+
+        if ($vencimiento) {
+        //
+
+            if ($vencimiento->cantidad_cajas_stock_anterior > 0) {
+                // Hay stock en cantidad_cajas_stock_anterior
+                if ($vencimiento->cantidad_cajas_stock_anterior >= $cantidad_descontar) {
+                    // Descontar del stock anterior
+                    $vencimiento->cantidad_cajas_stock_anterior -= $cantidad_descontar;
+                } else {
+                    // Descontar del stock anterior y el excedente de cantidad vendida
+                    $vencimiento->cantidad_vendida += ($cantidad_descontar - $vencimiento->cantidad_cajas_stock_anterior);
+                    $vencimiento->cantidad_cajas_stock_anterior = 0;
+                }
+            } else {
+                // No hay stock en cantidad_cajas_stock_anterior, descontar de cantidad vendida
+                $vencimiento->cantidad_vendida += $cantidad_descontar;
+            }
+
+            // Verificar si cantidad_vendida llegó a cantidad_ingresada y actualizar el estado
+            if ($vencimiento->cantidad_vendida >= $vencimiento->cantidad_ingresada) {
+                $vencimiento->status = 'DESACTIVE';
+            }
+
+        // Guardar los cambios
+        $vencimiento->save();
+
+
+
+        }
     }
 
 }

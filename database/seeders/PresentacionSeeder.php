@@ -16,14 +16,14 @@ class PresentacionSeeder extends Seeder
     {
 
         Presentacion::create([
-            'name'                  => 'N/A',
+            'name'                  => 'PRODUCTO GENERAL',
             'por_caja'              => '30',
             'por_blister'           => '40',
             'por_unidad'            => '50',
             'status'                => 'ACTIVE'
         ]);
 
-        Presentacion::create([
+      /*   Presentacion::create([
             'name'                  => 'AMPOLLA',
             'por_caja'              => '30',
             'por_blister'           => '40',
@@ -161,6 +161,6 @@ class PresentacionSeeder extends Seeder
             'por_unidad'            => '50',
             'status'                => 'ACTIVE'
         ]);
-
+ */
     }
 }

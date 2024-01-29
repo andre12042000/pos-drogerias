@@ -32,17 +32,10 @@ class ProductsImport implements ToModel
                 $laboratorio = $this->crearlaboratorios($row['3']);
             }
 
-            if($row['4'] == ''){
-                $ubicacion = 1;
-            }else{
-                $ubicacion = $this->crearubicacion($row['4']);
-            }
+            $ubicacion = 1;
 
-            if($row['2'] == ''){
-                $presentacion =  1;
-            }else{
-                $presentacion = $this->crearpresentaciones($row['2']);
-            }
+            $presentacion = 1;
+
 
 
             return  new Product([
@@ -52,7 +45,7 @@ class ProductsImport implements ToModel
                 'stock_min'                 => 0,
                 'stock_max'                 => 0,
                 'image'                     => 'imag/sinimagen.jpg',
-                'precio_caja'               => $row['25'],
+                'precio_caja'               => 0,
                 'precio_blister'            => 0,
                 'precio_unidad'             => 0,
                 'status'                    => 'ACTIVE',
@@ -62,26 +55,26 @@ class ProductsImport implements ToModel
                 'laboratorio_id'            => $laboratorio,
                 'presentacion_id'           => $presentacion,
                 'ubicacion_id'              => $ubicacion,
-                'exento'                    => $row['5'],
-                'excluido'                  => $row['6'],
-                'no_gravado'                => $row['7'],
-                'gravado'                   => $row['8'],
-                'contenido_interno_caja'    => $row['9'],
-                'contenido_interno_blister' => $row['10'],
-                'contenido_interno_unidad'  => $row['11'],
-                'inventario_caja'           => $row['12'],
-                'inventario_blister'        => $row['13'],
-                'inventario_unidad'         => $row['15'],
-                'costo_caja'                => $row['17'],
-                'costo_blister'             => $row['18'],
-                'costo_unidad'              => $row['19'],
-                'valor_iva_caja'            => $row['20'],
-                'valor_iva_blister'         => $row['21'],
-                'valor_iva_unidad'          => $row['22'],
+                'exento'                    => 0,
+                'excluido'                  => 0,
+                'no_gravado'                => 0,
+                'gravado'                   => 0,
+                'contenido_interno_caja'    => 0,
+                'contenido_interno_blister' => 0,
+                'contenido_interno_unidad'  => 0,
+                'inventario_caja'           => 0,
+                'inventario_blister'        => 0,
+                'inventario_unidad'         => 0,
+                'costo_caja'                => 0,
+                'costo_blister'             => 0,
+                'costo_unidad'              => 0,
+                'valor_iva_caja'            => 0,
+                'valor_iva_blister'         => 0,
+                'valor_iva_unidad'          => 0,
                 'iva_product'               => $row['16'],
-                'disponible_caja'           => 1,
-                'disponible_blister'        => 1,
-                'disponible_unidad'         => 1,
+                'disponible_caja'           => 0,
+                'disponible_blister'        => 0,
+                'disponible_unidad'         => 0,
 
             ]);
 

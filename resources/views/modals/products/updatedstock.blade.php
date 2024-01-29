@@ -115,6 +115,23 @@
                                     </div>
                                 </div>
 
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="form-floating mb-3">
+                                            <input type="text" class="form-control" id="lote_ajuste_inventario"
+                                                placeholder="name@example.com">
+                                            <label for="floatingInput">Lote </label>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="form-floating mb-3">
+                                            <input type="date" class="form-control" id="fecha_vencimiento_ajuste_inventario"
+                                                placeholder="name@example.com"  min="0">
+                                            <label for="floatingInput">Fecha de vencimiento</label>
+                                        </div>
+                                    </div>
+                                </div>
+
 
 
                             </div>

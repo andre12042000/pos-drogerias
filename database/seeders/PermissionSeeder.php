@@ -21,7 +21,7 @@ class PermissionSeeder extends Seeder
         Permission::create([
             'name' => 'Acceso Pos Venta',
         ]);
-      
+
         Permission::create([
             'name' => 'Acceso Inventario Ver',
         ]);
@@ -52,7 +52,17 @@ class PermissionSeeder extends Seeder
         Permission::create([
             'name' => 'Acceso Configuración',
         ]);
-       
+
+        Permission::create([
+            'name' => 'Acceso Mantenimiento',
+        ]);
+
+
+        Permission::create([
+            'name' => 'Ordenes de trabajo',
+        ]);
+
+
 
     }
 }

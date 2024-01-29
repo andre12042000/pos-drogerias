@@ -12,6 +12,7 @@ use App\Models\PurchaseDetail;
 use App\Models\SaleDetail;
 use App\Models\Subcategoria;
 use App\Models\Ubicacion;
+use App\Models\Vencimientos;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -28,14 +29,16 @@ class ListarComponent extends Component
 
     function ajusteInventarioEvent($dataEvent)
     {
+
         try {
 
             $product = $this->guardarDataProduct($dataEvent['dataProduct']);
             $this->guardarDatosInventario($dataEvent['datosInventario']);
+            $this->addFechaVencimiento($dataEvent['datosInventario']);
 
-            return redirect()->route('inventarios.product')->with('Se ha actualizado correctamente el producto: ' . $product['name'] );
 
-        } catch (\Exception $e) {
+            return redirect()->route('inventarios.product')->with('Se ha actualizado correctamente el producto: ' . $product['name']);
+         } catch (\Exception $e) {
 
             $errorCode = $e->getCode();
 
@@ -48,15 +51,15 @@ class ListarComponent extends Component
 
         $product = Product::findOrFail($dataProduct['id']);
 
-        if($dataProduct['contenido_interno_blister'] == null){
+        if ($dataProduct['contenido_interno_blister'] == null) {
             $contenido_interno_blister = 0;
-        }else{
+        } else {
             $contenido_interno_blister = $dataProduct['contenido_interno_blister'];
         }
 
-        if($dataProduct['contenido_interno_unidad'] == null){
+        if ($dataProduct['contenido_interno_unidad'] == null) {
             $contenido_interno_unidad = 0;
-        }else{
+        } else {
             $contenido_interno_unidad = $dataProduct['contenido_interno_unidad'];
         }
 
@@ -86,33 +89,60 @@ class ListarComponent extends Component
             'excluido'                  => 0,
             'no_gravado'                => 0,
             'gravado'                   => 0,
-            'laboratorio_id'            => $dataProduct['laboratorio_id'],
+            'laboratorio_id'            => $dataProduct['laboratorio_id'] =! "" ? $dataProduct['laboratorio_id']: 1,
             'ubicacion_id'              => $dataProduct['ubicacion_id'],
             'presentacion_id'           => $dataProduct['presentacion_id'],
             'category_id'               => $dataProduct['category_id'],
             'subcategoria_id'           => $dataProduct['subcategoria_id'],
         ]);
 
+
+
         return $product;
+    }
+
+    function addFechaVencimiento($dataEvent)
+    {
+
+        if ($dataEvent['fecha_vencimiento'] != '') {
+
+            $fechas_vencimiento = Vencimientos::where('product_id', $dataEvent['product_id'])
+                ->where('fecha_vencimiento', $dataEvent['fecha_vencimiento'])
+                ->where('status', 'ACTIVE')
+                ->first();
+
+            if (!$fechas_vencimiento) {
+                Vencimientos::create([
+                    'purchase_id'       => null,
+                    'product_id'        => $dataEvent['product_id'],
+                    'fecha_vencimiento' => $dataEvent['fecha_vencimiento'],
+                    'lote'              => $dataEvent['lote'],
+                    'status'            => 'ACTIVE',
+                    'cantidad_ingresada' => $dataEvent['cantidad_caja'],
+                    'cantidad_vendida'  => 0,
+                    'cantidad_cajas_stock_anterior' => 0,
+                ]);
+            }
+        }
     }
 
     private function guardarDatosInventario($datosInventario)
     {
         $inventario = Inventario::where('product_id', $datosInventario['product_id'])->first();
 
-        if($datosInventario['cantidad_blister'] == null){
+        if ($datosInventario['cantidad_blister'] == null) {
             $cantidad_blister = 0;
-        }else{
+        } else {
             $cantidad_blister = $datosInventario['cantidad_blister'];
         }
 
-        if($datosInventario['cantidad_unidad'] == null){
+        if ($datosInventario['cantidad_unidad'] == null) {
             $cantidad_unidad = 0;
-        }else{
+        } else {
             $cantidad_unidad = $datosInventario['cantidad_unidad'];
         }
 
-         $inventario->update([
+        $inventario->update([
             'cantidad_caja'     => $datosInventario['cantidad_caja'],
             'cantidad_blister'  => $cantidad_blister,
             'cantidad_unidad'   => $cantidad_unidad,

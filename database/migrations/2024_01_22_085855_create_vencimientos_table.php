@@ -15,8 +15,8 @@ class CreateVencimientosTable extends Migration
     {
         Schema::create('vencimientos', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('purchase_id');
-            $table->foreign('purchase_id')->references('id')->on('purchases');
+            $table->unsignedBigInteger('purchase_id')->nullable();
+            $table->foreign('purchase_id')->references('id')->on('purchases')->onDelete('set null');
             $table->unsignedBigInteger('product_id');
             $table->foreign('product_id')->references('id')->on('products');
             $table->date('fecha_vencimiento');
@@ -24,6 +24,7 @@ class CreateVencimientosTable extends Migration
             $table->enum('status',['ACTIVE','DESACTIVE'])->default('ACTIVE');
             $table->string('cantidad_ingresada');
             $table->string('cantidad_vendida');
+            $table->string('cantidad_cajas_stock_anterior');
 
 
 

@@ -346,13 +346,14 @@ return [
                     'icon_color' => 'white',
                     'route'      => 'ventas.pos',
                 ],
-                [
+                /* [
                     'text'       => 'Ordenes de trabajo',
                     'classes'    => 'text-white',
                     'icon'       => 'bi bi-list-ol',
                     'icon_color' => 'white',
                     'route'      => 'orders.index',
-                ],
+                    'can'        => 'Ordenes de trabajo',
+                ], */
             ],
         ],
         [
@@ -379,7 +380,7 @@ return [
 
                 ],
                 [
-                    'text'       => 'Producto bajo stock',
+                    'text'       => 'Producto stock bajo',
                     'classes'    => 'text-white',
                     'icon'       => 'bi bi-exclamation-triangle-fill',
                     'icon_color' => 'white',
@@ -388,12 +389,12 @@ return [
             ],
         ],
 
-         [
+      /*    [
             'text'       => 'Mantenimiento',
             'classes'    => 'text-white',
             'icon'       => 'fas fa-tools',
             'icon_color' => 'info',
-            'can'  => 'Acceso Reportes',
+            'can'  => 'Acceso Mantenimiento',
             'submenu' => [
                 [
                     'text'       => 'Equipos',
@@ -402,15 +403,15 @@ return [
                     'icon_color' => 'white',
                     'route'      => 'mantenimiento.equipos.list',
                 ],
-                /* [
+                 [
                     'text'       => 'Servicio técnico',
                     'classes'    => 'text-white',
                     'icon'       => 'far fa-calendar-alt',
                     'icon_color' => 'white',
                     'route'      => 'reporte.fecha',
-                ], */
+                ],
             ],
-        ],
+        ], */
 
         [
             'text'       => 'Terceros',

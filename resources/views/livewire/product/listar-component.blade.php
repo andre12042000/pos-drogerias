@@ -150,6 +150,15 @@
             var modal = document.getElementById('stockModal');
             var contenidoModal = document.getElementById('contenidoModal');
 
+             var tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+
+            // Formatear la fecha en el formato yyyy-mm-dd
+            var tomorrowFormatted = tomorrow.toISOString().split('T')[0];
+
+            // Establecer la fecha mínima en el campo de fecha
+            document.getElementById("fecha_vencimiento_ajuste_inventario").min = tomorrowFormatted;
+
             // Función para crear y añadir una opción a un select
             function agregarOpcion(select, value, text, selected = false) {
                 var option = document.createElement('option');

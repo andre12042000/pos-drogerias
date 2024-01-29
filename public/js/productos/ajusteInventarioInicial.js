@@ -416,6 +416,10 @@ function actualizarInventario() {
     var ubicacion_id = document.getElementById("ubicacionesSelect").value;
     var presentacion_id = document.getElementById("presentacionesSelect").value;
     var laboratorio_id = document.getElementById("laboratoriosSelect").value;
+    var lote = document.getElementById('lote_ajuste_inventario').value;
+    var fecha_vencimiento = document.getElementById('fecha_vencimiento_ajuste_inventario').value;
+
+
     var iva_product = parseInt(document.getElementById("inputIva").value, 10);
     var stock_min = parseInt(
         document.getElementById("inputStockMinimo").value,
@@ -511,11 +515,14 @@ function actualizarInventario() {
 
     /*------------------ Fin validaciones ------------------------*/
 
+
     let datosInventario = {
         product_id: id,
         cantidad_caja: cantidad_caja,
         cantidad_blister: cantidad_blister,
         cantidad_unidad: cantidad_unidad,
+        lote: lote,
+        fecha_vencimiento: fecha_vencimiento,
     };
 
     let datosProducto = {
