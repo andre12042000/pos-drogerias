@@ -42,6 +42,8 @@ class CreateSalesTable extends Migration
 
             $table->string('status', 20);
 
+            $table->double('valor_anulado', 15, 0)->default(0);
+
             $table->timestamps();
         });
     }

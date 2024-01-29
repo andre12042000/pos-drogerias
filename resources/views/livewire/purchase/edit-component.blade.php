@@ -101,8 +101,8 @@
                                     @forelse ($purchaseDetails as $purchaseDetail)
                                         <tr @if($purchaseDetail->esObsequio) class="table-success" @endif >
                                             <td>{{ ucwords($purchaseDetail->product->name) }}</td>
-                                            <td>$ {{ number_format($purchaseDetail->tax, 0) }}</td>
-                                            <td>$ {{ number_format($purchaseDetail->discount_tax, 0) }}</td>
+                                            <td> {{ number_format($purchaseDetail->tax, 0) }} %</td>
+                                            <td> {{ number_format($purchaseDetail->discount_tax, 0) }} %</td>
                                             <td class="text-center">$
                                                 {{ number_format($purchaseDetail->purchase_price, 0) }}</td>
                                             <td class="text-center">{{ $purchaseDetail->quantity }}</td>

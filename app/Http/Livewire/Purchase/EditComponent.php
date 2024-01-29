@@ -4,9 +4,12 @@ namespace App\Http\Livewire\Purchase;
 
 use App\Models\PurchaseDetail;
 use Livewire\Component;
+use App\Traits\AddProductsInventario;
 
 class EditComponent extends Component
 {
+    use AddProductsInventario;
+
     public $purchase, $purchaseDetails;
     public $subtotal = 0;
     public $sumaiva = 0;
@@ -39,10 +42,6 @@ class EditComponent extends Component
         $this->sumaiva = 0;
         $this->sumadescuento = 0;
 
-
-
-      //  $this->purchaseDetails = $this->purchase->purchaseDetails;
-
         $this->purchaseDetails = PurchaseDetail::where('purchase_id', $this->purchase->id)
                                     ->orderBy('esObsequio', 'asc')
                                     ->get();
@@ -59,6 +58,20 @@ class EditComponent extends Component
         $this->totalfull = $this->sumaiva + $this->subtotal - $this->sumadescuento;
 
     }
+
+    function confirmacionaplicar()
+    {
+        foreach($this->purchaseDetails as $detalle){
+            $this->addProducts($detalle);
+        }
+
+        $this->purchase->update([
+            'status' => 'APLICADO',
+        ]);
+
+    }
+
+
 
     public function destroy($item)
     {

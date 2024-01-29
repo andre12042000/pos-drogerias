@@ -164,7 +164,27 @@ class SearchProductComponent extends Component
 
     function limpiarModal()
     {
-        $this->reset();
+        $this->producto_id ='';
+        $this->code ='';
+        $this->name = '';
+        $this->laboratorio_id ='';
+        $this->presentacion_id = '';
+        $this->precio_compra = '';
+        $this->iva ='';
+        $this->porcentaje_por_caja = '';
+        $this->porcentaje_por_blister ='';
+        $this->porcentaje_por_unidad = '';
+        $this->disponible_blister = '';
+        $this->disponible_unidad =  '';
+        $this->lote = '';
+        $this->fecha_vencimiento = '';
+        $this->cantidad = '';
+        $this->iva = 0;
+        $this->descuento = 0;
+        $this->precio_venta_caja = '';
+        $this->precio_venta_blister = '';
+        $this->precio_venta_unidad = '';
+        $this->IngresaComoobsequio = '';
     }
 
     function registrarDetalleCompra()
@@ -285,7 +305,5 @@ class SearchProductComponent extends Component
         }
     }
 
-    function addProductosPurchaseDetail()
-    {
-    }
+
 }
