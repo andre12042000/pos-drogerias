@@ -7,7 +7,7 @@
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <link rel="icon" type="image/png" href="vendor/adminlte/dist/img/AdminLTELogo.ico">
+    <link rel="icon" type="image/png" href="img/Logo150px.png">
 
     <title>Iniciar Sesión</title>
 
