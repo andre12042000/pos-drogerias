@@ -38,12 +38,12 @@ class ListComponent extends Component
         $products = Product::where('presentacion_id', $id)->first();
 
         if ($products) {
-            session()->flash('warning', 'Presentación esta siendo utilizada no se puede eliminar');
+            session()->flash('warning', 'Este tipo producto esta siendo utilizada no se puede eliminar');
             return view('livewire.presentacion.list-component');
         } else {
             $presentacion = Presentacion::find($id);
             $presentacion->delete();
-            session()->flash('delete', 'Presentación eliminada exitosamente');
+            session()->flash('delete', 'Este tipo producto eliminada exitosamente');
             return view('livewire.presentacion.list-component');
         }
     }
