@@ -3,14 +3,9 @@
         <table id="detalles"style="background-color: #F4F6F9; " class="table">
             <thead>
                 <tr>
-                    <th class="text-center"> @if ($empresa->image)
-                        <img src="{!! Config::get('app.URL') !!}/storage/{{ $empresa->image }}" width="50px" class="mt-0">
-                        @else
-                        <img src="{!! Config::get('app.URL') !!}/storage/livewire-tem/sin_image_product.jpg" width="50px" class="mt-0">
-                        @endif
-                    </th>
-                    <th class="text-right">
-                        <h2 style=" font-family: sans-serif;" class="mt-2">{{ucfirst($empresa->name)}}</h2>
+
+                    <th class="mb-3">
+                        <span class="mb-3">{{mb_strtoupper($empresa->name)}} <br> SUCURSAL 1 <br> <br></span>
                     </th>
                     <th class="text-right"> Nit: {{$empresa->nit}} <br>
                         Teléfono: {{$empresa->telefono}} <br>

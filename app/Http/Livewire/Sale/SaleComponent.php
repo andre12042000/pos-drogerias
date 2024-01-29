@@ -45,6 +45,7 @@ class SaleComponent extends Component
     public $productorandom = false;
     public $impresora = null;
     public $tipo_operacion = 'VENTA';
+    public $imprimirecibo = 0;
 
     protected $listeners = ['ClientEvent', 'ProductEvent', 'agregarProductoEvent', 'crearVentaEvent' => 'tipoOperacion'];
 
@@ -86,6 +87,16 @@ class SaleComponent extends Component
         return view('livewire.sale.sale-component', compact('empresa', 'metodos_pago'));
     }
 
+    public function Imprimirecibo($venta){
+
+        if($this->imprimirecibo > 0){
+/*                       return redirect('/ventas/pos')->with('venta_exitosa' , $venta->id);
+ */
+                return redirect()->route('ventas.pos.imprimir.recibo', $venta);
+        }
+
+
+    }
 
 
     public function searchProductCode()
@@ -157,7 +168,7 @@ class SaleComponent extends Component
 
 
                 event(new VentaRealizada($venta));
-
+                $this->Imprimirecibo($venta);
                 return redirect('/ventas/pos')->with('venta_exitosa' , $venta->id);
 
 

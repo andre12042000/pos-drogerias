@@ -1,5 +1,5 @@
   <div>
-    <link rel="icon" type="image/png" href="vendor/adminlte/dist/img/AdminLTELogo.ico">
+    <link rel="icon" type="image/png" href="img/Logo150px.png">
     @include('popper::assets')
       <div class="card card-info mt-1">
           <div class="card-header">

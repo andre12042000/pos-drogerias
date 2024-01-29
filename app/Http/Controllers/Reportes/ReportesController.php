@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use App\Models\Cash;
 use App\Models\Sale;
 use App\Models\Abono;
+use App\Models\MetodoPago;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Exports\ExportVentaFecha;
@@ -28,6 +29,9 @@ class ReportesController extends Controller
     public $abono = 0;
     public $filter_hasta;
     public $filter_desde;
+    public $cantidad = 0;
+    public $totalAnulado = 0;
+    public $sumatoriasMetodosPago = [];
 
     public function dia()
     {
@@ -66,36 +70,44 @@ class ReportesController extends Controller
     {
 
 
-        if($dato->cashesable->payment_method == '1'){
-            $this->efectivo = $this->efectivo + $dato->quantity;
+        // Obtener métodos de pago
+        $metodosDePago = $this->obtenermetodosdepago();
+
+        // Si el array $this->sumatoriasMetodosPago está vacío, inicializarlo
+        if (empty($this->sumatoriasMetodosPago)) {
+            foreach ($metodosDePago as $metodo) {
+                $this->sumatoriasMetodosPago[$metodo->name] = 0;
+            }
         }
 
-        if($dato->cashesable->payment_method == '2'){
-            $this->tarjeta = $this->tarjeta + $dato->quantity;
-        }
+        // Obtener el ID y nombre del método de pago del objeto $dato (ajusta según la estructura de tus datos)
+        $metodoPagoId = $dato->cashesable->metodo_pago_id;
+        $nombreMetodo = $metodosDePago->where('id', $metodoPagoId)->first()->name;
 
-        if($dato->cashesable->payment_method == '3'){
-            $this->transferencia = $this->transferencia + $dato->quantity;
-        }
-
-        if($dato->cashesable->payment_method == '4'){
-            $this->cheque = $this->cheque + $dato->quantity;
-        }
-
-        if($dato->cashesable->payment_method == '5'){
-            $this->deposito = $this->deposito + $dato->quantity;
+        // Validar si el método de pago es válido
+        if (isset($this->sumatoriasMetodosPago[$nombreMetodo])) {
+            // Actualizar la sumatoria para el método de pago correspondiente
+            $this->sumatoriasMetodosPago[$nombreMetodo] += $dato->quantity;
         }
 
         /* resultados por tipo venta o abonos */
-
-        if($dato->cashesable_type == 'App\Models\Sale'){
+        if ($dato->cashesable_type == 'App\Models\Sale') {
             $this->venta = $this->venta + $dato->quantity;
-        }else{
+        } else {
             $this->abono = $this->abono + $dato->quantity;
         }
 
-
+        $this->cantidad = $this->cantidad + 1;
         $this->total = $this->total + $dato->quantity;
+        // Ahora puedes pasar $this->sumatoriasMetodosPago a tu vista para mostrar las sumatorias y nombres de los métodos de pago
+
+    }
+
+    public function obtenermetodosdepago()
+    {
+
+        $metodos = MetodoPago::where('status', 'ACTIVE')->get();
+        return $metodos;
     }
 
     public function export()
@@ -107,11 +119,11 @@ class ReportesController extends Controller
 
     public function exportfecha( $desde, $hasta)
     {
-      
+
     return Excel::download(new ExportVentaFecha($desde, $hasta), 'ventafechas.xlsx');
 
     }
 
-   
+
 
 }

@@ -41,7 +41,7 @@
                  {{$empresa->email}}
                 @isset($empresa->direccion)
 
-                     - {{$empresa->direccion}}
+                     <br> {{$empresa->direccion}}
                 @endisset
 
             </div>

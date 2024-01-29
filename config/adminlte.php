@@ -64,8 +64,8 @@ return [
     */
 
     'logo' => '<b>POS</b>-VENTA',
-    'logo_img' => 'vendor/adminlte/dist/img/AdminLTELogo.ico',
-    'logo_img_class' => 'brand-image img-circle elevation-3',
+    'logo_img' => 'img/Logo500px.png',
+    'logo_img_class' => 'brand-image img-circle elevation-5',
     'logo_img_xl' => null,
     'logo_img_xl_class' => 'brand-image-xs',
     'logo_img_alt' => 'Admin Logo',
@@ -86,7 +86,7 @@ return [
     'auth_logo' => [
         'enabled' => false,
         'img' => [
-            'path' => 'vendor/adminlte/dist/img/AdminLTELogo.ico',
+            'path' => 'img/Logo150px.png',
             'alt' => 'Auth Logo',
             'class' => '',
             'width' => 50,
@@ -109,7 +109,7 @@ return [
     'preloader' => [
         'enabled' => false,
         'img' => [
-            'path' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
+            'path' => 'img/Logo150px.png',
             'alt' => 'AdminLTE Preloader Image',
             'effect' => 'animation__shake',
             'width' => 60,
