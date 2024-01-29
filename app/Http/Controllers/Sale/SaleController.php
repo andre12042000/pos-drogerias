@@ -67,7 +67,6 @@ class SaleController extends Controller
 
     public function imprimirrecibo($id)
     {
-
         $sales = Sale::find($id);
         $empresa = Empresa::find(1);
         $detailsales = SaleDetail::where('sale_id', $id)->get();

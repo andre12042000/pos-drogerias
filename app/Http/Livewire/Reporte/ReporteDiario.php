@@ -4,6 +4,7 @@ namespace App\Http\Livewire\Reporte;
 
 use Carbon\Carbon;
 use App\Models\Cash;
+use App\Models\Sale;
 use Livewire\Component;
 use App\Models\MetodoPago;
 use Livewire\WithPagination;
@@ -28,6 +29,7 @@ class ReporteDiario extends Component
     public $venta = 0;
     public $abono = 0;
     public $cantidad = 0;
+    public $totalAnulado = 0;
     public $sumatoriasMetodosPago = [];
 
 
@@ -37,15 +39,13 @@ class ReporteDiario extends Component
     {
         $hoy = Carbon::now();
         $hoy = $hoy->format('Y-m-d');
-
+        $this->ventaanuladas();
         $data = Cash::whereDate('created_at', $hoy)->with('cashesable', 'user');
         $ventas = $data->paginate($this->cantidad_registros); //Pagina la busqueda
 
         $movimientos = $data->get(); //obtiene todos los resultados para realizar los calculos.
-        foreach($movimientos as $movimiento)
-        {
+        foreach ($movimientos as $movimiento) {
             $this->calcularpagos($movimiento);
-
         }
 
         $datausaurios =    $this->obtenerSumatoriaPorUsuario();
@@ -88,7 +88,8 @@ class ReporteDiario extends Component
         // Ahora puedes pasar $this->sumatoriasMetodosPago a tu vista para mostrar las sumatorias y nombres de los métodos de pago
     }
 
-    public function obtenermetodosdepago(){
+    public function obtenermetodosdepago()
+    {
 
         $metodos = MetodoPago::where('status', 'ACTIVE')->get();
         return $metodos;
@@ -97,10 +98,19 @@ class ReporteDiario extends Component
     public function obtenerSumatoriaPorUsuario()
     {
         $resultados = Cash::select('user_id', DB::raw('SUM(quantity) as total_quantity'))
+            ->whereDate('created_at', now()->toDateString()) // Filtrar por transacciones creadas hoy
             ->groupBy('user_id')
             ->get();
 
-      return $resultados;
+        return $resultados;
     }
 
+    public function ventaanuladas()
+    {
+        $fechaActual = Carbon::now()->toDateString();
+
+        $this->totalAnulado = Sale::where('status', 'ANULADA')
+            ->whereDate('sale_date', $fechaActual)
+            ->sum('valor_anulado');
+    }
 }

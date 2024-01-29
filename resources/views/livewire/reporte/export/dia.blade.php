@@ -11,33 +11,50 @@
                     <label class="form-control-label ml-2" for="nombre"><strong>Abonos</strong></label>
                     <p class="mr-2 mt-2 text-bold">$ {{ number_format($abono, 0) }}</p>
                 </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <label class="form-control-label" for="nombre"><strong>Efectivo</strong></label>
-                    <p>$ {{ number_format($efectivo, 0) }}</p>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <label class="form-control-label" for="num_compra"><strong>Tarjeta</strong></label>
-                    <p>$ {{ number_format($tarjeta, 0) }}</p>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <label class="form-control-label" for="num_compra"><strong>Transferencia o QR</strong></label>
-                    <p>$ {{ number_format($transferencia, 0) }}</p>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <label class="form-control-label" for="num_compra"><strong>Cheque</strong></label>
-                    <p>$ {{ number_format($cheque, 0) }}</p>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <label class="form-control-label" for="num_compra"><strong>Deposito</strong></label>
-                    <p>$ {{ number_format($deposito, 0) }}</p>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <label class="form-control-label" for="num_compra"><strong>Total</strong></label>
-
-                    <p class="text-bold">$ {{ number_format($total, 0) }}</p>
-                </li>
+                 <!-- Mostrar información de métodos de pago -->
+                 @foreach($sumatoriasMetodosPago as $nombreMetodo => $cantidad)
+                 <li class="list-group-item d-flex justify-content-between align-items-center">
+                     <label class="form-control-label" for="nombre"><strong>{{ $nombreMetodo }}</strong></label>
+                     <p>$ {{ number_format($cantidad, 0) }}</p>
+                 </li>
+             @endforeach
+             <!-- Fin de la información de métodos de pago -->
             </ul>
         </div>
+
+
+        <div class="card">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <label class="form-control-label " for="nombre"><strong>Venta Anulada</strong></label>
+                    <p class="mr-2 mt-2 text-bold">$ {{ number_format($totalAnulado)}}</p>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <label class="form-control-label " for="nombre"><strong>Venta Credito</strong></label>
+                    <p class="mr-2 mt-2 text-bold">$ 0</p>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <label class="form-control-label" for="nombre"><strong>Consumo Interno</strong></label>
+                    <p>$ 0</p>
+                </li>
+
+            </ul>
+        </div>
+
+
+<div class="card">
+<ul class="list-group list-group-flush">
+<li class="list-group-item d-flex justify-content-between align-items-center">
+<label class="form-control-label" for="nombre"><strong>Ventas Cajero</strong></label>
+</li>
+@foreach ($vendedor as $resultado)
+<li class="list-group-item d-flex justify-content-between align-items-center">
+<label class="form-control-label" for="nombre"><strong>{{ $resultado->user->name }}</strong></label>
+<p class="mr-2 mt-2 text-bold">$ {{ number_format($resultado->total_quantity, 0) }}</p>
+</li>
+@endforeach
+</ul>
+</div>
     </div>
     <div class="col-8">
         <div class="card">

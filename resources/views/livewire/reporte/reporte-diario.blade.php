@@ -17,7 +17,8 @@
                 <span class="col-lg-12">{{$cantidad}}</span>
             </div>
             <div class="text-end col-lg-2">
-                <a class="btn btn-outline-light mt-2 text-dark"  href="{{route('reporte.export.dia')}}" ><i class="bi bi-file-earmark-arrow-down"></i> <strong> Exportar Excel</strong></a>
+                <a class="btn btn-outline-light mt-2 text-dark @if ($cantidad == 0) disabled
+                @endif"  href="{{route('reporte.export.dia')}}" ><i class="bi bi-file-earmark-arrow-down"></i> <strong> Exportar Excel</strong></a>
             </div>
 
         </div>
@@ -56,22 +57,22 @@
                             <ul class="list-group list-group-flush">
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     <label class="form-control-label " for="nombre"><strong>Venta Anulada</strong></label>
-                                    <p class="mr-2 mt-2 text-bold">$ {{ number_format($venta, 0) }}</p>
+                                    <p class="mr-2 mt-2 text-bold">$ {{ number_format($totalAnulado)}}</p>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     <label class="form-control-label " for="nombre"><strong>Venta Credito</strong></label>
-                                    <p class="mr-2 mt-2 text-bold">$ {{ number_format($abono, 0) }}</p>
+                                    <p class="mr-2 mt-2 text-bold">$ 0</p>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     <label class="form-control-label" for="nombre"><strong>Consumo Interno</strong></label>
-                                    <p>$ {{ number_format($efectivo, 0) }}</p>
+                                    <p>$ 0</p>
                                 </li>
 
                             </ul>
                         </div>
 
-
-    <div class="card">
+                        @if ($cantidad > 0)
+                         <div class="card">
         <ul class="list-group list-group-flush">
             <li class="list-group-item d-flex justify-content-between align-items-center">
                 <label class="form-control-label" for="nombre"><strong>Ventas Cajero</strong></label>
@@ -84,6 +85,8 @@
             @endforeach
         </ul>
     </div>
+                        @endif
+
 
 
                     </div>
