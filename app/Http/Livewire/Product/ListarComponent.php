@@ -65,6 +65,7 @@ class ListarComponent extends Component
 
         $data = $product->update([
             'name'                      => $dataProduct['name'],
+            'code'                      => $dataProduct['code'],
             'status'                    => 'ACTIVE',
             'iva_product'               => $dataProduct['iva_product'],
             'valor_iva_caja'            => $dataProduct['valor_iva_caja'],
