@@ -8,14 +8,30 @@ use Livewire\WithPagination;
 
 class SearchComponent extends Component
 {
-    public $buscar;
+    public $buscar = '';
     use WithPagination;
     protected $paginationTheme = 'bootstrap';
+
+    public $key;
+
+    // Resto del código del componente...
+
+    public function mount($key)
+    {
+        $this->key = $key;
+        $this->listeners[] = 'refreshSearchComponent';
+    }
+
+    public function refreshSearchComponent()
+    {
+        $this->resetPage(); // Reiniciar la página al recargar el componente
+    }
+
 
     public function render()
     {
         $products = Product::search($this->buscar)
-                            ->orderBy('name', 'asc')
+                            ->orderBy('precio_caja', 'asc')
                             ->active()
                             ->paginate('10');
 
@@ -24,6 +40,7 @@ class SearchComponent extends Component
 
     public function selectProduct($tipo, $product, $precio )
     {
+
         if($precio > 0){
             $this->emit('ProductEvent',$tipo, $product, $precio);
         }else{

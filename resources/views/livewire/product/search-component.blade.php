@@ -47,13 +47,13 @@
                 </table>
 
 
-                <div class="modal-footer mt-2">
+                {{-- <div class="modal-footer mt-2">
                     <nav class="" aria-label="">
                         <ul class="pagination">
                             {{ $products->links() }}
                         </ul>
                     </nav>
-                </div>
+                </div> --}}
 
 
             </div>
@@ -108,11 +108,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 var productData = JSON.parse(row.getAttribute('data-product'));
                 var selectedOption = this.getAttribute('data-option'); // Opción seleccionada
 
+                console.log(productData);
+
                 // Envía la información al backend o realiza otras acciones según tu necesidad
                 Livewire.emit('agregarProductoEvent', productData, selectedOption);
 
                 productData = null;
                 selectedOption = null;
+                row = null;
 
 
             });
