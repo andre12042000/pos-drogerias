@@ -1,7 +1,6 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
 <script src="//unpkg.com/alpinejs" defer></script>
 <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-<link rel="icon" type="image/png" href="img/Logo150px.png">
 
 <!-- CSS only -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"

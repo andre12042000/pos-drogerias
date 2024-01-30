@@ -536,13 +536,13 @@ return [
                     'icon_color'    => 'white',
                     'route'         => 'empresas',
                 ],
-              /*   [
+                 [
                     'text'          => 'Impresora',
                     'classes'       => 'text-white',
                     'icon'          => 'bi bi-printer',
                     'icon_color'    => 'white',
                     'route'         => 'impresoras',
-                ], */
+                ],
             ],
         ],
 
