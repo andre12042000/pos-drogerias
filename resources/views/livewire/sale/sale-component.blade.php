@@ -125,50 +125,43 @@
 
                     </div>
                     <div class="col">
-                          <select class="form-select mb-1" id="selectMetodoPago" name="metodoPagoSelect"  aria-label="Default select example">
-                            <option selected>Método de pago</option>
-                            @foreach ($metodos_pago as $metodo)
-                            <option value="{{ $metodo->id }}">{{ $metodo->name }}</option>
-                        @endforeach
-                          </select>
 
-                          <div class="mb-1">
-                            <input type="number" id="inputCantidadPagada" name="inputCantidadPagada" class="form-control"  placeholder="Cantidad Pagada">
+                        <div class="form-floating">
+                            <select class="form-select" id="selectMetodoPago" name="metodoPagoSelect" aria-label="Floating label select example">
+                                @foreach ($metodos_pago as $metodo)
+                                    <option value="{{ $metodo->id }}">{{ $metodo->name }}</option>
+                                @endforeach
+                            </select>
+                            <label for="floatingSelect">Método de pago</label>
                           </div>
 
-                          <div class="mb-1">
-                            <input type="number" id="inputCambio" name="inputCambio" disabled class="form-control"  placeholder="Cambio">
+                          <div class="form-floating mt-2">
+                            <input type="number" class="form-control" id="inputCantidadPagada" name="inputCantidadPagada" placeholder="name@example.com">
+                            <label for="floatingInput">Cantidad Pagada</label>
                           </div>
-
-
-
+                          <div class="form-floating mt-2">
+                            <input type="number" class="form-control" id="inputCambio" name="inputCambio" placeholder="Password" disabled>
+                            <label for="floatingPassword">Cambio</label>
+                          </div>
                     </div>
                     <div class="col columna-cuentas">
-                        <div class="row">
-                        <div class="col-lg-6"><div class="costo-compra ">
+                        <div class="costo-compra mt-2">
                             <label>Subtotal:</label>
                             <span class="subTotalGlobal"></span>
-                        </div></div>
-                        <div class="col-lg-6"> <div class="costo-compra ">
+                        </div>
+                        <div class="costo-compra mt-2">
                             <label>Descuento:</label>
                             <span class="descuentoGlobal"></span>
-                        </div></div>
-                        <div class="col-lg-6"><div class="costo-compra ">
+                        </div>
+
+                        <div class="costo-compra mt-2">
                             <label>IVA:</label>
                             <span class="ivaTotalGlobal"></span>
-                        </div></div>
-                        <div class="col-lg-6"><div class="costo-compra total ">
+                        </div>
+                        <div class="costo-compra total mt-1">
                             <label>Total:</label>
                             <span class="granTotal"></span>
-                        </div></div>
-
-                    </div>
-
-
-
-
-
-
+                        </div>
                     </div>
 
                 </div>
