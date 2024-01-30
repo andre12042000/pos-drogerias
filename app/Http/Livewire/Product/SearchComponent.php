@@ -31,9 +31,10 @@ class SearchComponent extends Component
     public function render()
     {
         $products = Product::search($this->buscar)
-                            ->orderBy('precio_caja', 'asc')
-                            ->active()
-                            ->paginate('10');
+        ->orderBy('name', 'asc')
+        ->active()
+        ->take(10)
+        ->get();
 
         return view('livewire.product.search-component', compact('products'));
     }
