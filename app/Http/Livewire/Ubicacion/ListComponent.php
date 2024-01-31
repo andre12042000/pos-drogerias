@@ -40,12 +40,12 @@ class ListComponent extends Component
 
         if ($products) {
             session()->flash('warning', 'Esta Ubicación esta siendo utilizada no se puede eliminar');
-            return view('livewire.presentacion.list-component');
+            return view('livewire.ubicacion.list-component');
         } else {
             $presentacion = Ubicacion::find($id);
             $presentacion->delete();
             session()->flash('delete', 'Ubicación eliminada exitosamente');
-            return view('livewire.presentacion.list-component');
+            return view('livewire.ubicacion.list-component');
         }
     }
 

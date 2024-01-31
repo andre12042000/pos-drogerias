@@ -41,12 +41,12 @@ class ListComponent extends Component
 
         if ($products) {
             session()->flash('warning', 'Este laboratorio esta siendo utilizada no se puede eliminar');
-            return view('livewire.presentacion.list-component');
+            return view('livewire.laboratorio.list-component');
         } else {
             $presentacion = Laboratorio::find($id);
             $presentacion->delete();
             session()->flash('delete', 'Laboratorio eliminado exitosamente');
-            return view('livewire.presentacion.list-component');
+            return view('livewire.laboratorio.list-component');
         }
     }
 

@@ -11,7 +11,7 @@
                 @include('includes.alert')
                 <div class="form-group">
                     <label for="exampleFormControlInput1">Nombre de ubiación</label>
-                    <input type="text" wire:keydown.enter="storeOrupdate" wire:model.lazy="name" id="name" name="name" class="form-control @if($name == '') @else @error('name') is-invalid @else is-valid @enderror @endif" id="exampleFormControlInput1" placeholder="Ejemplo: productos aseo" autocomplete="off" autofocus>
+                    <input type="text" wire:keydown.enter="storeOrupdate" wire:model.lazy="name" id="name" name="name" class="form-control @if($name == '') @else @error('name') is-invalid @else is-valid @enderror @endif" id="exampleFormControlInput1" placeholder="Ejemplo: bitrina lokers" autocomplete="off" autofocus>
                     @error('name')
                     <span class="text-danger">{{ $message }}</span>
                     @enderror

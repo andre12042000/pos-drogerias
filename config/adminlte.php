@@ -490,6 +490,13 @@ return [
                     'icon_color' => 'white',
                     'route'      => 'parametros.ubicacion',
                 ],
+                [
+                    'text'       => 'Motivo Anulación',
+                    'classes'    => 'text-white',
+                    'icon'       => 'bi bi-slash-circle',
+                    'icon_color' => 'white',
+                    'route'      => 'parametros.motivoanulacion',
+                ],
 
             ],
         ],

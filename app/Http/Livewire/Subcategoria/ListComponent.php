@@ -40,12 +40,12 @@ class ListComponent extends Component
 
         if ($products) {
             session()->flash('warning', 'Subcategoria esta siendo utilizada no se puede eliminar');
-            return view('livewire.presentacion.list-component');
+            return view('livewire.subcategoria.list-component');
         } else {
             $sub = Subcategoria::find($id);
             $sub->delete();
             session()->flash('delete', 'Subcategoria eliminada exitosamente');
-            return view('livewire.presentacion.list-component');
+            return view('livewire.subcategoria.list-component');
         }
     }
 

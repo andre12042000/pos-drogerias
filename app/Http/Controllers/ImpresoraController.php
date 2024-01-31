@@ -45,7 +45,7 @@ class ImpresoraController extends Controller
             $printer->setJustification(Printer::JUSTIFY_CENTER);
             $printer->bitImage($escposResizedImg);
             $printer->text("\n");
-            $printer->setJustification(Printer::JUSTIFY_CENTER);
+             $printer->setJustification(Printer::JUSTIFY_CENTER);
             $printer->text("NIT: " . $empresa->nit . "\n");
             $printer->text("Telefono: " . $empresa->telefono . "\n");
             $printer->text($empresa->email . "\n");
