@@ -12,8 +12,8 @@
                     aria-label="Close"></button>
 
             </div>
-            <div class="modal-body ">
-                <table class="table table-striped" id="tabProducts">
+            <div class="modal-body">
+                <table class="table table-striped" id="productos-container">
                     <thead>
                         <tr>
                             <th>Código</th>
@@ -100,30 +100,27 @@
     <script>
 
 document.addEventListener('DOMContentLoaded', function() {
-        var priceCells = document.querySelectorAll('.price-cell');
+    // Delegación de eventos en el contenedor de productos
+    document.getElementById('productos-container').addEventListener('click', function(event) {
+        var target = event.target;
 
-        priceCells.forEach(function(cell) {
-            cell.addEventListener('click', function() {
-                var row = this.parentNode; // Obtener la fila completa
-                var productData = JSON.parse(row.getAttribute('data-product'));
-                var selectedOption = this.getAttribute('data-option'); // Opción seleccionada
+        // Verificar si se hizo clic en una celda de precio
+        if (target.classList.contains('price-cell')) {
+            var row = target.parentNode; // Obtener la fila completa
+            var productData = JSON.parse(row.getAttribute('data-product'));
+            var selectedOption = target.getAttribute('data-option'); // Opción seleccionada
 
-                console.log(productData);
+            console.log(productData);
 
-                // Envía la información al backend o realiza otras acciones según tu necesidad
-                Livewire.emit('agregarProductoEvent', productData, selectedOption);
+            // Emite el evento Livewire
+            Livewire.emit('agregarProductoEvent', productData, selectedOption);
 
-                productData = null;
-                selectedOption = null;
-                row = null;
-
-
-            });
-        });
-
-
+            productData = null;
+            selectedOption = null;
+            row = null;
+        }
     });
-
+});
 
 
     </script>
