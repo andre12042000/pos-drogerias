@@ -12,6 +12,10 @@ class ProductManager {
         const subTotalGlobalFormateado = subTotalGlobal; //
         const subdescuentoGlobalFormateado = descuentoGlobal;
 
+        this.botonPagar = document.getElementById("pagarBtn");
+        this.loader = this.botonPagar.querySelector(".loader");
+
+
         // Asignar el valor al elemento span con la clase granTotal
         document.querySelector(".granTotal").textContent = granTotalFormateado;
         document.querySelector(".ivaTotalGlobal").textContent =
@@ -38,9 +42,18 @@ class ProductManager {
         this.inputCantidadPagada = document.getElementById(
             "inputCantidadPagada"
         );
+
         inputCantidadPagada.addEventListener("input", () =>
             this.handleCantidadPagadaInputChange()
         );
+
+        this.granTotalSpan = document.querySelector(".granTotal");
+
+        this.granTotalSpan.addEventListener("DOMSubtreeModified", () => {
+            this.handleGranTotalChange();
+        });
+
+
 
         const cantidadInput = document.getElementById("cantidadInput");
         cantidadInput.addEventListener("input", () =>
@@ -93,6 +106,22 @@ class ProductManager {
         );
     }
 
+    handleGranTotalChange(){
+
+        var granTotalSpan = document.querySelector(".granTotal");
+
+        var valorGranTotal = granTotalSpan.textContent;
+
+        const pagarBtn = document.getElementById("pagarBtn");
+
+        if(valorGranTotal > 0){
+            pagarBtn.removeAttribute("disabled");
+        }else{
+            pagarBtn.setAttribute("disabled", true);
+        }
+
+    }
+
     handleIncrementarCantidadButtonClick() {
         const selectElement = document.getElementById("selectPresentacion");
         const selectedIndex = selectElement.selectedIndex;
@@ -126,6 +155,7 @@ class ProductManager {
     }
 
     handlePagarButtonClick() {
+        this.mostrarLoader();
         // Obtener los elementos de los radio buttons
         const opcionSi = document.getElementById("opcionSi");
         const opcionNo = document.getElementById("opcionNo");
@@ -162,6 +192,17 @@ class ProductManager {
 
         // Emitir los datos al componente Livewire
         Livewire.emit("crearVentaEvent", datosVenta);
+
+
+    }
+
+    mostrarLoader() {
+        this.botonPagar.setAttribute("disabled", true);
+        this.loader.style.display = "inline-block";
+    }
+
+    ocultarLoader() {
+        this.loader.style.display = "none";
     }
 
     handleAgregarButtonClick() {
@@ -652,7 +693,7 @@ document.addEventListener("livewire:load", function () {
         "agregarProductoAlArraySearch",
         function (producto, opcionSeleccionada) {
             // Manejar el evento en JavaScript
-            console.log("Producto agregado:", producto);
+           // console.log("Producto agregado:", producto);
 
             // Puedes realizar acciones adicionales aquí
         }

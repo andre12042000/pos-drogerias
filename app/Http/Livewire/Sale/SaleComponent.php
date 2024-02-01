@@ -154,6 +154,7 @@ class SaleComponent extends Component
                     'status'            => 'PAGADA',
                 ]);
 
+
                 $this->detallesVenta($venta, $dataVenta['productosParaVenta']);
 
                 if($this->tipo_operacion == 'VENTA'){
@@ -169,7 +170,8 @@ class SaleComponent extends Component
 
                 event(new VentaRealizada($venta));
                 $this->Imprimirecibo($venta);
-                return redirect('/ventas/pos')->with('venta_exitosa' , $venta->id);
+                $this->dispatchBrowserEvent('venta-generada', ['venta' => $venta->full_nro]);
+              //  return redirect('/ventas/pos')->with('venta_exitosa' , $venta->id);
 
 
             });
