@@ -110,8 +110,6 @@ document.addEventListener('DOMContentLoaded', function() {
             var productData = JSON.parse(row.getAttribute('data-product'));
             var selectedOption = target.getAttribute('data-option'); // Opción seleccionada
 
-            console.log(productData);
-
             // Emite el evento Livewire
             Livewire.emit('agregarProductoEvent', productData, selectedOption);
 

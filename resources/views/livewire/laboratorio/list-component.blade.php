@@ -107,7 +107,5 @@
                 showConfirmButton: false,
                 timer: 1500
             });
-
-
         });
 </script>

@@ -46,7 +46,8 @@
                         <div class="mb-3 row">
                             <label for="staticEmail" class="col-sm-4 col-form-label">Transacción</label>
                             <div class="col-sm-8">
-                                <select class="form-select" aria-label="Default select example" wire:model.lazy = 'tipo_operacion' disabled>
+                                <select class="form-select" aria-label="Default select example"
+                                    wire:model.lazy = 'tipo_operacion' disabled>
                                     <option selected></option>
                                     <option value="VENTA">Venta</option>
                                     <option value="VENTA_CREDITO">Venta credito</option>
@@ -115,11 +116,13 @@
                         <label for="exampleFormControlInput1" class="form-label">Imprimir recibo</label>
                         <br>
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="opcionRadio" id="opcionSi" value="1">
+                            <input class="form-check-input" type="radio" name="opcionRadio" id="opcionSi"
+                                value="1">
                             <label class="form-check-label" for="opcionSi">Si</label>
                         </div>
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="opcionRadio" id="opcionNo" value="0" checked>
+                            <input class="form-check-input" type="radio" name="opcionRadio" id="opcionNo"
+                                value="0" checked>
                             <label class="form-check-label" for="opcionNo">No</label>
                         </div>
 
@@ -127,22 +130,25 @@
                     <div class="col">
 
                         <div class="form-floating">
-                            <select class="form-select" id="selectMetodoPago" name="metodoPagoSelect" aria-label="Floating label select example">
+                            <select class="form-select" id="selectMetodoPago" name="metodoPagoSelect"
+                                aria-label="Floating label select example">
                                 @foreach ($metodos_pago as $metodo)
                                     <option value="{{ $metodo->id }}">{{ $metodo->name }}</option>
                                 @endforeach
                             </select>
                             <label for="floatingSelect">Método de pago</label>
-                          </div>
+                        </div>
 
-                          <div class="form-floating mt-2">
-                            <input type="number" class="form-control" id="inputCantidadPagada" name="inputCantidadPagada" placeholder="name@example.com">
+                        <div class="form-floating mt-2">
+                            <input type="number" class="form-control" id="inputCantidadPagada"
+                                name="inputCantidadPagada" placeholder="name@example.com">
                             <label for="floatingInput">Cantidad Pagada</label>
-                          </div>
-                          <div class="form-floating mt-2">
-                            <input type="number" class="form-control" id="inputCambio" name="inputCambio" placeholder="Password" disabled>
+                        </div>
+                        <div class="form-floating mt-2">
+                            <input type="number" class="form-control" id="inputCambio" name="inputCambio"
+                                placeholder="Password" disabled>
                             <label for="floatingPassword">Cambio</label>
-                          </div>
+                        </div>
                     </div>
                     <div class="col columna-cuentas">
                         <div class="costo-compra mt-2">
@@ -168,7 +174,11 @@
                 <div class="row">
                     <div class="col-12 mt-4">
                         <div class="d-grid">
-                            <button class="btn btn-primary btn-pagar" id="pagarBtn" type="button"><strong>Pagar</strong></button>
+                            <button class="btn btn-primary btn-pagar" id="pagarBtn" type="button"
+                                disabled><strong>PAGAR</strong>
+                                <img class="loader" src="{{ asset('img/loading.gif') }}" alt="Cargando..."
+                                    width="30px;" style="display: none;" />
+                            </button>
                         </div>
                     </div>
 
@@ -188,6 +198,23 @@
                 });
             @endif
         </script>
+
+        <script>
+            window.addEventListener('venta-generada', event => {
+                const numeroVenta = event.detail.venta;
+                Swal.fire({
+                    icon: "success",
+                    title: "Venta realizada correctamente",
+                    text: `Número de venta: ${numeroVenta}`,
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                setTimeout(() => {
+                    location.reload();
+                }, 1500);
+
+            })
+        </script>
     </div>
 
 </div>
@@ -195,30 +222,36 @@
 
 @section('css')
     <style>
+        .btn-eliminar {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            font-size: 16px;
+            color: #888;
+            /* Color normal del icono */
+            transition: color 0.3s;
+            /* Transición de color para el efecto hover */
+            display: inline-block;
+            /* Hacer que el botón sea un bloque en línea para poder alinear a la derecha */
 
-.btn-eliminar {
-        background: none;
-        border: none;
-        cursor: pointer;
-        padding: 0;
-        font-size: 16px;
-        color: #888; /* Color normal del icono */
-        transition: color 0.3s; /* Transición de color para el efecto hover */
-        display: inline-block; /* Hacer que el botón sea un bloque en línea para poder alinear a la derecha */
+            /* Estilo de cursor al pasar el ratón sobre el botón */
+            cursor: pointer;
+        }
 
-        /* Estilo de cursor al pasar el ratón sobre el botón */
-        cursor: pointer;
-    }
+        .btn-eliminar:hover {
+            color: #dc3545;
+            /* Color del icono al pasar el ratón sobre el botón */
+        }
 
-    .btn-eliminar:hover {
-        color: #dc3545; /* Color del icono al pasar el ratón sobre el botón */
-    }
+        /* Alineación a la derecha y colocación al final de la celda */
+        .celda-eliminar {
+            text-align: right !important;
+            /* Alinear el contenido a la derecha */
+            white-space: nowrap;
+            /* Evitar que el contenido se divida en varias líneas */
+        }
 
-    /* Alineación a la derecha y colocación al final de la celda */
-    .celda-eliminar {
-        text-align: right !important; /* Alinear el contenido a la derecha */
-        white-space: nowrap; /* Evitar que el contenido se divida en varias líneas */
-    }
         /* Estilo para el botón de pago si es relevante en tu formulario */
         .campo-pago button {
             padding: 8px;

@@ -10,4 +10,11 @@ class MetodoPago extends Model
     use HasFactory;
 
     protected $guarded= ['id'];
+
+    /*--------------Relaciones ----------------------*/
+
+    public function sales()
+    {
+        return $this->hasMany(Sale::class, 'metodo_pago_id');
+    }
 }
