@@ -70,13 +70,13 @@
                        <td>{{ mb_strtoupper($sale->user->name) }}</td>
                        <td>{{ mb_strtoupper($sale->client->name) }}</td>
                        <td>@if ($sale->status == 'PAGADA')
-                            APROBADA
+                        <span class="badge bg-success">APROBADA</span>
                             @else
-                                ANULADA
+                            <span class="badge bg-danger">ANULADA</span>
                             @endif
                       </td>
                       <td class="text-center">
-                        @if (\Carbon\Carbon::parse($sale->created_at)->isToday())
+                        @if (\Carbon\Carbon::parse($sale->created_at)->isToday() && $sale->status != 'ANULADA')
                             <!-- Si la fecha es la actual, los iconos estarán habilitados -->
                             <a href="{{ route('facturacion.edit', $sale->id) }}" title="Editar factura" class="mr-2" style="text-decoration: none;">
                                 <i class="fas fa-edit text-danger"></i>
@@ -86,15 +86,15 @@
                             </a>
                         @else
                             <!-- Si la fecha no es la actual, los iconos estarán deshabilitados -->
-                            <a href="{{ route('facturacion.edit', $sale->id) }}" title="No es posible editar facturas anteriores al día actual" class="mr-2" style="text-decoration: none; color: grey;">
+                            <a title="No es posible editar facturas anteriores al día actual" class="mr-2" style="text-decoration: none; color: grey;">
                                 <i class="fas fa-edit"></i>
                             </a>
-                            <a href="{{ route('facturacion.anular', $sale->id) }}" title="No es posible anular facturas anteriores al día actual" class="mr-2" style="text-decoration: none; color: grey;">
+                            <a  title="No es posible anular facturas anteriores al día actual" class="mr-2" style="text-decoration: none; color: grey;">
                                 <i class="fas fa-ban"></i>
                             </a>
                         @endif
 
-                        <a href="{{ route('ventas.pos.details', $sale->id) }}" title="Editar factura" class="mr-2" style="text-decoration: none;">
+                        <a href="{{ route('ventas.pos.details', $sale->id) }}" title="Detalles factura" class="mr-2" style="text-decoration: none;">
                             <i class="fas fa-eye"></i>
                         </a>
                     </td>
