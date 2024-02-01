@@ -32,6 +32,15 @@
                      <span class="badge badge-success"> APROBADA </span>
                      @endif
                 </li>
+
+                @if ($sales->valor_anulado > 0)
+
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <label class="form-control-label" for="num_compra"><strong>Valor anulado</strong></label>
+                    <p><strong>$ {{ number_format($sales->valor_anulado, 0) }} </strong></p>
+                </li>
+
+                @endif
             </ul>
         </div>
 
