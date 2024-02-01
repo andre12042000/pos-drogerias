@@ -62,6 +62,10 @@ class PermissionSeeder extends Seeder
             'name' => 'Ordenes de trabajo',
         ]);
 
+        Permission::create([
+            'name' => 'Acceso Gestion Facturacion',
+        ]);
+
 
 
     }

@@ -37,80 +37,84 @@ class ReporteDiario extends Component
 
     public function render()
     {
+
         $hoy = Carbon::now();
         $hoy = $hoy->format('Y-m-d');
-        $this->ventaanuladas();
-        $data = Cash::whereDate('created_at', $hoy)->with('cashesable', 'user');
-        $ventas = $data->paginate($this->cantidad_registros); //Pagina la busqueda
+        $data = Cash::whereDate('created_at', $hoy)->with('cashesable');
+        $ventas = $data->paginate($this->cantidad_registros);
+        $data_obtener_valores = $data->get();
 
-        $movimientos = $data->get(); //obtiene todos los resultados para realizar los calculos.
-        foreach ($movimientos as $movimiento) {
-            $this->calcularpagos($movimiento);
-        }
+        $tipo_operacion_group = $this->obtenerValorTipoDeOperacion();
+        $metodosDePagoGroup = $this->obtenerValoresMetodoDePago();
+        $facturasAnuladas = $this->obtenerAnulaciones();
 
-        $datausaurios =    $this->obtenerSumatoriaPorUsuario();
 
-        return view('livewire.reporte.reporte-diario', compact('ventas', 'hoy', 'datausaurios'));
+
+
+
+        $totalVenta = $tipo_operacion_group['App\Models\Sale'] ?? 0;
+        $totalAbono = $tipo_operacion_group['App\Models\Abono'] ?? 0;
+        $OtrosConceptos = $tipo_operacion_group['App\Models\Otros'] ?? 0;
+
+
+
+        return view('livewire.reporte.reporte-diario', compact('ventas', 'hoy', 'totalVenta', 'totalAbono', 'OtrosConceptos', 'metodosDePagoGroup', 'facturasAnuladas'));
     }
 
-
-    public function calcularpagos($dato)
+    public function obtenerValorTipoDeOperacion()
     {
-        // Obtener métodos de pago
-        $metodosDePago = $this->obtenermetodosdepago();
-
-        // Si el array $this->sumatoriasMetodosPago está vacío, inicializarlo
-        if (empty($this->sumatoriasMetodosPago)) {
-            foreach ($metodosDePago as $metodo) {
-                $this->sumatoriasMetodosPago[$metodo->name] = 0;
-            }
-        }
-
-        // Obtener el ID y nombre del método de pago del objeto $dato (ajusta según la estructura de tus datos)
-        $metodoPagoId = $dato->cashesable->metodo_pago_id;
-        $nombreMetodo = $metodosDePago->where('id', $metodoPagoId)->first()->name;
-
-        // Validar si el método de pago es válido
-        if (isset($this->sumatoriasMetodosPago[$nombreMetodo])) {
-            // Actualizar la sumatoria para el método de pago correspondiente
-            $this->sumatoriasMetodosPago[$nombreMetodo] += $dato->quantity;
-        }
-
-        /* resultados por tipo venta o abonos */
-        if ($dato->cashesable_type == 'App\Models\Sale') {
-            $this->venta = $this->venta + $dato->quantity;
-        } else {
-            $this->abono = $this->abono + $dato->quantity;
-        }
-
-        $this->cantidad = $this->cantidad + 1;
-        $this->total = $this->total + $dato->quantity;
-        // Ahora puedes pasar $this->sumatoriasMetodosPago a tu vista para mostrar las sumatorias y nombres de los métodos de pago
-    }
-
-    public function obtenermetodosdepago()
-    {
-
-        $metodos = MetodoPago::where('status', 'ACTIVE')->get();
-        return $metodos;
-    }
-
-    public function obtenerSumatoriaPorUsuario()
-    {
-        $resultados = Cash::select('user_id', DB::raw('SUM(quantity) as total_quantity'))
-            ->whereDate('created_at', now()->toDateString()) // Filtrar por transacciones creadas hoy
-            ->groupBy('user_id')
+        $ventas = Cash::whereDate('created_at', now()->toDateString())
             ->get();
 
-        return $resultados;
+        $totalPorTipoOperacion = $ventas->groupBy('cashesable_type')->map(function ($group) {
+            return $group->sum('quantity');
+        });
+
+
+        return $totalPorTipoOperacion;
     }
 
-    public function ventaanuladas()
+    public function obtenerValoresMetodoDePago()
     {
-        $fechaActual = Carbon::now()->toDateString();
+        $todosLosMetodosPago = MetodoPago::where('status', 'ACTIVE')->get();
 
-        $this->totalAnulado = Sale::where('status', 'ANULADA')
-            ->whereDate('sale_date', $fechaActual)
-            ->sum('valor_anulado');
+        $ventas = Sale::with('metodopago')
+        ->whereDate('created_at', now()->toDateString())
+        ->get();
+
+
+
+        // Inicializa un array para almacenar los totales por método de pago
+        $totalPorMetodoPago = [];
+
+        // Itera sobre todos los métodos de pago y calcula la suma de ventas
+        foreach ($todosLosMetodosPago as $metodoPago) {
+            $totalPorMetodoPago[$metodoPago->name] = $ventas
+                ->where('metodo_pago_id', $metodoPago->id)
+                ->sum('total');
+
+        }
+
+        return $totalPorMetodoPago;
+
     }
+
+    function obtenerAnulaciones()
+    {
+        $anulaciones = Sale::where('status', 'ANULADA')
+                ->whereDate('created_at', now()->toDateString())
+                ->sum('valor_anulado');
+
+        return $anulaciones;
+
+    }
+
+
+
+
+
+
+
+
+
 }

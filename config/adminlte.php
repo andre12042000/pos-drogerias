@@ -357,6 +357,38 @@ return [
             ],
         ],
         [
+            'text'       => 'Facturación',
+            'classes'    => 'text-white',
+            'icon'       => 'fas fa-receipt',
+            'icon_color' => 'info',
+            'can'  => 'Acceso Inventario Ver',
+            'submenu' => [
+                [
+                    'text'       => 'Facturas',
+                    'classes'    => 'text-white',
+                    'icon'       => 'bi bi-cart-plus',
+                    'icon_color' => 'white',
+                    'route'      => 'facturacion.index',
+                ],
+                /* [
+                    'text'       => 'Productos',
+                    'classes'    => 'text-white',
+                    'icon'       => 'bi bi-basket',
+                    'icon_color' => 'white',
+                    'route'      => 'inventarios.product',
+
+
+                ],
+                [
+                    'text'       => 'Producto stock bajo',
+                    'classes'    => 'text-white',
+                    'icon'       => 'bi bi-exclamation-triangle-fill',
+                    'icon_color' => 'white',
+                    'route'      => 'inventarios.stock.min',
+                ], */
+            ],
+        ],
+        [
             'text'       => 'Inventarios',
             'classes'    => 'text-white',
             'icon'       => 'bi bi-columns-gap',
