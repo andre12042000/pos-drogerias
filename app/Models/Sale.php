@@ -44,6 +44,21 @@ class Sale extends Model
 
     }
 
+    public function scopeFilterMetodoPago($query, $metodoPago)
+    {
+        if($metodoPago){
+            return $query->whereHas('cashs', function ($q) use ($metodoPago) {
+                $q->whereHas('metodoPago', function ($q) use ($metodoPago) {
+                    $q->where('nombre', '=', $metodoPago);
+                });
+            });
+
+        }else{
+            return $query;
+        }
+
+    }
+
 
 
 

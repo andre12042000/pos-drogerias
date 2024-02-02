@@ -3,6 +3,9 @@ var valor_iva_caja = 0;
 var valor_iva_blister = 0;
 var valor_iva_unidad = 0;
 
+this.botonGuardarProduct = document.getElementById("guardarProductBtn");
+this.loader = this.botonPagar.querySelector(".loader");
+
 
 
 /*----------------------Metodos para habilitar o deshabilitar inputs ----------*/
@@ -190,7 +193,21 @@ function convertirPorcentajeADecimal(ivaPorcentaje) {
 
 /*----------------Capturar datos procesados para enviar al backend -------*/
 
+function mostrarLoader() {
+    this.botonGuardarProduct.setAttribute("disabled", true);
+    this.loader.style.display = "inline-block";
+}
+
+function ocultarLoader() {
+    this.loader.style.display = "none";
+}
+
+
+
 function capturarYEnviarDatos() {
+
+    this.mostrarLoader();
+
     var datos = {
         costo_caja: document.getElementById("costo_caja").value,
         iva_product: document.getElementById("iva_product").value,
@@ -206,4 +223,6 @@ function capturarYEnviarDatos() {
     };
 
     Livewire.emit('guardarDatosEvent', datos);
+
+    this.ocultarLoader();
 }

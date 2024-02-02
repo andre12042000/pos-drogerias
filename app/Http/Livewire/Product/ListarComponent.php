@@ -25,7 +25,7 @@ class ListarComponent extends Component
 
     public $cantidad_registros = 10;
 
-    protected $listeners = ['ProductsEvent', 'reloadProductos', 'ajusteInventarioEvent'];
+    protected $listeners = ['ProductsEvent', 'reloadProductEvent', 'ajusteInventarioEvent'];
 
     function ajusteInventarioEvent($dataEvent)
     {
@@ -163,9 +163,14 @@ class ListarComponent extends Component
         $this->emit('ProductEventEdit', $product);
     }
 
-    public function reloadProductos()
+    public function reloadProductEvent($product)
     {
+
         $this->render();
+
+        if($product){
+            $this->dispatchBrowserEvent('nuevo-producto', ['producto' => $product['name']]);
+        }
     }
 
     public function render()

@@ -166,8 +166,6 @@
     })
 </script>
 
-
-
     <script>
         function abrirModal(product, categorias, subcategorias, presentaciones, ubicaciones, laboratorios) {
             var modal = document.getElementById('stockModal');
