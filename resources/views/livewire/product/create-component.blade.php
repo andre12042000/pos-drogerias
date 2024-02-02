@@ -1,6 +1,6 @@
 <div class="modal-dialog modal-xl" id="modal-create-producto">
     <div class="modal-content">
-        <div class="modal-header text-white" style="background-color: #17A2B8 ">
+        <div class="modal-header bg-info">
             <h5 class="modal-title " id="staticBackdropLabel"> <strong>Gestión de productos</strong> </h5>
             <button type="button" class="btn-close" data-dismiss="modal" wire:click="cancel" aria-label="Close"></button>
         </div>
