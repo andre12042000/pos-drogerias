@@ -70,7 +70,7 @@
                        <td>{{ mb_strtoupper($sale->user->name) }}</td>
                        <td>{{ mb_strtoupper($sale->client->name) }}</td>
                        <td>@if ($sale->status == 'PAGADA')
-                                 APROBADA
+                        <span class="badge badge-pill badge-danger" >APROBADA</span>
                             @else
                             <span class="badge badge-pill badge-danger" title="valor anulado: $ {{ number_format($sale->valor_anulado, 0) }}" style="cursor: pointer;">ANULADA</span>
 
