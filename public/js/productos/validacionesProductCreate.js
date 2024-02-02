@@ -3,10 +3,6 @@ var valor_iva_caja = 0;
 var valor_iva_blister = 0;
 var valor_iva_unidad = 0;
 
-this.botonGuardarProduct = document.getElementById("guardarProductBtn");
-this.loader = this.botonPagar.querySelector(".loader");
-
-
 
 /*----------------------Metodos para habilitar o deshabilitar inputs ----------*/
 document
@@ -20,6 +16,8 @@ document
 document
     .getElementById("presentacion_id")
     .addEventListener("change", function () {
+
+        console.log('hola mundo');
         // Obtener el elemento select
         var presentacion_id = document.getElementById("presentacion_id");
 
@@ -194,12 +192,17 @@ function convertirPorcentajeADecimal(ivaPorcentaje) {
 /*----------------Capturar datos procesados para enviar al backend -------*/
 
 function mostrarLoader() {
-    this.botonGuardarProduct.setAttribute("disabled", true);
-    this.loader.style.display = "inline-block";
+    var botonGuardarProduct = document.getElementById("guardarProductBtn");
+    var loader = botonGuardarProduct.querySelector(".loader");
+
+    botonGuardarProduct.setAttribute("disabled", true);
+    loader.style.display = "inline-block";
 }
 
 function ocultarLoader() {
-    this.loader.style.display = "none";
+    var botonGuardarProduct = document.getElementById("guardarProductBtn");
+    var loader = botonGuardarProduct.querySelector(".loader");
+    loader.style.display = "none";
 }
 
 
