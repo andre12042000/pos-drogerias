@@ -64,9 +64,19 @@
                                 <div class="d-grid gap-2">
                                     <button class="btn btn-primary btn-lg" wire:click="confirmacionaplicar"
                                         @if ($purchase->status == 'APLICADO') disabled @endif> Aplicar en
-                                        inventario</button>
+                                        inventario
+                                        <div wire:loading wire:target="confirmacionaplicar">
+                                            <img src="{{ asset('img/loading.gif') }}" width="20px" class="img-fluid"
+                                                alt="">
+                                        </div>
+                                    </button>
+                                </div>
+                                @error('purchaseDetails')
+                                <div class="text-center mt-2">
+                                    <span class="text-danger">¡Se requiere al menos un producto en los detalles de compra.!</span>
                                 </div>
 
+                            @enderror
                             </div>
                         </div>
                     </div>
@@ -215,3 +225,34 @@
         </script>
     @endpush
 </div>
+
+<script>
+    window.addEventListener('compra-generada', event => {
+        const numeroCompra = event.detail.compra;
+        Swal.fire({
+            icon: "success",
+            title: "Compra registrada correctamente",
+            text: `Haz registrado correctamente la compra Nro. ` + numeroCompra,
+            showConfirmButton: false,
+            timer: 3000
+        });
+        setTimeout(() => {
+        // Obtener la URL de la ruta usando su nombre
+        const rutaDeseadaUrl = '{{ route("inventarios.purchase") }}';
+
+        // Redirigir a la ruta deseada
+        window.location.href = rutaDeseadaUrl;
+    }, 3000);
+
+    })
+</script>
+
+<script>
+    window.addEventListener('error', event => {
+        Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Ocurrio un error!",
+        });
+    })
+</script>
