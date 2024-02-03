@@ -88,10 +88,8 @@ class SaleComponent extends Component
     public function Imprimirecibo($venta)
     {
 
-        if ($this->imprimirecibo > 0) {
+        return redirect()->route('ventas.pos.imprimir.recibo', $venta);
 
-            return redirect()->route('ventas.pos.imprimir.recibo', $venta);
-        }
     }
 
 
@@ -130,6 +128,7 @@ class SaleComponent extends Component
 
             DB::transaction(function () use ($dataVenta) {
 
+
                 $prefijo = 'RE';
                 $nuevoNro = $this->obtenerProximoNumero($prefijo);
                 $full_nro = $prefijo . $nuevoNro;
@@ -164,7 +163,11 @@ class SaleComponent extends Component
 
 
                 event(new VentaRealizada($venta));
-                $this->Imprimirecibo($venta);
+
+                if($dataVenta['imprimirRecibo'] > 0){
+                    $this->Imprimirecibo($venta->id);
+                }
+
                 $this->dispatchBrowserEvent('venta-generada', ['venta' => $venta->full_nro]);
                 //  return redirect('/ventas/pos')->with('venta_exitosa' , $venta->id);
 
