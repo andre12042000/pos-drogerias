@@ -49,12 +49,11 @@ class SaleComponent extends Component
 
     protected $listeners = ['ClientEvent', 'ProductEvent', 'agregarProductoEvent', 'crearVentaEvent' => 'tipoOperacion'];
 
-    function agregarProductoEvent($product, $opcionSeleccionada){
+    function agregarProductoEvent($product, $opcionSeleccionada)
+    {
 
 
         $this->dispatchBrowserEvent('agregarProductoAlArrayCode', ['producto' => $product, 'opcionSeleccionada' => $opcionSeleccionada]);
-
-
     }
 
     public function ClientEvent($client)
@@ -69,7 +68,6 @@ class SaleComponent extends Component
         $product = json_decode(json_encode($product));
         $this->precio = $precio;
         $this->verifyProduct($product);
-
     }
 
     public function Mount()
@@ -87,14 +85,10 @@ class SaleComponent extends Component
         return view('livewire.sale.sale-component', compact('empresa', 'metodos_pago'));
     }
 
-    public function Imprimirecibo($venta){
+    public function Imprimirecibo($venta)
+    {
 
-        if($this->imprimirecibo > 0){
-/*                       return redirect('/ventas/pos')->with('venta_exitosa' , $venta->id);
- */
-                return redirect()->route('ventas.pos.imprimir.recibo', $venta);
-        }
-
+        return redirect()->route('ventas.pos.imprimir.recibo', $venta);
 
     }
 
@@ -120,10 +114,9 @@ class SaleComponent extends Component
 
     function tipoOperacion($dataVenta)
     {
-        if($this->tipo_operacion == 'VENTA'){
+        if ($this->tipo_operacion == 'VENTA') {
             $this->generarVenta($dataVenta);
         }
-
     }
 
     /*--------------Funciones generar venta ------------------*/
@@ -134,6 +127,7 @@ class SaleComponent extends Component
         try {
 
             DB::transaction(function () use ($dataVenta) {
+
 
                 $prefijo = 'RE';
                 $nuevoNro = $this->obtenerProximoNumero($prefijo);
@@ -157,9 +151,9 @@ class SaleComponent extends Component
 
                 $this->detallesVenta($venta, $dataVenta['productosParaVenta']);
 
-                if($this->tipo_operacion == 'VENTA'){
+                if ($this->tipo_operacion == 'VENTA') {
                     $this->ventaContado($venta);
-                }elseif($this->tipo_operacion == 'VENTA_CREDITO'){
+                } elseif ($this->tipo_operacion == 'VENTA_CREDITO') {
                     $this->ventaCredito($venta);
                     $credito =  $this->crearCredito($venta);
                     $this->historiaPagos($credito);
@@ -169,9 +163,13 @@ class SaleComponent extends Component
 
 
                 event(new VentaRealizada($venta));
-                $this->Imprimirecibo($venta);
+
+                if($dataVenta['imprimirRecibo'] > 0){
+                    $this->Imprimirecibo($venta->id);
+                }
+
                 $this->dispatchBrowserEvent('venta-generada', ['venta' => $venta->full_nro]);
-              //  return redirect('/ventas/pos')->with('venta_exitosa' , $venta->id);
+                //  return redirect('/ventas/pos')->with('venta_exitosa' , $venta->id);
 
 
             });
@@ -187,13 +185,12 @@ class SaleComponent extends Component
 
             report($e);
         }
-
     }
 
     function detallesVenta($venta, $dataProducts)
     {
 
-        foreach($dataProducts as $data){
+        foreach ($dataProducts as $data) {
             SaleDetail::create([
                 'sale_id'       => $venta->id,
                 'product_id'    => $data['id_producto'],
@@ -202,9 +199,8 @@ class SaleComponent extends Component
                 'price'         => $data['precio_unitario'],
                 'discount'      => $data['descuento'],
                 'tax'           => $data['iva'],
-             ]);
+            ]);
         }
-
     }
 
 
@@ -240,7 +236,6 @@ class SaleComponent extends Component
             'cashesable_id'     => $sale['id'],
             'quantity'          => $sale['total'],
         ]);
-
     }
 
     public function ventaCredito($sale)
@@ -250,7 +245,6 @@ class SaleComponent extends Component
             'cashesable_id'     => $sale['id'],
             'quantity'          => $sale['total'],
         ]);
-
     }
 
 
@@ -258,14 +252,8 @@ class SaleComponent extends Component
 
     /*--------------Fin funciones generar venta ------------------*/
 
-
-
-
-
-
     public function close()
     {
         $this->showpay = false;
     }
-
 }

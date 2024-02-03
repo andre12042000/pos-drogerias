@@ -4,7 +4,6 @@ var valor_iva_blister = 0;
 var valor_iva_unidad = 0;
 
 
-
 /*----------------------Metodos para habilitar o deshabilitar inputs ----------*/
 document
     .getElementById("disponible_blister")
@@ -17,6 +16,8 @@ document
 document
     .getElementById("presentacion_id")
     .addEventListener("change", function () {
+
+        console.log('hola mundo');
         // Obtener el elemento select
         var presentacion_id = document.getElementById("presentacion_id");
 
@@ -190,7 +191,26 @@ function convertirPorcentajeADecimal(ivaPorcentaje) {
 
 /*----------------Capturar datos procesados para enviar al backend -------*/
 
+function mostrarLoader() {
+    var botonGuardarProduct = document.getElementById("guardarProductBtn");
+    var loader = botonGuardarProduct.querySelector(".loader");
+
+    botonGuardarProduct.setAttribute("disabled", true);
+    loader.style.display = "inline-block";
+}
+
+function ocultarLoader() {
+    var botonGuardarProduct = document.getElementById("guardarProductBtn");
+    var loader = botonGuardarProduct.querySelector(".loader");
+    loader.style.display = "none";
+}
+
+
+
 function capturarYEnviarDatos() {
+
+    this.mostrarLoader();
+
     var datos = {
         costo_caja: document.getElementById("costo_caja").value,
         iva_product: document.getElementById("iva_product").value,
@@ -206,4 +226,6 @@ function capturarYEnviarDatos() {
     };
 
     Livewire.emit('guardarDatosEvent', datos);
+
+    this.ocultarLoader();
 }

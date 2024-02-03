@@ -60,7 +60,7 @@
                                         height="50px">
 
                                 @else
-                                    <img src="{!! Config::get('app.URL') !!}/storage/livewire-tem/sin_image_product.jpg"
+                                    <img src="{{ asset('img/sinimagen.jpg') }}"
                                         width="50px">
                                 @endif
                             </td>

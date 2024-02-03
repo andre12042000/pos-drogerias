@@ -4,12 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Models\Empresa;
 use App\Models\Impresora;
-use Mike42\Escpos\Printer;
-use Illuminate\Support\Str;
-use Illuminate\Http\Request;
-use Mike42\Escpos\EscposImage;
 use App\Traits\ObtenerImpresora;
+use Illuminate\Support\Str;
+
+
+use Illuminate\Http\Request;
+
+
 use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
+use Mike42\Escpos\Printer;
+use Mike42\Escpos\EscposImage;
+use Mike42\Escpos\PrinterConnectors\FilePrintConnector;
+
+
+
 
 class ImpresoraController extends Controller
 {
@@ -22,11 +30,11 @@ class ImpresoraController extends Controller
 
     public function cancel()
     {
-            $this->reset();
-            $this->resetErrorBag();
+        $this->reset();
+        $this->resetErrorBag();
     }
 
-    public function pruebaimprimirrecibo(){
+      public function pruebaimprimirrecibo(){
 
         $empresa = Empresa::find(1);
 
@@ -45,7 +53,7 @@ class ImpresoraController extends Controller
             $printer->setJustification(Printer::JUSTIFY_CENTER);
             $printer->bitImage($escposResizedImg);
             $printer->text("\n");
-             $printer->setJustification(Printer::JUSTIFY_CENTER);
+            $printer->setJustification(Printer::JUSTIFY_CENTER);
             $printer->text("NIT: " . $empresa->nit . "\n");
             $printer->text("Telefono: " . $empresa->telefono . "\n");
             $printer->text($empresa->email . "\n");

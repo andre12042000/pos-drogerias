@@ -21,8 +21,8 @@
 
 @include('includes.alert')
 
-<div class="card  card-info">
-<div class="card-header"><h3> Mis notificaciones</h3></div>
+<div class="card  ">
+<div class="card-header "><h3> Mis notificaciones</h3></div>
      <a class="ml-3 mt-3 text-dark" href="{{ route('markAsRead') }}" id="mark-all"><strong><i class="bi bi-check2-all"></i> Marcar todas como leídas</strong></a>
     <div class="card-body">
         <table class="table table-striped" id="tabdispositivos">

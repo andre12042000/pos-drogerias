@@ -88,9 +88,13 @@
                             </td>
                             <td class="text-center">
                                 @can('Acceso Inventario Editar')
-                                    <a @popper(Actualizar) class="btn btn-outline-primary btn-sm" data-toggle="modal"
-                                        data-target="#productomodal" wire:click="sendData( {{ $product }} )"><i
-                                            class="bi bi-pencil-square"></i></a>
+
+                                <a @popper(Función no disponible por el momento.) class="btn btn-outline-primary btn-sm"><i
+                                    class="bi bi-pencil-square"></i></a>
+
+                                    {{-- <a @popper(Actualizar) class="btn btn-outline-primary btn-sm" data-toggle="modal"
+                                        data-target="#productomodal" wire:click="sendData( {{ $product }} )" onclick="return false;"><i
+                                            class="bi bi-pencil-square"></i></a> --}}
                                 @endcan
 
 
@@ -144,6 +148,23 @@
 </div>
 
 @section('js')
+
+<script>
+    window.addEventListener('nuevo-producto', event => {
+        const producto = event.detail.producto;
+        Swal.fire({
+            icon: "success",
+            title: "Producto registrado correctamente",
+            text: `Haz registrado correctamente el producto: ` + producto,
+            showConfirmButton: false,
+            timer: 3000
+        });
+        setTimeout(() => {
+                    location.reload();
+        }, 1500);
+
+    })
+</script>
 
     <script>
         function abrirModal(product, categorias, subcategorias, presentaciones, ubicaciones, laboratorios) {

@@ -1,4 +1,4 @@
-<div class="card-body">
+
     <div class="row">
         <div class="col-lg-4">
             <h4 class="text-center"><strong>Información Básica</strong></h4>
@@ -97,4 +97,4 @@
             </div>
         </div>
     </div>
-</div>
+

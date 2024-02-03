@@ -15,6 +15,13 @@ class ProductManager {
         this.botonPagar = document.getElementById("pagarBtn");
         this.loader = this.botonPagar.querySelector(".loader");
 
+        const selectMetodoPago = document.getElementById('selectMetodoPago');
+
+        selectMetodoPago.addEventListener("change", () =>
+            this.handleChangeMetodoPago()
+        );
+
+
 
         // Asignar el valor al elemento span con la clase granTotal
         document.querySelector(".granTotal").textContent = granTotalFormateado;
@@ -104,6 +111,22 @@ class ProductManager {
         window.addEventListener("agregarProductoAlArrayCode", (event) =>
             this.handleAgregarProducto(event)
         );
+    }
+
+    handleChangeMetodoPago()
+    {
+        var opcionSi = document.getElementById('opcionSi');
+        var opcionNo = document.getElementById('opcionNo');
+        var selectMetodoPago = document.getElementById('selectMetodoPago');
+        console.log(selectMetodoPago.value);
+
+        if (selectMetodoPago.value === '1') {
+            // Selecciona la opción "Si"
+            opcionSi.checked = true;
+        }else{
+            opcionNo.checked = true;
+        }
+
     }
 
     handleGranTotalChange(){

@@ -116,6 +116,7 @@
                                         <th>Código</th>
                                         <th>Vendedor/a</th>
                                         <th>Cliente</th>
+                                        <th>Metodo de pago</th>
                                         <th>Total</th>
                                         <th class="text-center">Acciones</th>
                                     </tr>
@@ -137,14 +138,36 @@
                                             <td>{{ $venta->cashesable->full_nro }}</td>
                                             <td>{{ ucwords($venta->cashesable->user->name) }}</td>
                                             <td>{{ ucwords($venta->cashesable->client->name) }}</td>
+                                            <td>{{ ucwords($venta->cashesable->metodopago->name) }}</td>
                                             <td class="text-end">$ {{ number_format($venta->quantity, 0) }}</td>
                                             <td class="text-center">
+                                                {{-- Cuidado por que imprime segun el modelo ventas o abonos --}}
 
-                                                <a @popper(Ver comprobante) class="btn btn-outline-primary btn-sm"
-                                                    href="@if ($venta->cashesable_type == 'App\Models\Sale') {{ route('ventas.pos.details', $venta->cashesable_id) }}
+                                                @if ($venta->cashesable_type == 'App\Models\Sale')
+
+                                                <a @popper(Ver comprobante) class="btn btn-outline-primary btn-sm" href="{{ route('ventas.pos.details', $venta->cashesable_id) }}">
+                                                    <i class="bi bi-eye-fill"></i>
+                                                </a>
+
+                                                <a @popper(Imprimir comprobante) class="btn btn-outline-success btn-sm" href="{{ route('ventas.pos.imprimir.recibo', $venta->cashesable_id) }}">
+                                                    <i class="bi bi-printer"></i>
+                                                </a>
+
                                                 @else
+
+                                                <a @popper(Ver comprobante) class="btn btn-outline-primary btn-sm" href="{{ route('orders.show', $venta->cashesable->abonable_id) }}">
+                                                    <i class="bi bi-eye-fill"></i>
+                                                </a>
+
+                                                @endif
+
+
+                                               {{--  <a @popper(Ver comprobante) class="btn btn-outline-primary btn-sm"
+                                                    href="@if ($venta->cashesable_type == 'App\Models\Sale') {{ route('ventas.pos.details', $venta->cashesable_id) }}
+                                                             @else
                                                    {{ route('orders.show', $venta->cashesable->abonable_id) }} @endif"
-                                                    target="_blank" role="button"><i class="bi bi-eye-fill"></i></a>
+                                                    target="_blank" role="button"><i class="bi bi-eye-fill"></i>
+                                                </a> --}}
 
                                             </td>
                                         <tr>

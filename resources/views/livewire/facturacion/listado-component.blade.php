@@ -70,13 +70,15 @@
                        <td>{{ mb_strtoupper($sale->user->name) }}</td>
                        <td>{{ mb_strtoupper($sale->client->name) }}</td>
                        <td>@if ($sale->status == 'PAGADA')
-                                 APROBADA
+                        <span class="badge badge-pill badge-danger" >APROBADA</span>
                             @else
                             <span class="badge badge-pill badge-danger" title="valor anulado: $ {{ number_format($sale->valor_anulado, 0) }}" style="cursor: pointer;">ANULADA</span>
 
                             @endif
                       </td>
                       <td class="text-center">
+
+
                         @if (\Carbon\Carbon::parse($sale->created_at)->isToday() AND $sale->status == 'PAGADA')
                             <!-- Si la fecha es la actual, los iconos estarán habilitados -->
                             {{-- <a href="{{ route('facturacion.edit', $sale->id) }}" title="Editar factura" class="mr-2" style="text-decoration: none;">
@@ -97,8 +99,12 @@
 
                         @endif
 
-                        <a href="{{ route('ventas.pos.details', $sale->id) }}" title="Editar factura" class="mr-2" style="text-decoration: none;">
+                        <a href="{{ route('ventas.pos.details', $sale->id) }}" title="Detalles de factura" class="mr-2" style="text-decoration: none;">
                             <i class="fas fa-eye"></i>
+                        </a>
+
+                        <a href="{{ route('ventas.pos.imprimir.recibo', $sale->id) }}" title="Detalles de factura" class="mr-2" style="text-decoration: none;">
+                            <i class="bi bi-printer"></i>
                         </a>
                     </td>
                     </tr>

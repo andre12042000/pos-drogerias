@@ -1,6 +1,6 @@
 <div class="modal-dialog modal-xl" id="modal-create-producto">
     <div class="modal-content">
-        <div class="modal-header bg-info">
+        <div class="modal-header text-white" style="background-color: #17A2B8">
             <h5 class="modal-title " id="staticBackdropLabel"> <strong>Gestión de productos</strong> </h5>
             <button type="button" class="btn-close" data-dismiss="modal" wire:click="cancel" aria-label="Close"></button>
         </div>
@@ -134,11 +134,6 @@
 
                         </div>
                     </div>
-
-
-
-
-
                     <div class="row mb-3">
 
                         <div class="form-floating mt-1 col-4">
@@ -179,8 +174,8 @@
                         <div class="form-floating mt-1 col-4">
                             <select
                                 class="form-select @if ($presentacion_id == '') @else @error('presentacion_id') is-invalid @else is-valid @enderror @endif"
-                                id="presentacion_id" name="presentacion_id" aria-label="Floating label select example"
-                                wire:model.defer="presentacion_id">
+                                id="presentacion_id" name="presentacion_id"
+                                aria-label="Floating label select example" wire:model.defer="presentacion_id">
                                 <option selected>Seleccionar </option>
                                 @foreach ($presentaciones as $pre)
                                     <option value="{{ $pre->id }}" data-presentacion="{{ json_encode($pre) }}">
@@ -201,8 +196,9 @@
                     <div class="row mb-3">
                         <div class="form-floating mt-2 col-4">
                             <div class="form-floating">
-                                <select class="form-select"  id="disponible_caja" name="disponible_caja"
-                                    aria-label="Floating label select example" wire:model.defer = 'disponible_caja' disabled>
+                                <select class="form-select" id="disponible_caja" name="disponible_caja"
+                                    aria-label="Floating label select example" wire:model.defer = 'disponible_caja'
+                                    disabled>
                                     <option selected>Seleccione una opción</option>
                                     <option value="1">Si</option>
                                     <option value="0">No</option>
@@ -214,8 +210,9 @@
                         <div class="form-floating mt-2 col-4">
 
                             <div class="form-floating">
-                                <select class="form-select"  id="disponible_blister" name="disponible_blister" disabled
-                                    aria-label="Floating label select example" wire:model.defer = 'disponible_blister'>
+                                <select class="form-select" id="disponible_blister" name="disponible_blister"
+                                    disabled aria-label="Floating label select example"
+                                    wire:model.defer = 'disponible_blister'>
                                     <option selected>Seleccione una opción</option>
                                     <option value="1">Si</option>
                                     <option value="0">No</option>
@@ -229,8 +226,8 @@
                         <div class="form-floating mt-2 col-4">
 
                             <div class="form-floating">
-                                <select class="form-select"  id="disponible_unidad" name="disponible_unidad" disabled
-                                    aria-label="Floating label select example"  wire:model.defer = 'disponible_unidad'>
+                                <select class="form-select" id="disponible_unidad" name="disponible_unidad" disabled
+                                    aria-label="Floating label select example" wire:model.defer = 'disponible_unidad'>
                                     <option selected>Seleccione una opción</option>
                                     <option value="1">Si</option>
                                     <option value="0">No</option>
@@ -246,8 +243,8 @@
                         <div class="form-floating mt-2 col-4">
                             <input type="number"
                                 class="form-control  @if ($contenido_interno_caja == '') @else @error('contenido_interno_caja') is-invalid @else is-valid @enderror @endif"
-                                id="contenido_interno_caja" name="contenido_interno_caja"
-                                min="0" wire:model.defer="contenido_interno_caja" disabled>
+                                id="contenido_interno_caja" name="contenido_interno_caja" min="0"
+                                wire:model.defer="contenido_interno_caja" disabled>
                             <label for="floatingInput">Cantidad caja </label>
                             @error('contenido_interno_caja')
                                 <span class="text-danger">{{ $message }}</span>
@@ -345,16 +342,20 @@
                             @enderror
                         </div>
                     </div>
-
-
                 </div>
             </div>
         </div>
 
         <div class="modal-footer">
 
-            <button type="button" onclick="capturarYEnviarDatos()" class="btn btn-success float-right ml-2 mb-1"
-                >Guardar</button>
+
+            <button type="button" onclick="capturarYEnviarDatos()" id="guardarProductBtn"
+                class="btn btn-outline-success float-right ml-2 mb-1">Guardar Producto
+
+                <img class="loader" src="{{ asset('img/loading.gif') }}" alt="Cargando..."
+                                    width="30px;" style="display: none;" />
+
+            </button>
             <x-adminlte-button class="float-right" wire:click="cancel" theme="danger" label="Cancelar"
                 data-dismiss="modal" />
 

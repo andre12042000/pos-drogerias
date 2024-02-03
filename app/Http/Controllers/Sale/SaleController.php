@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Sale;
 
+use App\Traits\ObtenerImpresora;
 use Dompdf\Dompdf;
 use App\Models\Sale;
 use App\Models\Empresa;
@@ -16,8 +17,11 @@ use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
 use Illuminate\Support\Str;
 use Intervention\Image\Facades\Image;
 
+
 class SaleController extends Controller
 {
+    use ObtenerImpresora;
+
 
     public function index()
     {
@@ -65,6 +69,50 @@ class SaleController extends Controller
         return $dompdf->stream('archivo.pdf');
     }
 
+
+
+  /*   public function pruebaimprimirrecibo(){
+
+        $empresa = Empresa::find(1);
+
+        $impresora =  $this->obtenerimpresora();
+
+        $printerName = $impresora;
+
+        try {
+            $connector = new WindowsPrintConnector($printerName);
+            $printer = new Printer($connector);
+
+            $rutaImagen = public_path('img\recibos.png');
+            $escposResizedImg = EscposImage::load($rutaImagen);
+
+            // Imprime la imagen redimensionada
+            $printer->setJustification(Printer::JUSTIFY_CENTER);
+            $printer->bitImage($escposResizedImg);
+            $printer->text("\n");
+            $printer->setJustification(Printer::JUSTIFY_CENTER);
+            $printer->text("NIT: " . $empresa->nit . "\n");
+            $printer->text("Telefono: " . $empresa->telefono . "\n");
+            $printer->text($empresa->email . "\n");
+            $printer->text($empresa->direccion . "\n");
+            $printer->text("\n");
+            $printer->text("--------------------------------\n");
+            $printer->text("\n");
+
+            $printer->text("Datos del recibo - informe\n");
+            $printer->text("--------------------------------\n");
+            $printer->text("Gracias por tu compra! \n");
+            $printer->text("\n");
+            $printer->cut();
+            $printer->close();
+        } catch (\Exception $e) {
+            echo "Error: " . $e->getMessage();
+        }
+    } */
+
+
+
+
     public function imprimirrecibo($id)
     {
         $sales = Sale::find($id);
@@ -76,12 +124,11 @@ class SaleController extends Controller
             $numeoridentidad = 'No disponible';
         }
 
-         $fecha = \Carbon\Carbon::parse($sales->created_at)->formatLocalized('%d %B %Y ');
+        $fecha = \Carbon\Carbon::parse($sales->created_at)->locale('es_ES')->formatLocalized('%d %B %Y ');
 
+         $printerName =  $this->obtenerimpresora();
 
-        $printerName = 'MOTOS';
-
-        try {
+         try {
             $connector = new WindowsPrintConnector($printerName);
             $printer = new Printer($connector);
 
@@ -118,7 +165,7 @@ class SaleController extends Controller
                 if (count($palabras) >= 2) {
                     $nuevasPalabras = [];
                     foreach ($palabras as $palabra) {
-                        $nuevasPalabras[] = Str::limit($palabra, 3, '');
+                        $nuevasPalabras[] = Str::limit($palabra, 20, '');
                     }
                     $nombreConcepto = implode(' ', $nuevasPalabras);
                 } else {
@@ -157,7 +204,9 @@ class SaleController extends Controller
         } catch (\Exception $e) {
             echo "Error: " . $e->getMessage();
         }
-        return redirect()->route('ventas.pos.details', $id)->with('message', 'Empresa actualizada exitosamente');
+
+        return redirect()->back();
+
     }
 
     function quitarTildes($string)

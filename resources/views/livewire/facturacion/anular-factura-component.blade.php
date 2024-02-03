@@ -36,7 +36,9 @@
                                 anulación</label>
                             <div class="col-sm-8">
                                 <div class="input-group">
-                                    <select class="form-control form-control-lg" id="inputGroupSelect04"
+                                    <select class="form-select form-control-l " @if ($sales->status == 'ANULADA')
+                                        disabled
+                                    @endif id="inputGroupSelect04"
                                         {{ $status }} wire:model.lazy = 'motivo_anulacion'>
                                         <option selected>Seleccione un motivo de anulación...</option>
                                         @forelse ($motivo_anulaciones as $motivo)
@@ -47,23 +49,18 @@
                                     </select>
 
                                     <div class="input-group-append">
-                                        <button type="button" class="btn btn-outline-light btn-lg" {{ $status }}
+                                        <button type="button" @if ($sales->status == 'ANULADA')
+                                            disabled
+                                        @endif class="btn btn-outline-light btn-lg" {{ $status }}
                                             wire:click="anularFactura">Anular</button>
                                     </div>
                                 </div>
                                 @error('motivo_anulacion')
                                     <span class="text-white">{{ $message }}</span>
                                 @enderror
-
                             </div>
-
-
-
                         </div>
-
                     </form>
-
-
                     {{-- <a class="btn btn-outline-light mt-2 text-dark @if ($cantidad == 0) disabled @endif"
                         href="{{ route('reporte.export.dia') }}"><i class="bi bi-file-earmark-arrow-down"></i> <strong>
                             Exportar Excel</strong></a> --}}
@@ -71,7 +68,9 @@
 
             </div>
         </div>
-
+ <div class="card-body ">
+    @include('includes.bodyfactura')
+</div>
         @if ($status == 'disabled')
             <div class="row m-4">
                 <div class="alert alert-danger" role="alert">
@@ -81,7 +80,6 @@
 
     </div>
 
-    @include('includes.bodyfactura')
 </div>
 
 <script>

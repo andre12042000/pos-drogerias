@@ -173,6 +173,44 @@ class CreateComponent extends Component
     function save($validatedData)
     {
         $producto = Product::create($validatedData);
+
+        $this->emit('reloadProductEvent', $producto);
+
+        $this->cleanData();
+
+        $this->dispatchBrowserEvent('close-modal');
+
+    }
+
+    function cleanData()
+    {
+        $this->code                      = '';
+        $this->name                      = '';
+        $this->laboratorio_id            = '';
+        $this->ubicacion_id              = '';
+        $this->presentacion_id           = '';
+        $this->category_id               = '';
+        $this->subcategory_id            = '';
+        $this->status                    = '';
+        $this->stock_min                 = '';
+        $this->stock_max                 = '';
+        $this->stock                     = '';
+        $this->iva_product               = '';
+        $this->disponible_caja           = '';
+        $this->disponible_blister        = '';
+        $this->disponible_unidad         = '';
+        $this->contenido_interno_caja    = '';
+        $this->contenido_interno_blister = '';
+        $this->contenido_interno_unidad  = '';
+        $this->costo_caja                = '';
+        $this->costo_blister             = '';
+        $this->costo_unidad              = '';
+        $this->precio_caja               = '';
+        $this->precio_blister            = '';
+        $this->precio_unidad             = '';
+        $this->valor_iva_caja            = '';
+        $this->valor_iva_blister         = '';
+        $this->valor_iva_unidad          = '';
     }
 
 

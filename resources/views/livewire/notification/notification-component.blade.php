@@ -25,8 +25,8 @@
 
             @include('includes.alert')</div>
         @include('popper::assets')
-        <div class="card mt-2">
-            <div class="card-header bg-info">
+        <div class="card card-info mt-2">
+            <div class="card-header ">
                 <div class="row">
                     <div class="col-sm-9">
                         <h3>Notificaciones</h3>
