@@ -54,7 +54,7 @@
 
                     <ul class="dropdown-menu text-dark" aria-labelledby="dropdownMenuLink">
                       <li> <a class="dropdown-item text-dark"   href="{{ route('ventas.pos.pdf',  $venta) }}"><i class="bi bi-download"></i> Descargar PDF </a></li>
-                      <li> <a href=" {{ route('ventas.pos.imprimir.recibo', $venta) }}" class="dropdown-item text-dark" > <i class="bi bi-printer"></i> Imprimir recibo</a></li>
+                      <li> <a href="{{ route('ventas.pos.imprimir.recibo', $venta) }}" class="dropdown-item text-dark" > <i class="bi bi-printer"></i> Imprimir recibo</a></li>
 
                     </ul>
                   </div>

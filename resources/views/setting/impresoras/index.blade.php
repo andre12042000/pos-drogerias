@@ -30,16 +30,16 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse ($impresoras as $empresa)
+                    @forelse ($impresoras as $impresora)
                     <tr>
-                        <td>{{ $empresa->nombre}}</td>
-                        <td>@if($empresa->predeterminada == 1 ) <span class="badge bg-success">ACTIVA</span>  @else <span class="badge bg-danger">INACTIVA</span>  @endif</td>
+                        <td>{{ $impresora->nombre}}</td>
+                        <td>@if($impresora->predeterminada == 1 ) <span class="badge bg-success">ACTIVA</span>  @else <span class="badge bg-danger">INACTIVA</span>  @endif</td>
 
 
                         <td class="text-right">
                             <a class="btn btn-outline-dark" href="{{ route('preubarecibo') }}" title="Prueba impresora"><i class="bi bi-receipt-cutoff"></i></a>
                             <a @popper(Actualizar) class="btn btn-outline-success " href="#" role="button"
-                                data-toggle="modal" data-target="#editarEmpresaModal"><i
+                                data-toggle="modal" data-target="#editarimpresoraModal"><i
                                     class="bi bi-pencil-square"></i>
                             </a>
                         </td>
