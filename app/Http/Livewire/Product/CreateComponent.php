@@ -176,8 +176,6 @@ class CreateComponent extends Component
 
         $this->emit('reloadProductEvent', $producto);
 
-        $this->cleanData();
-
         $this->dispatchBrowserEvent('close-modal');
 
     }

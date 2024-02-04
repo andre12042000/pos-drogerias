@@ -381,5 +381,8 @@
         $('#productomodal').hide();
         $('body').removeClass('modal-open');
         $('.modal-backdrop').remove();
+
+
+        location.reload();
     })
 </script>
