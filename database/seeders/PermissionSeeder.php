@@ -66,6 +66,12 @@ class PermissionSeeder extends Seeder
             'name' => 'Acceso Gestion Facturacion',
         ]);
 
+        Permission::create([
+            'name' => 'Acceso Componente Control',
+        ]);
+
+
+
 
 
     }

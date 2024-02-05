@@ -532,6 +532,13 @@ return [
                     'icon_color' => 'white',
                     'route'      => 'parametros.motivoanulacion',
                 ],
+                [
+                    'text'       => 'Seguimiento temperatura',
+                    'classes'    => 'text-white',
+                    'icon'       => 'fas fa-temperature-high',
+                    'icon_color' => 'white',
+                    'route'      => 'parametros.sitios.temperatura',
+                ],
 
             ],
         ],
@@ -611,9 +618,9 @@ return [
         [
             'type'         => 'navbar-notification',
             'id'           => 'my-notification',
-            'icon'         => 'fas fa-temperature-high ',
+            'icon'         => 'fas fa-temperature-high',
             'icon_color' => 'navy',
-            'route'         => 'parametros.vencimientos',
+            'route'         => 'control.temperatura',
 
 
             'topnav_right' => true,
@@ -630,7 +637,7 @@ return [
             'id'           => 'my-notification',
             'icon'         => 'far fa-calendar-alt',
             'icon_color' => 'navy',
-            'route'         => 'notificaciones.index',
+            'route'         => 'control.vencimientos',
 
 
             'topnav_right' => true,
