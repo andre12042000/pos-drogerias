@@ -295,6 +295,9 @@ return [
             'type'         => 'fullscreen-widget',
             'topnav_right' => true,
         ],
+
+
+
         [
             'text'          => 'Inicio ',
             'classes'       => 'text-white',
@@ -585,6 +588,9 @@ return [
             ],
         ],
 
+
+
+
          [
             'type'         => 'navbar-notification',
             'id'           => 'my-notification',
@@ -601,6 +607,41 @@ return [
                 'period' => 30,
             ],
         ],
+
+        [
+            'type'         => 'navbar-notification',
+            'id'           => 'my-notification',
+            'icon'         => 'fas fa-temperature-high ',
+            'icon_color' => 'navy',
+            'route'         => 'parametros.vencimientos',
+
+
+            'topnav_right' => true,
+            'dropdown_mode'   => false,
+            'dropdown_flabel' => 'Todas las notificaciones',
+            'update_cfg'   => [
+                'url' => 'notifications/get',
+                'period' => 30,
+            ],
+        ],
+
+        [
+            'type'         => 'navbar-notification',
+            'id'           => 'my-notification',
+            'icon'         => 'far fa-calendar-alt',
+            'icon_color' => 'navy',
+            'route'         => 'notificaciones.index',
+
+
+            'topnav_right' => true,
+            'dropdown_mode'   => false,
+            'dropdown_flabel' => 'Todas las notificaciones',
+            'update_cfg'   => [
+                'url' => 'notifications/get',
+                'period' => 30,
+            ],
+        ],
+
 
 
         // Sidebar items:

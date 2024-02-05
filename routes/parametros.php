@@ -20,6 +20,8 @@ Route::get('laboratorios', [\App\Http\Livewire\Laboratorio\ListComponent::class,
 Route::get('subacateogoria', [\App\Http\Livewire\Subcategoria\ListComponent::class, '__invoke'])->name('subcategoria');
 Route::get('ubicacion', [\App\Http\Livewire\Ubicacion\ListComponent::class, '__invoke'])->name('ubicacion');
 Route::get('motivo-anulacion', [\App\Http\Livewire\Anulacion\ListComponent::class, '__invoke'])->name('motivoanulacion');
+Route::get('vencimientos', [\App\Http\Livewire\Vencimientos\ListComponent::class, '__invoke'])->name('vencimientos');
+
 
 
 });
