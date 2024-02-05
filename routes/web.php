@@ -7,6 +7,7 @@ use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\ImpresoraController;
 use App\Http\Controllers\Parametros\CategoryController;
 use App\Http\Livewire\Notification\NotificationComponent;
+use App\Http\Livewire\Parametros\SitiosTemperatura\ListSitioTemperaturaComponent;
 
 
 /*
@@ -48,6 +49,8 @@ Route::get('markAsRead', function(){
     return redirect()->back();
 })->middleware('auth', 'change.password')->name('markAsRead');
 Route::get('perfil', [PerfilController::class, 'index'])->middleware('auth')->name('perfil');
+
+Route::get('parametros/sitios_temperatura', [ListSitioTemperaturaComponent::class, '__invoke'])->middleware('auth')->name('sitios.temperatura');
 
 
 
