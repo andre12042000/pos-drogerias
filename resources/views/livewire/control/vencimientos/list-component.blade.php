@@ -73,11 +73,11 @@
                             <td>{{ $ven->lote }}</td>
                             <td>{{ $ven->cantidad_ingresada - $ven->cantidad_vendida }} </td>
                             <td>
-                                @if ($mayoryear == true)
+                                @if ($ven->fecha_vencimiento > $seis)
                                     <span class="badge bg-success">{{ $ven->fecha_vencimiento }}</span>
-                                @elseif ($seismeses == true)
+                                @elseif ($ven->fecha_vencimiento > $tres || $ven->fecha_vencimiento > $seis)
                                     <span class="badge bg-warning">{{ $ven->fecha_vencimiento }}</span>
-                                @elseif($tresmeses == true)
+                                @elseif($ven->fecha_vencimiento > $hoy || $ven->fecha_vencimiento > $tres)
                                     <span class="badge bg-danger">{{ $ven->fecha_vencimiento }}</span>
                                     @else
                                     <span class="badge bg-secondary">{{ $ven->fecha_vencimiento }}</span>

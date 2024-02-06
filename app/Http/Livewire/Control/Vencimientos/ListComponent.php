@@ -21,7 +21,10 @@ class ListComponent extends Component
 
     public function render()
     {
-
+        $hoy = Carbon::now();
+        $tres = $hoy->copy()->addMonths(3);
+        $seis = $hoy->copy()->addMonths(6);
+        $hoy = $hoy->format('Y-m-d');
             $vencimientos = Vencimientos::search($this->buscar)
             ->estado($this->status)
             ->filtroseis($this->seismeses)
@@ -29,9 +32,7 @@ class ListComponent extends Component
             ->filtrotres($this->tresmeses)
             ->paginate($this->cantidad_registros);
 
-
-
-        return view('livewire.control.vencimientos.list-component', compact('vencimientos'))->extends('adminlte::page');
+            return view('livewire.control.vencimientos.list-component', compact('vencimientos', 'hoy', 'tres', 'seis'))->extends('adminlte::page');
     }
 
     public function filtrosesis()
