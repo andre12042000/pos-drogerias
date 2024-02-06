@@ -15,12 +15,12 @@
                             <div class="input-group mb-3 float-right">
                                 <input type="date" class="form-control" placeholder="Desde" aria-label="Username"
                                     wire:model="desde">
-                                    @error("desde") <span class="text-danger">{{ $message }}</span> @enderror
                                 <span class="input-group-text">Hasta</span>
                                 <input type="date" class="form-control" placeholder="Hasta" aria-label="Server"
                                     wire:model="hasta">
-                                    @error("hasta") <span class="text-danger">{{ $message }}</span> @enderror
                             </div>
+                            @error("desde") <span class="text-danger">{{ $message }}</span> @enderror
+                            @error("hasta") <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
                         <div class="col-md-4">
                             <!-- Ajusté el tamaño de la columna para que los botones queden al final -->
