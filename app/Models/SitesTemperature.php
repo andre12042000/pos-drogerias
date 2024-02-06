@@ -11,6 +11,16 @@ class SitesTemperature extends Model
 
     protected $guarded= ['id'];
 
+    /*------------Relaciones ----------------------*/
+
+    public function temperatures()
+    {
+        return $this->hasMany(Temperature::class, 'sites_temperatures_id');
+    }
+
+
+    /*-------------------Scopes--------------------*/
+
     public function scopeActive($query)
       {
            return $query->where('status', 'ACTIVE');
