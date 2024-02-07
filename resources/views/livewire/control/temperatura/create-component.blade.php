@@ -50,13 +50,7 @@
                             </div>
                             @error("sitiosData.{$loop->index}.humedad") <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
-                        <div class="col">
-                            <div class="form-floating">
-                                <input type="number" class="form-control" id="cadena_frio" placeholder="name@example.com" wire:model.defer="sitiosData.{{ $loop->index }}.cadena_frio">
-                                <label for="humedad">Humedad</label>
-                            </div>
-                            @error("sitiosData.{$loop->index}.cadena_frio") <span class="text-danger">{{ $message }}</span> @enderror
-                        </div>
+
                     </div>
                 </div>
             @empty

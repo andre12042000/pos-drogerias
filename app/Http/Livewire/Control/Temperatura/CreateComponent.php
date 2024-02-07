@@ -39,10 +39,6 @@ class CreateComponent extends Component
                 "sitiosData.{$index}.humedad.required" => 'El campo Humedad es requerido.',
                 "sitiosData.{$index}.humedad.numeric" => 'El campo Humedad debe ser un número.',
                 "sitiosData.{$index}.humedad.between" => 'El campo Humedad debe estar entre 0 y 99.',
-
-                "sitiosData.{$index}.temperatura.required" => 'El campo Temperatura es requerido.',
-                "sitiosData.{$index}.temperatura.numeric" => 'El campo Temperatura debe ser un número.',
-                "sitiosData.{$index}.temperatura.between" => 'El campo Temperatura debe estar entre 0 y 99.',
             ];
         }
 
@@ -50,7 +46,6 @@ class CreateComponent extends Component
 
         foreach ($this->sitiosData as $index => $data) {
             $rules["sitiosData.{$index}.sitio_id"] = 'required';
-            $rules["sitiosData.{$index}.cadena_frio"] = 'required|numeric|between:0,99';
             $rules["sitiosData.{$index}.humedad"] = 'required|numeric|between:0,99';
             $rules["sitiosData.{$index}.temperatura"] = 'required|numeric|between:0,99';
         }
@@ -61,7 +56,6 @@ class CreateComponent extends Component
         foreach($this->sitiosData as $data){
             Temperature::create([
                 'sites_temperatures_id'     => $data['sitio_id'],
-                'cadena_frio'               => $data['sitio_id'],
                 'humedad'                   => $data['humedad'],
                 'temperatura'               => $data['temperatura'],
                 'fecha'                     => now()->toDateString(),

@@ -64,7 +64,6 @@
                         <th>Lugar</th>
                         <th class="text-center">Temperatura</th>
                         <th class="text-center">Humedad</th>
-                        <th class="text-center">Cadena de frio</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -75,7 +74,6 @@
                             <td>{{ $seguimiento->sitio->name }}</td>
                             <td class="text-center">{{ round($seguimiento->temperatura) }} °C</td>
                             <td class="text-center">{{ round($seguimiento->humedad) }}</td>
-                            <td class="text-center">{{ round($seguimiento->cadena_frio) }}</td>
                         </tr>
                     @empty
                         <tr>

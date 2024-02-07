@@ -21,7 +21,6 @@ class CreateTemperaturesTable extends Migration
             $table->time('hora');
             $table->decimal('temperatura', 8, 2);
             $table->decimal('humedad', 8, 2);
-            $table->decimal('cadena_frio', 8, 2);
             $table->timestamps();
         });
     }
