@@ -46,10 +46,9 @@ class ImpresoraController extends Controller
       public function pruebaimprimirrecibo(Request $request){
 
        $ip = $this->obtenerInformacionCliente($request);
-       dd($ip);
         $empresa = Empresa::find(1);
 
-        $impresora =  $this->obtenerimpresora();
+        $impresora =  $this->obtenerimpresora($ip);
 
         $printerName = $impresora;
 
