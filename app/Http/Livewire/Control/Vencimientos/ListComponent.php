@@ -5,6 +5,7 @@ namespace App\Http\Livewire\Control\Vencimientos;
 use Carbon\Carbon;
 use Livewire\Component;
 use App\Models\Vencimientos;
+use Livewire\WithPagination;
 
 class ListComponent extends Component
 {
@@ -15,7 +16,8 @@ class ListComponent extends Component
     public $mayoryear = false;
     public $tresmeses = true;
 
-
+    use WithPagination;
+    protected $paginationTheme = 'bootstrap';
     protected $listeners = ['EliminarVencimientoEvent'];
 
 
