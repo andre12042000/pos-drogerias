@@ -21,7 +21,7 @@ class ListarComponent extends Component
 
     public function render()
     {
-        $purchaes = Purchase::search($this->buscar)->orderBy('created_at', 'desc')->paginate($this->cantidad_registros);
+        $purchaes = Purchase::search($this->buscar)->orderBy('purchase_date', 'desc')->paginate($this->cantidad_registros);
         return view('livewire.purchase.listar-component', compact('purchaes'));
     }
 
