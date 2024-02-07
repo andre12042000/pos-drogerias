@@ -19,6 +19,7 @@ use Mike42\Escpos\PrinterConnectors\FilePrintConnector;
 
 
 
+
 class ImpresoraController extends Controller
 {
     use ObtenerImpresora;
