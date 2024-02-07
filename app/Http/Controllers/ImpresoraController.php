@@ -49,7 +49,6 @@ class ImpresoraController extends Controller
         $empresa = Empresa::find(1);
 
         $impresora =  $this->obtenerimpresora($ip);
-        dd($impresora);
 
         $printerName = $impresora;
 
