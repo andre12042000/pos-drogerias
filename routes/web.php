@@ -7,6 +7,7 @@ use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\ImpresoraController;
 use App\Http\Controllers\Parametros\CategoryController;
 use App\Http\Livewire\Notification\NotificationComponent;
+use App\Http\Controllers\NombreDeTuControlador;
 
 
 
@@ -52,6 +53,7 @@ Route::get('perfil', [PerfilController::class, 'index'])->middleware('auth')->na
 
 
 
+Route::get('/obtener-informacion-cliente', [NombreDeTuControlador::class, 'obtenerInformacionCliente']);
 
 
 

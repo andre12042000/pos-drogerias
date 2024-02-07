@@ -291,10 +291,7 @@ return [
 
     'menu' => [
         // Navbar items:
-        [
-            'type'         => 'fullscreen-widget',
-            'topnav_right' => true,
-        ],
+
 
 
 
