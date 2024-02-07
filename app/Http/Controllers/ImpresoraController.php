@@ -39,14 +39,14 @@ class ImpresoraController extends Controller
     {
         $ip = $request->ip();
         $hostname = gethostbyaddr($ip);
-dd($ip);
         return $ip;
 
     }
 
       public function pruebaimprimirrecibo(Request $request){
 
-        $this->obtenerInformacionCliente($request);
+       $ip = $this->obtenerInformacionCliente($request);
+       dd($ip);
         $empresa = Empresa::find(1);
 
         $impresora =  $this->obtenerimpresora();
