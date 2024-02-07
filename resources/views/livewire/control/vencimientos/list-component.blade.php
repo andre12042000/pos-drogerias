@@ -1,5 +1,5 @@
 <div>
-    @section('title', 'Vencimientos')
+    @section('title', 'Semaforización de medicamentos')
 
     @section('content_header')
 
@@ -9,7 +9,7 @@
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">Control</li>
 
-                    <li class="breadcrumb-item active" aria-current="page">Vencimientos</li>
+                    <li class="breadcrumb-item active" aria-current="page">Semaforización de medicamentos</li>
                 </ol>
             </nav>
         </div>
@@ -23,7 +23,7 @@
 
             <div class="row">
                 <div class="col-sm-7">
-                    <h3>Vencimientos</h3>
+                    <h3>Semaforización de medicamentos e insumos</h3>
                 </div>
 
 
@@ -37,15 +37,25 @@
                         </select>
                         <span class="input-group-text" id="basic-addon1"><i class="bi bi-search"></i></span>
                         <input type="text" class="form-control mr-2" placeholder="Buscar lote" aria-label="Username"
-                            aria-describedby="basic-addon1" wire:model="buscar">
+                            aria-describedby="basic-addon1" wire:model="buscar" style="height: 50px;">
 
-                        <div class="btn-group " role="group" aria-label="Basic mixed styles example">
-                            <button type="button" title="Filtar por 3 meses" wire:click="filtrotres"
+                        {{--     <div class="btn-group" role="group" aria-label="Semaforo">
+                                <button type="button" title="Filtrar por 3 meses" wire:click="filtrotres" class="btn btn-danger btn-lg">&#128308;</button>
+                                <button type="button" title="Filtrar por 6 meses" wire:click="filtrosesis" class="btn btn-warning btn-lg">&#128993;</button>
+                                <button type="button" title="Filtrar por +1 año" wire:click="filtromasyeard" class="btn btn-success btn-lg">&#128994;</button>
+                            </div> --}}
+
+
+                         <div class="btn-group " role="group" aria-label="Basic mixed styles example">
+                            <button type="button" title="Filtrar por 3 meses" wire:click="filtrotres" class="btn btn-danger btn-lg">&#128308;</button>
+                                <button type="button" title="Filtrar por 6 meses" wire:click="filtrosesis" class="btn btn-warning btn-lg">&#128993;</button>
+                                <button type="button" title="Filtrar por +1 año" wire:click="filtromasyeard" class="btn btn-success btn-lg">&#128994;</button>
+                            {{-- <button type="button" title="Filtar por 3 meses" wire:click="filtrotres"
                                 class="btn btn-danger btn-lg"></button>
                             <button type="button" title="Filtar por 6 meses" wire:click="filtrosesis"
                                 class="btn btn-warning btn-lg"></button>
                             <button type="button" title="Filtar por +1 año" wire:click="filtromasyeard"
-                                class="btn btn-success btn-lg"></button>
+                                class="btn btn-success btn-lg"></button> --}}
                         </div>
                     </div>
 
@@ -100,8 +110,8 @@
 
                     @empty
                         <tr>
-                            <td colspan="2">
-                                <p>No se encontraron registros...</p>
+                            <td colspan="7" class="text-center">
+                                <p class="mt-4 mb-4">No se encontraron registros...</p>
                             </td>
                         </tr>
                     @endforelse

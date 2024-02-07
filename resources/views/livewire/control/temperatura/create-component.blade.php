@@ -38,46 +38,24 @@
                         </div>
                         <div class="col">
                             <div class="form-floating">
-                                <select class="form-select" id="temperatura"
-                                    aria-label="Floating label select example" wire:model.defer="sitiosData.{{ $loop->index }}.temperatura">
-                                    <option selected>Seleccione una opción</option>
-                                    <?php
-                                    for ($i = 0; $i <= 35; $i++) {
-                                        echo "<option value=\"$i\">$i °C</option>";
-                                    }
-                                    ?>
-                                </select>
-                                <label for="floatingSelect">Temperatura en °C </label>
+                                <input type="number" class="form-control" id="temperatura" placeholder="name@example.com" wire:model.defer="sitiosData.{{ $loop->index }}.temperatura"  min="0" max="99">
+                                <label for="floatingInput">Temperatura</label>
                             </div>
-                            @error("sitiosData.{$loop->index}.temperatura") <span class="text-danger">Este campo es requerido</span> @enderror
+                            @error("sitiosData.{$loop->index}.temperatura") <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
                         <div class="col">
                             <div class="form-floating">
-                                <select class="form-select" id="humedad"
-                                    aria-label="Floating label select example" wire:model.defer="sitiosData.{{ $loop->index }}.humedad">
-                                    <option selected>Seleccione una opción</option>
-                                    <?php
-                                    for ($i = 0; $i <= 35; $i++) {
-                                        echo "<option value=\"$i\">$i</option>";
-                                    }
-                                    ?>
-                                </select>
-                                <label for="floatingSelect">Humedad</label>
+                                <input type="number" class="form-control" id="humedad" placeholder="name@example.com" wire:model.defer="sitiosData.{{ $loop->index }}.humedad">
+                                <label for="humedad">Humedad</label>
                             </div>
-                            @error("sitiosData.{$loop->index}.humedad") <span class="text-danger">Este campo es requerido</span> @enderror
+                            @error("sitiosData.{$loop->index}.humedad") <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
                         <div class="col">
                             <div class="form-floating">
-                                <select class="form-select" id="floatingSelect"
-                                    aria-label="Floating label select example" wire:model.defer="sitiosData.{{ $loop->index }}.cadena_frio">
-                                    <option selected>Seleccione una opción</option>
-                                    <option value="0">0</option>
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                </select>
-                                <label for="floatingSelect">Cadena de frio</label>
+                                <input type="number" class="form-control" id="cadena_frio" placeholder="name@example.com" wire:model.defer="sitiosData.{{ $loop->index }}.cadena_frio">
+                                <label for="humedad">Humedad</label>
                             </div>
-                            @error("sitiosData.{$loop->index}.cadena_frio") <span class="text-danger">Este campo es requerido</span> @enderror
+                            @error("sitiosData.{$loop->index}.cadena_frio") <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
                     </div>
                 </div>
@@ -123,4 +101,5 @@
 
       });
 </script>
+
 
