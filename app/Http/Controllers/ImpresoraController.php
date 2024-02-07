@@ -35,8 +35,18 @@ class ImpresoraController extends Controller
         $this->resetErrorBag();
     }
 
-      public function pruebaimprimirrecibo(){
+    public function obtenerInformacionCliente(Request $request)
+    {
+        $ip = $request->ip();
+        $hostname = gethostbyaddr($ip);
+dd($ip);
+        return $ip;
 
+    }
+
+      public function pruebaimprimirrecibo(Request $request){
+
+        $this->obtenerInformacionCliente($request);
         $empresa = Empresa::find(1);
 
         $impresora =  $this->obtenerimpresora();
