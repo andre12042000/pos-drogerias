@@ -617,7 +617,7 @@ return [
 
         [
             'type'         => 'navbar-notification',
-            'id'           => 'my-notification',
+            'id'           => 'my-notifications',
             'icon'         => 'fas fa-temperature-high',
             'icon_color' => 'navy',
             'route'         => 'control.temperatura',
@@ -625,16 +625,12 @@ return [
 
             'topnav_right' => true,
             'dropdown_mode'   => false,
-            'dropdown_flabel' => 'Todas las notificaciones',
-            'update_cfg'   => [
-                'url' => 'notifications/get',
-                'period' => 30,
-            ],
+
         ],
 
         [
             'type'         => 'navbar-notification',
-            'id'           => 'my-notification',
+            'id'           => 'my-notificatiosn',
             'icon'         => 'far fa-calendar-alt',
             'icon_color' => 'navy',
             'route'         => 'control.vencimientos',
@@ -642,11 +638,7 @@ return [
 
             'topnav_right' => true,
             'dropdown_mode'   => false,
-            'dropdown_flabel' => 'Todas las notificaciones',
-            'update_cfg'   => [
-                'url' => 'notifications/get',
-                'period' => 30,
-            ],
+
         ],
 
 

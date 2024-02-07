@@ -32,6 +32,7 @@ class ListComponent extends Component
             ->filtroseis($this->seismeses)
             ->filtroyear($this->mayoryear)
             ->filtrotres($this->tresmeses)
+            ->orderBy('fecha_vencimiento', 'asc')
             ->paginate($this->cantidad_registros);
 
             return view('livewire.control.vencimientos.list-component', compact('vencimientos', 'hoy', 'tres', 'seis'))->extends('adminlte::page');
