@@ -46,10 +46,10 @@
                 <tbody>
                      @forelse ($purchaes as $purchase)
                         <tr>
-                           <td>{{ $purchase->fecha_compra }}</td>
-                           <td>{{ $purchase->provider->name }}</td>
+                           <td>{{ \Carbon\Carbon::parse($purchase->fecha_compra)->locale('es')->format('d/m/Y') }}</td>
+                           <td>{{ mb_strtoupper($purchase->provider->name) }}</td>
                            <td>{{ $purchase->invoice }}</td>
-                           <td>{{ $purchase->cantproducts }}</td>
+                           <td class="text-center">{{ $purchase->cantproducts }}</td>
                            <td class="text-end">{{ $purchase->iva }}</td>
                            <td class="text-end">{{ $purchase->total_compra }}</td>
 
@@ -64,7 +64,7 @@
                                         width="50px">
                                 @endif
                             </td>
-                           <td>@if($purchase->status == 'BORRADOR') <span class="badge bg-warning ">Pendiente</span> @else <span class="badge bg-success">Añadida</span> @endif </td>
+                           <td>@if($purchase->status == 'BORRADOR') <span class="badge bg-warning ">Pendiente</span> @else <span class="badge bg-success">Aplicada</span> @endif </td>
                            <td class="text-center">
                            @can('Acceso Inventario Editar')
                            <a @popper(Abonar) class="btn btn-outline-info btn-sm @if($purchase->abono == $purchase->total || $purchase->payment_method == '2') disabled @endif" href="#" role="button"

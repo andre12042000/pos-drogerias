@@ -26,8 +26,7 @@ window.addEventListener('calcularDatosEvent', event => {
     precio_compra.classList.add('is-invalid');
     iva.classList.add('is-invalid');
   //  descuento.classList.add('is-invalid');
-    lote.classList.add('is-invalid');
-    fecha_vencimiento.classList.add('is-invalid');
+
 
 
 
@@ -126,18 +125,10 @@ document.addEventListener("DOMContentLoaded", function() {
 
         Livewire.emit('submitEvent', dataIngresoProducto)
 
-
-
-
-
-
     });
 
 
 });
-
-
-
 
 
 
@@ -194,9 +185,9 @@ function calcularPrecioVenta(iva, precio_compra, descuento, ganancia)
     ) {
         // Calcular el precio de venta
 
-        const precioConGanancia = parseFloat(precio_compra) * (1 + parseFloat(ganancia) / 100);
-        const precioConIVA = precioConGanancia * (1 + parseFloat(iva) / 100);
-        const precioConDescuento = precioConIVA * (1 - parseFloat(descuento) / 100);
+        const precioConGanancia = Math.floor(parseFloat(precio_compra) * (1 + parseFloat(ganancia) / 100));
+        const precioConIVA = Math.floor(precioConGanancia * (1 + parseFloat(iva) / 100));
+        const precioConDescuento = Math.floor(precioConIVA * (1 - parseFloat(descuento) / 100));
         const precioFinal = precioConDescuento;
 
         return precioFinal;
@@ -206,7 +197,73 @@ function calcularPrecioVenta(iva, precio_compra, descuento, ganancia)
         return null;
     }
 
+}
 
+
+
+function validarFechaVencimiento() {
+    // Obtener el valor de la fecha del input
+    var fechaVencimientoInput = document.getElementById('fecha_vencimiento');
+    var fechaSeleccionada = fechaVencimientoInput.value;
+
+    // Obtener la fecha actual
+    var fechaActual = new Date();
+
+    // Convertir la fecha del input a un objeto Date
+    var fechaInput = new Date(fechaSeleccionada);
+
+    // Obtener el año actual y sumarle 3 años
+    var maximoAnioPermitido = fechaActual.getFullYear() + 5;
+
+    // Validar que la fecha sea superior a la fecha actual
+    if (fechaInput < fechaActual) {
+        fechaVencimientoInput.classList.add('is-invalid');
+      return;
+    }
+
+    // Validar que la fecha no supere 3 años más que el año actual
+    if (fechaInput.getFullYear() > maximoAnioPermitido) {
+        fechaVencimientoInput.classList.add('is-invalid');
+      return;
+    }
+
+    fechaVencimientoInput.classList.remove('is-invalid');
+
+    // Si la fecha cumple ambas condiciones, puedes realizar otras acciones necesarias
+    // ...
+
+  }
+
+  function validarCantidad() {
+    // Obtén el valor del input
+    var cantidadInput = document.getElementById('cantidad');
+    var valor = cantidadInput.value;
+
+
+    // Verifica si el valor es mayor a 0 y es un número
+    if (valor > 0 && !isNaN(valor)) {
+        // Si es válido, quita la clase is-invalid
+        cantidadInput.classList.remove('is-invalid');
+    } else {
+        // Si no es válido, agrega la clase is-invalid
+        cantidadInput.classList.add('is-invalid');
+    }
+}
+
+function validarIva() {
+    // Obtén el valor del input
+    var ivaInput = document.getElementById('iva');
+    var valor = ivaInput.value;
+
+
+    // Verifica si el valor es mayor a 0 y es un número
+    if (valor > 0 && !isNaN(valor)) {
+        // Si es válido, quita la clase is-invalid
+        ivaInput.classList.remove('is-invalid');
+    } else {
+        // Si no es válido, agrega la clase is-invalid
+        ivaInput.classList.add('is-invalid');
+    }
 }
 
 

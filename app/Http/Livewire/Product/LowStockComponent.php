@@ -19,7 +19,8 @@ class LowStockComponent extends Component
     public function render()
     {
 
-        $data = Product::orderBy('stock', 'ASC')->get();
+        $data = Product::orderBy('stock', 'ASC')
+                        ->get();
 
         $categorias = Category::all();
 
@@ -27,16 +28,17 @@ class LowStockComponent extends Component
 
         foreach ($data as $product) {
 
-            if($product->stock_min > 0 & $product->stock <= $product->stock_min){
+            if($product->stock <= $product->inventario->cantidad_caja){
 
                 $productos[] =
                 [
                     'id'             => $product['id'],
                     'code'           => $product['code'],
                     'name'           => $product['name'],
-                    'stock'          => $product['stock'],
+                    'stock'          => $product['inventario']['cantidad_caja'],
                     'stock_min'      => $product['stock_min'],
-                    'recomendado'    => $product['stock_max'] - $product['stock'],
+                    'stock_max'      => $product['stock_max'],
+                    'recomendado'    => $product['stock_max'] - $product['inventario']['cantidad_caja'],
                 ];
             }
 

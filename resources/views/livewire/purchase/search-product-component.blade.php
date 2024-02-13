@@ -129,14 +129,14 @@
                     <div class="col-4">
                         <div class="form-floating mb-3">
                             <input type="date" class="form-control" wire:model.defer = 'fecha_vencimiento' id="fecha_vencimiento"
-                                id="fecha_nacimiento" placeholder="name@example.com" disabled>
+                                id="fecha_nacimiento" placeholder="name@example.com" disabled onchange="validarFechaVencimiento()">
                             <label for="floatingInput">Fecha de vencimiento</label>
                         </div>
                     </div>
                     <div class="col-4">
                         <div class="form-floating mb-3">
                             <input type="number" class="form-control" wire:model.defer = 'cantidad' id="cantidad"
-                                placeholder="name@example.com" min="1" disabled>
+                                 min="1" disabled onchange="validarCantidad()">
                             <label for="floatingInput">Cantidad</label>
                         </div>
                     </div>
@@ -157,7 +157,7 @@
 
                         <div class="form-floating mb-3">
                             <input type="number" class="form-control" wire:model.defer = 'iva' id="iva" min='0' max="99"
-                                placeholder="name@example.com" disabled>
+                                placeholder="name@example.com" disabled onchange="validarIva()">
                             <label for="floatingInput">Iva</label>
                         </div>
 

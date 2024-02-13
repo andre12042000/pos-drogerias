@@ -5,7 +5,6 @@
             <button type="button" class="btn-close" data-dismiss="modal" wire:click="cancel" aria-label="Close"></button>
         </div>
         <div class="modal-body " style="background-color: #f5fbfb">
-
             <div class="row">
 
 

@@ -153,7 +153,6 @@ class SearchProductComponent extends Component
             'precio_compra'         => 'required',
             'iva'                   => 'required',
             'precio_venta_caja'     => 'required',
-
         ]);
 
         $this->updateProducto();

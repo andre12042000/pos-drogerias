@@ -17,8 +17,6 @@
                         <option value="100">100</option>
                         <option value="300">300</option>
                     </select>
-
-
                     </div>
                 </div>
             </div>
@@ -32,7 +30,8 @@
                         <th class="text-center">Cant. faltante</th>
                         <th class="text-center">Stock mínimo</th>
                         <th class="text-center">Stock actual</th>
-                        
+                        <th class="text-center">Stock ideal</th>
+
                     </tr>
                 </thead>
                 <tbody>
@@ -43,6 +42,7 @@
                         <td class="text-center"><span class="badge bg-dark">{{$product['recomendado']}}</span></td>
                         <td class="text-center"> {{ $product['stock_min'] }} </a></td>
                         <td class="text-center">@if( $product['stock'] == $product['stock_min']) <span class="badge bg-warning">{{$product['stock']}}</span> @else  <span class="badge bg-danger">{{$product['stock']}}  @endif</td>
+                        <td class="text-center"> {{ $product['stock_max'] }} </a></td>
                     </tr>
 
                     @empty

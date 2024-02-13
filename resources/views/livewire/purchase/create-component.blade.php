@@ -25,7 +25,7 @@
                         <select id="inputState" wire:model.lazy="proveedor" class="form-control @if($proveedor == '') @else @error('proveedor') is-invalid @else is-valid @enderror @endif">
                             <option value="">Seleccionar proveedor</option>
                             @foreach ($providers as $provider)
-                            <option value="{{ $provider->id}}">{{ $provider->name }}</option>
+                            <option value="{{ $provider->id}}">{{ mb_strtoupper($provider->name) }}</option>
                             @endforeach
                         </select>
                         @error('proveedor')
@@ -57,7 +57,7 @@
                 <div class="form-group row">
                     <label class="col-sm-4 col-form-label">Total de factura </label>
                     <div class="col-sm-8">
-                        <input type="number" wire:model.lazy="total_factura" class="form-control @if($total_factura == '') @else @error('total_factura') is-invalid @else is-valid @enderror @endif" placeholder="Numero de documento">
+                        <input type="number" wire:model.lazy="total_factura" class="form-control @if($total_factura == '') @else @error('total_factura') is-invalid @else is-valid @enderror @endif" placeholder="Numero de documento" disabled>
                         @error('total_factura')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
