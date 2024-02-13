@@ -11,29 +11,25 @@ use Livewire\WithPagination;
 use App\Exports\ExportVentaDiaria;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Traits\ImprimirTrait;
 
 
 class ReporteDiario extends Component
 {
-    use WithPagination;
+
+    use WithPagination, ImprimirTrait;
     protected $paginationTheme = 'bootstrap';
     public $cantidad_registros = 50;
     public  $buscar;
 
-    public $efectivo = 0;
-    public $qr  = 0;
-    public $transferencia = 0;
-    public $cheque = 0;
-    public $deposito = 0;
-    public $total = 0;
-    public $venta = 0;
-    public $abono = 0;
     public $cantidad = 0;
-    public $totalAnulado = 0;
-    public $sumatoriasMetodosPago = [];
 
-
-
+    public $hoy_imprimir = 0;
+    public $totalVenta_imprimir = 0;
+    public $totalAbono_imprimir = 0;
+    public $OtrosConceptos_imprimir = 0;
+    public $facturasAnuladas_imprimir = 0;
+    public $metodosDePagoGroup_imprimir = 0;
 
     public function render()
     {
@@ -48,13 +44,17 @@ class ReporteDiario extends Component
         $metodosDePagoGroup = $this->obtenerValoresMetodoDePago();
         $facturasAnuladas = $this->obtenerAnulaciones();
 
-
-
-
-
         $totalVenta = $tipo_operacion_group['App\Models\Sale'] ?? 0;
         $totalAbono = $tipo_operacion_group['App\Models\Abono'] ?? 0;
         $OtrosConceptos = $tipo_operacion_group['App\Models\Otros'] ?? 0;
+
+        /* Convertimos las variables en variables publicas para enviarlas facilmente al informe o a imprimir */
+        $this->hoy_imprimir = $hoy;
+        $this->totalVenta_imprimir = $totalVenta;
+        $this->totalAbono_imprimir = $totalAbono;
+        $this->OtrosConceptos_imprimir = $OtrosConceptos;
+        $this->facturasAnuladas_imprimir = $facturasAnuladas;
+        $this->metodosDePagoGroup_imprimir = $metodosDePagoGroup;
 
 
 
@@ -79,8 +79,8 @@ class ReporteDiario extends Component
         $todosLosMetodosPago = MetodoPago::where('status', 'ACTIVE')->get();
 
         $ventas = Sale::with('metodopago')
-        ->whereDate('created_at', now()->toDateString())
-        ->get();
+            ->whereDate('created_at', now()->toDateString())
+            ->get();
 
 
 
@@ -92,29 +92,70 @@ class ReporteDiario extends Component
             $totalPorMetodoPago[$metodoPago->name] = $ventas
                 ->where('metodo_pago_id', $metodoPago->id)
                 ->sum('total');
-
         }
 
         return $totalPorMetodoPago;
-
     }
 
     function obtenerAnulaciones()
     {
         $anulaciones = Sale::where('status', 'ANULADA')
-                ->whereDate('created_at', now()->toDateString())
-                ->sum('valor_anulado');
+            ->whereDate('created_at', now()->toDateString())
+            ->sum('valor_anulado');
 
         return $anulaciones;
-
     }
 
+    function imprimirInforme()
+    {
+
+        $reciboBody = [];
+
+        // Sección 1
+        $reciboBody[] = [
+            'label' => 'TOTAL VENTA',
+            'value' => '$ ' . number_format($this->totalVenta_imprimir, 0),
+        ];
+
+        $reciboBody[] = [
+            'label' => 'ABONOS',
+            'value' => '$ ' . number_format($this->totalAbono_imprimir, 0),
+        ];
+
+        $reciboBody[] = [
+            'label' => 'OTROS CONCEPTOS',
+            'value' => '$ ' . number_format($this->OtrosConceptos_imprimir, 0),
+        ];
+
+        // Métodos de pago
+        foreach ($this->metodosDePagoGroup_imprimir as $nombreMetodoPago => $total) {
+            $reciboBody[] = [
+                'label' => $nombreMetodoPago,
+                'value' => '$ ' . number_format($total, 0),
+            ];
+        }
+
+        // Sección 2
+        $reciboBody[] = [
+            'label' => 'Venta Anulada',
+            'value' => '$ ' . number_format($this->facturasAnuladas_imprimir, 0),
+        ];
+
+        $reciboBody[] = [
+            'label' => 'Venta Credito',
+            'value' => '$ 0',
+        ];
+
+        $reciboBody[] = [
+            'label' => 'Consumo Interno',
+            'value' => '$ 0',
+        ];
+
+        // Convertir a JSON si es necesario
+     //   $reciboBodyJSON = json_encode($reciboBody);
+
+        $this->imprimirRecibo($reciboBody);
 
 
-
-
-
-
-
-
+    }
 }

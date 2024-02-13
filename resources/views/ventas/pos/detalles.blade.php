@@ -46,9 +46,9 @@
 
             </div>
             <div class="col-lg-3 float-right text-right">
-
-                <div class="dropdown">
-                    <a class="btn btn-secondary mt-4 dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                <br>
+                <div class="dropdown mr-4">
+                    <a class="alert-link dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
                       Generar Recibo
                     </a>
 
@@ -58,8 +58,6 @@
 
                     </ul>
                   </div>
-
-
             </div>
 
         </div>
@@ -70,6 +68,7 @@
 
     @section('css')
     <link rel="stylesheet" href="/css/admin_custom.css">
+
     @stop
 
     @section('js')

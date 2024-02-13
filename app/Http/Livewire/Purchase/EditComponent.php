@@ -63,14 +63,14 @@ class EditComponent extends Component
 
     public function confirmacionaplicar()
     {
-        $this->validate([
+     /*    $this->validate([
             'purchaseDetails' => 'required|array',
             'purchaseDetails.*' => 'required',
         ]);
 
-        try {
+        try { */
 
-            DB::transaction(function () {
+           // DB::transaction(function () {
                 foreach ($this->purchaseDetails as $detalle) {
                     $this->addProducts($detalle);
                 }
@@ -78,13 +78,13 @@ class EditComponent extends Component
                 $this->purchase->update([
                     'status' => 'APLICADO',
                 ]);
-            });
+         //   });
 
             $compra = $this->purchase->invoice . ' de ' . $this->purchase->provider->name;
 
             $this->dispatchBrowserEvent('compra-generada', ['compra' => $compra]);
 
-        } catch (QueryException $e) {
+       /*  } catch (QueryException $e) {
             $errorCode = $e->errorInfo[1];
 
             // Puedes manejar diferentes códigos de error aquí según tus necesidades
@@ -99,7 +99,7 @@ class EditComponent extends Component
         } catch (\Exception $e) {
             // Manejo de otras excepciones generales
             $this->dispatchBrowserEvent('error', ['error' => 'Error desconocido']);
-        }
+        } */
     }
 
 

@@ -16,10 +16,18 @@
                     <label class="col-lg-12">Cantidad de registros</label>
                     <span class="col-lg-12">{{ $cantidad }}</span>
                 </div>
-                <div class="text-end col-lg-2">
-                    <a class="btn btn-outline-light mt-2 text-dark @if ($cantidad == 0) disabled @endif"
-                        href="{{ route('reporte.export.dia') }}"><i class="bi bi-file-earmark-arrow-down"></i> <strong>
-                            Exportar Excel</strong></a>
+                <div class="col-lg-2 float-right text-right">
+                    <div class="dropdown mr-4 mt-3">
+                        <a class="alert-link dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                          Generar Recibo
+                        </a>
+
+                        <ul class="dropdown-menu text-dark" aria-labelledby="dropdownMenuLink">
+                          <li> <a class="dropdown-item text-dark"   href=""><i class="bi bi-download"></i> Descargar PDF </a></li>
+                          <li> <a href="JavaScript:void(0);" class="dropdown-item text-dark" wire:click="imprimirInforme" > <i class="bi bi-printer"></i> Imprimir informe</a></li>
+
+                        </ul>
+                      </div>
                 </div>
 
             </div>

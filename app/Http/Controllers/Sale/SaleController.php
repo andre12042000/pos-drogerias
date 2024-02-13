@@ -69,50 +69,6 @@ class SaleController extends Controller
         return $dompdf->stream('archivo.pdf');
     }
 
-
-
-  /*   public function pruebaimprimirrecibo(){
-
-        $empresa = Empresa::find(1);
-
-        $impresora =  $this->obtenerimpresora();
-
-        $printerName = $impresora;
-
-        try {
-            $connector = new WindowsPrintConnector($printerName);
-            $printer = new Printer($connector);
-
-            $rutaImagen = public_path('img\recibos.png');
-            $escposResizedImg = EscposImage::load($rutaImagen);
-
-            // Imprime la imagen redimensionada
-            $printer->setJustification(Printer::JUSTIFY_CENTER);
-            $printer->bitImage($escposResizedImg);
-            $printer->text("\n");
-            $printer->setJustification(Printer::JUSTIFY_CENTER);
-            $printer->text("NIT: " . $empresa->nit . "\n");
-            $printer->text("Telefono: " . $empresa->telefono . "\n");
-            $printer->text($empresa->email . "\n");
-            $printer->text($empresa->direccion . "\n");
-            $printer->text("\n");
-            $printer->text("--------------------------------\n");
-            $printer->text("\n");
-
-            $printer->text("Datos del recibo - informe\n");
-            $printer->text("--------------------------------\n");
-            $printer->text("Gracias por tu compra! \n");
-            $printer->text("\n");
-            $printer->cut();
-            $printer->close();
-        } catch (\Exception $e) {
-            echo "Error: " . $e->getMessage();
-        }
-    } */
-
-
-
-
     public function imprimirrecibo($id)
     {
         $sales = Sale::find($id);
@@ -149,6 +105,7 @@ class SaleController extends Controller
             $printer->text("Recibo: " . $sales->full_nro . "\n");
             $printer->text("Cliente: " . $sales->client->name . "\n");
             $printer->text("Identificacion: " . $numeoridentidad . "\n");
+            $printer->text("Metodo de Pago: " . $sales->metodopago->name . "\n");
             $printer->text("Fecha: " . $fecha . "\n");
             $printer->text("Cajero: " . $sales->user->name . "\n");
             $printer->text("\n");

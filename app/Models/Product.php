@@ -44,6 +44,11 @@ class Product extends Model
         return $this->belongsTo(Presentacion::class, 'presentacion_id');
     }
 
+    public function sales()
+    {
+        return $this->hasMany(SaleDetail::class);
+    }
+
 
     //retornar el nombre del producto en mayusculas
     public function getProductoAttribute()

@@ -8,8 +8,9 @@ use App\Http\Controllers\ImpresoraController;
 use App\Http\Controllers\Parametros\CategoryController;
 use App\Http\Livewire\Notification\NotificationComponent;
 use App\Http\Controllers\NombreDeTuControlador;
-
-
+use App\Models\Product;
+use App\Models\PurchaseDetail;
+use App\Models\SaleDetail;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,9 +24,9 @@ use App\Http\Controllers\NombreDeTuControlador;
 */
 
 Route::get('/', function () {
-    if(Auth::check()){
+    if (Auth::check()) {
         return redirect('/home');
-    }else{
+    } else {
         return redirect('/login');
     }
 });
@@ -45,7 +46,7 @@ Route::get('notifications/get', [App\Http\Controllers\NotificationsController::c
 
 Route::post('/mark-as-read', [App\Http\Controllers\NotificationsController::class, 'markNotification'])->middleware('auth', 'change.password')->name('markNotification');
 
-Route::get('markAsRead', function(){
+Route::get('markAsRead', function () {
     auth()->user()->unreadNotifications->markAsRead();
     return redirect()->back();
 })->middleware('auth', 'change.password')->name('markAsRead');
@@ -55,5 +56,36 @@ Route::get('perfil', [PerfilController::class, 'index'])->middleware('auth')->na
 
 Route::get('/obtener-informacion-cliente', [NombreDeTuControlador::class, 'obtenerInformacionCliente']);
 
+Route::get('eliminar_registros', function () {
 
 
+    $productos = Product::whereColumn('created_at', '=', 'updated_at')->with('inventario')->get();
+
+
+
+    foreach ($productos as $producto) {
+
+        if ($producto->inventario->cantidad_caja == 0 && $producto->inventario->cantidad_blister == 0 && $producto->inventario->cantidad_unidad == 0) {
+
+            // Almacenar el producto en el array antes de eliminarlo
+
+            $sale = SaleDetail::where('product_id', $producto->id)->first();
+            $purchase = PurchaseDetail::where('product_id', $producto->id)->first();
+
+            if (!$sale AND !$purchase) {
+
+                $productosEliminados[] = $producto->code . ' - ' . $producto->name;
+
+                // Eliminar el inventario primero
+                $producto->inventario->delete();
+
+                // Luego, eliminar el producto
+                $producto->delete();
+            }
+        }
+    }
+
+
+
+    return $productosEliminados;
+});
