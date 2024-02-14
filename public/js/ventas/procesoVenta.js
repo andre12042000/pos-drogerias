@@ -15,13 +15,11 @@ class ProductManager {
         this.botonPagar = document.getElementById("pagarBtn");
         this.loader = this.botonPagar.querySelector(".loader");
 
-        const selectMetodoPago = document.getElementById('selectMetodoPago');
+        const selectMetodoPago = document.getElementById("selectMetodoPago");
 
         selectMetodoPago.addEventListener("change", () =>
             this.handleChangeMetodoPago()
         );
-
-
 
         // Asignar el valor al elemento span con la clase granTotal
         document.querySelector(".granTotal").textContent = granTotalFormateado;
@@ -59,8 +57,6 @@ class ProductManager {
         this.granTotalSpan.addEventListener("DOMSubtreeModified", () => {
             this.handleGranTotalChange();
         });
-
-
 
         const cantidadInput = document.getElementById("cantidadInput");
         cantidadInput.addEventListener("input", () =>
@@ -113,36 +109,32 @@ class ProductManager {
         );
     }
 
-    handleChangeMetodoPago()
-    {
-        var opcionSi = document.getElementById('opcionSi');
-        var opcionNo = document.getElementById('opcionNo');
-        var selectMetodoPago = document.getElementById('selectMetodoPago');
+    handleChangeMetodoPago() {
+        var opcionSi = document.getElementById("opcionSi");
+        var opcionNo = document.getElementById("opcionNo");
+        var selectMetodoPago = document.getElementById("selectMetodoPago");
         console.log(selectMetodoPago.value);
 
-        if (selectMetodoPago.value === '1') {
+        if (selectMetodoPago.value === "1") {
             // Selecciona la opción "Si"
             opcionSi.checked = true;
-        }else{
+        } else {
             opcionNo.checked = true;
         }
-
     }
 
-    handleGranTotalChange(){
-
+    handleGranTotalChange() {
         var granTotalSpan = document.querySelector(".granTotal");
 
         var valorGranTotal = granTotalSpan.textContent;
 
         const pagarBtn = document.getElementById("pagarBtn");
 
-        if(valorGranTotal > 0){
+        if (valorGranTotal > 0) {
             pagarBtn.removeAttribute("disabled");
-        }else{
+        } else {
             pagarBtn.setAttribute("disabled", true);
         }
-
     }
 
     handleIncrementarCantidadButtonClick() {
@@ -215,8 +207,6 @@ class ProductManager {
 
         // Emitir los datos al componente Livewire
         Livewire.emit("crearVentaEvent", datosVenta);
-
-
     }
 
     mostrarLoader() {
@@ -378,16 +368,13 @@ class ProductManager {
             );
             // El producto ya existe, actualizar cantidad y subtotal
             productoExistente.cantidad += cantidadIngresada;
-          //  productoExistente.subtotal =
+            //  productoExistente.subtotal =
             productoExistente.cantidad * precioUnitario;
             productoExistente.iva = productoExistente.cantidad * iva;
-            productoExistente.subtotal = productoExistente.precio_unitario * productoExistente.cantidad;
-
-
-
+            productoExistente.subtotal =
+                productoExistente.precio_unitario * productoExistente.cantidad;
         } else {
             // El producto no existe, agregar un nuevo producto
-
 
             const iva = productManager.handleObtenerIva(
                 producto,
@@ -403,12 +390,11 @@ class ProductManager {
                 forma: presentacionSeleccionada,
                 precio_unitario: precioUnitario,
                 cantidad: cantidadIngresada,
+                porcentaje_iva: producto.iva_product,
                 iva: iva,
                 descuento: 0,
                 subtotal: cantidadIngresada * precioUnitario,
             };
-
-
 
             // Agregar el nuevo producto al array
             productosParaVenta.push(nuevoProducto);
@@ -423,13 +409,13 @@ class ProductManager {
 
         switch (presentacionSeleccionada) {
             case "disponible_caja":
-                iva = producto.valor_iva_caja * cantidad;
+                iva = Math.round(producto.valor_iva_caja * cantidad);
                 break;
             case "disponible_blister":
-                iva = producto.valor_iva_blister * cantidad;
+                iva = Math.round(producto.valor_iva_blister * cantidad);
                 break;
             case "disponible_unidad":
-                iva = producto.valor_iva_unidad * cantidad;
+                iva = Math.round(producto.valor_iva_unidad * cantidad);
                 break;
             default:
                 // Manejar el caso por defecto
@@ -441,7 +427,6 @@ class ProductManager {
     }
 
     handleAgregarProducto(event) {
-
         productoActual = event.detail.producto;
         const producto = event.detail.producto;
 
@@ -586,6 +571,7 @@ class ProductManager {
         productosParaVenta.forEach(function (producto, index) {
             var fila = tbody.insertRow();
             fila.dataset.index = index;
+            fila.style.cursor = "pointer";
 
             for (var key in producto) {
                 var celda = fila.insertCell();
@@ -593,6 +579,10 @@ class ProductManager {
 
                 // Agregar una clase a la celda de la columna id_producto
                 if (key === "id_producto") {
+                    celda.classList.add("ocultar-columna-id");
+                }
+
+                if(key == 'porcentaje_iva'){
                     celda.classList.add("ocultar-columna-id");
                 }
 
@@ -618,7 +608,13 @@ class ProductManager {
                 }
             }
 
-             // Agregar una celda para el botón de eliminar
+            fila.addEventListener("dblclick", function () {
+                // Llama a handleDoubleClickRow al hacer doble clic en la fila
+                productManager.handleDoubleClickRow(index);
+            });
+
+
+            // Agregar una celda para el botón de eliminar
             var celdaEliminar = fila.insertCell();
             celdaEliminar.classList.add("celda-eliminar");
 
@@ -640,13 +636,136 @@ class ProductManager {
         this.calcularDatosGlobales();
     }
 
-    EliminarFila(fila)
-    {
+
+
+    EliminarFila(fila) {
         productosParaVenta.splice(fila, 1);
         productManager.actualizarTabla();
-
-
     }
+
+    handleDoubleClickRow(index) {
+        const producto_editar = productosParaVenta[index];
+
+        productManager.openModalEditar(producto_editar, index);
+    }
+
+    openModalEditar(producto, index) {
+
+        const modal = document.getElementById("editProductSaleModal");
+        const modalContent = document.getElementById("modalContent");
+
+        const selectPresentacionEdit = document.getElementById("selectPresentacionEdit");
+        const cantidadInputEdit = document.getElementById("cantidadInputEdit");
+        const precioUnitarioInputEdit = document.getElementById("precioUnitarioInputEdit");
+        const totalPrecioCompraInputEdit = document.getElementById("totalPrecioCompraInputEdit");
+        const ivaInputEdit = document.getElementById("ivaInputEdit");
+        const btnIncrementarEditar = document.getElementById("btnIncrementarEditar");
+        const btnDecrementarEditar = document.getElementById("btnDecrementarEditar");
+
+
+        selectPresentacionEdit.value = producto.forma;
+        cantidadInputEdit.value = producto.cantidad;
+        precioUnitarioInputEdit.value = producto.precio_unitario;
+        totalPrecioCompraInputEdit.value = producto.subtotal;
+        ivaInputEdit.value = producto.iva;
+
+        if(producto.iva > 0){
+            var ivaUnitario = obtenerIvaUnitario(producto);
+        }else{
+            var ivaUnitario = 0;
+        }
+
+        cantidadInputEdit.addEventListener("change", calcularTotal);
+        precioUnitarioInputEdit.addEventListener("change", calcularTotal);
+
+        const btnActualizarModal = document.getElementById("actualizarProductosArrayVenta");
+            btnActualizarModal.addEventListener("click", function () {
+                // Aquí puedes actualizar el array según el índice obtenido
+                actualizarProductoEnArray(index);
+            });
+
+
+        // Mostrar el modal
+        modal.style.display = "block";
+
+        btnIncrementarEditar.addEventListener("click", function() {
+            // Obtener el valor actual del input y convertirlo a un número
+            let cantidad = parseInt(cantidadInputEdit.value);
+
+            // Incrementar la cantidad
+            cantidad += 1;
+
+            // Actualizar el valor del input
+            cantidadInputEdit.value = cantidad;
+
+            calcularTotal();
+          });
+
+          btnDecrementarEditar.addEventListener("click", function() {
+            // Obtener el valor actual del input y convertirlo a un número
+            let cantidad = parseInt(cantidadInputEdit.value);
+
+            // Incrementar la cantidad
+            cantidad -= 1;
+
+            // Actualizar el valor del input
+            cantidadInputEdit.value = cantidad;
+            calcularTotal();
+          });
+
+
+        function obtenerIvaUnitario(producto)
+        {
+            const valorIvaUnitario = producto.iva / producto.cantidad;
+
+            return valorIvaUnitario;
+        }
+
+
+
+        function calcularTotal() {
+            const cantidad = parseFloat(cantidadInputEdit.value);
+            const precio = parseFloat(precioUnitarioInputEdit.value);
+
+
+            // Verificar si las entradas son números válidos
+            if (!isNaN(cantidad) && !isNaN(precio)) {
+                ivaInputEdit.value = Math.round(ivaUnitario * cantidad);
+                const total = cantidad * precio;
+                totalPrecioCompraInputEdit.value = total.toFixed(0); // Ajustar según necesidades de formato
+            } else {
+                spanTotal.textContent = "Error"; // Puedes manejar el error de otra manera si es necesario
+            }
+        }
+
+        function actualizarProductoEnArray(index) {
+
+            const nuevoSubTotal = totalPrecioCompraInputEdit.value;
+            const nuevaCantidad = cantidadInputEdit.value;
+            const nuevoPrecioUnitario = precioUnitarioInputEdit.value;
+            const nuevoIva = ivaInputEdit.value;
+
+
+
+            // Actualizar el array ProductosParaVenta
+             productosParaVenta[index].cantidad = nuevaCantidad;
+            productosParaVenta[index].iva = nuevoIva;
+            productosParaVenta[index].precio_unitario = nuevoPrecioUnitario;
+            productosParaVenta[index].subtotal = nuevoSubTotal;
+
+            productManager.actualizarTabla();
+            productManager.closeModalEditar();
+        }
+      }
+
+      closeModalEditar() {
+        const modal = document.getElementById("editProductSaleModal");
+
+        // Cerrar el modal
+        modal.style.display = "none";
+      }
+
+
 
     calcularDatosGlobales() {
         let descuentoGlobal = 0;
@@ -656,7 +775,6 @@ class ProductManager {
 
         // Recorrer el array productosParaVenta
         productosParaVenta.forEach((producto) => {
-
             const subtotal = parseFloat(producto.subtotal);
             const itemDescuento = parseFloat(producto.descuento);
             const itemIva = parseFloat(producto.iva);
@@ -665,17 +783,12 @@ class ProductManager {
             descuentoGlobal += itemDescuento;
             granTotal += subtotal;
             ivaTotalGlobal += itemIva;
-
-
         });
 
         subTotalGlobal = granTotal - ivaTotalGlobal;
         granTotal = granTotal - descuentoGlobal;
 
-
-
         // Calcular granTotal como la suma de descuentoGlobal, subTotalGlobal e ivaTotalGlobal
-
 
         // Actualizar elementos en el DOM si es necesario
         const granTotalFormateado = granTotal;
@@ -688,16 +801,15 @@ class ProductManager {
 
     formatearMonedaCOP(valor) {
         // Formatear el valor como moneda colombiana (COP)
-        const valorFormateado = valor.toLocaleString('es-CO', {
-            style: 'currency',
-            currency: 'COP',
+        const valorFormateado = valor.toLocaleString("es-CO", {
+            style: "currency",
+            currency: "COP",
             minimumFractionDigits: 0,
             maximumFractionDigits: 0,
         });
 
         return valorFormateado;
     }
-
 
     reinicializarVariables() {
         // Reinicializar las variables según sea necesario
@@ -716,8 +828,7 @@ document.addEventListener("livewire:load", function () {
         "agregarProductoAlArraySearch",
         function (producto, opcionSeleccionada) {
             // Manejar el evento en JavaScript
-           // console.log("Producto agregado:", producto);
-
+            // console.log("Producto agregado:", producto);
             // Puedes realizar acciones adicionales aquí
         }
     );

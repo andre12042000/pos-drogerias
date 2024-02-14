@@ -96,6 +96,7 @@
                             <th scope="col">Precio Unit.</th>
                             <th scope="col">Cant.</th>
                             <th scope="col">Iva</th>
+                            <th scope="col">Descuento</th>
                             <th scope="col">Total</th>
                             <th scope="col">Opciones</th>
                         </tr>
@@ -187,6 +188,7 @@
         </div>
 
         @include('modals.sale.forma_cantidad')
+        @include('modals.sale.edit_product_added_to_sale')
 
         <script src="{{ asset('js/ventas/procesoVenta.js') }}"></script>
         <script>
