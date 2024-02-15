@@ -24,7 +24,7 @@
             <div class="icon">
                 <i class="las la-cash-register "></i>
             </div>
-        
+
         </div>
     </div>
     <!-- ./col -->
@@ -39,7 +39,7 @@
             <div class="icon">
                 <i class="ion ion-arrow-graph-up-right "></i>
             </div>
-            
+
         </div>
     </div>
     <!-- ./col -->
@@ -54,7 +54,7 @@
             <div class="icon">
             <i class="las la-donate"></i>
             </div>
-           
+
         </div>
     </div>
     <!-- ./col -->
@@ -69,7 +69,7 @@
             <div class="icon">
                 <i class="ion ion-social-usd-outline "></i>
             </div>
-          
+
         </div>
     </div>
     <!-- ./col -->
@@ -130,11 +130,11 @@
                     <div class="card-header card-outline-success">
                         <div class="d-flex justify-content-between">
                             <h3>Productos más vendidos </h3>
-                        
+
                         </div>
                     </div>
                     <div class="card-body " style="background-color: #D1E7DD;">
-                       
+
                             <div class="table-responsive col-md-12">
                                 <table class="table table-success table-striped " id="tabProducts" >
                                     <thead>
@@ -164,7 +164,7 @@
                                     </tbody>
                                 </table>
                             </div>
-                       
+
                     </div>
                 </div>
             </div>
@@ -208,8 +208,8 @@
                     backgroundColor: 'rgba(41, 205, 25, 0.5)',
                     borderColor: 'rgba(41, 205, 25, 1)',
                     borderWidth: 1,
-                   
-                   
+
+
                 },
                 {
                     label: 'Abonos',
@@ -221,10 +221,10 @@
                     backgroundColor: 'rgba(65, 70, 75, 0.5)',
                     borderColor: 'rgba(65, 70, 75, 1)',
                     borderWidth: 1,
-                  
-                
+
+
                 }
-               
+
             ]
         },
         options: {
