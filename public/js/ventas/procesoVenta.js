@@ -649,6 +649,7 @@ class ProductManager {
         productManager.openModalEditar(producto_editar, index);
     }
 
+
     openModalEditar(producto, index) {
 
         const modal = document.getElementById("editProductSaleModal");
@@ -661,6 +662,9 @@ class ProductManager {
         const ivaInputEdit = document.getElementById("ivaInputEdit");
         const btnIncrementarEditar = document.getElementById("btnIncrementarEditar");
         const btnDecrementarEditar = document.getElementById("btnDecrementarEditar");
+
+        const cancelarTransaccionBtn = document.getElementById("cancelarTransaccion");
+        const cerrarModalBtn = document.getElementById("cerrarModalBtn");
 
 
         selectPresentacionEdit.value = producto.forma;
@@ -713,6 +717,16 @@ class ProductManager {
             calcularTotal();
           });
 
+          cancelarTransaccionBtn.addEventListener("click", function() {
+            // Obtener el valor actual del input y convertirlo a un número
+            productManager.closeModalEditar();
+          });
+
+          cerrarModalBtn.addEventListener("click", function() {
+            // Obtener el valor actual del input y convertirlo a un número
+            productManager.closeModalEditar();
+          });
+
 
         function obtenerIvaUnitario(producto)
         {
@@ -738,6 +752,8 @@ class ProductManager {
             }
         }
 
+
+
         function actualizarProductoEnArray(index) {
 
             const nuevoSubTotal = totalPrecioCompraInputEdit.value;
@@ -745,25 +761,44 @@ class ProductManager {
             const nuevoPrecioUnitario = precioUnitarioInputEdit.value;
             const nuevoIva = ivaInputEdit.value;
 
-
-
             // Actualizar el array ProductosParaVenta
-             productosParaVenta[index].cantidad = nuevaCantidad;
+            productosParaVenta[index].cantidad = nuevaCantidad;
             productosParaVenta[index].iva = nuevoIva;
             productosParaVenta[index].precio_unitario = nuevoPrecioUnitario;
             productosParaVenta[index].subtotal = nuevoSubTotal;
 
             productManager.actualizarTabla();
             productManager.closeModalEditar();
+
         }
+
+
       }
 
       closeModalEditar() {
         const modal = document.getElementById("editProductSaleModal");
 
-        // Cerrar el modal
         modal.style.display = "none";
       }
+
+
+    limpiarValoresIniciales() {
+        // Limpiar el producto y el índice
+
+
+         // Limpiar valores de campos
+        const selectPresentacionEdit = document.getElementById("selectPresentacionEdit");
+        const cantidadInputEdit = document.getElementById("cantidadInputEdit");
+        const precioUnitarioInputEdit = document.getElementById("precioUnitarioInputEdit");
+        const totalPrecioCompraInputEdit = document.getElementById("totalPrecioCompraInputEdit");
+        const ivaInputEdit = document.getElementById("ivaInputEdit");
+
+        selectPresentacionEdit.value = "";
+        cantidadInputEdit.value = "";
+        precioUnitarioInputEdit.value = "";
+        totalPrecioCompraInputEdit.value = "";
+        ivaInputEdit.value = "";
+    }
 
 
 

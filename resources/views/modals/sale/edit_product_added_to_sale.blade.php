@@ -2,8 +2,8 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">Editar item</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <h5 class="modal-title">Editar Item</h5>
+          <button type="button" class="btn-close" id="cerrarModalBtn" aria-label="Close"></button>
         </div>
 
         <div class="modal-body p-4">
@@ -60,7 +60,7 @@
         </div>
         <div class="modal-footer">
 
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-secondary" id="cancelarTransaccion">Cancelar</button>
           <button type="button" class="btn btn-primary" id="actualizarProductosArrayVenta">Editar item</button>
         </div>
       </div>
