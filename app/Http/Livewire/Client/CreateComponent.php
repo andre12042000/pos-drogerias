@@ -24,13 +24,17 @@ class CreateComponent extends Component
     }
 
     protected $rules = [
-        'name'      => 'required|min:4|max:254|unique:clients,name',
-        'phone'     => 'nullable|min:8|max:20',
-        'address'   => 'nullable|min:8|max:100',
-        'email'     => 'nullable|string|email|max:255',
+        'number_document'   => 'nullable|min:6|max:30|unique:clients,number_document',
+        'name'              => 'required|min:4|max:254|unique:clients,name',
+        'phone'             => 'nullable|min:8|max:20',
+        'address'           => 'nullable|min:8|max:100',
+        'email'             => 'nullable|string|email|max:255',
     ];
 
     protected $messages = [
+        'number_document.min'   => 'El Nro. documento requiere 6 caracteres',
+        'number_document.max'   => 'El Nro. documento no puede superar 30 caracteres',
+        'number_document.unique'=> 'El Nro. documento ya esta registrado',
         'name.required' => 'El campo nombre es requerido',
         'name.min'      => 'El campo nombre debe tener al menos 6 caracteres',
         'name.max'      => 'El campo nombre no puede superar los 254 caracteres',

@@ -23,5 +23,10 @@ class MetodoPagoSeeder extends Seeder
             'name'          => 'EFECTIVO',
             'status'        => 'ACTIVE',
         ]);
+
+        MetodoPago::create([
+            'name'          => 'CRÉDITO',
+            'status'        => 'ACTIVE',
+        ]);
     }
 }

@@ -9,7 +9,7 @@ use App\Http\Controllers\Inventario\ProductController;
 use App\Http\Controllers\Inventario\PurchaseController;
 use Spatie\Permission\Middlewares\PermissionMiddleware;
 use App\Http\Controllers\Inventario\ImportProductsController;
-
+use App\Http\Livewire\Product\CorreccionProductsComponent;
 
 Route::middleware([ PermissionMiddleware::class.':Acceso Inventario Ver'])->group(function () {
 
@@ -25,6 +25,8 @@ Route::get('productos/import',  [ImportProductsController::class, 'importview'])
 Route::post('productos/import/data',  [ImportProductsController::class, 'importardata'])->name('import.data');
 
 Route::get('productos/importar', [ImportProductsController::class, 'importar'])->name('importador');
+
+Route::get('productos/correccion', [CorreccionProductsComponent::class, '__invoke'])->name('correccion');
 
 });
 
