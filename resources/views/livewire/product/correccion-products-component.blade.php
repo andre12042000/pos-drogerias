@@ -66,6 +66,31 @@
 
     @endforeach
 
+    @foreach ($SinInventario as $unit)
+    <tr>
+        <td>{{ $unit->code }} </td>
+        <td>{{ $unit->name }} </td>
+        <td class="text-center" style="background: rgb(250, 172, 172)">@if ($unit->disponible_blister > 0)
+            Si
+        @else
+            No
+        @endif</td>
+        <td class="text-center" style="background: rgb(250, 172, 172)">{{ $unit->contenido_interno_blister }} </td>
+        <td class="text-center">
+            @if ($unit->disponible_unidad > 0)
+            Si
+        @else
+            No
+        @endif
+        </td>
+        <td class="text-center">{{ $unit->contenido_interno_unidad }} </td>
+        <td class="text-center" style="background: rgb(237, 245, 215)">{{ $unit->inventario->cantidad_caja }} </td>
+        <td class="text-center" style="background:  rgb(237, 245, 215)">{{ $unit->inventario->cantidad_blister }} </td>
+        <td class="text-center" style="background: rgb(237, 245, 215)">{{ $unit->inventario->cantidad_unidad }} </td>
+    </tr>
+
+    @endforeach
+
     </tbody>
     </table>
 
