@@ -33,7 +33,7 @@
                     </div>
 
                     <div class="row mb-3">
-                        <div class="form-floating mt-1 col-3">
+                        <div class="form-floating mt-1 col-4">
                             <input type="number"
                                 class="form-control  @if ($stock_min == '') @else @error('stock_min') is-invalid @else is-valid @enderror @endif"
                                 id="stock_min" name="stock_min" wire:model.defer="stock_min">
@@ -43,7 +43,7 @@
                             @enderror
                         </div>
 
-                        <div class="form-floating mt-1 col-3">
+                        <div class="form-floating mt-1 col-4">
                             <input type="number"
                                 class="form-control  @if ($stock_max == '') @else @error('stock_max') is-invalid @else is-valid @enderror @endif"
                                 id="stock_max" name="stock_max" wire:model.defer="stock_max">
@@ -53,7 +53,7 @@
                             @enderror
                         </div>
 
-                        <div class="form-floating mt-1 col-3">
+                     {{--    <div class="form-floating mt-1 col-3">
                             <input type="number"
                                 class="form-control  @if ($stock == '') @else @error('stock') is-invalid @else is-valid @enderror @endif"
                                 id="stock" name="stock" wire:model.defer="stock" disabled>
@@ -61,9 +61,9 @@
                             @error('stock')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
-                        </div>
+                        </div> --}}
 
-                        <div class="form-floating mt-1 col-3">
+                        <div class="form-floating mt-1 col-4">
                             <input type="number"
                                 class="form-control  @if ($iva_product == 0) @else @error('iva_product') is-invalid @else is-valid @enderror @endif"
                                 id="iva_product" name="iva_product" wire:model.defer="iva_product" min="0"

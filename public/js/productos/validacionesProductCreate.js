@@ -202,14 +202,94 @@ function mostrarLoader() {
 function ocultarLoader() {
     var botonGuardarProduct = document.getElementById("guardarProductBtn");
     var loader = botonGuardarProduct.querySelector(".loader");
+    botonGuardarProduct.removeAttribute("disabled");
     loader.style.display = "none";
 }
+
+function validaciones() {
+    // Obtener elementos del blister
+    var disponibleBlister = document.getElementById("disponible_blister");
+    var contenidoInternoBlister = document.getElementById("contenido_interno_blister");
+    var costoBlister = document.getElementById("costo_blister");
+    var precioBlister = document.getElementById("precio_blister");
+    var valorSeleccionadoBlister = parseInt(disponibleBlister.value);
+
+    // Obtener elementos de la unidad
+    var disponibleUnidad = document.getElementById("disponible_unidad");
+    var contenidoInternoUnidad = document.getElementById("contenido_interno_unidad");
+    var costoUnidad = document.getElementById("costo_unidad");
+    var precioUnidad = document.getElementById("precio_unidad");
+    var valorSeleccionadoUnidad = parseInt(disponibleUnidad.value);
+
+    // Obtener elementos de la caja
+    var costoCaja = document.getElementById("costo_caja");
+    var precioCaja = document.getElementById("precio_caja");
+
+    // Arreglo para almacenar errores
+    var errores = [];
+
+    // Validaciones de caja
+    if (costoCaja.value === "0" || precioCaja.value === "0" || costoCaja.value.trim() === "" || precioCaja.value.trim() === "") {
+        errores.push(costoCaja, precioCaja);
+    }
+
+    // Validaciones de unidad
+    if (valorSeleccionadoUnidad > 0) {
+        if (contenidoInternoUnidad.value === "0" || contenidoInternoUnidad.value.trim() === "" ||
+            costoUnidad.value === "0" || costoUnidad.value.trim() === "" ||
+            precioUnidad.value === "0" || precioUnidad.value.trim() === "") {
+            errores.push(contenidoInternoUnidad, costoUnidad, precioUnidad);
+        }
+    } else {
+        contenidoInternoUnidad.disabled = true;
+        costoUnidad.disabled = true;
+        precioUnidad.disabled = true;
+        contenidoInternoUnidad.value = "0";
+        costoUnidad.value = "0";
+        precioUnidad.value = "0";
+    }
+
+    // Validaciones de blister
+    if (valorSeleccionadoBlister > 0) {
+        if (contenidoInternoBlister.value === "0" || contenidoInternoBlister.value.trim() === "" ||
+            costoBlister.value === "0" || costoBlister.value.trim() === "" ||
+            precioBlister.value === "0" || precioBlister.value.trim() === "") {
+            errores.push(contenidoInternoBlister, costoBlister, precioBlister);
+        }
+    } else {
+        contenidoInternoBlister.disabled = true;
+        costoBlister.disabled = true;
+        precioBlister.disabled = true;
+        contenidoInternoBlister.value = "0";
+        costoBlister.value = "0";
+        precioBlister.value = "0";
+    }
+
+    // Mostrar errores
+    for (var i = 0; i < errores.length; i++) {
+        errores[i].classList.add("is-invalid");
+    }
+
+    // Ocultar loader si hay errores
+    if (errores.length > 0) {
+        this.ocultarLoader();
+    }
+}
+
 
 
 
 function capturarYEnviarDatos() {
 
     this.mostrarLoader();
+    this.validaciones();
+
+    //Validaciones
+
+
+
+
+
 
     var datos = {
         costo_caja: document.getElementById("costo_caja").value,
