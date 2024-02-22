@@ -30,7 +30,8 @@ class SearchComponent extends Component
 
     public function render()
     {
-        $products = Product::search($this->buscar)
+        $products = Product::with('inventario')
+        ->search($this->buscar)
         ->orderBy('name', 'asc')
         ->active()
         ->take(10)

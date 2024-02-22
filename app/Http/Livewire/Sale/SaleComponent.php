@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Sale;
 
+use App\Events\VentaCreditoRealizada;
 use App\Models\Cash;
 use App\Models\Impresora;
 use Livewire\Component;
@@ -25,6 +26,8 @@ use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
 use Illuminate\Support\Str;
 use Intervention\Image\Facades\Image;
 use App\Events\VentaRealizada;
+use App\Models\Orders;
+use App\Models\OrdersDetails;
 
 class SaleComponent extends Component
 {
@@ -46,20 +49,36 @@ class SaleComponent extends Component
     public $impresora = null;
     public $tipo_operacion = 'VENTA';
     public $imprimirecibo = 0;
+    public $nuevo_nro_order, $nro_order;
 
     protected $listeners = ['ClientEvent', 'ProductEvent', 'agregarProductoEvent', 'crearVentaEvent' => 'tipoOperacion'];
 
     function agregarProductoEvent($product, $opcionSeleccionada)
     {
-
-
-        $this->dispatchBrowserEvent('agregarProductoAlArrayCode', ['producto' => $product, 'opcionSeleccionada' => $opcionSeleccionada]);
+        if(self::verificarStockInventario($product)){
+            $this->dispatchBrowserEvent('agregarProductoAlArrayCode', ['producto' => $product, 'opcionSeleccionada' => $opcionSeleccionada]);
+        }else{
+            $this->dispatchBrowserEvent('errorProductosStock');
+        }
     }
 
     public function ClientEvent($client)
     {
         $this->client_id    = $client['id'];
         $this->client_name  = ucwords($client['name']);
+
+        if ($this->client_id) {
+            self::consultarDeudaClient($this->client_id);
+        }
+    }
+
+    function consultarDeudaClient($cliente_id)
+    {
+        $cliente = Client::findOrFail($cliente_id);
+
+        if ($cliente->deuda > 0) {
+            $this->dispatchBrowserEvent('notify_client_deuda', ['data' => $cliente]);
+        }
     }
 
     public function ProductEvent($product, $precio)
@@ -89,6 +108,15 @@ class SaleComponent extends Component
     {
 
         return redirect()->route('ventas.pos.imprimir.recibo', $venta);
+    }
+
+    function verificarStockInventario($product)
+    {
+        if($product['inventario']['cantidad_caja'] == '0' && $product['inventario']['cantidad_blister'] == '0' && $product['inventario']['cantidad_unidad'] == '0'){
+            return false;
+        }else{
+            return true;
+        }
 
     }
 
@@ -99,14 +127,22 @@ class SaleComponent extends Component
             'codigo_de_producto'    => 'required|min:3|max:254'
         ]);
 
-        $product = Product::where('code', '=', $this->codigo_de_producto)->first();
+        $product = Product::where('code', '=', $this->codigo_de_producto)->with('inventario')->first();
 
         if ($product) {
 
+            if(self::verificarStockInventario($product)){
+                $this->dispatchBrowserEvent('agregarProductoAlArrayCode', ['producto' => $product, 'opcionSeleccionada' => null]);
+                $product = '';
+                $this->codigo_de_producto = '';
+            }else{
+                $this->dispatchBrowserEvent('errorProductosStock');
+                $product = '';
+                $this->codigo_de_producto = '';
+            }
+
             // Emitir el evento Livewire para notificar que se ha encontrado un producto
-            $this->dispatchBrowserEvent('agregarProductoAlArrayCode', ['producto' => $product, 'opcionSeleccionada' => null]);
-            $product = '';
-            $this->codigo_de_producto = '';
+
         } else {
             $this->addError('codigo_de_producto', 'Producto no encontrado');
         }
@@ -116,8 +152,147 @@ class SaleComponent extends Component
     {
         if ($this->tipo_operacion == 'VENTA') {
             $this->generarVenta($dataVenta);
+        } else {
+            self::generarVentaCredito($dataVenta);
         }
     }
+
+    /*----------------Funciones crear venta credito ---------*/
+
+    function generarVentaCredito($dataVenta)
+    {
+        //  dd($dataVenta);
+        $this->validate([
+            'client_id'         => 'required',
+            'total_venta'       => 'nullable|integer|between:0,10000000',
+            'metodo_pago'       => 'required',
+        ], [
+            'client_id.required'        => 'El campo cliente es requerido',
+        ]);
+
+        try {
+
+            DB::transaction(function () use ($dataVenta) {
+
+                $this->obtenernumeroorder();
+
+                $order = Orders::create([
+                    'type'              => 'VENTA CRÉDITO',
+                    'prefijo'           => $this->prefijo,
+                    'nro'               => $this->nuevo_nro_order,
+                    'full_nro'          => $this->nro_order,
+                    'client_id'         => $this->client_id,
+                    'user_id'           => Auth::user()->id,
+                    'descripcion'       => 'VENTA CRÉDITO',
+                    'valor'             => $dataVenta['granTotal'],
+                    'abono'             => 0,
+                    'saldo'             => $dataVenta['granTotal'],
+                    'provider_id'       => null,
+                    'assigned'          => null,
+                    'status'            => 2,
+                    'equipo_id'         => null,
+
+                ]);
+
+                if (!empty($dataVenta['productosParaVenta'])) {
+                    foreach ($dataVenta['productosParaVenta'] as $product) {
+                        OrdersDetails::create([
+                            'order_id'      => $order->id,
+                            'product_id'    => $product['id_producto'],
+                            'price'         => $product['precio_unitario'],
+                            'discount'      => $product['descuento'],
+                            'quantity'      => $product['cantidad'],
+                            'total'         => $product['subtotal'],
+                            'forma'         => $product['forma'],
+                        ]);
+                    }
+                }
+
+                self::actualizarDeudaCliente($this->client_id, $dataVenta['granTotal']);
+
+                event(new VentaCreditoRealizada($order));
+
+                if ($dataVenta['imprimirRecibo'] > 0) {
+                  // $this->Imprimirecibo($venta->id);
+                }
+
+                $this->dispatchBrowserEvent('venta-generada', ['venta' => $order->full_nro]);
+                //  return redirect('/ventas/pos')->with('venta_exitosa' , $venta->id);
+
+
+            });
+        } catch (\Exception $e) {
+
+            DB::rollback();
+
+            $this->dispatchBrowserEvent('swal', [
+                'title' => 'Ops! Ocurrio un error',
+                'text' => '¡No es posible crear la transacción, verifica los datos!' . $e,
+                'icon' => 'error'
+            ]);
+
+            report($e);
+        }
+    }
+
+    function actualizarDeudaCliente($cliente_id, $nueva_compra)
+    {
+        $cliente = Client::findOrFail($cliente_id);
+
+        $nuevo_saldo = $cliente->deuda + $nueva_compra;
+
+        $cliente->update([
+            'deuda'     => $nuevo_saldo,
+        ]);
+
+        return true;
+    }
+
+    function obtenernumeroorder()
+    {
+        $empresa = Empresa::findOrFail(1); //Obtener prefijos
+        if ($empresa->pre_orden) {
+            $this->prefijo = $empresa->pre_orden;
+        } else {
+            $this->prefijo = 'VCR';
+        }
+
+
+        $ultimo_numero = Orders::max('nro'); //ultimo numero de facturacion
+
+        if (is_null($this->prefijo)) {
+            $this->prefijo = "";
+        }
+
+        if (is_null($ultimo_numero)) {
+            $ultimo_numero = 0;
+        }
+
+        $nuevo_numero = $ultimo_numero + 1;
+
+        $this->nuevo_nro_order = $nuevo_numero;
+
+        $cantidad_numeros = strlen($nuevo_numero);
+
+
+        switch ($cantidad_numeros) {
+            case 1:
+                $nuevo_numero = str_pad($nuevo_numero, 4, "0", STR_PAD_LEFT);
+                break;
+            case 2:
+                $nuevo_numero = str_pad($nuevo_numero, 3, "0", STR_PAD_LEFT);
+                break;
+            case 3:
+                $nuevo_numero = str_pad($nuevo_numero, 2, "0", STR_PAD_LEFT);
+                break;
+            default:
+                $nuevo_numero = str_pad($nuevo_numero, 1, "0", STR_PAD_LEFT);
+        }
+
+
+        $this->nro_order = $this->prefijo . $nuevo_numero;
+    }
+
 
     /*--------------Funciones generar venta ------------------*/
 
@@ -153,18 +328,16 @@ class SaleComponent extends Component
 
                 if ($this->tipo_operacion == 'VENTA') {
                     $this->ventaContado($venta);
-                } elseif ($this->tipo_operacion == 'VENTA_CREDITO') {
+                } elseif ($this->tipo_operacion == 'CREDITO') {
                     $this->ventaCredito($venta);
                     $credito =  $this->crearCredito($venta);
-                    $this->historiaPagos($credito);
-                    $this->registrarSaldo($credito);
+                    /*  $this->historiaPagos($credito);
+                    $this->registrarSaldo($credito); */
                 }
-
-
 
                 event(new VentaRealizada($venta));
 
-                if($dataVenta['imprimirRecibo'] > 0){
+                if ($dataVenta['imprimirRecibo'] > 0) {
                     $this->Imprimirecibo($venta->id);
                 }
 
@@ -185,6 +358,17 @@ class SaleComponent extends Component
 
             report($e);
         }
+    }
+
+    function crearCredito($venta)
+    {
+        $credito =  Credit::create([
+            'sale_id'   => $venta->id,
+            'client_id' => $venta->client_id,
+            'active'    => True,
+        ]);
+
+        return $credito;
     }
 
     function detallesVenta($venta, $dataProducts)
@@ -243,7 +427,7 @@ class SaleComponent extends Component
         $sale->cashs()->create([
             'user_id'           => Auth::user()->id,
             'cashesable_id'     => $sale['id'],
-            'quantity'          => $sale['total'],
+            'quantity'          => 0,
         ]);
     }
 
