@@ -273,6 +273,7 @@ function validaciones() {
     // Ocultar loader si hay errores
     if (errores.length > 0) {
         this.ocultarLoader();
+        return;
     }
 }
 
