@@ -5,6 +5,57 @@
         <div class="card-header">
 
             <div class="container">
+
+                <div class="row mb-3 mt-3">
+                    <div class="col">
+                        <label>Tipo de Operación</label>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="tipoOperacionOptions" id="tipoOperacionVenta"
+                                value="VENTA" checked wire:model.defer="tipo_operacion">
+                            <label class="form-check-label" for="tipoOperacionVenta">VENTA</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="tipoOperacionOptions" id="tipoOperacionCredito"
+                                value="CREDITO" wire:model.defer="tipo_operacion">
+                            <label class="form-check-label" for="tipoOperacionCredito">CRÉDITO</label>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <Label>Factura electrónica</Label>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1"
+                                value="1" disabled>
+                            <label class="form-check-label" for="inlineRadio1">Si</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2"
+                                value="0" disabled checked>
+                            <label class="form-check-label" for="inlineRadio2">No</label>
+                        </div>
+
+                    </div>
+
+                    <div class="col">
+
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Cliente"
+                                aria-label="Recipient's username with two button addons"
+                                aria-describedby="button-addon4" value="{{ $client_name }}" disabled readonly>
+                            <div class="input-group-append" id="button-addon4">
+                                <button class="btn btn-outline-secondary" type="button"data-toggle="modal"
+                                    data-target="#searchclient"><i class="bi bi-search"
+                                        style="cursor: pointer"></i></button>
+                                <button class="btn btn-outline-secondary" type="button"data-toggle="modal"
+                                    data-target="#clientmodal"><i class="bi bi-plus-circle-fill"
+                                        style="cursor: pointer"></i></button>
+                            </div>
+                        </div>
+                        <div id="cambiarClienteHelp" class="text-danger" style="display: none;">
+                            ¡Es necesario cambiar de cliente!
+                        </div>
+                    </div>
+                </div>
+
                 <div class="row">
                     <div class="col">
                         <div class="input-group mb-2">
@@ -23,56 +74,6 @@
                         @error('codigo_de_producto')
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
-
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col ml-4 mt-1">
-                        <Label>Factura electrónica</Label>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1"
-                                value="1" disabled>
-                            <label class="form-check-label" for="inlineRadio1">Si</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2"
-                                value="0" disabled checked>
-                            <label class="form-check-label" for="inlineRadio2">No</label>
-                        </div>
-
-                    </div>
-                    <div class="col">
-
-                        <div class="mb-3 row">
-                            <label for="staticEmail" class="col-sm-4 col-form-label">Transacción</label>
-                            <div class="col-sm-8">
-                                <select class="form-select" aria-label="Default select example"
-                                    wire:model.lazy = 'tipo_operacion' disabled>
-                                    <option selected></option>
-                                    <option value="VENTA">Venta</option>
-                                    <option value="VENTA_CREDITO">Venta credito</option>
-                                    <option value="CONSUMO_INTERNO">Consumo interno</option>
-                                    <option value="COTIZACION">Cotización</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col">
-
-                        <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Cliente"
-                                aria-label="Recipient's username with two button addons"
-                                aria-describedby="button-addon4" value="{{ $client_name }}" disabled readonly>
-                            <div class="input-group-append" id="button-addon4">
-                                <button class="btn btn-outline-secondary" type="button"data-toggle="modal"
-                                    data-target="#searchclient"><i class="bi bi-search"
-                                        style="cursor: pointer"></i></button>
-                                <button class="btn btn-outline-secondary" type="button"data-toggle="modal"
-                                    data-target="#clientmodal"><i class="bi bi-plus-circle-fill"
-                                        style="cursor: pointer"></i></button>
-                            </div>
-                        </div>
-
 
                     </div>
                 </div>
@@ -134,7 +135,9 @@
                             <select class="form-select" id="selectMetodoPago" name="metodoPagoSelect"
                                 aria-label="Floating label select example">
                                 @foreach ($metodos_pago as $metodo)
-                                    <option value="{{ $metodo->id }}">{{ $metodo->name }}</option>
+                                    <option value="{{ $metodo->id }}" @if ($metodo->id == '2')
+                                        selected
+                                    @endif>{{ $metodo->name }}</option>
                                 @endforeach
                             </select>
                             <label for="floatingSelect">Método de pago</label>
@@ -216,6 +219,29 @@
                 }, 1500);
 
             })
+        </script>
+
+        <script>
+            window.addEventListener('notify_client_deuda', event => {
+                const deudaPendiente = event.detail.data.deuda;
+
+                Swal.fire({
+                    title: "Deuda Pendiente",
+                    text: `El cliente ${event.detail.data.name} tiene una deuda pendiente de $${deudaPendiente.toLocaleString('es-ES', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`,
+                    icon: "warning",
+                    confirmButtonText: "Entendido"
+                });
+            });
+        </script>
+
+        <script>
+            window.addEventListener('errorProductosStock', event => {
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops... Producto agotado",
+                    text: "Lo siento, no es posible agregar este producto a la venta en este momento. Por favor, verifica el inventario o elige otro producto disponible.",
+                });
+            });
         </script>
     </div>
 

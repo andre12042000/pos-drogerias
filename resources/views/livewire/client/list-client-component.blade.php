@@ -32,6 +32,7 @@
                         <th>Telefono</th>
                         <th>Email</th>
                         <th>Dirección</th>
+                        <th class="text-center">Deuda</th>
                         <th class="text-center">Acciones</th>
                     </tr>
                 </thead>
@@ -42,6 +43,7 @@
                             <td>{{ ucwords($client->phone) }}</td>
                             <td>{{ ucwords($client->email) }}</td>
                             <td>{{ ucwords($client->address) }}</td>
+                            <td class="text-end"> $ {{ number_format($client->deuda, 0) }}</td>
                             </td>
                             <td class="text-center">
                             <a @popper(Actualizar) class="btn btn-outline-success btn-sm" data-toggle="modal" data-target="#clientmodal"  wire:click="sendData( {{ $client }} )" role="button"><i class="bi bi-pencil-square"></i></a>

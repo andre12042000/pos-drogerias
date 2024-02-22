@@ -56,13 +56,8 @@ Route::get('perfil', [PerfilController::class, 'index'])->middleware('auth')->na
 
 Route::get('/obtener-informacion-cliente', [NombreDeTuControlador::class, 'obtenerInformacionCliente']);
 
-Route::get('eliminar_registros', function () {
-
-
+/* Route::get('eliminar_registros', function () {
     $productos = Product::whereColumn('created_at', '=', 'updated_at')->with('inventario')->get();
-
-
-
     foreach ($productos as $producto) {
 
         if ($producto->inventario->cantidad_caja == 0 && $producto->inventario->cantidad_blister == 0 && $producto->inventario->cantidad_unidad == 0) {
@@ -85,7 +80,8 @@ Route::get('eliminar_registros', function () {
         }
     }
 
-
-
     return $productosEliminados;
-});
+}); */
+
+
+

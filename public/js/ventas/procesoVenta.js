@@ -98,6 +98,13 @@ class ProductManager {
             this.handleDecrementarCantidadButtonClick()
         );
 
+        /*------------------------------Evento para cambiar tipo de operacion -------------------*/
+
+        const radioCredito = document.getElementById("tipoOperacionCredito");
+        radioCredito.addEventListener("click", () => this.handleCambioOperacion());
+
+        /*-------------------------Fin evento para cambiar tipo de operacion ----------------------*/
+
         var valorSeleccionado;
 
         this.initializeListeners();
@@ -108,6 +115,42 @@ class ProductManager {
             this.handleAgregarProducto(event)
         );
     }
+
+    handleCambioOperacion() {
+        const tipoOperacionVenta = document.getElementById("tipoOperacionVenta");
+        const tipoOperacionCredito = document.getElementById("tipoOperacionCredito");
+        const cambiarClienteHelp = document.getElementById('cambiarClienteHelp');
+        const opcionSi = document.getElementById('opcionSi');
+        const opcionNo = document.getElementById('opcionNo');
+        const selectMetodoPago = document.getElementById("selectMetodoPago");
+
+        let operacionSeleccionada = "VENTA";
+        let metodoPagoSeleccionado = "EFECTIVO"; // Establece el valor predeterminado
+
+        if (tipoOperacionCredito.checked) {
+            operacionSeleccionada = "CRÉDITO";
+            cambiarClienteHelp.style.display = 'block';
+            opcionSi.checked = true;
+            opcionNo.checked = false;
+            metodoPagoSeleccionado = "3"; // Establece el método de pago en "CRÉDITO"
+        } else {
+            cambiarClienteHelp.style.display = 'none';
+            opcionSi.checked = false;
+            opcionNo.checked = true;
+        }
+
+        // Actualiza el valor del método de pago
+        selectMetodoPago.value = metodoPagoSeleccionado;
+
+        Swal.fire({
+            icon: 'info',
+            title: `Modo VENTA ${operacionSeleccionada}`,
+            text: `En modo venta ${operacionSeleccionada.toLowerCase()} no ingresa dinero a la caja, ¡Recuerda seleccionar el cliente!`,
+        });
+
+        // Mostrar el mensaje de ayuda para cambiar de cliente
+    }
+
 
     handleChangeMetodoPago() {
         var opcionSi = document.getElementById("opcionSi");

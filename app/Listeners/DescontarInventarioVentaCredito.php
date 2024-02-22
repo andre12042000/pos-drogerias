@@ -2,19 +2,14 @@
 
 namespace App\Listeners;
 
-use App\Events\VentaRealizada;
-use App\Models\Inventario;
-use App\Models\Product;
-use App\Models\User;
-use App\Models\Vencimientos;
+use App\Events\VentaCreditoRealizada;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
-use App\Notifications\LowStockNotification;
 use App\Traits\DescontarProductInventario;
 
-class DescontarInventario
+class DescontarInventarioVentaCredito
 {
-    use InteractsWithQueue, DescontarProductInventario;
+    use DescontarProductInventario;
     /**
      * Create the event listener.
      *
@@ -28,21 +23,18 @@ class DescontarInventario
     /**
      * Handle the event.
      *
-     * @param  \App\Events\VentaRealizada  $event
+     * @param  object  $event
      * @return void
      */
-    public function handle(VentaRealizada $event)
+    public function handle(VentaCreditoRealizada $event)
     {
-        $venta = $event->venta;
+        $venta_credito = $event->venta_credito;
 
-
-
-        foreach ($venta->saleDetails as $item) {
+        foreach($venta_credito->details as $item){
             $detalleVenta = $item;
             $producto = $item->product;
             $this->descontar($producto, $detalleVenta);
         }
+
     }
-
-
 }
