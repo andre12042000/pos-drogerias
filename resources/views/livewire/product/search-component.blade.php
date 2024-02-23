@@ -37,14 +37,14 @@
                                             $product->inventario->cantidad_unidad == 0)
                                         <i class="bi bi-stop-circle text-danger" data-bs-toggle="tooltip"
                                             data-html="true" data-bs-placement="top"
-                                            title="No hay productos disponibles." style="cursor: pointer;"></i>
+                                            title="No hay productos disponibles." style="cursor: not-allowed;"></i>
                                     @else
                                         <?php
                                         $tooltipContent = 'Cajas: ' . $product->inventario->cantidad_caja . ',   ' . 'Blisters: ' . $product->inventario->cantidad_blister . ',   ' . 'Unidades: ' . $product->inventario->cantidad_unidad;
                                         ?>
                                         <i class="bi bi-check-circle text-success" data-bs-toggle="tooltip"
                                             data-html="true" data-bs-placement="top" title="{{ $tooltipContent }}"
-                                            style="cursor: pointer;"></i>
+                                            style="cursor: not-allowed;"></i>
                                     @endif
                                 </td>
 
