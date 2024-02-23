@@ -115,6 +115,8 @@
                                     </a>
                                 @endcan
 
+                                <a @popper(Eliminar) class="btn btn-outline-danger btn-sm" wire:click="destroy( {{ $product->id }} )"><i class="bi bi-trash"></i></a>
+
 
 
                                 @include('popper::assets')
