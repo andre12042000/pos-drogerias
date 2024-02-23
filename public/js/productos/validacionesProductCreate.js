@@ -212,6 +212,13 @@ function validaciones() {
     var contenidoInternoBlister = document.getElementById("contenido_interno_blister");
     var costoBlister = document.getElementById("costo_blister");
     var precioBlister = document.getElementById("precio_blister");
+
+    var stock_min = document.getElementById("stock_min");
+    var stock_max = document.getElementById("stock_max");
+    var category_id = document.getElementById("category_id");
+    var laboratorio_id = document.getElementById("laboratorio_id");
+    var presentacion_id = document.getElementById("presentacion_id");
+
     var valorSeleccionadoBlister = parseInt(disponibleBlister.value);
 
     // Obtener elementos de la unidad
@@ -265,6 +272,26 @@ function validaciones() {
         precioBlister.value = "0";
     }
 
+
+    // Verificar que stock_min y stock_max sean números y mayores que 0
+    if (isNaN(stock_min.value) || isNaN(stock_max.value) || stock_min.value <= 0 || stock_max.value <= 0) {
+        errores.push(stock_min, stock_max);
+        return false;
+    }
+
+    // Verificar que stock_min sea menor que stock_max
+    if (parseInt(stock_min.value) >= parseInt(stock_max.value)) {
+        errores.push(stock_min, stock_max);
+        return false;
+    }
+
+    // Verificar que las demás variables no estén vacías o nulas
+    if (!category_id.value || !laboratorio_id.value || !presentacion_id.value) {
+        errores.push(category_id, laboratorio_id, presentacion_id);
+        return false;
+    }
+
+
     // Mostrar errores
     for (var i = 0; i < errores.length; i++) {
         errores[i].classList.add("is-invalid");
@@ -287,11 +314,6 @@ function capturarYEnviarDatos() {
 
     //Validaciones
 
-
-
-
-
-
     var datos = {
         costo_caja: document.getElementById("costo_caja").value,
         iva_product: document.getElementById("iva_product").value,
@@ -300,6 +322,13 @@ function capturarYEnviarDatos() {
         costo_blister: document.getElementById("costo_blister").value,
         costo_unidad: document.getElementById("costo_unidad").value,
         precio_unidad: document.getElementById("precio_unidad").value,
+        stock_min: document.getElementById("stock_min").value,
+        stock_max: document.getElementById("stock_max").value,
+        category_id: document.getElementById("category_id").value,
+        subcategory_id: document.getElementById("subcategory_id").value,
+        laboratorio_id: document.getElementById("laboratorio_id").value,
+        ubicacion_id: document.getElementById("ubicacion_id").value,
+        presentacion_id: document.getElementById("presentacion_id").value,
         valor_iva_caja: valor_iva_caja,
         valor_iva_blister: valor_iva_blister,
         valor_iva_unidad: valor_iva_unidad,

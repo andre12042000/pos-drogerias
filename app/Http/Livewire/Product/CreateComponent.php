@@ -12,7 +12,11 @@ use Livewire\Component;
 
 class CreateComponent extends Component
 {
-    public $code, $name, $laboratorio_id, $ubicacion_id, $presentacion_id, $category_id, $subcategory_id;
+    public $code, $name, $presentacion_id;
+    public $category_id = 1;
+    public $subcategory_id = 1;
+    public $laboratorio_id = 1;
+    public $ubicacion_id = 1;
     public $stock_min = 0;
     public $stock_max = 0;
     public $stock = 0;
@@ -35,11 +39,11 @@ class CreateComponent extends Component
     protected $rules = [
         'code'                      => 'required|min:4|max:50|unique:products,code',
         'name'                      => 'required|min:4|max:250',
-        'laboratorio_id'            => 'nullable',
-        'ubicacion_id'              => 'nullable',
+        'laboratorio_id'            => 'required',
+        'ubicacion_id'              => 'required',
         'presentacion_id'           => 'required',
-        'category_id'               => 'nullable',
-        'subcategory_id'            => 'nullable',
+        'category_id'               => 'required',
+        'subcategory_id'            => 'required',
         'status'                    => 'required',
         'stock_min'                 => 'required',
         'stock_max'                 => 'required',
@@ -48,18 +52,15 @@ class CreateComponent extends Component
         'disponible_caja'           => 'required',
         'disponible_blister'        => 'nullable',
         'disponible_unidad'         => 'nullable',
-        'contenido_interno_caja'    => 'nullable',
-        'contenido_interno_blister' => 'nullable',
-        'contenido_interno_unidad'  => 'nullable',
-        'costo_caja'                => 'required',
-        'costo_blister'             => 'nullable',
-        'costo_unidad'              => 'nullable',
-        'precio_caja'               => 'nullable',
-        'precio_blister'            => 'nullable',
-        'precio_unidad'             => 'nullable',
-        'valor_iva_caja'            => 'nullable',
-        'valor_iva_blister'         => 'nullable',
-        'valor_iva_unidad'          => 'nullable',
+    ];
+
+    protected $messages = [
+        'required'                   => 'El campo :attribute es obligatorio.',
+        'min'                        => 'El campo :attribute debe tener al menos :min caracteres.',
+        'max'                        => 'El campo :attribute no debe exceder los :max caracteres.',
+        'unique'                     => 'El campo :attribute ya está en uso.',
+        'numeric'                    => 'El campo :attribute debe ser un número.',
+        'required_if'                => 'El campo :attribute es obligatorio cuando :other es :value.',
     ];
 
     public function updated($propertyName)
@@ -149,7 +150,10 @@ class CreateComponent extends Component
 
     function guardarDatosEvent($data)
     {
-      //  dd($data);
+
+
+
+
         $this->costo_caja = isset($data['costo_caja']) ? (float) $data['costo_caja'] : 0;
         $this->iva_product = isset($data['iva_product']) ? (float) $data['iva_product'] : 0;
         $this->precio_caja = isset($data['precio_caja']) ? (float) $data['precio_caja'] : 0;
@@ -161,8 +165,41 @@ class CreateComponent extends Component
         $this->valor_iva_blister = isset($data['valor_iva_blister']) ? (float) $data['valor_iva_blister'] : 0;
         $this->valor_iva_unidad = isset($data['valor_iva_unidad']) ? (float) $data['valor_iva_unidad'] : 0;
 
+        $rules = [
+            'code'                      => 'required|min:4|max:50|unique:products,code',
+            'name'                      => 'required|min:4|max:250',
+            'laboratorio_id'            => 'required',
+            'ubicacion_id'              => 'required',
+            'presentacion_id'           => 'required',
+            'category_id'               => 'required',
+            'subcategory_id'            => 'required',
+            'status'                    => 'required',
+            'stock_min'                 => 'required|min:1',
+            'stock_max'                 => 'required|min:1',
+            'stock'                     => 'required',
+            'iva_product'               => 'required',
+            'disponible_caja'           => 'required',
+            'disponible_blister'        => 'nullable',
+            'disponible_unidad'         => 'nullable',
+        ];
 
-        $validatedData = $this->validate();
+
+        if($this->disponible_blister > 0){
+            $rules['contenido_interno_blister'] = ['required', 'numeric', 'min:1'];
+            $rules['costo_blister'] = ['required', 'numeric', 'min:1'];
+            $rules['precio_blister'] = ['required', 'numeric', 'min:1'];
+        }
+
+        if($this->disponible_unidad > 0){
+            $rules['contenido_interno_unidad'] = ['required', 'numeric', 'min:1'];
+            $rules['costo_unidad'] = ['required', 'numeric', 'min:1'];
+            $rules['precio_unidad'] = ['required', 'numeric', 'min:1'];
+        }
+
+
+
+
+        $validatedData = $this->validate($rules);
 
         $this->save($validatedData);
 

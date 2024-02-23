@@ -35,9 +35,9 @@
                     <div class="row mb-3">
                         <div class="form-floating mt-1 col-4">
                             <input type="number"
-                                class="form-control  @if ($stock_min == '') @else @error('stock_min') is-invalid @else is-valid @enderror @endif"
+                                class="form-control"
                                 id="stock_min" name="stock_min" wire:model.defer="stock_min">
-                            <label for="floatingInput">Stock mínimo </label>
+                            <label for="floatingInput">Stock mínimo *</label>
                             @error('stock_min')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
@@ -45,9 +45,9 @@
 
                         <div class="form-floating mt-1 col-4">
                             <input type="number"
-                                class="form-control  @if ($stock_max == '') @else @error('stock_max') is-invalid @else is-valid @enderror @endif"
+                                class="form-control"
                                 id="stock_max" name="stock_max" wire:model.defer="stock_max">
-                            <label for="floatingInput">Stock máximo </label>
+                            <label for="floatingInput">Stock máximo *</label>
                             @error('stock_max')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
@@ -90,7 +90,7 @@
                                     <option value="{{ $categoria->id }}">{{ $categoria->name }}</option>
                                 @endforeach
                             </select>
-                            <label for="floatingSelect" class="ml-2">Categoria</label>
+                            <label for="floatingSelect" class="ml-2">Categoria *</label>
                             @error('category_id')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
@@ -145,7 +145,7 @@
                                     <option value="{{ $laboratorio->id }}">{{ $laboratorio->name }}</option>
                                 @endforeach
                             </select>
-                            <label for="floatingSelect" class="ml-2">Laboratorio</label>
+                            <label for="floatingSelect" class="ml-2">Laboratorio *</label>
 
                             @error('laboratorio_id ')
                                 <span class="text-danger">{{ $message }}</span>

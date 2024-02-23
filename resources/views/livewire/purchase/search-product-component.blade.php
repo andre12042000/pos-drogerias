@@ -129,7 +129,10 @@
                     <div class="col-4">
                         <div class="form-floating mb-3">
                             <input type="date" class="form-control" wire:model.defer = 'fecha_vencimiento' id="fecha_vencimiento"
-                                id="fecha_nacimiento" placeholder="name@example.com" disabled onchange="validarFechaVencimiento()">
+                                id="fecha_nacimiento" placeholder="name@example.com" disabled onchange="validarFechaVencimiento()"
+                                pattern="\d{4}-\d{2}-\d{2}"
+                                max="{{ date('Y-m-d') }}"
+                            >
                             <label for="floatingInput">Fecha de vencimiento</label>
                         </div>
                     </div>
