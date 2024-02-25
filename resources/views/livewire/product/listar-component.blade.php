@@ -122,6 +122,8 @@
                                     {{ json_encode($ubicaciones) }},
                                     {{ json_encode($laboratorios) }}
 
+                                <a @popper(Eliminar) class="btn btn-outline-danger btn-sm" wire:click="destroy( {{ $product->id }} )"><i class="bi bi-trash"></i></a>
+
 
                                 )"
                                     role="button" title="Editar Producto" class="btn btn-outline-primary btn-sm">

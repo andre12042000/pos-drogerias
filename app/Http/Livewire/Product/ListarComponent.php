@@ -154,6 +154,8 @@ class ListarComponent extends Component
 
 
 
+
+
     public function ProductsEvent()
     {
         $this->products = Product::all();
@@ -197,16 +199,25 @@ class ListarComponent extends Component
         $orden      = OrdersDetails::where('product_id', $id)->first();
         $sales      = SaleDetail::where('product_id', $id)->first();
         $purchase   = PurchaseDetail::where('product_id', $id)->first();
+        $inventario = Inventario::where('product_id', $id)->first();
+
+        if($inventario->cantidad_caja > 0 OR $inventario->cantidad_blister > 0 OR $inventario->cantidad_unidad > 0){
+            session()->flash('warning', 'El producto esta siendo utilizado no se puede eliminar');
+            return false;
+        }
+
 
 
         if ($purchase  or $orden or $sales) {
             session()->flash('warning', 'Producto esta siendo utilizado no se puede eliminar');
-            $this->reloadProductos();
+            $this->render();
         } else {
-            $product = Product::find($id);
+
+            $inventario->delete();
+            $product = Product::findOrFail($id);
             $product->delete();
             session()->flash('delete', 'Producto eliminado exitosamente');
-            $this->reloadProductos();
+            $this->render();
         }
     }
 
