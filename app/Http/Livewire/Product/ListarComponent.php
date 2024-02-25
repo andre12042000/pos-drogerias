@@ -19,6 +19,7 @@ use Livewire\WithPagination;
 class ListarComponent extends Component
 {
     public $products, $buscar, $filter_estado, $filter_category;
+    public $cant_caja, $cant_blister, $cant_unidad;
 
     use WithPagination;
     protected $paginationTheme = 'bootstrap';
