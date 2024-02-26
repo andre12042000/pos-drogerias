@@ -226,14 +226,12 @@ class ListarComponent extends Component
     }
 
 
-
-
     //Metodos necesarios para la usabilidad
 
 
     public function updatingSearch(): void
     {
-        $this->gotoPage(1);
+        $this->resetPage();
     }
 
 

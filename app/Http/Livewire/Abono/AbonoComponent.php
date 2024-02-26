@@ -70,8 +70,7 @@ class AbonoComponent extends Component
     {
         if($this->nuevo_saldo < 0)
         {
-            session()->flash('warning', 'El saldo no puede ser negativo');
-            return false;
+            session()->flash('warning', 'Hay saldo a favor del cliente...');
         }
         $validatedData = $this->validate();
 

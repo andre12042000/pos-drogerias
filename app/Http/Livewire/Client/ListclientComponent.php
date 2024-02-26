@@ -14,9 +14,14 @@ class ListclientComponent extends Component
 {
     use WithPagination;
     protected $paginationTheme = 'bootstrap';
-    protected $listeners = ['reloadClients'];
+    protected $listeners = ['reloadClients', 'redirigirEvent' => 'redirigir'];
     public $buscar;
     public $cantidad_registros = 10;
+
+    public function redirigir($cliente_id)
+    {
+        return redirect()->route('terceros.client.details', $cliente_id);
+    }
 
     public function reloadClients($type)
     {

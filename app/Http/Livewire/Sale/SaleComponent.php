@@ -150,11 +150,9 @@ class SaleComponent extends Component
 
     function tipoOperacion($dataVenta)
     {
-        if ($this->tipo_operacion == 'VENTA') {
-            $this->generarVenta($dataVenta);
-        } else {
-            self::generarVentaCredito($dataVenta);
-        }
+
+        $this->generarVenta($dataVenta);
+
     }
 
     /*----------------Funciones crear venta credito ---------*/
@@ -174,7 +172,7 @@ class SaleComponent extends Component
 
             DB::transaction(function () use ($dataVenta) {
 
-                $this->obtenernumeroorder();
+
 
                 $order = Orders::create([
                     'type'              => 'VENTA CRÉDITO',
@@ -235,78 +233,20 @@ class SaleComponent extends Component
         }
     }
 
-    function actualizarDeudaCliente($cliente_id, $nueva_compra)
-    {
-        $cliente = Client::findOrFail($cliente_id);
-
-        $nuevo_saldo = $cliente->deuda + $nueva_compra;
-
-        $cliente->update([
-            'deuda'     => $nuevo_saldo,
-        ]);
-
-        return true;
-    }
-
-    function obtenernumeroorder()
-    {
-        $empresa = Empresa::findOrFail(1); //Obtener prefijos
-        if ($empresa->pre_orden) {
-            $this->prefijo = $empresa->pre_orden;
-        } else {
-            $this->prefijo = 'VCR';
-        }
-
-
-        $ultimo_numero = Orders::max('nro'); //ultimo numero de facturacion
-
-        if (is_null($this->prefijo)) {
-            $this->prefijo = "";
-        }
-
-        if (is_null($ultimo_numero)) {
-            $ultimo_numero = 0;
-        }
-
-        $nuevo_numero = $ultimo_numero + 1;
-
-        $this->nuevo_nro_order = $nuevo_numero;
-
-        $cantidad_numeros = strlen($nuevo_numero);
-
-
-        switch ($cantidad_numeros) {
-            case 1:
-                $nuevo_numero = str_pad($nuevo_numero, 4, "0", STR_PAD_LEFT);
-                break;
-            case 2:
-                $nuevo_numero = str_pad($nuevo_numero, 3, "0", STR_PAD_LEFT);
-                break;
-            case 3:
-                $nuevo_numero = str_pad($nuevo_numero, 2, "0", STR_PAD_LEFT);
-                break;
-            default:
-                $nuevo_numero = str_pad($nuevo_numero, 1, "0", STR_PAD_LEFT);
-        }
-
-
-        $this->nro_order = $this->prefijo . $nuevo_numero;
-    }
 
 
     /*--------------Funciones generar venta ------------------*/
 
     function generarVenta($dataVenta)
     {
-
         try {
 
             DB::transaction(function () use ($dataVenta) {
 
-
-                $prefijo = 'RE';
+                $prefijo = $this->tipo_operacion == 'VENTA' ? 'RE' : 'VCR';
                 $nuevoNro = $this->obtenerProximoNumero($prefijo);
                 $full_nro = $prefijo . $nuevoNro;
+                $estado = $this->tipo_operacion == 'VENTA' ? 'PAGADA' : 'VENTA CRÉDITO';
 
                 $venta = Sale::create([
                     'prefijo'           => $prefijo,
@@ -320,7 +260,7 @@ class SaleComponent extends Component
                     'total'             => $dataVenta['granTotal'],
                     'tipo_operacion'    => $this->tipo_operacion,
                     'metodo_pago_id'    => $dataVenta['metodoPago'],
-                    'status'            => 'PAGADA',
+                    'status'            => $estado,
                 ]);
 
 
@@ -331,8 +271,7 @@ class SaleComponent extends Component
                 } elseif ($this->tipo_operacion == 'CREDITO') {
                     $this->ventaCredito($venta);
                     $credito =  $this->crearCredito($venta);
-                    /*  $this->historiaPagos($credito);
-                    $this->registrarSaldo($credito); */
+                    self::agregarValorDeudaCliente($this->client_id, $dataVenta['granTotal']);
                 }
 
                 event(new VentaRealizada($venta));
@@ -365,10 +304,27 @@ class SaleComponent extends Component
         $credito =  Credit::create([
             'sale_id'   => $venta->id,
             'client_id' => $venta->client_id,
-            'active'    => True,
+            'active'    => 1,
+            'valor'     => $venta->total,
+            'abono'     => 0,
+            'saldo'     => $venta->total,
         ]);
 
         return $credito;
+    }
+
+    function agregarValorDeudaCliente($cliente_id, $valor_compra)
+    {
+        $cliente = Client::findOrFail($cliente_id);
+
+        $nuevo_valor_deuda = $cliente->deuda + $valor_compra;
+
+        $cliente->update([
+            'deuda'     => $nuevo_valor_deuda,
+        ]);
+
+        return true;
+
     }
 
     function detallesVenta($venta, $dataProducts)

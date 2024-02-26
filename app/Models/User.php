@@ -70,6 +70,11 @@ class User extends Authenticatable
         return $this->hasMany(OrderComentario::class);
     }
 
+    public function credits()
+    {
+        return $this->hasMany(Credit::class);
+    }
+
     //scopes
 
     public function scopeSearch($query, $search)

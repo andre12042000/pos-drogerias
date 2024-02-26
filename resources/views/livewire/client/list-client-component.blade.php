@@ -39,19 +39,19 @@
                 <tbody>
                     @forelse ($clients as $client)
                         <tr>
-                            <td>{{ ucwords($client->name) }}</td>
-                            <td>{{ ucwords($client->phone) }}</td>
-                            <td>{{ ucwords($client->email) }}</td>
-                            <td>{{ ucwords($client->address) }}</td>
-                            <td class="text-end"> $ {{ number_format($client->deuda, 0) }}</td>
+                            <td onclick="redirectToClientPage({{ $client->id }})" style="cursor: pointer">{{ ucwords($client->name) }}</td>
+                            <td onclick="redirectToClientPage({{ $client->id }})" style="cursor: pointer">{{ ucwords($client->phone) }}</td>
+                            <td onclick="redirectToClientPage({{ $client->id }})" style="cursor: pointer">{{ ucwords($client->email) }}</td>
+                            <td onclick="redirectToClientPage({{ $client->id }})" style="cursor: pointer">{{ ucwords($client->address) }}</td>
+                            <td class="text-end" onclick="redirectToClientPage({{ $client->id }})" style="cursor: pointer"> $ {{ number_format($client->deuda, 0) }}</td>
                             </td>
+
                             <td class="text-center">
                             <a @popper(Actualizar) class="btn btn-outline-success btn-sm" data-toggle="modal" data-target="#clientmodal"  wire:click="sendData( {{ $client }} )" role="button"><i class="bi bi-pencil-square"></i></a>
                                     <button  @popper(Eliminar) class="btn btn-outline-danger btn-sm" wire:click="destroy( {{ $client->id }} )"><i class="bi bi-trash3"></i></button>
 
                             </td>
                         </tr>
-
                     @empty
                         <tr>
                             <td colspan="2">
@@ -72,3 +72,10 @@
         </div>
     </div>
 </div>
+
+<script>
+    function redirectToClientPage(clientId) {
+
+        Livewire.emit('redirigirEvent', clientId)
+    }
+</script>
