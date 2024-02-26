@@ -346,6 +346,13 @@ return [
                     'icon_color' => 'white',
                     'route'      => 'ventas.pos',
                 ],
+                [
+                    'text'       => 'Gastos',
+                    'classes'    => 'text-white',
+                    'icon'       => 'bi bi-cash-coin',
+                    'icon_color' => 'white',
+                    'route'      => 'ventas.gastos.list',
+                ],
                 /* [
                     'text'       => 'Ordenes de trabajo',
                     'classes'    => 'text-white',
