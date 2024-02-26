@@ -333,14 +333,14 @@ return [
             ],
         ],
         [
-            'text'       => 'Pos',
+            'text'       => 'Movimientos',
             'classes'    => 'text-white',
             'icon'       => 'fas fa-cash-register',
             'icon_color' => 'info',
             'can'  => 'Acceso Pos Venta',
             'submenu' => [
                 [
-                    'text'       => 'Venta',
+                    'text'       => 'POS',
                     'classes'    => 'text-white',
                     'icon'       => 'bi bi-cash-coin',
                     'icon_color' => 'white',
