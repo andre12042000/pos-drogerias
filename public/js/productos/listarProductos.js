@@ -192,3 +192,68 @@ window.addEventListener("alert-error", (event) => {
         text: `Código del error: ${errorCode}`,
     });
 });
+
+
+
+
+
+
+function modalAjuste( product, inventario) {
+    var modal = document.getElementById("ajustarInventarioModal");
+    var contenidoModal = document.getElementById("contenidoAjustarModal");
+
+    var cantCajaInput = document.getElementById("cant_caja");
+    var cantBlisterInput = document.getElementById("cant_blister");
+    var cantUnidadInput = document.getElementById("cant_unidad");
+
+    cantCajaInput.value = inventario.cantidad_caja;
+    cantBlisterInput.value = inventario.cantidad_blister;
+    cantUnidadInput.value = inventario.cantidad_unidad;
+
+    cantCajaInput.addEventListener("input", handleChange);
+    cantBlisterInput.addEventListener("input", handleChange);
+    cantUnidadInput.addEventListener("input", handleChange);
+
+
+    function handleChange() {
+        // Actualizar las variables en el objeto 'inventario'
+        inventario.cantidad_caja = parseInt(cantCajaInput.value) || 0;
+        inventario.cantidad_blister = parseInt(cantBlisterInput.value) || 0;
+        inventario.cantidad_unidad = parseInt(cantUnidadInput.value) || 0;
+      }
+
+    var inputBlisterPorCaja = product.contenido_interno_blister;
+    var inputUnidadesPorCaja = product.contenido_interno_unidad;
+    var totalCajasParaCalcularItems = product.stock;
+
+    if (
+        !isNaN(inputBlisterPorCaja) &&
+        !isNaN(totalCajasParaCalcularItems) &&
+        inputBlisterPorCaja > 0 &&
+        totalCajasParaCalcularItems > 0
+    ) {
+        var cant_blister = document.getElementById("cant_blister");
+        cant_blister.value =
+            totalCajasParaCalcularItems * inputBlisterPorCaja;
+    }
+
+    if (
+        !isNaN(inputUnidadesPorCaja) &&
+        !isNaN(totalCajasParaCalcularItems) &&
+        inputUnidadesPorCaja > 0 &&
+        totalCajasParaCalcularItems > 0
+    ) {
+        var cant_unidad = document.getElementById("cant_unidad");
+        cant_unidad.value =
+            totalCajasParaCalcularItems * inputUnidadesPorCaja;
+    }
+    // Mostrar el modal
+    modal.style.display = "block";
+}
+
+function cerrarModalajsutes() {
+    // Cerrar el modal
+    var modal = document.getElementById("ajustarInventarioModal");
+
+    modal.style.display = "none";
+}
