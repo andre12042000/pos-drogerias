@@ -12,10 +12,17 @@ class ProductManager {
         const subTotalGlobalFormateado = subTotalGlobal; //
         const subdescuentoGlobalFormateado = descuentoGlobal;
 
+
         this.botonPagar = document.getElementById("pagarBtn");
         this.loader = this.botonPagar.querySelector(".loader");
 
         const selectMetodoPago = document.getElementById("selectMetodoPago");
+
+        selectMetodoPago.querySelectorAll('option').forEach(option => {
+            if (option.value == "3") {
+                option.disabled = true;
+            }
+        });
 
         selectMetodoPago.addEventListener("change", () =>
             this.handleChangeMetodoPago()
@@ -100,8 +107,10 @@ class ProductManager {
 
         /*------------------------------Evento para cambiar tipo de operacion -------------------*/
 
+        const radioVenta = document.getElementById("tipoOperacionVenta");
         const radioCredito = document.getElementById("tipoOperacionCredito");
         radioCredito.addEventListener("click", () => this.handleCambioOperacion());
+        radioVenta.addEventListener("click", () => this.handleCambioOperacion());
 
         /*-------------------------Fin evento para cambiar tipo de operacion ----------------------*/
 
@@ -139,13 +148,37 @@ class ProductManager {
             opcionNo.checked = true;
         }
 
+        selectMetodoPago.querySelectorAll('option').forEach(option => {
+            if (operacionSeleccionada === "CRÉDITO" && option.value !== "3") {
+                option.disabled = true;
+            } else if (operacionSeleccionada === "VENTA" && option.value === "3") {
+                option.disabled = true;
+                metodoPagoSeleccionado = "2";
+            } else {
+                option.disabled = false;  // Habilita todas las demás opciones
+
+            }
+        });
+
+
+
         // Actualiza el valor del método de pago
         selectMetodoPago.value = metodoPagoSeleccionado;
 
+        let title, text;
+
+        if (operacionSeleccionada === "CRÉDITO") {
+            title = 'MODO VENTA CRÉDITO';
+            text = 'En modo venta crédito no ingresa dinero a la caja, pero se crea una deuda que podrás visualizar en los detalles del cliente.';
+        } else {
+            title = 'MODO VENTA';
+            text = 'Modo venta rápida activado.';
+        }
+
         Swal.fire({
             icon: 'info',
-            title: `Modo VENTA ${operacionSeleccionada}`,
-            text: `En modo venta ${operacionSeleccionada.toLowerCase()} no ingresa dinero a la caja, ¡Recuerda seleccionar el cliente!`,
+            title,
+            text,
         });
 
         // Mostrar el mensaje de ayuda para cambiar de cliente
@@ -156,7 +189,6 @@ class ProductManager {
         var opcionSi = document.getElementById("opcionSi");
         var opcionNo = document.getElementById("opcionNo");
         var selectMetodoPago = document.getElementById("selectMetodoPago");
-        console.log(selectMetodoPago.value);
 
         if (selectMetodoPago.value === "1") {
             // Selecciona la opción "Si"
