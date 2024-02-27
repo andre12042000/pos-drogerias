@@ -79,6 +79,10 @@ class SaleComponent extends Component
         if ($cliente->deuda > 0) {
             $this->dispatchBrowserEvent('notify_client_deuda', ['data' => $cliente]);
         }
+
+        if($this->tipo_operacion == 'CRÉDITO'){
+            $this->metodo_pago = 3;
+        }
     }
 
     public function ProductEvent($product, $precio)
@@ -169,6 +173,7 @@ class SaleComponent extends Component
                 $full_nro = $prefijo . $nuevoNro;
                 $estado = $this->tipo_operacion == 'VENTA' ? 'PAGADA' : 'VENTA CRÉDITO';
                 $tipo_movimiento = $this->tipo_operacion == 'VENTA' ? 'VENTA' : 'VENTA CRÉDITO';
+                $metodo_pago_id = $this->tipo_operacion == 'VENTA' ? $dataVenta['metodoPago'] : 3;
 
                 $venta = Sale::create([
                     'prefijo'           => $prefijo,
@@ -181,7 +186,7 @@ class SaleComponent extends Component
                     'tax'               => $dataVenta['ivaTotalGlobal'],
                     'total'             => $dataVenta['granTotal'],
                     'tipo_operacion'    => $tipo_movimiento,
-                    'metodo_pago_id'    => $dataVenta['metodoPago'],
+                    'metodo_pago_id'    => $metodo_pago_id,
                     'status'            => $estado,
                 ]);
 

@@ -37,7 +37,7 @@ class ReporteDiario extends Component
 
         $hoy = Carbon::now();
         $hoy = $hoy->format('Y-m-d');
-        $data = Cash::whereDate('created_at', $hoy)->with('cashesable');
+        $data = Cash::whereDate('created_at', $hoy)->with('cashesable')->orderBy('id', 'desc');
         $ventas = $data->paginate($this->cantidad_registros);
         $data_obtener_valores = $data->get();
 

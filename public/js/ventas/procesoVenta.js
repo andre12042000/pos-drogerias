@@ -13,6 +13,7 @@ class ProductManager {
         const subdescuentoGlobalFormateado = descuentoGlobal;
 
 
+
         this.botonPagar = document.getElementById("pagarBtn");
         this.loader = this.botonPagar.querySelector(".loader");
 
@@ -132,6 +133,7 @@ class ProductManager {
         const opcionSi = document.getElementById('opcionSi');
         const opcionNo = document.getElementById('opcionNo');
         const selectMetodoPago = document.getElementById("selectMetodoPago");
+
 
         let operacionSeleccionada = "VENTA";
         let metodoPagoSeleccionado = "EFECTIVO"; // Establece el valor predeterminado
