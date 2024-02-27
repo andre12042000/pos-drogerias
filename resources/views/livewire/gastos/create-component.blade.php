@@ -80,7 +80,7 @@
                     @enderror
 
                 </div>
-                <a class="btn btn-outline-success mt-2" title="Crear gasto" wire:click="storeOrupdate" ><i class="bi bi-check-circle"></i></a>
+                <a class="btn btn-outline-success mt-2 @if ($selected_id != '') disabled @endif" title="Crear gasto" wire:click="storeOrupdate" ><i class="bi bi-check-circle"></i></a>
 
                 <div class="text-center">
                     Detalles De Gasto
@@ -89,7 +89,7 @@
                 <form class="form-floating col-lg-5">
                     <input type="text"
                         class="form-control @if ($descripcion_detalles == '') @else @error('descripcion_detalles') is-invalid @else is-valid @enderror @endif"
-                        id="floatingInputInvalid" placeholder="name@example.com" wire:model="descripcion_detalles">
+                        id="floatingInputInvalid" placeholder="name@example.com" wire:model="descripcion_detalles" @if ($selected_id == '') disabled @endif>
                     <label class="ml-2" for="floatingInputInvalid">Descripción</label>
                     @error('descripcion_detalles')
                         <span class="text-danger">{{ $message }}</span>
@@ -99,7 +99,7 @@
                 <form class="form-floating col-lg-2">
                     <input type="number"
                         class="form-control @if ($cantidad_detalles == '') @else @error('cantidad_detalles') is-invalid @else is-valid @enderror @endif"
-                        id="floatingInputInvalid" placeholder="name@example.com" wire:model="cantidad_detalles">
+                        id="floatingInputInvalid" placeholder="name@example.com" wire:model="cantidad_detalles" @if ($selected_id == '') disabled @endif>
                     <label for="floatingInputInvalid" class="ml-2">Cantidad</label>
                     @error('cantidad_detalles')
                         <span class="text-danger">{{ $message }}</span>
@@ -109,7 +109,7 @@
                 <form class="form-floating col-lg-2">
                     <input type="number"
                         class="form-control @if ($precio_detalles == '') @else @error('precio_detalles') is-invalid @else is-valid @enderror @endif"
-                        id="floatingInputInvalid" placeholder="name@example.com" wire:model="precio_detalles">
+                        id="floatingInputInvalid" placeholder="name@example.com" wire:model="precio_detalles" @if ($selected_id == '') disabled @endif>
                     <label for="floatingInputInvalid" class="ml-2">Precio</label>
                     @error('precio_detalles')
                         <span class="text-danger">{{ $message }}</span>
@@ -119,7 +119,7 @@
                 <form class="form-floating col-lg-2">
                     <input type="number"
                         class="form-control @if ($subtotal == '') @else @error('subtotal') is-invalid @else is-valid @enderror @endif"
-                        id="floatingInputInvalid" placeholder="name@example.com" wire:model="subtotal">
+                        id="floatingInputInvalid" placeholder="name@example.com" wire:model="subtotal" @if ($selected_id == '') disabled @endif>
                     <label for="floatingInputInvalid" class="ml-2">SubTotal</label>
                     @error('subtotal')
                         <span class="text-danger">{{ $message }}</span>
@@ -127,13 +127,56 @@
                 </form>
 
                 <div class="col-lg-1">
-                    <a class="btn btn-outline-success mt-2" title="Agregar" wire:click="añadirddetalle"><i
+                    <a class="btn btn-outline-success mt-2 @if ($selected_id == '') disabled @endif" title="Agregar" wire:click="añadirddetalle" ><i
                             class="bi bi-check-circle"></i></a>
                 </div>
 
 
             </div>
 
+            <div class="text-center">
+
+                <hr>
+            </div>
+
+            @if($detalles)
+            <table class="table table-striped" id="tabMarcas">
+                <thead>
+                    <tr>
+                        <th>Descripción</th>
+                        <th class="">Cantidad</th>
+                        <th>Precio</th>
+                        <th class="">Subtotal</th>
+                        <th class="">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse ($detalles as $detalles)
+                    <tr>
+                        <td> {{ $detalles->descripcion }}</td>
+                        <td> {{ $detalles->cantidad }}</td>
+                        <td> {{ $detalles->precio }}</td>
+                        <td> {{ $detalles->subtotal }}</td>
+
+                            <td class="text-center">
+                                <button @popper(Eliminar) class="btn btn-outline-danger btn-sm" wire:click="destroy( {{ $detalles->id }} )"><i class="bi bi-trash3"></i></button>
+
+
+                            </td>
+
+
+                    </tr>
+
+                    @empty
+                    <tr>
+                        <td colspan="2">
+                            <p>No se encontraron registros...</p>
+                        </td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+            @endif
         </div>
     </div>
 </div>

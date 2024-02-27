@@ -13,9 +13,12 @@ use Illuminate\Support\Facades\Auth;
 class CreateComponent extends Component
 {
     public $fecha, $descripcion, $user_id, $category_gastos_id, $metodo_pago_id, $picture;
-    public $precio_detalles, $cantidad_detalles, $descripcion_detalles, $subtotal, $selected_id;
+    public   $descripcion_detalles, $subtotal, $selected_id;
     public $gastos_id;
     public $total = 0;
+    public $detalles;
+    public $cantidad_detalles;
+    public $precio_detalles;
 
     protected $listeners = ['GatosEvent'];
 
@@ -29,15 +32,14 @@ class CreateComponent extends Component
         $this->metodo_pago_id       = $gasto['metodo_pago_id'];
         $this->picture              = $gasto['picture'];
         $this->total                = $gasto['total'];
-
-
+        $this->obtenerdetalles();
     }
 
     public function render()
     {
         $hoy = Carbon::now();
         $hoy = $hoy->format('Y-m-d');
-        $this->fecha= $hoy;
+        $this->fecha = $hoy;
         $categorias = CategoryGastos::where('status', 'ACTIVE')->get();
         $medios = MetodoPago::all();
 
@@ -47,7 +49,7 @@ class CreateComponent extends Component
     protected $rules = [
         'fecha'             =>  'required',
         'descripcion'       =>  'required|min:4|max:254',
-        'category_gastos_id'=>  'required',
+        'category_gastos_id' =>  'required',
         'metodo_pago_id'    =>  'required',
     ];
 
@@ -63,9 +65,9 @@ class CreateComponent extends Component
 
     public function storeOrupdate()
     {
-        if($this->selected_id > 0){
+        if ($this->selected_id > 0) {
             $this->update();
-        }else{
+        } else {
             $this->save();
         }
         $this->emit('reloadGastos');
@@ -113,7 +115,8 @@ class CreateComponent extends Component
     }
 
 
-    public function añadirddetalle(){
+    public function añadirddetalle()
+    {
 
         $this->validate([
             'descripcion_detalles'  =>  'required',
@@ -121,13 +124,13 @@ class CreateComponent extends Component
             'precio_detalles'       =>  'required',
             'subtotal'              =>  'required',
 
-          ],[
+        ], [
             'descripcion_detalles.required'     => 'Este campo es requerido',
             'cantidad_detalles.required'        => 'Campo requerido',
             'precio_detalles.required'          => 'Campo requerido',
             'subtotal.required'                 => 'Campo requerido',
 
-          ]);
+        ]);
 
 
         $detalles = GastosDetalles::create([
@@ -144,22 +147,53 @@ class CreateComponent extends Component
         $this->subtotal = "";
         $total = 0;
 
-
         $gastos = Gastos::find($this->selected_id);
-            $saldo = $gastos->total;
+        $saldo = $gastos->total;
 
         $total = $saldo + $detalles->subtotal;
         $gastos->update([
             'total'                 => $total,
         ]);
+        $this->total                = $gastos->total;
         $this->emit('reloadGastos');
-        $this->GatosEvent($gastos);
+        $gastos = $this->obtenerdetalles();
+    }
 
+    public function updatedPrecioDetalles($value){
+
+        $this->subtotal = $this->cantidad_detalles * $value;;
+    }
+
+
+
+
+    public function obtenerdetalles()
+    {
+        $this->detalles = GastosDetalles::where('gastos_id', $this->selected_id)->get();
+    }
+
+    public function destroy($id)
+    {
+        $gasto = GastosDetalles::find($id);
+        $gasto->delete();
+        session()->flash('message', 'Marca  eliminada exitosamente');
+        $gastos = Gastos::find($this->selected_id);
+        $saldo = $gastos->total;
+
+        $total =  $saldo - $gasto->subtotal;
+
+        $gastos->update([
+            'total'                 => $total,
+        ]);
+        $this->total                = $gastos->total;
+
+        $this->emit('reloadGastos');
+        $this->obtenerdetalles();
     }
 
     public function cancel()
     {
-            $this->reset();
-            $this->resetErrorBag();
+        $this->reset();
+        $this->resetErrorBag();
     }
 }
