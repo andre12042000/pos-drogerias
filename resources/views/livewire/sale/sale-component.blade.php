@@ -10,13 +10,13 @@
                     <div class="col">
                         <label>Tipo de Operación</label>
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="tipoOperacionOptions" id="tipoOperacionVenta"
-                                value="VENTA" checked wire:model.defer="tipo_operacion">
+                            <input class="form-check-input" type="radio" name="tipoOperacionOptions"
+                                id="tipoOperacionVenta" value="VENTA" checked wire:model.defer="tipo_operacion">
                             <label class="form-check-label" for="tipoOperacionVenta">VENTA</label>
                         </div>
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="tipoOperacionOptions" id="tipoOperacionCredito"
-                                value="CREDITO" wire:model.defer="tipo_operacion">
+                            <input class="form-check-input" type="radio" name="tipoOperacionOptions"
+                                id="tipoOperacionCredito" value="CREDITO" wire:model.defer="tipo_operacion">
                             <label class="form-check-label" for="tipoOperacionCredito">CRÉDITO</label>
                         </div>
                     </div>
@@ -38,7 +38,7 @@
                     <div class="col">
 
                         <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Cliente"
+                            <input type="text" class="form-control" placeholder="Cliente" id="client"
                                 aria-label="Recipient's username with two button addons"
                                 aria-describedby="button-addon4" value="{{ $client_name }}" disabled readonly>
                             <div class="input-group-append" id="button-addon4">
@@ -135,9 +135,8 @@
                             <select class="form-select" id="selectMetodoPago" name="metodoPagoSelect"
                                 aria-label="Floating label select example">
                                 @foreach ($metodos_pago as $metodo)
-                                    <option value="{{ $metodo->id }}" @if ($metodo->id == '2')
-                                        selected
-                                    @endif>{{ $metodo->name }}</option>
+                                    <option value="{{ $metodo->id }}"
+                                        @if ($metodo->id == '2') selected @endif>{{ $metodo->name }}</option>
                                 @endforeach
                             </select>
                             <label for="floatingSelect">Método de pago</label>

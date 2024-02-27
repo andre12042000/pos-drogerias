@@ -66,7 +66,7 @@ class DatabaseSeeder extends Seeder
         Client::create([
             'type_document'     => null,
             'number_document'   => null,
-            'name'              => 'Venta rapida',
+            'name'              => 'Consumidor final',
             'phone'             => null,
             'address'           => null,
             'email'             => null,

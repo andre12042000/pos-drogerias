@@ -93,7 +93,7 @@ class SaleComponent extends Component
     {
         $this->impresora = Impresora::where('predeterminada', True)->first();
         $this->client_id = 1;
-        $this->client_name = 'Venta Venta Rapida';
+        $this->client_name = 'Consumidor final';
     }
 
     public function render()
@@ -155,85 +155,6 @@ class SaleComponent extends Component
 
     }
 
-    /*----------------Funciones crear venta credito ---------*/
-
-    function generarVentaCredito($dataVenta)
-    {
-        //  dd($dataVenta);
-        $this->validate([
-            'client_id'         => 'required',
-            'total_venta'       => 'nullable|integer|between:0,10000000',
-            'metodo_pago'       => 'required',
-        ], [
-            'client_id.required'        => 'El campo cliente es requerido',
-        ]);
-
-        try {
-
-            DB::transaction(function () use ($dataVenta) {
-
-
-
-                $order = Orders::create([
-                    'type'              => 'VENTA CRÉDITO',
-                    'prefijo'           => $this->prefijo,
-                    'nro'               => $this->nuevo_nro_order,
-                    'full_nro'          => $this->nro_order,
-                    'client_id'         => $this->client_id,
-                    'user_id'           => Auth::user()->id,
-                    'descripcion'       => 'VENTA CRÉDITO',
-                    'valor'             => $dataVenta['granTotal'],
-                    'abono'             => 0,
-                    'saldo'             => $dataVenta['granTotal'],
-                    'provider_id'       => null,
-                    'assigned'          => null,
-                    'status'            => 2,
-                    'equipo_id'         => null,
-
-                ]);
-
-                if (!empty($dataVenta['productosParaVenta'])) {
-                    foreach ($dataVenta['productosParaVenta'] as $product) {
-                        OrdersDetails::create([
-                            'order_id'      => $order->id,
-                            'product_id'    => $product['id_producto'],
-                            'price'         => $product['precio_unitario'],
-                            'discount'      => $product['descuento'],
-                            'quantity'      => $product['cantidad'],
-                            'total'         => $product['subtotal'],
-                            'forma'         => $product['forma'],
-                        ]);
-                    }
-                }
-
-                self::actualizarDeudaCliente($this->client_id, $dataVenta['granTotal']);
-
-                event(new VentaCreditoRealizada($order));
-
-                if ($dataVenta['imprimirRecibo'] > 0) {
-                  // $this->Imprimirecibo($venta->id);
-                }
-
-                $this->dispatchBrowserEvent('venta-generada', ['venta' => $order->full_nro]);
-                //  return redirect('/ventas/pos')->with('venta_exitosa' , $venta->id);
-
-
-            });
-        } catch (\Exception $e) {
-
-            DB::rollback();
-
-            $this->dispatchBrowserEvent('swal', [
-                'title' => 'Ops! Ocurrio un error',
-                'text' => '¡No es posible crear la transacción, verifica los datos!' . $e,
-                'icon' => 'error'
-            ]);
-
-            report($e);
-        }
-    }
-
-
 
     /*--------------Funciones generar venta ------------------*/
 
@@ -247,6 +168,7 @@ class SaleComponent extends Component
                 $nuevoNro = $this->obtenerProximoNumero($prefijo);
                 $full_nro = $prefijo . $nuevoNro;
                 $estado = $this->tipo_operacion == 'VENTA' ? 'PAGADA' : 'VENTA CRÉDITO';
+                $tipo_movimiento = $this->tipo_operacion == 'VENTA' ? 'VENTA' : 'VENTA CRÉDITO';
 
                 $venta = Sale::create([
                     'prefijo'           => $prefijo,
@@ -258,7 +180,7 @@ class SaleComponent extends Component
                     'discount'          => $dataVenta['descuentoGlobal'],
                     'tax'               => $dataVenta['ivaTotalGlobal'],
                     'total'             => $dataVenta['granTotal'],
-                    'tipo_operacion'    => $this->tipo_operacion,
+                    'tipo_operacion'    => $tipo_movimiento,
                     'metodo_pago_id'    => $dataVenta['metodoPago'],
                     'status'            => $estado,
                 ]);

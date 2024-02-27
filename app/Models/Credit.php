@@ -22,6 +22,11 @@ class Credit extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function pagocreditodetalles()
+    {
+        return $this->hasMany(PagoCreditosDetalles::class, 'recibo_id');
+    }
+
 
 
 
