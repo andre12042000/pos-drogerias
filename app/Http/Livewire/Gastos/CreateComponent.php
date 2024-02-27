@@ -49,8 +49,6 @@ class CreateComponent extends Component
         'descripcion'       =>  'required|min:4|max:254',
         'category_gastos_id'=>  'required',
         'metodo_pago_id'    =>  'required',
-
-
     ];
 
     protected $messages = [
@@ -156,6 +154,7 @@ class CreateComponent extends Component
         ]);
         $this->emit('reloadGastos');
         $this->GatosEvent($gastos);
+
     }
 
     public function cancel()
