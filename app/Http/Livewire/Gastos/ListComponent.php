@@ -12,7 +12,7 @@ class ListComponent extends Component
     use WithPagination;
     protected $paginationTheme = 'bootstrap';
     public $cantidad_registros = 10;
-    protected $listeners = ['reloadcategories'];
+    protected $listeners = ['reloadGastos'];
     public $buscar;
 
     public function reloadGastos()

@@ -51,7 +51,7 @@
                         <td>{{ ucwords($gasto->descripcion) }}</td>
                         <td>{{ ucwords($gasto->categoria->name) }}</td>
                         <td>$ {{ number_format($gasto->total) }}</td>
-                        <td>{{ ucwords($gasto->metodosdepago->name) }}</td>
+                        <td>{{ ucwords($gasto->metodopago->name) }}</td>
                         <td>{{ ucwords($gasto->user->name) }}</td>
                         <td>{{ ucwords($gasto->comrobante) }}</td>
                         <td>{{ ucwords($gasto->status) }}</td>
