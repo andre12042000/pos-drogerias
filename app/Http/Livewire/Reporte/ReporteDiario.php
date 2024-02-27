@@ -30,6 +30,7 @@ class ReporteDiario extends Component
     public $OtrosConceptos_imprimir = 0;
     public $facturasAnuladas_imprimir = 0;
     public $metodosDePagoGroup_imprimir = 0;
+    public $pagoCreditos_imprimir = 0;
 
     public function render()
     {
@@ -47,18 +48,23 @@ class ReporteDiario extends Component
         $totalVenta = $tipo_operacion_group['App\Models\Sale'] ?? 0;
         $totalAbono = $tipo_operacion_group['App\Models\Abono'] ?? 0;
         $OtrosConceptos = $tipo_operacion_group['App\Models\Otros'] ?? 0;
+        $pagoCreditos = $tipo_operacion_group['App\Models\PagoCreditos'] ?? 0;
+
 
         /* Convertimos las variables en variables publicas para enviarlas facilmente al informe o a imprimir */
         $this->hoy_imprimir = $hoy;
         $this->totalVenta_imprimir = $totalVenta;
         $this->totalAbono_imprimir = $totalAbono;
         $this->OtrosConceptos_imprimir = $OtrosConceptos;
+        $this->pagoCreditos_imprimir = $pagoCreditos;
         $this->facturasAnuladas_imprimir = $facturasAnuladas;
         $this->metodosDePagoGroup_imprimir = $metodosDePagoGroup;
 
 
 
-        return view('livewire.reporte.reporte-diario', compact('ventas', 'hoy', 'totalVenta', 'totalAbono', 'OtrosConceptos', 'metodosDePagoGroup', 'facturasAnuladas'));
+
+
+        return view('livewire.reporte.reporte-diario', compact('ventas', 'hoy', 'totalVenta', 'totalAbono', 'OtrosConceptos', 'metodosDePagoGroup', 'facturasAnuladas', 'pagoCreditos'));
     }
 
     public function obtenerValorTipoDeOperacion()
@@ -113,8 +119,8 @@ class ReporteDiario extends Component
 
         // Sección 1
         $reciboBody[] = [
-            'label' => 'TOTAL VENTA',
-            'value' => '$ ' . number_format($this->totalVenta_imprimir, 0),
+            'label' => 'TOTAL RECAUDO',
+            'value' => '$ ' . number_format($this->totalVenta_imprimir + $this->pagoCreditos_imprimir, 0),
         ];
 
         $reciboBody[] = [
@@ -125,6 +131,11 @@ class ReporteDiario extends Component
         $reciboBody[] = [
             'label' => 'OTROS CONCEPTOS',
             'value' => '$ ' . number_format($this->OtrosConceptos_imprimir, 0),
+        ];
+
+        $reciboBody[] = [
+            'label' => 'PAGO CRÉDITOS',
+            'value' => '$ ' . number_format($this->pagoCreditos_imprimir, 0),
         ];
 
         // Métodos de pago
@@ -141,10 +152,6 @@ class ReporteDiario extends Component
             'value' => '$ ' . number_format($this->facturasAnuladas_imprimir, 0),
         ];
 
-        $reciboBody[] = [
-            'label' => 'Venta Credito',
-            'value' => '$ 0',
-        ];
 
         $reciboBody[] = [
             'label' => 'Consumo Interno',

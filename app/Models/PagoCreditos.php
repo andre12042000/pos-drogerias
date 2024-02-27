@@ -26,6 +26,13 @@ class PagoCreditos extends Model
         return $this->hasMany(PagoCreditosDetalles::class, 'recibo_id');
     }
 
+    public function user(){
+        return $this->belongsTo(User::class, 'user_id');
+    }
+    public function client(){
+        return $this->belongsTo(Client::class);
+    }
+
 
 
 

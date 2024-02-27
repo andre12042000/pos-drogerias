@@ -41,12 +41,16 @@
                     <div class="card">
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item-primary d-flex justify-content-between align-items-center">
-                                <label class="form-control-label ml-2" for="nombre"><strong>TOTAL VENTA</strong></label>
-                                <p class="mr-2 mt-2 text-bold">$ {{ number_format($totalVenta, 0) }}</p>
+                                <label class="form-control-label ml-2" for="nombre"><strong>TOTAL RECAUDO</strong></label>
+                                <p class="mr-2 mt-2 text-bold">$ {{ number_format($totalVenta + $pagoCreditos, 0) }}</p>
                             </li>
                             <li class="list-group-item-info d-flex justify-content-between align-items-center">
                                 <label class="form-control-label ml-2" for="nombre"><strong>ABONOS</strong></label>
                                   <p class="mr-2 mt-2 text-bold">$ {{ number_format($totalAbono, 0) }}</p>
+                            </li>
+                            <li class="list-group-item-info d-flex justify-content-between align-items-center">
+                                <label class="form-control-label ml-2" for="nombre"><strong>PAGOS VENTA CRÉDITO</strong> <i class="bi bi-info-circle-fill" data-toggle="tooltip" data-placement="top" title="Si no se recibió el dinero en mostrador o caja, resta el valor al TOTAL RECAUDO."></i></label>
+                                  <p class="mr-2 mt-2 text-bold">$ {{ number_format($pagoCreditos, 0) }}</p>
                             </li>
                             <li class="list-group-item-info d-flex justify-content-between align-items-center">
                                 <label class="form-control-label ml-2" for="nombre"><strong>OTROS CONCEPTOS</strong></label>
@@ -73,10 +77,10 @@
                                 <label class="form-control-label " for="nombre"><strong>Venta Anulada</strong></label>
                                 <p class="mr-2 mt-2 text-bold">$ {{ number_format($facturasAnuladas, 0) }}</p>
                             </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                         {{--    <li class="list-group-item d-flex justify-content-between align-items-center">
                                 <label class="form-control-label " for="nombre"><strong>Venta Credito</strong></label>
                                 <p class="mr-2 mt-2 text-bold">$ 0</p>
-                            </li>
+                            </li> --}}
                             <li class="list-group-item d-flex justify-content-between align-items-center">
                                 <label class="form-control-label" for="nombre"><strong>Consumo
                                         Interno</strong></label>
@@ -136,8 +140,20 @@
                                             </td>
                                             <td>
                                                 @if ($venta->cashesable_type == 'App\Models\Sale')
-                                                    <span class="badge badge-pill badge-primary">
-                                                        Venta</span>
+
+                                                    @if ($venta->cashesable->tipo_operacion == 'VENTA')
+                                                        <span class="badge badge-pill badge-primary">
+                                                            Venta</span>
+                                                    @else
+                                                        <span class="badge badge-pill badge-warning">
+                                                            Crédito</span>
+                                                    @endif
+
+
+                                                @elseif ($venta->cashesable_type == 'App\Models\PagoCreditos')
+
+                                                    <span class="badge badge-pill badge-success">
+                                                        Pago crédito</span>
                                                 @else
                                                     <span class="badge badge-pill badge-info">
                                                         Abono</span>
@@ -160,6 +176,8 @@
                                                 <a @popper(Imprimir comprobante) class="btn btn-outline-success btn-sm" href="{{ route('ventas.pos.imprimir.recibo', $venta->cashesable_id) }}">
                                                     <i class="bi bi-printer"></i>
                                                 </a>
+
+                                                @elseif ($venta->cashesable_type == 'App\Models\PagoCreditos')
 
                                                 @else
 

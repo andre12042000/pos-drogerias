@@ -10,7 +10,7 @@
                 <div class="col-sm-1">
                     <div class="input-group float-right text-end">
 
-                        <button type="button" class="btn btn-outline-light float-right ml-2">Atrás <i class="las la-plus-circle"></i></button>
+                        <a href="{{ route('terceros.client') }}" type="button" class="btn btn-outline-light float-right ml-2">Atrás <i class="las la-plus-circle"></i></a>
 
                     </div>
                 </div>
