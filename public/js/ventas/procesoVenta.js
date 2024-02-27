@@ -246,6 +246,25 @@ class ProductManager {
 
     handlePagarButtonClick() {
         this.mostrarLoader();
+
+        // Obtenemos el tipo de transaccion
+        const tipoOperacionCredito = document.getElementById("tipoOperacionCredito");
+        const cliente = document.getElementById("client");
+        const cambiarClienteHelp = document.getElementById('cambiarClienteHelp');
+
+        if (tipoOperacionCredito.checked && cliente.value === "Consumidor final") {
+            // Si la condición se cumple, agregamos la clase "is-invalid" al elemento cliente
+            cliente.classList.add("is-invalid");
+            cambiarClienteHelp.style.display = 'block';
+
+            this.ocultarLoader();
+            return;
+        }else{
+            cambiarClienteHelp.style.display = 'none';
+        }
+
+
+
         // Obtener los elementos de los radio buttons
         const opcionSi = document.getElementById("opcionSi");
         const opcionNo = document.getElementById("opcionNo");

@@ -14,10 +14,11 @@ use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\DB;
+use App\Traits\ImprimirTrait;
 
 class DetailComponent extends Component
 {
-    use WithPagination;
+    use WithPagination, ImprimirTrait;
     public $cliente;
 
     protected $listeners = ['realizarPagoTotalEvent'];
@@ -33,10 +34,22 @@ class DetailComponent extends Component
                     ->orderBy('created_at', 'desc')
                     ->paginate(30);
 
+
         $metodos_pago = MetodoPago::where('status', 'ACTIVE')->get();
 
+        $ventas = Sale::where('client_id', $this->cliente->id)
+                        ->where('tipo_operacion', 'VENTA')
+                        ->orderBy('created_at', 'desc')
+                        ->paginate(30);
 
-        return view('livewire.client.detail-component', compact('credits', 'metodos_pago'))->extends('adminlte::page');
+        $pagocreditos = PagoCreditos::where('client_id', $this->cliente->id)
+                                    ->orderBy('created_at', 'desc')
+                                    ->paginate(30);
+
+
+
+
+        return view('livewire.client.detail-component', compact('credits', 'metodos_pago', 'ventas', 'pagocreditos'))->extends('adminlte::page');
     }
 
     public function updatingSearch()
@@ -216,6 +229,86 @@ class DetailComponent extends Component
         $credito = Credit::findOrFail($credito_id);
 
         return $credito;
+
+    }
+
+    public function imprimirPago($pago_id)
+    {
+
+        $recibo = PagoCreditos::findOrFail($pago_id);
+
+        $reciboBody = [];
+
+        // Sección 1
+        $reciboBody[] = [
+            'label' => 'OPERACION',
+            'value' => 'PAGO VENTA CREDITO',
+        ];
+
+        $reciboBody[] = [
+            'label' => 'Recibo',
+            'value' => $recibo->full_nro,
+        ];
+
+        $reciboBody[] = [
+            'label' => 'Metodo de Pago',
+            'value' => $recibo->metodopago->name,
+        ];
+
+        $reciboBody[] = [
+            'label' => 'Fecha de pago',
+            'value' => $recibo->created_at->format('d-m-Y H:i'),
+        ];
+
+        $reciboBody[] = [
+            'label' => 'Detalles del pago',
+            'value' => '',
+        ];
+
+        $reciboBody[] = [
+            'label' => '------------------------',
+            'value' => '',
+        ];
+
+        //Relacion pagos
+
+        foreach($recibo->pagocreditodetalles as $detalle){
+
+            $reciboBody[] = [
+                'label' => 'Compra',
+                'value' => $detalle->credito->sale->full_nro,
+            ];
+
+            $reciboBody[] = [
+                'label' => 'Saldo recibido',
+                'value' => '$ ' . number_format($detalle->saldo_recibido, 0),
+            ];
+
+            $reciboBody[] = [
+                'label' => 'Valor pagado',
+                'value' => '$ ' . number_format($detalle->valor_pagado, 0),
+            ];
+
+            $reciboBody[] = [
+                'label' => 'Saldo',
+                'value' => '$ ' . number_format($detalle->saldo_restante, 0),
+            ];
+
+            $reciboBody[] = [
+                'label' => '------------',
+                'value' => '------------',
+            ];
+
+        }
+
+
+        $reciboBody[] = [
+            'label' => 'TOTAL PAGADO',
+            'value' => '$ ' . number_format($recibo->valor, 0),
+        ];
+
+
+        $this->imprimirRecibo($reciboBody);
 
     }
 }

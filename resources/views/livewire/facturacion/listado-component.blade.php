@@ -1,5 +1,5 @@
 <div>
-    @section('title', 'Ubicaciones')
+    @section('title', 'Facturación')
 
     @section('content_header')
 
@@ -49,6 +49,7 @@
                     <tr>
                         <th>Fecha</th>
                         <th>Hora</th>
+                        <th>Tipo</th>
                         <th>Nro factura</th>
                         <th>Metodo de pago</th>
                         <th>Total</th>
@@ -63,16 +64,19 @@
                    @forelse ($sales as $sale)
                     <tr>
                        <td>{{ \Carbon\Carbon::parse($sale->created_at)->format('d-m-Y') }}</td>
-                       <td>{{ \Carbon\Carbon::parse('2024-01-30 09:57:33')->format('H:i:s') }}</td>
+                       <td>{{ \Carbon\Carbon::parse($sale->created_at)->format('H:i') }}</td>
+                       <td>{{ $sale->tipo_operacion }} </td>
                        <td>{{ $sale->full_nro }}</td>
                        <td>{{ $sale->metodopago->name }}</td>
                        <td class="text-end">$ {{ number_format($sale->total, 0) }}</td>
                        <td>{{ mb_strtoupper($sale->user->name) }}</td>
                        <td>{{ mb_strtoupper($sale->client->name) }}</td>
                        <td>@if ($sale->status == 'PAGADA')
-                        <span class="badge badge-pill badge-danger" >APROBADA</span>
+                                <span class="badge badge-pill badge-success">APROBADA</span>
+                            @elseif ($sale->status == 'VENTA CRÉDITO')
+                                <span class="badge badge-pill badge-warning" title="valor anulado: $ {{ number_format($sale->valor_anulado, 0) }}" style="cursor: pointer;">VENTA CRÉDITO</span>
                             @else
-                            <span class="badge badge-pill badge-danger" title="valor anulado: $ {{ number_format($sale->valor_anulado, 0) }}" style="cursor: pointer;">ANULADA</span>
+                                <span class="badge badge-pill badge-danger" title="valor anulado: $ {{ number_format($sale->valor_anulado, 0) }}" style="cursor: pointer;">ANULADA</span>
 
                             @endif
                       </td>
