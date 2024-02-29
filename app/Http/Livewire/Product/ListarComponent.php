@@ -18,13 +18,14 @@ use Livewire\WithPagination;
 
 class ListarComponent extends Component
 {
-    public $products, $buscar, $filter_estado, $filter_category;
+    use WithPagination;
+    public $products, $buscar, $filter_estado, $filter_category, $search;
     public $cant_caja, $cant_blister, $cant_unidad;
 
     public $productId,  $stockCajas, $stockBlisters, $stockUnidades;
 
 
-    use WithPagination;
+
     protected $paginationTheme = 'bootstrap';
 
     public $cantidad_registros = 10;
@@ -213,9 +214,16 @@ class ListarComponent extends Component
         }
     }
 
+    public function mount()
+    {
+        $this->resetPage();
+    }
+
+
+
     public function render()
     {
-        $productos = Product::search($this->buscar)
+        $productos = Product::search($this->search)
             ->status($this->filter_estado)
             ->orderBy('name', 'ASC')
             ->orderBy('status', 'ASC')
@@ -229,6 +237,13 @@ class ListarComponent extends Component
 
 
         return view('livewire.product.listar-component', compact('laboratorios', 'productos', 'categorias', 'subcategorias', 'ubicaciones', 'presentaciones'));
+    }
+
+    public function updatedBuscar()
+    {
+        $this->resetPage();
+
+        $this->search = $this->buscar;
     }
 
     public function destroy($id)
@@ -282,5 +297,10 @@ class ListarComponent extends Component
     private function resetInput()
     {
         $this->reset();
+    }
+
+    public function beforeDomUpdate($newPage, $perPage, $search)
+    {
+        $this->resetPage();
     }
 }
