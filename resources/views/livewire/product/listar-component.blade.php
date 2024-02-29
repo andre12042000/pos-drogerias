@@ -98,7 +98,7 @@
 
 
                                  @can('Acceso Inventario Corregir')
-                                  
+
                                     <a onclick="abrirModal(
                                         {{ json_encode($product) }},
                                         {{ json_encode($categorias) }},
@@ -111,8 +111,8 @@
                                     )"
                                         role="button" class="btn btn-outline-secondary btn-sm">
                                         <i class="bi bi-plus-slash-minus"></i>
-                                    </a> 
-                                @endcan 
+                                    </a>
+                                @endcan
                             <!--    <a onclick="ModalEditar(
                                     {{ json_encode($product) }},
                                     {{ json_encode($categorias) }},
@@ -126,13 +126,14 @@
                                 </a>
 -->
 
-                                <a onclick="modalAjuste({{ json_encode($product) }},   {{ json_encode($product->inventario) }},)"
+                                <a onclick="modalAjuste({{ json_encode($product) }},
+                                                        {{ json_encode($product->inventario) }},)"
                                     role="button" title="Ajustar Inventario" class="btn btn-outline-success btn-sm">
                                     <i class="bi bi-boxes"></i>
-                                </a> 
-								
+                                </a>
+
 								<a @popper(Eliminar) class="btn btn-outline-danger btn-sm" wire:click="destroy( {{ $product->id }} )"><i class="bi bi-trash"></i></a>
-								
+
 
                                 @include('popper::assets')
                             </td>

@@ -21,12 +21,15 @@ class ListarComponent extends Component
     public $products, $buscar, $filter_estado, $filter_category;
     public $cant_caja, $cant_blister, $cant_unidad;
 
+    public $productId,  $stockCajas, $stockBlisters, $stockUnidades;
+
+
     use WithPagination;
     protected $paginationTheme = 'bootstrap';
 
     public $cantidad_registros = 10;
 
-    protected $listeners = ['ProductsEvent', 'reloadProductEvent', 'ajusteInventarioEvent'];
+    protected $listeners = ['actualizarInventarioEvent', 'ProductsEvent', 'reloadProductEvent', 'ajusteInventarioEvent'];
 
     function ajusteInventarioEvent($dataEvent)
     {
@@ -39,9 +42,43 @@ class ListarComponent extends Component
 
 
             return redirect()->route('inventarios.product')->with('Se ha actualizado correctamente el producto: ' . $product['name']);
-         } catch (\Exception $e) {
+        } catch (\Exception $e) {
 
             $errorCode = $e->getCode();
+
+            $this->dispatchBrowserEvent('alert-error', ['errorCode' => $errorCode]);
+        }
+    }
+
+    function actualizarInventarioEvent($data)
+    {
+        try {
+
+            $this->productId      =  $data['productId'];
+            $this->stockCajas     =  $data['stockCajas'];
+            $this->stockBlisters  =  $data['stockBlisters'];
+            $this->stockUnidades  =  $data['stockUnidades'];
+
+
+            $this->validate([
+                'productId'        => 'required',
+                'stockCajas'       => 'required|numeric|min:0',
+                'stockBlisters'    => 'required|numeric|min:0',
+                'stockUnidades'    => 'required|numeric|min:0',
+            ]);
+
+            $inventario = Inventario::where('product_id', $this->productId)->first();
+
+            $inventario->update([
+                'cantidad_caja'         => $this->stockCajas,
+                'cantidad_blister'      => $this->stockBlisters,
+                'cantidad_unidad'       => $this->stockUnidades,
+            ]);
+
+            return redirect()->route('inventarios.product')->with('success', 'Se ha actualizado correctamente el stock del producto: ' . $inventario->product->name);
+        } catch (\Exception $e) {
+
+            $errorCode = $e->getMessage();
 
             $this->dispatchBrowserEvent('alert-error', ['errorCode' => $errorCode]);
         }
@@ -91,7 +128,7 @@ class ListarComponent extends Component
             'excluido'                  => 0,
             'no_gravado'                => 0,
             'gravado'                   => 0,
-            'laboratorio_id'            => $dataProduct['laboratorio_id'] =! "" ? $dataProduct['laboratorio_id']: 1,
+            'laboratorio_id'            => $dataProduct['laboratorio_id'] = !"" ? $dataProduct['laboratorio_id'] : 1,
             'ubicacion_id'              => $dataProduct['ubicacion_id'],
             'presentacion_id'           => $dataProduct['presentacion_id'],
             'category_id'               => $dataProduct['category_id'],
@@ -171,7 +208,7 @@ class ListarComponent extends Component
 
         $this->render();
 
-        if($product){
+        if ($product) {
             $this->dispatchBrowserEvent('nuevo-producto', ['producto' => $product['name']]);
         }
     }
@@ -201,7 +238,7 @@ class ListarComponent extends Component
         $purchase   = PurchaseDetail::where('product_id', $id)->first();
         $inventario = Inventario::where('product_id', $id)->first();
 
-        if($inventario->cantidad_caja > 0 OR $inventario->cantidad_blister > 0 OR $inventario->cantidad_unidad > 0){
+        if ($inventario->cantidad_caja > 0 or $inventario->cantidad_blister > 0 or $inventario->cantidad_unidad > 0) {
             session()->flash('warning', 'El producto esta siendo utilizado no se puede eliminar');
             return false;
         }

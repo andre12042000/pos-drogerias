@@ -198,58 +198,133 @@ window.addEventListener("alert-error", (event) => {
 
 
 
-function modalAjuste( product, inventario) {
+function modalAjuste(product, inventario) {
+
     var modal = document.getElementById("ajustarInventarioModal");
     var contenidoModal = document.getElementById("contenidoAjustarModal");
 
-    var cantCajaInput = document.getElementById("cant_caja");
-    var cantBlisterInput = document.getElementById("cant_blister");
-    var cantUnidadInput = document.getElementById("cant_unidad");
+    var product_id = document.getElementById("product_id");
+    var stock_cajas = document.getElementById("stock_cajas");
+    var stock_blisters = document.getElementById("stock_blisters");
+    var stock_unidades = document.getElementById("stock_unidades");
 
-    cantCajaInput.value = inventario.cantidad_caja;
-    cantBlisterInput.value = inventario.cantidad_blister;
-    cantUnidadInput.value = inventario.cantidad_unidad;
+    stock_cajas.addEventListener("change", function() {
 
-    cantCajaInput.addEventListener("input", handleChange);
-    cantBlisterInput.addEventListener("input", handleChange);
-    cantUnidadInput.addEventListener("input", handleChange);
+        if (stock_cajas.value !== '' && parseInt(stock_cajas.value) > 0) {
 
+            if(product.disponible_blister > 0){
+                stock_blisters.value = stock_cajas.value * product.contenido_interno_blister;
+            }else{
+                stock_blisters.value = 0;
+            }
 
-    function handleChange() {
-        // Actualizar las variables en el objeto 'inventario'
-        inventario.cantidad_caja = parseInt(cantCajaInput.value) || 0;
-        inventario.cantidad_blister = parseInt(cantBlisterInput.value) || 0;
-        inventario.cantidad_unidad = parseInt(cantUnidadInput.value) || 0;
-      }
+            if(product.disponible_unidad > 0){
+                stock_unidades.value = stock_cajas.value * product.contenido_interno_unidad;
+            }
 
-    var inputBlisterPorCaja = product.contenido_interno_blister;
-    var inputUnidadesPorCaja = product.contenido_interno_unidad;
-    var totalCajasParaCalcularItems = product.stock;
+        }
 
-    if (
-        !isNaN(inputBlisterPorCaja) &&
-        !isNaN(totalCajasParaCalcularItems) &&
-        inputBlisterPorCaja > 0 &&
-        totalCajasParaCalcularItems > 0
-    ) {
-        var cant_blister = document.getElementById("cant_blister");
-        cant_blister.value =
-            totalCajasParaCalcularItems * inputBlisterPorCaja;
+    });
+
+    stock_cajas.value = inventario.cantidad_caja;
+    product_id.value = product.id;
+
+    if(product.disponible_blister === 0){
+        stock_blisters.disabled = true;
+        stock_blisters.value = "0";
+    }else{
+        stock_blisters.disabled = false;
+        stock_blisters.value = inventario.cantidad_blister;
     }
 
-    if (
-        !isNaN(inputUnidadesPorCaja) &&
-        !isNaN(totalCajasParaCalcularItems) &&
-        inputUnidadesPorCaja > 0 &&
-        totalCajasParaCalcularItems > 0
-    ) {
-        var cant_unidad = document.getElementById("cant_unidad");
-        cant_unidad.value =
-            totalCajasParaCalcularItems * inputUnidadesPorCaja;
+    if(product.disponible_unidad === 0){
+        stock_unidades.disabled = true;
+        stock_unidades.value = "0";
+    }else{
+        stock_unidades.disabled = false;
+        stock_unidades.value = inventario.cantidad_unidad;
     }
+
+
+
     // Mostrar el modal
     modal.style.display = "block";
 }
+
+function ajustarInventario()
+{
+    mostrarLoader();
+    var product_id = document.getElementById("product_id")
+    var stock_cajas = document.getElementById("stock_cajas");
+    var stock_blisters = document.getElementById("stock_blisters");
+    var stock_unidades = document.getElementById("stock_unidades");
+
+    var error_cajas = document.getElementById("error_cajas");
+    var error_blister = document.getElementById("error_blister");
+    var error_unidades = document.getElementById("error_unidades");
+
+
+    let errors = [];
+
+    if(stock_cajas.value === ''){
+        stock_cajas.classList.add('is-invalid');
+        errors.push('El campo de stock de cajas no puede estar vacío.');
+        error_cajas.style.display = "block";
+        error_cajas.innerHTML = "El campo stock cajas no puede estar vacío.";
+    }
+
+    if(stock_blisters.value === ''){
+        stock_blisters.classList.add('is-invalid');
+        errors.push('El campo de stock de blisters no puede estar vacío.');
+        error_blister.style.display = "block";
+        error_blister.innerHTML = "El campo stock blisters no puede estar vacío.";
+    }
+
+    if(stock_unidades.value === ''){
+        stock_unidades.classList.add('is-invalid');
+        errors.push('El campo de stock de unidades no puede estar vacío.');
+        error_unidades.style.display = "block";
+        error_unidades.innerHTML = "El campo stock unidades no puede estar vacío.";
+    }
+
+    if (errors.length > 0) {
+        ocultarLoader();
+        return;
+    }else{
+        stock_cajas.classList.remove('is-invalid');
+        stock_blisters.classList.remove('is-invalid');
+        stock_unidades.classList.remove('is-invalid');
+
+        error_cajas.style.display = "none";
+
+    }
+
+
+    Livewire.emit('actualizarInventarioEvent', {
+        productId: product_id.value,
+        stockCajas: stock_cajas.value,
+        stockBlisters: stock_blisters.value,
+        stockUnidades: stock_unidades.value
+    });
+
+}
+
+function mostrarLoader() {
+    var BtnAjustarInventario = document.getElementById("BtnAjustarInventario");
+    var loader = BtnAjustarInventario.querySelector(".loader");
+    BtnAjustarInventario.setAttribute("disabled", true);
+    loader.style.display = "inline-block";
+}
+
+function ocultarLoader() {
+    var BtnAjustarInventario = document.getElementById("BtnAjustarInventario");
+    var loader = BtnAjustarInventario.querySelector(".loader");
+    BtnAjustarInventario.removeAttribute("disabled");
+    loader.style.display = "none";
+}
+
+
+
 
 function cerrarModalajsutes() {
     // Cerrar el modal
