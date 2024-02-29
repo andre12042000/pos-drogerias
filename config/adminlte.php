@@ -353,6 +353,13 @@ return [
                     'icon_color' => 'white',
                     'route'      => 'ventas.gastos.list',
                 ],
+                [
+                    'text'       => 'Cotizaciones',
+                    'classes'    => 'text-white',
+                    'icon'       => 'bi bi-cash-coin',
+                    'icon_color' => 'white',
+                    'route'      => 'ventas.cotizaciones.list',
+                ],
                 /* [
                     'text'       => 'Ordenes de trabajo',
                     'classes'    => 'text-white',

@@ -1,5 +1,5 @@
 <div>
-    @section('title', 'Gastos')
+    @section('title', 'Cotizaciones')
 
     @section('content_header')
 
@@ -9,7 +9,7 @@
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">Movimientos</li>
 
-                    <li class="breadcrumb-item active" aria-current="page">Gastos</li>
+                    <li class="breadcrumb-item active" aria-current="page">Cotizaciones</li>
                 </ol>
             </nav>
         </div>
@@ -23,7 +23,7 @@
 
             <div class="row">
                 <div class="col-sm-6">
-                    <h3>Gastos</h3>
+                    <h3>Cotizaciones</h3>
                 </div>
 
 
@@ -37,11 +37,11 @@
                             <option value="100">100</option>
                         </select>
                         <span class="input-group-text" id="basic-addon1"><i class="bi bi-search"></i></span>
-                        <input type="text" class="form-control" placeholder="Buscar gasto" aria-label="Username"
+                        <input type="text" class="form-control" placeholder="Buscar cotización" aria-label="Username"
                             aria-describedby="basic-addon1" wire:model="buscar">
 
                         <button type="button" class="btn btn-outline-light float-right ml-2" data-toggle="modal"
-                            data-target="#GastosModal">Registrar Gasto <i class="las la-plus-circle"></i></button>
+                            data-target="#cotizacionModal">Nueva Cotización <i class="las la-plus-circle"></i></button>
                     </div>
                 </div>
             </div>
@@ -50,41 +50,42 @@
             <table class="table table-striped">
                 <thead>
                     <tr>
-                        <th>Fecha</th>
-                        <th>Descripcion</th>
-                        <th>Categoria</th>
+                        <th>Prefijo</th>
+                        <th>Código</th>
+                        <th>Cliente</th>
+                        <th>Descripción</th>
+                        <th>Descuento</th>
+                        <th>IVA</th>
                         <th>Total</th>
-                        <th>Metodo de pago</th>
-                        <th>Usuario</th>
-                        <th>Comprobante</th>
-                        <th>Estado</th>
                         <th class="text-center">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse ($gastos as $gasto)
+                    @forelse ($cotizaciones as $cotizacion)
                     <tr>
-                        <td>{{ ucwords($gasto->fecha) }}</td>
-                        <td>{{ ucwords($gasto->descripcion) }}</td>
-                        <td>{{ ucwords($gasto->categoria->name) }}</td>
-                        <td>$ {{ number_format($gasto->total) }}</td>
-                        <td>{{ ucwords($gasto->metodopago->name) }}</td>
-                        <td>{{ ucwords($gasto->user->name) }}</td>
-                        <td>{{ ucwords($gasto->comrobante) }}</td>
-                        <td>{{ ucwords($gasto->status) }}</td>
+                        <td>{{ ucwords($cotizacion->prefijo) }}</td>
+
+                        <td>{{ $cotizacion->full_nro }} </td>
+                        <td>{{ $cotizacion->cliente_id }} </td>
+                        <td>{{ $cotizacion->cotizacion_date }} </td>
+                        <td>{{ $cotizacion->discount }} </td>
+                        <td>{{ $cotizacion->tax }} </td>
+                        <td>{{ $cotizacion->total  }} </td>
+
                         <td class="text-center">
 
                             <a @popper(Actualizar) class="btn btn-outline-success btn-sm" href="#" role="button"
-                                data-toggle="modal" data-target="#GastosModal"
-                                wire:click="sendData( {{ $gasto }} )"><i class="bi bi-pencil-square"></i></a>
+                                data-toggle="modal" data-target="#presentacionModal"
+                                wire:click="sendData( {{ $cotizacion }} )"><i class="bi bi-pencil-square"></i></a>
 
-
+                            <button @popper(Eliminar) class="btn btn-outline-danger btn-sm"
+                                wire:click="destroy( {{ $cotizacion->id }} )"><i class="bi bi-trash3"></i></button>
                         </td>
                     </tr>
 
                     @empty
                     <tr>
-                        <td colspan="9 " class="text-center">
+                        <td colspan="8" class="text-center">
                             <p>No se encontraron registros...</p>
                         </td>
                     </tr>
@@ -95,14 +96,14 @@
         <div class="card-footer">
             <nav aria-label="...">
                 <ul class="pagination">
-                    {{ $gastos->links() }}
+                    {{ $cotizaciones->links() }}
                 </ul>
             </nav>
 
         </div>
     </div>
 </div>
-@include('modals.gastos.create')
+@include('modals.cotizaciones.createcotizacion')
 <script>
       window.addEventListener('alert', () => {
             Swal.fire({
@@ -111,5 +112,7 @@
                 showConfirmButton: false,
                 timer: 1500
             });
+
+
         });
 </script>
