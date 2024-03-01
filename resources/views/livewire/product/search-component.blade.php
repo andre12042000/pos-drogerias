@@ -18,6 +18,7 @@
                         <tr>
                             <th>Código</th>
                             <th>Descripción</th>
+                            <th>Ubicación</th>
                             <th>Stock</th>
                             <th>Laboratorio</th>
                             <th>P. Caja</th>
@@ -30,6 +31,7 @@
                             <tr data-product='{{ json_encode($product) }}'>
                                 <td>{{ $product->code }} </td>
                                 <td>{{ $product->name }}</td>
+                                <td>{{ $product->ubicacion->name }}</td>
                                 <td class="text-center">
                                     @if (
                                         $product->inventario->cantidad_caja == 0 &&
@@ -57,13 +59,13 @@
                                 </td>
 
 
-                                <td class="price-cell" data-option="disponible_caja" style="cursor: pointer">
+                                <td class="price-cell text-end" data-option="disponible_caja" style="cursor: pointer">
                                     {{ $product->precio_caja != 0 ? '$' . number_format($product->precio_caja, 0, ',', '.') : '0' }}
                                 </td>
-                                <td class="price-cell" data-option="disponible_blister" style="cursor: pointer">
+                                <td class="price-cell text-end" data-option="disponible_blister" style="cursor: pointer">
                                     {{ $product->precio_blister != 0 ? '$' . number_format($product->precio_blister, 0, ',', '.') : '0' }}
                                 </td>
-                                <td class="price-cell" data-option="disponible_unidad" style="cursor: pointer">
+                                <td class="price-cell text-end" data-option="disponible_unidad" style="cursor: pointer">
                                     {{ $product->precio_unidad != 0 ? '$' . number_format($product->precio_unidad, 0, ',', '.') : '0' }}
                                 </td>
                             </tr>

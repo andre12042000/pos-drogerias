@@ -195,9 +195,6 @@ window.addEventListener("alert-error", (event) => {
 
 
 
-
-
-
 function modalAjuste(product, inventario) {
 
     var modal = document.getElementById("ajustarInventarioModal");
@@ -324,11 +321,99 @@ function ocultarLoader() {
 }
 
 
-
-
 function cerrarModalajsutes() {
     // Cerrar el modal
     var modal = document.getElementById("ajustarInventarioModal");
 
     modal.style.display = "none";
+}
+
+function modalEditarProducto(product, categorias, subcategorias, presentaciones, ubicaciones, laboratorios){
+
+    var modal = document.getElementById("editarProductoModal");
+    var contenidoModal = document.getElementById("editarProductoModal");
+
+    /* Pasar valores a los inputs la logica de updte se hace en el script directamente en el modal */
+
+    var id_product_edit = document.getElementById("id_product_edit");
+    var code_edit = document.getElementById("code_edit");
+    var name_edit = document.getElementById("name_edit");
+    var iva_edit = document.getElementById("iva_edit");
+
+    var stock_minimo_edit = document.getElementById("stock_minimo_edit");
+    var stock_maximo_edit = document.getElementById("stock_maximo_edit");
+    var disponible_blister_edit = document.getElementById("disponible_blister_edit");
+    var disponible_unidad_edit = document.getElementById("disponible_unidad_edit");
+    var blister_por_caja_edit = document.getElementById("blister_por_caja_edit");
+    var unidad_por_caja_edit = document.getElementById("unidad_por_caja_edit");
+    var CostoPorCajaEdit = document.getElementById("CostoPorCajaEdit");
+    var CostoPorBlisterEdit = document.getElementById("CostoPorBlisterEdit");
+    var CostoPorUnidadEdit = document.getElementById("CostoPorUnidadEdit");
+    var PrecioVentaCajaEdit = document.getElementById("PrecioVentaCajaEdit");
+    var PrecioVentaBlisterEdit = document.getElementById("PrecioVentaBlisterEdit");
+    var PrecioVentaUnidadEdit = document.getElementById("PrecioVentaUnidadEdit");
+
+    var estado_produc_active = document.getElementById("estado_produc_active");
+    var estado_produc_inactive = document.getElementById("estado_produc_inactive");
+
+
+   // var name_edit = document.getElementById("name_edit");
+
+    id_product_edit.value = product.id;
+    code_edit.value = product.code;
+    name_edit.value = product.name;
+    iva_edit.value = product.iva_product;
+    stock_minimo_edit.value = product.stock_min;
+    stock_maximo_edit.value = product.stock_max;
+    disponible_blister_edit.value = product.disponible_blister;
+    disponible_unidad_edit.value = product.disponible_unidad;
+    blister_por_caja_edit.value = product.contenido_interno_blister;
+    unidad_por_caja_edit.value = product.contenido_interno_unidad;
+    CostoPorCajaEdit.value = product.costo_caja;
+    CostoPorBlisterEdit.value = product.costo_blister;
+    CostoPorUnidadEdit.value = product.costo_unidad;
+
+    PrecioVentaCajaEdit.value = product.precio_caja;
+    PrecioVentaBlisterEdit.value = product.precio_blister;
+    PrecioVentaUnidadEdit.value = product.precio_unidad;
+
+
+    if (product.status === "ACTIVE") {
+        estado_produc_active.checked = true;
+    } else if (product.status === "DESACTIVE") {
+        estado_produc_inactive.checked = true;
+    }
+
+
+
+    Livewire.emit('editarProductEvent', product);
+
+    modal.style.display = "block";
+}
+
+function verificarEstadoDisponibleBlister()
+{
+
+    var disponible_blister_edit = document.getElementById("disponible_blister_edit");
+    var blister_por_caja_edit = document.getElementById("blister_por_caja_edit");
+    var CostoPorBlisterEdit = document.getElementById("CostoPorBlisterEdit");
+    var PrecioVentaBlisterEdit = document.getElementById("PrecioVentaBlisterEdit");
+    console.log(disponible_blister_edit.value);
+
+    if(disponible_blister_edit.value > 0){
+        blister_por_caja_edit.disabled = false;
+        PrecioVentaBlisterEdit.disabled = false;
+        CostoPorBlisterEdit.disabled = false;
+    }else{
+        blister_por_caja_edit.disabled = true;
+        PrecioVentaBlisterEdit.disabled = true;
+        CostoPorBlisterEdit.disabled = true;
+    }
+
+
+}
+
+function verificarEstadoDisponibleUnidad()
+{
+    var disponible_unidad_edit = document.getElementById("disponible_unidad_edit");
 }

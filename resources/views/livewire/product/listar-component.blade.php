@@ -87,52 +87,25 @@
                                 @endif
                             </td>
                             <td class="text-center">
-                             <!--    @can('Acceso Inventario Editar')
-                                    {{--   <a @popper(Función no disponible por el momento.) class="btn btn-outline-primary btn-sm"><i
-                                    class="bi bi-pencil-square"></i></a> --}}
 
-                                    {{-- <a @popper(Actualizar) class="btn btn-outline-primary btn-sm" data-toggle="modal"
-                                        data-target="#productomodal" wire:click="sendData( {{ $product }} )" onclick="return false;"><i
-                                            class="bi bi-pencil-square"></i></a> --}}
-                                @endcan -->
-
-
-                                 @can('Acceso Inventario Corregir')
-
-                                    <a onclick="abrirModal(
-                                        {{ json_encode($product) }},
-                                        {{ json_encode($categorias) }},
-                                        {{ json_encode($subcategorias) }},
-                                        {{ json_encode($presentaciones) }},
-                                        {{ json_encode($ubicaciones) }},
-                                        {{ json_encode($laboratorios) }}
-
-
-                                    )"
-                                        role="button" class="btn btn-outline-secondary btn-sm">
-                                        <i class="bi bi-plus-slash-minus"></i>
-                                    </a>
-                                @endcan
-                            <!--    <a onclick="ModalEditar(
-                                    {{ json_encode($product) }},
-                                    {{ json_encode($categorias) }},
-                                    {{ json_encode($subcategorias) }},
-                                    {{ json_encode($presentaciones) }},
-                                    {{ json_encode($ubicaciones) }},
-                                    {{ json_encode($laboratorios) }}
-)"
-                                    role="button" title="Ajustar Inventario" class="btn btn-outline-success btn-sm">
+                               <a onclick="modalEditarProducto({{ json_encode($product) }},
+                                                                 {{ json_encode($categorias) }},
+                                                                 {{ json_encode($subcategorias) }},
+                                                                 {{ json_encode($presentaciones) }},
+                                                                 {{ json_encode($ubicaciones) }},
+                                                                 {{ json_encode($laboratorios) }},)"
+                                    role="button" title="Editar Inventario" class="btn btn-outline-primary btn-sm">
                                     <i class="bi bi-pencil-square"></i>
                                 </a>
--->
+
 
                                 <a onclick="modalAjuste({{ json_encode($product) }},
                                                         {{ json_encode($product->inventario) }},)"
                                     role="button" title="Ajustar Inventario" class="btn btn-outline-success btn-sm">
                                     <i class="bi bi-boxes"></i>
                                 </a>
-
-								<a @popper(Eliminar) class="btn btn-outline-danger btn-sm" wire:click="destroy( {{ $product->id }} )"><i class="bi bi-trash"></i></a>
+                                <a @popper(Eliminar) class="btn btn-outline-danger btn-sm"
+                                    wire:click="destroy( {{ $product->id }} )"><i class="bi bi-trash"></i></a>
 
 
                                 @include('popper::assets')

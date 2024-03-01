@@ -31,10 +31,13 @@
 
     <!-- Modal para crear producto -->
     @include('modals.products.create')
-    @include('modals.products.acciones.agregar')
+    @include('modals.products.editproduct')
+ {{--    @include('modals.products.acciones.agregar')
     @include('modals.products.acciones.descontar')
-    @include('modals.products.updatedstock')
+    @include('modals.products.updatedstock') --}}
+
     @include('modals.products.ajustarinvetario')
+
 
 
 

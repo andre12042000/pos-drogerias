@@ -53,7 +53,7 @@ class Product extends Model
     //retornar el nombre del producto en mayusculas
     public function getProductoAttribute()
     {
-        return strtoupper($this->name);
+        return mb_strtoupper($this->name);
     }
     //retornar precio formateado
 
