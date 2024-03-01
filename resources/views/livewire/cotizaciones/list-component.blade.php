@@ -40,8 +40,7 @@
                         <input type="text" class="form-control" placeholder="Buscar cotización" aria-label="Username"
                             aria-describedby="basic-addon1" wire:model="buscar">
 
-                        <button type="button" class="btn btn-outline-light float-right ml-2" data-toggle="modal"
-                            data-target="#cotizacionModal">Nueva Cotización <i class="las la-plus-circle"></i></button>
+                        <a  class="btn btn-light text-black float-right ml-2" href="{{ route('ventas.cotizaciones.create') }}" >Nueva Cotización <i class="las la-plus-circle"></i></a>
                     </div>
                 </div>
             </div>

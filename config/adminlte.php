@@ -346,19 +346,20 @@ return [
                     'icon_color' => 'white',
                     'route'      => 'ventas.pos',
                 ],
-                [
-                    'text'       => 'Gastos',
-                    'classes'    => 'text-white',
-                    'icon'       => 'bi bi-cash-coin',
-                    'icon_color' => 'white',
-                    'route'      => 'ventas.gastos.list',
-                ],
+
                 [
                     'text'       => 'Cotizaciones',
                     'classes'    => 'text-white',
-                    'icon'       => 'bi bi-cash-coin',
+                    'icon'       => 'bi bi-file-earmark-diff-fill',
                     'icon_color' => 'white',
                     'route'      => 'ventas.cotizaciones.list',
+                ],
+                [
+                    'text'       => 'Gastos',
+                    'classes'    => 'text-white',
+                    'icon'       => 'bi bi-cash-stack',
+                    'icon_color' => 'white',
+                    'route'      => 'ventas.gastos.list',
                 ],
                 /* [
                     'text'       => 'Ordenes de trabajo',
