@@ -1,5 +1,5 @@
 
-    <div class="row">
+    <div class="row mt-4">
         <div class="col-lg-4">
             <h4 class="text-center"><strong>Información Básica</strong></h4>
             <ul class="mt-5">
@@ -9,7 +9,7 @@
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     <label class="form-control-label" for="nombre"><strong>Cliente</strong></label>
-                    <p>{{$sales->client->name}}</p>
+                    <p>{{ mb_strtoupper($sales->client->name)}}</p>
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     <label class="form-control-label" for="num_compra"><strong>Identificación</strong></label>
@@ -21,15 +21,15 @@
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     <label class="form-control-label" for="num_compra"><strong>Vendedor</strong></label>
-                    <p>{{$sales->user->name}}</p>
+                    <p>{{  mb_strtoupper($sales->user->name)}}</p>
                 </li>
 
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     <label class="form-control-label" for="num_compra"><strong>Estado</strong></label>
                      @if ($sales->status == 'ANULADA')
-                      <span class="badge badge-danger"> ANULADA </span>
+                        <span class="badge badge-danger"> ANULADA </span>
                      @else
-                     <span class="badge badge-success"> APROBADA </span>
+                        <span class="badge badge-success"> APROBADA </span>
                      @endif
                 </li>
 
@@ -55,16 +55,16 @@
                     <thead>
                         <tr>
                             <th class="text-center">Producto</th>
-                            <th class="text-right">Forma</th>
+                            <th class="text-center">Forma</th>
                             <th class="text-center">Precio Unitario</th>
-                            <th class="text-right">Cantidad</th>
+                            <th class="text-center">Cantidad</th>
                             <th class="text-right"> Subtotal</th>
 
                         </tr>
                     </thead>
                     <tbody> @foreach ($detailsales as $detalles)
                         <tr>
-                            <td class="text-center">{{ $detalles->product->name}}</td>
+                            <td class="text-center">{{ mb_strtoupper($detalles->product->name) }}</td>
                             <td class="text-center">@if ($detalles->forma == 'disponible_caja')
                                 Caja
                             @elseif ($detalles->forma == 'disponible_unidad')
@@ -74,8 +74,8 @@
                             @endif</td>
 
                             <td class="text-right"> $ {{number_format( $detalles->price,0)}}</td>
-                            <td class="text-right">{{ $detalles->quantity}}</td>
-                            <td class="text-right">$ {{  $detalles->price *  $detalles->quantity}}</td>
+                            <td class="text-center">{{ $detalles->quantity}}</td>
+                            <td class="text-right">$ {{  number_format($detalles->price *  $detalles->quantity ,0)}}</td>
                             <br>
 
                         </tr> @endforeach
@@ -84,11 +84,11 @@
                     <tfoot>
 
                         <tr class="">
-                            <th colspan="3">
-                                <p class="text-end">TOTAL:</p>
+                            <th colspan="4">
+                                <h3 class="text-end">TOTAL:</h1>
                             </th>
                             <th>
-                                <p class="text-end">$ {{number_format( $sales->total,0)}}</p>
+                                <h3 class="text-end">$ {{number_format( $sales->total,0)}}</h3>
                             </th>
                         </tr>
 

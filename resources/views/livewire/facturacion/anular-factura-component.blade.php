@@ -1,6 +1,6 @@
 <div>
 
-    @section('title', 'Ubicaciones')
+    @section('title', 'Anulación de facturas')
 
     @section('content_header')
 

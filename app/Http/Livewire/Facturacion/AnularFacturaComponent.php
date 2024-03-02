@@ -3,6 +3,8 @@
 namespace App\Http\Livewire\Facturacion;
 
 use App\Models\Cash;
+use App\Models\Client;
+use App\Models\Credit;
 use App\Models\MotivoAnulacion;
 use App\Models\Sale;
 use App\Models\SaleAnulacion;
@@ -26,8 +28,6 @@ class AnularFacturaComponent extends Component
 
         $currentDate = Carbon::now()->toDateString();
         $saleDate = Carbon::parse($this->sales->created_at)->toDateString();
-
-     //   dd($currentDate, $saleDate);
 
         if ($currentDate == $saleDate) {
             // Deshabilitar botón y select
@@ -89,7 +89,6 @@ class AnularFacturaComponent extends Component
         //actualizamos cash
         $cash = $this->sales->cashs->first();
 
-
         if ($cash) {
             $cash->update([
                 'quantity' => 0,
@@ -105,6 +104,10 @@ class AnularFacturaComponent extends Component
            'tax'        => 0,
         ]);
 
+        // descontamos el valor del cliente
+
+        self::descontarDeudaCliente($this->sales);
+
         //actualizamos venta
         $total_anulado = $this->sales->total;
 
@@ -115,6 +118,43 @@ class AnularFacturaComponent extends Component
             'status'        => 'ANULADA',
             'valor_anulado' => $total_anulado,
         ]);
+
+    }
+
+    function descontarDeudaCliente($venta)
+    {
+        if($venta->tipo_operacion === 'VENTA CRÉDITO'){
+            $cliente = Client::findOrFail($venta->client_id);
+
+            $nuevo_valor_deuda = $cliente->deuda - $venta->total;
+
+            $cliente->update([
+                'deuda' => $nuevo_valor_deuda,
+            ]);
+
+            self::descontarValoresCredito($venta);
+
+        }
+
+    }
+
+    function descontarValoresCredito($venta)
+    {
+        $credit = Credit::where('sale_id', $venta->id)->first();
+
+        if($credit->abono > 0){
+
+            return false;
+        }
+
+        $credit->update([
+            'valor'     => 0,
+            'abono'     => 0,
+            'saldo'     => 0,
+            'active'    => 0,
+        ]);
+
+        return true;
 
     }
 

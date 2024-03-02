@@ -83,16 +83,21 @@
                       <td class="text-center">
 
 
-                        @if (\Carbon\Carbon::parse($sale->created_at)->isToday() AND $sale->status == 'PAGADA')
-                            <!-- Si la fecha es la actual, los iconos estarán habilitados -->
-                            {{-- <a href="{{ route('facturacion.edit', $sale->id) }}" title="Editar factura" class="mr-2" style="text-decoration: none;">
-                                <i class="fas fa-edit text-danger"></i>
-                            </a> --}}
-                            <i class="fas fa-edit" title="Función no disponible por el momento"></i>
+                        @if (\Carbon\Carbon::parse($sale->created_at)->isToday())
 
-                            <a href="{{ route('facturacion.anular', $sale->id) }}" title="Anular factura" class="mr-2" style="text-decoration: none;">
-                                <i class="fas fa-ban text-danger"></i>
-                            </a>
+                            @if($sale->status == 'PAGADA' OR $sale->status == 'VENTA CRÉDITO')
+                                <i class="fas fa-edit" title="Función no disponible por el momento"></i>
+
+                                <a href="{{ route('facturacion.anular', $sale->id) }}" title="Anular factura" class="mr-2" style="text-decoration: none;">
+                                    <i class="fas fa-ban text-danger"></i>
+                                </a>
+                            @else
+                                <i class="fas fa-edit" title="No es posible editar facturas anteriores al día actual o anuladas"></i>
+
+
+                                <i class="fas fa-ban" title="No es posible anular facturas anteriores al día actual"></i>
+
+                            @endif
                         @else
                             <!-- Si la fecha no es la actual, los iconos estarán deshabilitados -->
 
