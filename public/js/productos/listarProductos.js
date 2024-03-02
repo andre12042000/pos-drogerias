@@ -328,6 +328,8 @@ function cerrarModalajsutes() {
     modal.style.display = "none";
 }
 
+
+
 function modalEditarProducto(product, categorias, subcategorias, presentaciones, ubicaciones, laboratorios){
 
     var modal = document.getElementById("editarProductoModal");

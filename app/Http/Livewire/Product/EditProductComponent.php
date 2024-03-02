@@ -29,7 +29,6 @@ class EditProductComponent extends Component
         $this->ubicaciones    =  Ubicacion::orderBy('name', 'ASC')->get();
         $this->presentaciones  = Presentacion::orderBy('name', 'ASC')->get();
         $this->laboratorios  =  Laboratorio::orderBy('name', 'ASC')->get();
-
     }
 
     public function obtenerDetallesProducto($product)
@@ -62,23 +61,22 @@ class EditProductComponent extends Component
         self::estadosDisponibilidadBlister($this->disponible_blister_edit);
         self::estadosDisponibilidadUnidad($this->disponible_unidad_edit);
         self::obtenerPorcentajesGanancia($product['presentacion_id']);
-
     }
 
     function estadosDisponibilidadBlister($estado)
     {
-        if($estado > 0){
+        if ($estado > 0) {
             $this->estado_blister = '';
-        }else{
+        } else {
             $this->estado_blister = 'disabled';
         }
     }
 
     function estadosDisponibilidadUnidad($estado)
     {
-        if($estado > 0){
+        if ($estado > 0) {
             $this->estado_unidad = '';
-        }else{
+        } else {
             $this->estado_unidad = 'disabled';
         }
     }
@@ -95,12 +93,11 @@ class EditProductComponent extends Component
 
     function obtenerPorcentajesGanancia($tipoproducto)
     {
-        if($tipoproducto){
+        if ($tipoproducto) {
             $this->presentacion = Presentacion::findOrFail($tipoproducto);
-        }else{
+        } else {
             $this->presentacion = null;
         }
-
     }
 
     public function updatedPresentacionId($value)
@@ -115,8 +112,6 @@ class EditProductComponent extends Component
 
     public function actualizarProduct()
     {
-        try {
-
 
         $rules = [
             'code_edit'                     => 'required|min:4|max:254|unique:products,code,' . $this->product_id,
@@ -131,6 +126,8 @@ class EditProductComponent extends Component
             'stock_maximo_edit'             => 'required',
             'disponible_blister_edit'       => 'required',
             'disponible_unidad_edit'        => 'required',
+            'CostoPorCajaEdit'              => 'required|min:0',
+            'PrecioVentaCajaEdit'           => 'required|min:0',
         ];
 
         if ($this->disponible_blister_edit == 1) {
@@ -142,68 +139,119 @@ class EditProductComponent extends Component
         if ($this->disponible_unidad_edit == 1) {
             $rules['unidad_por_caja_edit']      = ['required', 'min:1'];
             $rules['CostoPorUnidadEdit']        = ['required', 'min:1'];
-            $rules['CostoPorUnidadEdit']        = ['required', 'min:1'];
+            $rules['PrecioVentaUnidadEdit']     = ['required', 'min:1'];
         }
 
-        $this->validate($rules);
+        $messages = [
+            'code_edit.required'                    => 'El campo Código es obligatorio.',
+            'code_edit.min'                         => 'El campo Código debe tener al menos :min caracteres.',
+            'code_edit.max'                         => 'El campo Código no debe exceder los :max caracteres.',
+            'code_edit.unique'                      => 'El Código ingresado ya está en uso. Por favor, elige otro.',
 
-        $product = Product::findOrFail($this->product_id);
+            'name_edit.required'                    => 'El campo Nombre es obligatorio.',
+            'name_edit.min'                         => 'El campo Nombre debe tener al menos :min caracteres.',
+            'name_edit.max'                         => 'El campo Nombre no debe exceder los :max caracteres.',
 
-        $ivas = self::calcularIvas($this->PrecioVentaCajaEdit, $this->iva_edit);
+            'categoria_id.required'                 => 'Selecciona una categoría.',
+            'subcategoria_id.required'              => 'Selecciona una subcategoría.',
+            'ubicacion_id.required'                 => 'Selecciona una ubicación.',
+            'presentacion_id.required'              => 'Selecciona una presentación.',
+            'laboratorio_id.required'               => 'Selecciona un laboratorio.',
+            'iva_edit.required'                     => 'El campo IVA es obligatorio.',
 
-        $product->update([
-            'code'                      => $this->code_edit,
-            'name'                      => $this->name_edit,
-            'status'                    => $this->status,
-            'iva_product'               => $this->iva_edit,
-            'stock_min'                 => $this->stock_minimo_edit,
-            'stock_max'                 => $this->stock_maximo_edit,
-            'disponible_blister'        => $this->disponible_blister_edit,
-            'disponible_unidad'         => $this->disponible_unidad_edit,
-            'contenido_interno_blister' => $this->blister_por_caja_edit,
-            'contenido_interno_unidad'  => $this->unidad_por_caja_edit,
-            'costo_caja'                => $this->CostoPorCajaEdit,
-            'costo_blister'             => $this->CostoPorBlisterEdit,
-            'costo_unidad'              => $this->CostoPorUnidadEdit,
-            'precio_caja'               => $this->PrecioVentaCajaEdit,
-            'precio_blister'            => $this->PrecioVentaBlisterEdit,
-            'precio_unidad'             => $this->PrecioVentaUnidadEdit,
-            'laboratorio_id'            => $this->laboratorio_id,
-            'ubicacion_id'              => $this->ubicacion_id,
-            'presentacion_id'           => $this->presentacion_id,
-            'category_id'               => $this->categoria_id,
-            'subcategoria_id'           => $this->subcategoria_id,
-            'valor_iva_caja'            => $ivas['iva_caja'],
-            'valor_iva_blister'         => $ivas['iva_blister'],
-            'valor_iva_unidad'          => $ivas['iva_unidad'],
-        ]);
+            'stock_minimo_edit.required'            => 'El campo Stock Mínimo es obligatorio.',
+            'stock_maximo_edit.required'            => 'El campo Stock Máximo es obligatorio.',
+            'disponible_blister_edit.required'      => 'Selecciona si el producto está disponible en blister o no.',
+            'disponible_unidad_edit.required'       => 'Selecciona si el producto está disponible en unidad o no.',
 
-        return redirect()->route('inventarios.product')->with('success','Se ha actualizado correctamente el producto: ' . $product['name_edit']);
+            'CostoPorCajaEdit.required'             => 'El campo Costo por Caja es obligatorio.',
+            'CostoPorCajaEdit.min'                  => 'El campo Costo por Caja debe ser al menos :min.',
+            'PrecioVentaCajaEdit.required'          => 'El campo Precio de Venta por Caja es obligatorio.',
+            'PrecioVentaCajaEdit.min'               => 'El campo Precio de Venta por Caja debe ser al menos :min.',
+        ];
 
-    } catch (\Exception $e) {
+        if ($this->disponible_blister_edit == 1) {
+            $messages += [
+                'blister_por_caja_edit.required'     => 'El campo Blíster por Caja es obligatorio.',
+                'blister_por_caja_edit.min'          => 'El campo Blíster por Caja debe ser al menos :min.',
+                'CostoPorBlisterEdit.required'       => 'El campo Costo por Blíster es obligatorio.',
+                'CostoPorBlisterEdit.min'            => 'El campo Costo por Blíster debe ser al menos :min.',
+                'PrecioVentaBlisterEdit.required'    => 'El campo Precio de Venta por Blíster es obligatorio.',
+                'PrecioVentaBlisterEdit.min'         => 'El campo Precio de Venta por Blíster debe ser al menos :min.',
+            ];
+        }
 
-        $errorCode = $e->getCode();
+        if ($this->disponible_unidad_edit == 1) {
+            $messages += [
+                'unidad_por_caja_edit.required'      => 'El campo Unidad por Caja es obligatorio.',
+                'unidad_por_caja_edit.min'           => 'El campo Unidad por Caja debe ser al menos :min.',
+                'CostoPorUnidadEdit.required'        => 'El campo Costo por Unidad es obligatorio.',
+                'CostoPorUnidadEdit.min'             => 'El campo Costo por Unidad debe ser al menos :min.',
+                'PrecioVentaUnidadEdit.required'     => 'El campo Precio de Venta por Unidad es obligatorio.',
+                'PrecioVentaUnidadEdit.min'          => 'El campo Precio de Venta por Unidad debe ser al menos :min.',
+            ];
+        }
 
-        $this->dispatchBrowserEvent('alert-error', ['errorCode' => $errorCode]);
-    }
+        $this->validate($rules, $messages);
+
+        try {
+
+            $product = Product::findOrFail($this->product_id);
+
+            $ivas = self::calcularIvas($this->PrecioVentaCajaEdit, $this->iva_edit);
+
+            $product->update([
+                'code'                      => $this->code_edit,
+                'name'                      => $this->name_edit,
+                'status'                    => $this->status,
+                'iva_product'               => $this->iva_edit,
+                'stock_min'                 => $this->stock_minimo_edit,
+                'stock_max'                 => $this->stock_maximo_edit,
+                'disponible_blister'        => $this->disponible_blister_edit,
+                'disponible_unidad'         => $this->disponible_unidad_edit,
+                'contenido_interno_blister' => $this->blister_por_caja_edit,
+                'contenido_interno_unidad'  => $this->unidad_por_caja_edit,
+                'costo_caja'                => $this->CostoPorCajaEdit,
+                'costo_blister'             => $this->CostoPorBlisterEdit,
+                'costo_unidad'              => $this->CostoPorUnidadEdit,
+                'precio_caja'               => $this->PrecioVentaCajaEdit,
+                'precio_blister'            => $this->PrecioVentaBlisterEdit,
+                'precio_unidad'             => $this->PrecioVentaUnidadEdit,
+                'laboratorio_id'            => $this->laboratorio_id,
+                'ubicacion_id'              => $this->ubicacion_id,
+                'presentacion_id'           => $this->presentacion_id,
+                'category_id'               => $this->categoria_id,
+                'subcategoria_id'           => $this->subcategoria_id,
+                'valor_iva_caja'            => $ivas['iva_caja'],
+                'valor_iva_blister'         => $ivas['iva_blister'],
+                'valor_iva_unidad'          => $ivas['iva_unidad'],
+            ]);
+
+            return redirect()->route('inventarios.product')->with('success', 'Se ha actualizado correctamente el producto: ' . $product['name_edit']);
+        } catch (\Exception $e) {
+
+            $errorCode = $e->getMessage();
+
+            $this->dispatchBrowserEvent('alert-error', ['errorCode' => $errorCode]);
+        }
     }
 
     function calcularIvas($precio_venta_caja, $porcentajeIva)
     {
         $data = [];
-        if( $porcentajeIva > 0){
+        if ($porcentajeIva > 0) {
             $iva_caja = $precio_venta_caja * ($porcentajeIva / 100);
 
-            if($this->blister_por_caja_edit > 0){
+            if ($this->blister_por_caja_edit > 0) {
                 $precio_blister = $precio_venta_caja / $this->blister_por_caja_edit;
                 $iva_blister = $precio_blister * ($porcentajeIva / 100);
-            }else{
+            } else {
                 $iva_blister = 0;
             }
 
-            if($this->disponible_unidad_edit > 0){
+            if ($this->disponible_unidad_edit > 0) {
                 $precio_unidad = $precio_venta_caja / $this->unidad_por_caja_edit;
-            }else{
+            } else {
                 $iva_unidad = 0;
             }
 
@@ -212,19 +260,14 @@ class EditProductComponent extends Component
                 'iva_blister'   => $iva_blister,
                 'iva_unidad'    => $precio_unidad,
             ];
-
-
-        }else{
+        } else {
             $data = [
                 'iva_caja'      => 0,
                 'iva_blister'   => 0,
                 'iva_unidad'    => 0,
             ];
-
         }
 
         return $data;
-
-
     }
 }
