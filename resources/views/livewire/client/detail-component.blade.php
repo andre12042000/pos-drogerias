@@ -189,9 +189,15 @@
                                         @endif
                                     </td>
                                     <td class="text-end">{{ date('d/m/Y h:i', strtotime($credit->created_at)) }} </td>
-                                    <td><i class="bi bi-eye-fill"
-                                            style="font-size: 20px; margin-left: 20px; margin-right: 10px; cursor: pointer;"></i>
-                                        <i class="bi bi-printer-fill" style="font-size: 20px; cursor: pointer;"></i>
+                                    <td>
+                                        <a href="{{ route('ventas.pos.details', $credit->sale_id) }}" title="Detalles de factura" class="mr-2" style="text-decoration: none;">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+
+                                        <a href="{{ route('ventas.pos.imprimir.recibo', $credit->sale_id) }}" title="Detalles de factura" class="mr-2" style="text-decoration: none;">
+                                            <i class="bi bi-printer"></i>
+                                        </a>
+
                                     </td>
                                 </tr>
                             @endforeach

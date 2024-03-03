@@ -60,10 +60,6 @@ class ReporteDiario extends Component
         $this->facturasAnuladas_imprimir = $facturasAnuladas;
         $this->metodosDePagoGroup_imprimir = $metodosDePagoGroup;
 
-
-
-
-
         return view('livewire.reporte.reporte-diario', compact('ventas', 'hoy', 'totalVenta', 'totalAbono', 'OtrosConceptos', 'metodosDePagoGroup', 'facturasAnuladas', 'pagoCreditos'));
     }
 

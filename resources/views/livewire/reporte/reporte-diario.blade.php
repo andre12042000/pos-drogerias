@@ -169,21 +169,25 @@
 
                                                 @if ($venta->cashesable_type == 'App\Models\Sale')
 
-                                                <a @popper(Ver comprobante) class="btn btn-outline-primary btn-sm" href="{{ route('ventas.pos.details', $venta->cashesable_id) }}">
-                                                    <i class="bi bi-eye-fill"></i>
-                                                </a>
+                                                        <a @popper(Ver comprobante) class="btn btn-outline-primary btn-sm" href="{{ route('ventas.pos.details', $venta->cashesable_id) }}">
+                                                            <i class="bi bi-eye-fill"></i>
+                                                        </a>
 
-                                                <a @popper(Imprimir comprobante) class="btn btn-outline-success btn-sm" href="{{ route('ventas.pos.imprimir.recibo', $venta->cashesable_id) }}">
-                                                    <i class="bi bi-printer"></i>
-                                                </a>
+                                                        <a @popper(Imprimir comprobante) class="btn btn-outline-success btn-sm" href="{{ route('ventas.pos.imprimir.recibo', $venta->cashesable_id) }}">
+                                                            <i class="bi bi-printer"></i>
+                                                        </a>
 
                                                 @elseif ($venta->cashesable_type == 'App\Models\PagoCreditos')
 
-                                                @else
+                                                        <a @popper(Ver comprobante) class="btn btn-outline-primary btn-sm" href="{{ route('detalle.pagocredito', $venta->cashesable_id) }}">
+                                                            <i class="bi bi-eye-fill"></i>
+                                                        </a>
 
-                                                <a @popper(Ver comprobante) class="btn btn-outline-primary btn-sm" href="{{ route('orders.show', $venta->cashesable->abonable_id) }}">
-                                                    <i class="bi bi-eye-fill"></i>
-                                                </a>
+                                                        <a @popper(Imprimir recibo) class="btn btn-outline-success btn-sm" href="{{ route('imprimir.pago_venta_credito', $venta->cashesable_id) }}">
+                                                            <i class="bi bi-printer"></i>
+                                                        </a>
+
+
 
                                                 @endif
 

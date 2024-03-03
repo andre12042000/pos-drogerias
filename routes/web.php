@@ -8,6 +8,7 @@ use App\Http\Controllers\ImpresoraController;
 use App\Http\Controllers\Parametros\CategoryController;
 use App\Http\Livewire\Notification\NotificationComponent;
 use App\Http\Controllers\NombreDeTuControlador;
+use App\Http\Controllers\PagoCreditoController;
 use App\Models\Product;
 use App\Models\PurchaseDetail;
 use App\Models\SaleDetail;
@@ -52,7 +53,7 @@ Route::get('markAsRead', function () {
 })->middleware('auth', 'change.password')->name('markAsRead');
 Route::get('perfil', [PerfilController::class, 'index'])->middleware('auth')->name('perfil');
 
-
+Route::get('creditos/pago/detalles/{recibo}', [PagoCreditoController::class, 'show'])->middleware('auth')->name('detalle.pagocredito');
 
 Route::get('/obtener-informacion-cliente', [NombreDeTuControlador::class, 'obtenerInformacionCliente']);
 

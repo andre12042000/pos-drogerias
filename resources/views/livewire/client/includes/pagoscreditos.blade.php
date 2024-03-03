@@ -21,7 +21,9 @@
                     <td class="text-end">{{ date('d/m/Y h:i', strtotime($pago->created_at)) }} </td>
                     <td><i class="bi bi-eye-fill"
                             style="font-size: 20px; margin-left: 20px; margin-right: 10px; cursor: pointer;"></i>
-                        <i class="bi bi-printer-fill" style="font-size: 20px; cursor: pointer;" wire:click = 'imprimirPago({{ $pago->id }})' ></i>
+                            <a href="{{ route('imprimir.pago_venta_credito', $pago->id) }}" title="Imprimir recibo" class="mr-2" style="text-decoration: none;">
+                                <i class="bi bi-printer"></i>
+                            </a>
                     </td>
                 </tr>
             @empty

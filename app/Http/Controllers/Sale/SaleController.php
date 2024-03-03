@@ -9,7 +9,7 @@ use App\Models\Empresa;
 use App\Models\SaleDetail;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-
+use App\Models\PagoCreditos;
 use Mike42\Escpos\EscposImage;
 use Mike42\Escpos\PrintConnectors\FilePrintConnector;
 use Mike42\Escpos\Printer;
@@ -179,4 +179,6 @@ class SaleController extends Controller
 
         return strtr($string, $map);
     }
+
+
 }
