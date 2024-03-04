@@ -194,7 +194,7 @@ class EditProductComponent extends Component
 
         $this->validate($rules, $messages);
 
-        try {
+         try {
 
             $product = Product::findOrFail($this->product_id);
 
@@ -227,7 +227,7 @@ class EditProductComponent extends Component
                 'valor_iva_unidad'          => $ivas['iva_unidad'],
             ]);
 
-            return redirect()->route('inventarios.product')->with('success', 'Se ha actualizado correctamente el producto: ' . $product['name_edit']);
+             return redirect()->route('inventarios.product')->with('success', 'Se ha actualizado correctamente el producto: ' . $product['name_edit']);
         } catch (\Exception $e) {
 
             $errorCode = $e->getMessage();
@@ -247,18 +247,20 @@ class EditProductComponent extends Component
                 $iva_blister = $precio_blister * ($porcentajeIva / 100);
             } else {
                 $iva_blister = 0;
+             //   $precio_blister = 0;
             }
 
             if ($this->disponible_unidad_edit > 0) {
                 $precio_unidad = $precio_venta_caja / $this->unidad_por_caja_edit;
             } else {
                 $iva_unidad = 0;
+              //  $precio_unidad = 0;
             }
 
             $data = [
                 'iva_caja'      => $iva_caja,
                 'iva_blister'   => $iva_blister,
-                'iva_unidad'    => $precio_unidad,
+                'iva_unidad'    => $iva_unidad,
             ];
         } else {
             $data = [
