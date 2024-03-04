@@ -77,40 +77,20 @@
                                 <label class="form-control-label " for="nombre"><strong>Venta Anulada</strong></label>
                                 <p class="mr-2 mt-2 text-bold">$ {{ number_format($facturasAnuladas, 0) }}</p>
                             </li>
-                         {{--    <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <label class="form-control-label " for="nombre"><strong>Venta Credito</strong></label>
-                                <p class="mr-2 mt-2 text-bold">$ 0</p>
-                            </li> --}}
+
                             <li class="list-group-item d-flex justify-content-between align-items-center">
                                 <label class="form-control-label" for="nombre"><strong>Consumo
                                         Interno</strong></label>
                                 <p>$ 0</p>
                             </li>
 
-                        </ul> -
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <label class="form-control-label" for="nombre"><strong>Gastos</strong></label>
+                                <p>$ {{ number_format($totalGastos, 0) }}</p>
+                            </li>
+
+                        </ul>
                     </div>
-
-                 {{--    @if ($cantidad > 0)
-                        <div class="card">
-                            <ul class="list-group list-group-flush">
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    <label class="form-control-label" for="nombre"><strong>Ventas
-                                            Cajero</strong></label>
-                                </li>
-                                @foreach ($datausaurios as $resultado)
-                                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                                        <label class="form-control-label"
-                                            for="nombre"><strong>{{ $resultado->user->name }}</strong></label>
-                                        <p class="mr-2 mt-2 text-bold">$
-                                            {{ number_format($resultado->total_quantity, 0) }}</p>
-                                    </li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif --}}
-
-
-
                 </div>
                 <div class="col-8">
 
@@ -154,6 +134,10 @@
 
                                                     <span class="badge badge-pill badge-success">
                                                         Pago crédito</span>
+
+                                                @elseif ($venta->cashesable_type == 'App\Models\Gastos')
+                                                    <span class="badge badge-pill badge-danger">
+                                                        Gasto</span>
                                                 @else
                                                     <span class="badge badge-pill badge-info">
                                                         Abono</span>
@@ -161,7 +145,11 @@
                                             </td>
                                             <td>{{ $venta->cashesable->full_nro }}</td>
                                             <td>{{ ucwords($venta->cashesable->user->name) }}</td>
-                                            <td>{{ ucwords($venta->cashesable->client->name) }}</td>
+                                            <td>@if ($venta->cashesable_type == 'App\Models\Gastos')
+                                                    N/A
+                                            @else
+                                            {{ ucwords($venta->cashesable->client->name) }}
+                                            @endif  </td>
                                             <td>{{ ucwords($venta->cashesable->metodopago->name) }}</td>
                                             <td class="text-end">$ {{ number_format($venta->quantity, 0) }}</td>
                                             <td class="text-center">
@@ -186,19 +174,7 @@
                                                         <a @popper(Imprimir recibo) class="btn btn-outline-success btn-sm" href="{{ route('imprimir.pago_venta_credito', $venta->cashesable_id) }}">
                                                             <i class="bi bi-printer"></i>
                                                         </a>
-
-
-
                                                 @endif
-
-
-                                               {{--  <a @popper(Ver comprobante) class="btn btn-outline-primary btn-sm"
-                                                    href="@if ($venta->cashesable_type == 'App\Models\Sale') {{ route('ventas.pos.details', $venta->cashesable_id) }}
-                                                             @else
-                                                   {{ route('orders.show', $venta->cashesable->abonable_id) }} @endif"
-                                                    target="_blank" role="button"><i class="bi bi-eye-fill"></i>
-                                                </a> --}}
-
                                             </td>
                                         <tr>
                                         @empty

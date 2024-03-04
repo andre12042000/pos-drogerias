@@ -16,18 +16,6 @@
     <div class="card">
         <div class="card-body">
             <div class="row">
-
-           {{--      <div class="col">
-                    <label for="exampleInputEmail1" class="form-label">Proveedor</label>
-                    <div class="input-group">
-                        <select class="form-select" aria-label="Default select example" wire:model.lazy = "provider">
-                            <option value="">Seleccionar proveedor</option>
-                            @foreach ($providers as $provider)
-                            <option value="{{ $provider->id }}"> {{ $provider->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div> --}}
                 <div class="col">
                     <label for="exampleInputEmail1" class="form-label">Cliente <span class="fs-6 text-danger ml-2"
                             data-bs-toggle="tooltip" data-bs-placement="top" title="Campo obligatorio">*</span></label>
@@ -62,10 +50,6 @@
                                 <button class="btn btn-outline-secondary" title="Crear un equipo" type="button" data-toggle="modal"
                                     data-target="#modalEquipos"><i class="bi bi-plus-circle-fill"
                                         style="cursor: pointer"></i></button>
-
-                                       {{--  <button class="btn btn-outline-secondary" title="Historial de mantenimientos" type="button" data-toggle="modal"
-                                    data-target="#searchequipo"><i class="bi bi-list-check"
-                                        style="cursor: pointer"></i></button> --}}
                             </div>
                         </div>
                     @error('equipo')
@@ -254,9 +238,7 @@
                 <div class="col-sm-4">
                     <x-adminlte-button label="Generar orden" theme="primary" icon="fas fa-check" class="float-right" wire:click="save" />
                 </div>
-
             </div>
-
         </div>
     </div>
     @include('modals.orders.edit')

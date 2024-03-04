@@ -16,9 +16,9 @@ class CreateComponent extends Component
     public $total_factura = 0;
     public $form_pago = 2;
 
-    
+
     public function render()
-    { 
+    {
         $providers = Provider::all();
 
         return view('livewire.purchase.create-component', compact('providers'));
@@ -38,7 +38,7 @@ class CreateComponent extends Component
             $this->validate([
                 'abono_compra'     => 'required',
                 'proximo_pago'     => 'required',
-                
+
             ],[
                 'abono_compra.required'=> 'Este campo es requerido',
                 'proximo_pago.required'     => 'Este campo es requerido',
@@ -62,7 +62,7 @@ class CreateComponent extends Component
         }else{
             $photo = null;
         }
-       
+
 
         $purchase = Purchase::create([
             'purchase_date'     => $this->fecha,

@@ -1,4 +1,4 @@
-<div class="modal-dialog modal-lg" theme="primary">
+<div class="modal-dialog" theme="primary">
     <div class="modal-content">
         <div class="modal-header bg-primary">
             <h5 class="modal-title " id="staticBackdropLabel"> <strong>Gestión de gastos</strong> </h5>
@@ -6,71 +6,64 @@
         </div>
         @include('popper::assets')
         <div class="modal-body ">
-            <div class="row">
-                <form class="form-floating col-lg-4">
-                    <input type="date"
-                        class="form-control @if ($fecha == '') @else @error('fecha') is-invalid @else is-valid @enderror @endif"
-                        id="floatingInputInvalid" placeholder="name@example.com" wire:model="fecha">
-                    <label class="ml-2" for="floatingInputInvalid">Fecha</label>
-                    @error('fecha')
-                        <span class="text-danger">{{ $message }}</span>
-                    @enderror
-                </form>
 
-                <form class="form-floating col-lg-4">
-                    <input type="text"
-                        class="form-control @if ($descripcion == '') @else @error('descripcion') is-invalid @else is-valid @enderror @endif"
-                        id="floatingInputInvalid" placeholder="name@example.com" wire:model="descripcion">
-                    <label class="ml-2" for="floatingInputInvalid">Descripción</label>
+            <form>
+                <div class="mb-3">
+                    <div class="form-floating mb-3">
+                        <input type="date"
+                            class="form-control @if ($fecha == '') @else @error('fecha') is-invalid @else is-valid @enderror @endif"
+                            id="floatingInput" placeholder="name@example.com" wire:model.defer="fecha">
+                        <label for="floatingInput">Fecha de compra *</label>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <div class="form-floating mb-3">
+                        <select
+                            class="form-select @if ($category_gastos_id == '') @else @error('category_gastos_id') is-invalid @else is-valid @enderror @endif"
+                            id="floatingSelect" aria-label="Floating label select example"
+                            wire:model="category_gastos_id">
+                            <option selected>Selecciona una categoria</option>
+                            @foreach ($categorias as $categoria)
+                                <option value="{{ $categoria->id }}">{{ $categoria->name }}</option>
+                            @endforeach
+
+                        </select>
+                        <label for="floatingSelect">Categoria</label>
+                        @error('category_gastos_id')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <div class="form-floating mb-3">
+                        <select
+                            class="form-select @if ($metodo_pago_id == '') @else @error('metodo_pago_id') is-invalid @else is-valid @enderror @endif"
+                            id="floatingSelect" aria-label="Floating label select example" wire:model="metodo_pago_id">
+                            <option selected>Selecciona un metodo</option>
+                            @foreach ($medios as $medio)
+                                <option value="{{ $medio->id }}">{{ $medio->name }}</option>
+                            @endforeach
+                        </select>
+                        <label for="floatingSelect">Metodo De Pago</label>
+                        @error('metodo_pago_id')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <div class="form-floating">
+                        <textarea
+                            class="form-control @if ($descripcion == '') @else @error('descripcion') is-invalid @else is-valid @enderror @endif"
+                            placeholder="Observación o detalles de la compra" id="floatingTextarea2" style="height: 100px"
+                            wire:model.defer = 'descripcion'></textarea>
+                        <label for="floatingTextarea2">Observación / Descripción</label>
+                    </div>
                     @error('descripcion')
                         <span class="text-danger">{{ $message }}</span>
                     @enderror
-                </form>
-
-
-                <form class="form-floating col-lg-4">
-                    <input type="number"
-                        class="form-control @if ($total == '') @else @error('total') is-invalid @else is-valid @enderror @endif"
-                        id="floatingInputInvalid" placeholder="name@example.com" readonly wire:model="total">
-                    <label for="floatingInputInvalid" class="ml-2">Total</label>
-                    @error('total')
-                        <span class="text-danger">{{ $message }}</span>
-                    @enderror
-                </form>
-
-                <div class="form-floating mt-2 col-lg-4">
-                    <select
-                        class="form-select @if ($category_gastos_id == '') @else @error('category_gastos_id') is-invalid @else is-valid @enderror @endif"
-                        id="floatingSelect" aria-label="Floating label select example" wire:model="category_gastos_id">
-                        <option selected>Selecciona una categoria</option>
-                        @foreach ($categorias as $categoria)
-                            <option value="{{ $categoria->id }}">{{ $categoria->name }}</option>
-                        @endforeach
-
-                    </select>
-                    <label for="floatingSelect">Categoria</label>
-                    @error('category_gastos_id')
-                        <span class="text-danger">{{ $message }}</span>
-                    @enderror
                 </div>
 
-                <div class="form-floating mt-2 col-lg-4">
-                    <select
-                        class="form-select @if ($metodo_pago_id == '') @else @error('metodo_pago_id') is-invalid @else is-valid @enderror @endif"
-                        id="floatingSelect" aria-label="Floating label select example" wire:model="metodo_pago_id">
-                        <option selected>Selecciona un metodo</option>
-                        @foreach ($medios as $medio)
-                            <option value="{{ $medio->id }}">{{ $medio->name }}</option>
-                        @endforeach
-
-                    </select>
-                    <label for="floatingSelect">Metodo De Pago</label>
-                    @error('metodo_pago_id')
-                        <span class="text-danger">{{ $message }}</span>
-                    @enderror
-                </div>
-
-                <div class="col-lg-4 mt-3">
+                <div class="mb-3">
                     <input type="file"
                         class="form-control @if ($picture == '') @else @error('picture') is-invalid @else is-valid @enderror @endif"
                         id="floatingInputInvalid" placeholder="name@example.com" wire:model="picture">
@@ -80,103 +73,29 @@
                     @enderror
 
                 </div>
-                <a class="btn btn-outline-success mt-2 @if ($selected_id != '') disabled @endif" title="Crear gasto" wire:click="storeOrupdate" ><i class="bi bi-check-circle"></i></a>
 
-                <div class="text-center">
-                    Detalles De Gasto
-                    <hr>
+                    @if($photo)
+                        <div class="mb-3">
+                            <img style="height: 150px; width: 150px;" src="{!! Config::get('app.URL') !!}/storage/{{ $photo }}" alt="">
+                        </div>
+
+                    @elseif($picture)
+                        <div class="mb-3">
+                            <img style="height: 150px; width: 150px;" src="{{ $picture->temporaryUrl() }}" alt="">
+                        </div>
+
+                    @endif
+
+                <div class="mb-3 float-right">
+
+                        <button class="btn btn-primary btn-lg" wire:click="save"> Guardar gasto
+                            <div wire:loading wire:target="save">
+                                <img src="{{ asset('img/loading.gif') }}" width="20px" class="img-fluid"
+                                    alt="">
+                            </div>
+                        </button>
                 </div>
-                <form class="form-floating col-lg-5">
-                    <input type="text"
-                        class="form-control @if ($descripcion_detalles == '') @else @error('descripcion_detalles') is-invalid @else is-valid @enderror @endif"
-                        id="floatingInputInvalid" placeholder="name@example.com" wire:model="descripcion_detalles" @if ($selected_id == '') disabled @endif>
-                    <label class="ml-2" for="floatingInputInvalid">Descripción</label>
-                    @error('descripcion_detalles')
-                        <span class="text-danger">{{ $message }}</span>
-                    @enderror
-                </form>
-
-                <form class="form-floating col-lg-2">
-                    <input type="number"
-                        class="form-control @if ($cantidad_detalles == '') @else @error('cantidad_detalles') is-invalid @else is-valid @enderror @endif"
-                        id="floatingInputInvalid" placeholder="name@example.com" wire:model="cantidad_detalles" @if ($selected_id == '') disabled @endif>
-                    <label for="floatingInputInvalid" class="ml-2">Cantidad</label>
-                    @error('cantidad_detalles')
-                        <span class="text-danger">{{ $message }}</span>
-                    @enderror
-                </form>
-
-                <form class="form-floating col-lg-2">
-                    <input type="number"
-                        class="form-control @if ($precio_detalles == '') @else @error('precio_detalles') is-invalid @else is-valid @enderror @endif"
-                        id="floatingInputInvalid" placeholder="name@example.com" wire:model="precio_detalles" @if ($selected_id == '') disabled @endif>
-                    <label for="floatingInputInvalid" class="ml-2">Precio</label>
-                    @error('precio_detalles')
-                        <span class="text-danger">{{ $message }}</span>
-                    @enderror
-                </form>
-
-                <form class="form-floating col-lg-2">
-                    <input type="number"
-                        class="form-control @if ($subtotal == '') @else @error('subtotal') is-invalid @else is-valid @enderror @endif"
-                        id="floatingInputInvalid" placeholder="name@example.com" wire:model="subtotal" @if ($selected_id == '') disabled @endif>
-                    <label for="floatingInputInvalid" class="ml-2">SubTotal</label>
-                    @error('subtotal')
-                        <span class="text-danger">{{ $message }}</span>
-                    @enderror
-                </form>
-
-                <div class="col-lg-1">
-                    <a class="btn btn-outline-success mt-2 @if ($selected_id == '') disabled @endif" title="Agregar" wire:click="añadirddetalle" ><i
-                            class="bi bi-check-circle"></i></a>
-                </div>
-
-
-            </div>
-
-            <div class="text-center">
-
-                <hr>
-            </div>
-
-            @if($detalles)
-            <table class="table table-striped" id="tabMarcas">
-                <thead>
-                    <tr>
-                        <th>Descripción</th>
-                        <th class="">Cantidad</th>
-                        <th>Precio</th>
-                        <th class="">Subtotal</th>
-                        <th class="">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse ($detalles as $detalles)
-                    <tr>
-                        <td> {{ $detalles->descripcion }}</td>
-                        <td> {{ $detalles->cantidad }}</td>
-                        <td> {{ $detalles->precio }}</td>
-                        <td> {{ $detalles->subtotal }}</td>
-
-                            <td class="text-center">
-                                <button @popper(Eliminar) class="btn btn-outline-danger btn-sm" wire:click="destroy( {{ $detalles->id }} )"><i class="bi bi-trash3"></i></button>
-
-
-                            </td>
-
-
-                    </tr>
-
-                    @empty
-                    <tr>
-                        <td colspan="2">
-                            <p>No se encontraron registros...</p>
-                        </td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
-            @endif
+            </form>
         </div>
     </div>
 </div>

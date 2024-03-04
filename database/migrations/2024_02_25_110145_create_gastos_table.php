@@ -24,7 +24,7 @@ class CreateGastosTable extends Migration
             $table->unsignedBigInteger('metodo_pago_id');
             $table->foreign('metodo_pago_id')->references('id')->on('metodo_pagos');
             $table->string('picture')->nullable();
-            $table->enum('status',['PAGADO','PENDIENTE'])->default('PENDIENTE');
+            $table->enum('status',['APLICADO','PENDIENTE'])->default('PENDIENTE');
 
             $table->double('total');
 
