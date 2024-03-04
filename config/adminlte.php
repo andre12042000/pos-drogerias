@@ -359,7 +359,7 @@ return [
                     'classes'    => 'text-white',
                     'icon'       => 'bi bi-cash-stack',
                     'icon_color' => 'white',
-                    'route'      => 'ventas.gastos.list',
+                    'route'      => 'gastos.list',
                 ],
                 /* [
                     'text'       => 'Ordenes de trabajo',

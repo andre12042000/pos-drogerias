@@ -31,6 +31,7 @@ class ReporteDiario extends Component
     public $facturasAnuladas_imprimir = 0;
     public $metodosDePagoGroup_imprimir = 0;
     public $pagoCreditos_imprimir = 0;
+    public $totalGastos_imprimir = 0;
 
     public function render()
     {
@@ -49,18 +50,20 @@ class ReporteDiario extends Component
         $totalAbono = $tipo_operacion_group['App\Models\Abono'] ?? 0;
         $OtrosConceptos = $tipo_operacion_group['App\Models\Otros'] ?? 0;
         $pagoCreditos = $tipo_operacion_group['App\Models\PagoCreditos'] ?? 0;
+        $totalGastos = $tipo_operacion_group['App\Models\Gastos'] ?? 0;
 
 
         /* Convertimos las variables en variables publicas para enviarlas facilmente al informe o a imprimir */
         $this->hoy_imprimir = $hoy;
         $this->totalVenta_imprimir = $totalVenta;
         $this->totalAbono_imprimir = $totalAbono;
+        $this->totalGastos_imprimir = $totalGastos;
         $this->OtrosConceptos_imprimir = $OtrosConceptos;
         $this->pagoCreditos_imprimir = $pagoCreditos;
         $this->facturasAnuladas_imprimir = $facturasAnuladas;
         $this->metodosDePagoGroup_imprimir = $metodosDePagoGroup;
 
-        return view('livewire.reporte.reporte-diario', compact('ventas', 'hoy', 'totalVenta', 'totalAbono', 'OtrosConceptos', 'metodosDePagoGroup', 'facturasAnuladas', 'pagoCreditos'));
+        return view('livewire.reporte.reporte-diario', compact('ventas', 'hoy', 'totalVenta', 'totalAbono', 'OtrosConceptos', 'metodosDePagoGroup', 'facturasAnuladas', 'pagoCreditos', 'totalGastos'));
     }
 
     public function obtenerValorTipoDeOperacion()
@@ -152,6 +155,11 @@ class ReporteDiario extends Component
         $reciboBody[] = [
             'label' => 'Consumo Interno',
             'value' => '$ 0',
+        ];
+
+        $reciboBody[] = [
+            'label' => 'Gastos',
+            'value' => '$ ' . number_format($this->totalGastos_imprimir, 0),
         ];
 
         // Convertir a JSON si es necesario

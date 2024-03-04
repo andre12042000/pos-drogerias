@@ -19,8 +19,8 @@ class CreateGastosDetallesTable extends Migration
             $table->foreign('gastos_id')->references('id')->on('gastos');
             $table->integer('cantidad');
             $table->string('descripcion');
-            $table->double('precio');
-            $table->double('subtotal');
+            $table->double('precio_unitario');
+            $table->double('total');
 
 
             $table->timestamps();

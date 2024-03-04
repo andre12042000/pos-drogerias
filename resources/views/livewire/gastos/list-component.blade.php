@@ -56,7 +56,7 @@
                         <th>Total</th>
                         <th>Metodo de pago</th>
                         <th>Usuario</th>
-                        <th>Comprobante</th>
+                        <th class="text-center">Comprobante</th>
                         <th>Estado</th>
                         <th class="text-center">Acciones</th>
                     </tr>
@@ -70,15 +70,22 @@
                         <td>$ {{ number_format($gasto->total) }}</td>
                         <td>{{ ucwords($gasto->metodopago->name) }}</td>
                         <td>{{ ucwords($gasto->user->name) }}</td>
-                        <td>{{ ucwords($gasto->comrobante) }}</td>
-                        <td>{{ ucwords($gasto->status) }}</td>
                         <td class="text-center">
-
-                            <a @popper(Actualizar) class="btn btn-outline-success btn-sm" href="#" role="button"
-                                data-toggle="modal" data-target="#GastosModal"
-                                wire:click="sendData( {{ $gasto }} )"><i class="bi bi-pencil-square"></i></a>
-
-
+                            @if (!is_null($gasto->picture))
+                                <i class="bi bi-cloud-arrow-down" style="font-size: 30px; cursor: pointer;"></i>
+                            @else
+                                <img width="50px;" src="{!! Config::get('app.URL') !!}/img/sinimagen.jpg" alt="">
+                            @endif
+                        </td>
+                        <td>
+                            @if ($gasto->status == 'APLICADO')
+                                <span class="badge bg-success">APLICADO</span>
+                            @else
+                                <span class="badge bg-secondary">BORRADOR</span>
+                            @endif
+                        </td>
+                        <td class="text-center">
+                            <a @popper(Editar) class="btn btn-outline-success btn-sm" href="{{ route('gastos.edit' , $gasto->id) }}" role="button"><i class="bi bi-pencil-square"></i></a>
                         </td>
                     </tr>
 

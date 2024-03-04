@@ -111,6 +111,12 @@ class RouteServiceProvider extends ServiceProvider
                 ->namespace($this->namespace)
                 ->group(base_path('routes/imprimir.php'));
 
+                Route::middleware('web', 'auth', 'change.password')
+                ->name('gastos.')
+                ->prefix('gastos')
+                ->namespace($this->namespace)
+                ->group(base_path('routes/gastos.php'));
+
         });
     }
 

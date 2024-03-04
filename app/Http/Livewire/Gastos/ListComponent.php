@@ -21,8 +21,9 @@ class ListComponent extends Component
     }
     public function render()
     {
-        $gastos = Gastos::search($this->buscar)->orderBy('fecha', 'ASC')
-        ->paginate($this->cantidad_registros);
+        $gastos = Gastos::search($this->buscar)
+                        ->orderBy('fecha', 'DESC')
+                        ->paginate($this->cantidad_registros);
 
         return view('livewire.gastos.list-component', compact('gastos'))->extends('adminlte::page');
     }
