@@ -102,7 +102,7 @@
                             <th scope="col">Opciones</th>
                         </tr>
                     </thead>
-                    <tbody style="height: 140px;">
+                    <tbody style="height: 290px;">
 
                     </tbody>
 
