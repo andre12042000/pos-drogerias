@@ -101,8 +101,8 @@
                                 <div class="col-8">
                                     <h4 class="card-title ml-3"><strong>Detalles</strong></h4>
                                 </div>
-                                <div class="col-4">
-                                    <select class="form-control ml-3" id="opcionesDetalles" wire:model = 'filtro_operaciones'>
+                                <div class="col-4 detalles-select-wrapper">
+                                    <select class="form-control detalles-select" id="opcionesDetalles" wire:model = 'filtro_operaciones'>
                                         <option value="">Todas operaciones</option>
                                         <option value="App\Models\Sale">Ventas</option>
                                         <option value="App\Models\PagoCreditos">Recaudo Cartera</option>
@@ -228,3 +228,6 @@
         </div>
     </div>
 </div>
+
+
+
