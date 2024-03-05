@@ -49,7 +49,7 @@ trait ImprimirTrait
 
             // Imprimir el cuerpo del recibo
              foreach ($reciboBody as $item) {
-                $printer->text($item['label'] . ": " . $item['value'] . "\n");
+                $printer->text($item['label'] . "  " . $item['value'] . "\n");
             }
 
             $printer->text("--------------------------------\n");

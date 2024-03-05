@@ -9,6 +9,7 @@ use Livewire\Component;
 use App\Models\MetodoPago;
 use Livewire\WithPagination;
 use App\Exports\ExportVentaDiaria;
+use App\Models\Gastos;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Traits\ImprimirTrait;
@@ -118,55 +119,84 @@ class ReporteDiario extends Component
 
         // Sección 1
         $reciboBody[] = [
-            'label' => 'TOTAL RECAUDO',
+            'label' => 'TOTAL RECAUDO:',
             'value' => '$ ' . number_format($this->totalVenta_imprimir + $this->pagoCreditos_imprimir, 0),
         ];
 
         $reciboBody[] = [
-            'label' => 'ABONOS',
+            'label' => 'ABONOS:',
             'value' => '$ ' . number_format($this->totalAbono_imprimir, 0),
         ];
 
         $reciboBody[] = [
-            'label' => 'OTROS CONCEPTOS',
+            'label' => 'OTROS CONCEPTOS:',
             'value' => '$ ' . number_format($this->OtrosConceptos_imprimir, 0),
         ];
 
         $reciboBody[] = [
-            'label' => 'PAGO CRÉDITOS',
+            'label' => 'PAGO CRÉDITOS:',
             'value' => '$ ' . number_format($this->pagoCreditos_imprimir, 0),
         ];
 
         // Métodos de pago
         foreach ($this->metodosDePagoGroup_imprimir as $nombreMetodoPago => $total) {
             $reciboBody[] = [
-                'label' => $nombreMetodoPago,
+                'label' => $nombreMetodoPago . ':',
                 'value' => '$ ' . number_format($total, 0),
             ];
         }
 
+        // Agregar un salto de línea para separar las secciones
+        $reciboBody[] = ['label' => '', 'value' => ''];
+
         // Sección 2
         $reciboBody[] = [
-            'label' => 'Venta Anulada',
+            'label' => 'V. ANULADAS:',
             'value' => '$ ' . number_format($this->facturasAnuladas_imprimir, 0),
         ];
 
-
         $reciboBody[] = [
-            'label' => 'Consumo Interno',
+            'label' => 'CON. INTERNO:',
             'value' => '$ 0',
         ];
 
         $reciboBody[] = [
-            'label' => 'Gastos',
+            'label' => 'GASTOS OP.:',
             'value' => '$ ' . number_format($this->totalGastos_imprimir, 0),
         ];
 
+        if ($this->totalGastos_imprimir > 0) {
+            $gastos = self::obtenerDetallesGastos();
+
+            $reciboBody[] = ['label' => '', 'value' => ''];
+
+            $reciboBody[] = ['label' => '', 'value' => 'DETALLES DE GASTOS'];
+
+            foreach ($gastos as $gasto) {
+                $reciboBody[] = [
+                    'label' => $gasto->descripcion,
+                    'value' => '$ ' . number_format($gasto->total, 0),
+                ];
+            }
+        }
+
+
         // Convertir a JSON si es necesario
-     //   $reciboBodyJSON = json_encode($reciboBody);
+        //   $reciboBodyJSON = json_encode($reciboBody);
 
         $this->imprimirRecibo($reciboBody);
+    }
+
+    function obtenerDetallesGastos()
+    {
+        $hoy = Carbon::now();
+        $hoy = $hoy->format('Y-m-d');
+        $data = Gastos::whereDate('created_at', $hoy)
+            ->where('status', 'APLICADO')
+            ->orderBy('created_at', 'ASC')
+            ->get();
 
 
+        return $data;
     }
 }

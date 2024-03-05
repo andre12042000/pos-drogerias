@@ -74,18 +74,18 @@
                     <div class="card">
                          <ul class="list-group list-group-flush">
                             <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <label class="form-control-label " for="nombre"><strong>Venta Anulada</strong></label>
+                                <label class="form-control-label " for="nombre"><strong>VENTAS ANULADAS</strong></label>
                                 <p class="mr-2 mt-2 text-bold">$ {{ number_format($facturasAnuladas, 0) }}</p>
                             </li>
 
                             <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <label class="form-control-label" for="nombre"><strong>Consumo
-                                        Interno</strong></label>
+                                <label class="form-control-label" for="nombre"><strong>CONSUMO INTERNO
+                                        </strong></label>
                                 <p>$ 0</p>
                             </li>
 
                             <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <label class="form-control-label" for="nombre"><strong>Gastos</strong></label>
+                                <label class="form-control-label" for="nombre"><strong>GASTOS OPERACIONALES</strong></label>
                                 <p>$ {{ number_format($totalGastos, 0) }}</p>
                             </li>
 
