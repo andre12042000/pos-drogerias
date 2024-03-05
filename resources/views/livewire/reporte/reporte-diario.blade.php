@@ -49,7 +49,7 @@
                                   <p class="mr-2 mt-2 text-bold">$ {{ number_format($totalAbono, 0) }}</p>
                             </li>
                             <li class="list-group-item-info d-flex justify-content-between align-items-center">
-                                <label class="form-control-label ml-2" for="nombre"><strong>PAGOS VENTA CRÉDITO</strong> <i class="bi bi-info-circle-fill" data-toggle="tooltip" data-placement="top" title="Si no se recibió el dinero en mostrador o caja, resta el valor al TOTAL RECAUDO."></i></label>
+                                <label class="form-control-label ml-2" for="nombre"><strong>RECAUDOS CARTERA</strong> <i class="bi bi-info-circle-fill" data-toggle="tooltip" data-placement="top" title="Si no se recibió el dinero en mostrador o caja, resta el valor al TOTAL RECAUDO."></i></label>
                                   <p class="mr-2 mt-2 text-bold">$ {{ number_format($pagoCreditos, 0) }}</p>
                             </li>
                             <li class="list-group-item-info d-flex justify-content-between align-items-center">
@@ -97,7 +97,26 @@
 
                     <div class="card">
                         <div class="card-header">
-                            <h4 class="card-title ml-3"><strong>Detalles</strong></h4>
+                            <div class="row">
+                                <div class="col-8">
+                                    <h4 class="card-title ml-3"><strong>Detalles</strong></h4>
+                                </div>
+                                <div class="col-4">
+                                    <select class="form-control ml-3" id="opcionesDetalles" wire:model = 'filtro_operaciones'>
+                                        <option value="">Todas operaciones</option>
+                                        <option value="App\Models\Sale">Ventas</option>
+                                        <option value="App\Models\PagoCreditos">Recaudo Cartera</option>
+                                        <option value="App\Models\Gastos">Gastos</option>
+                                        <option value="App\Models\Abonos" disabled>Abonos</option>
+                                        <option value="App\Models\ConsumoInterno" disabled>Consumo Interno</option>
+                                    </select>
+                                </div>
+                            </div>
+
+
+
+                            <!-- Agrega el siguiente select al final del card-header -->
+
                         </div>
                         <div class="table-responsive col-md-12">
                             <table class="table table-striped" id="tabProducts">

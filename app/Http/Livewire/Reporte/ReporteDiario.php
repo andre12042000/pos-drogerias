@@ -33,13 +33,23 @@ class ReporteDiario extends Component
     public $metodosDePagoGroup_imprimir = 0;
     public $pagoCreditos_imprimir = 0;
     public $totalGastos_imprimir = 0;
+    public $filtro_operaciones;
+    public $search = '';
 
     public function render()
     {
 
         $hoy = Carbon::now();
         $hoy = $hoy->format('Y-m-d');
-        $data = Cash::whereDate('created_at', $hoy)->with('cashesable')->orderBy('id', 'desc');
+
+        $search = $this->search;
+
+        $data = Cash::whereDate('created_at', $hoy)
+            ->with('cashesable')->orderBy('id', 'desc')
+            ->when($search, function ($query) use ($search) {
+                $query->where('cashesable_type', $search);
+            });
+
         $ventas = $data->paginate($this->cantidad_registros);
         $data_obtener_valores = $data->get();
 
@@ -65,6 +75,12 @@ class ReporteDiario extends Component
         $this->metodosDePagoGroup_imprimir = $metodosDePagoGroup;
 
         return view('livewire.reporte.reporte-diario', compact('ventas', 'hoy', 'totalVenta', 'totalAbono', 'OtrosConceptos', 'metodosDePagoGroup', 'facturasAnuladas', 'pagoCreditos', 'totalGastos'));
+    }
+
+    public function updatedFiltroOperaciones($value)
+    {
+
+        $this->search = $value;
     }
 
     public function obtenerValorTipoDeOperacion()
