@@ -117,6 +117,12 @@ class RouteServiceProvider extends ServiceProvider
                 ->namespace($this->namespace)
                 ->group(base_path('routes/gastos.php'));
 
+                Route::middleware('web', 'auth', 'change.password')
+                ->name('consumo_interno.')
+                ->prefix('consumo_interno')
+                ->namespace($this->namespace)
+                ->group(base_path('routes/consumo_interno.php'));
+
         });
     }
 

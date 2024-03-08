@@ -59,15 +59,18 @@
                                 </td>
 
 
-                                <td class="price-cell text-end" data-option="disponible_caja" style="cursor: pointer">
-                                    {{ $product->precio_caja != 0 ? '$' . number_format($product->precio_caja, 0, ',', '.') : '0' }}
-                                </td>
-                                <td class="price-cell text-end" data-option="disponible_blister" style="cursor: pointer">
-                                    {{ $product->precio_blister != 0 ? '$' . number_format($product->precio_blister, 0, ',', '.') : '0' }}
-                                </td>
-                                <td class="price-cell text-end" data-option="disponible_unidad" style="cursor: pointer">
-                                    {{ $product->precio_unidad != 0 ? '$' . number_format($product->precio_unidad, 0, ',', '.') : '0' }}
-                                </td>
+                                <td class="price-cell text-end" data-option="disponible_caja"
+                                style="cursor: pointer" onclick="handlePriceClick(this)">
+                                {{ $product->precio_caja > 0 ? '$' . number_format($product->precio_caja, 0, ',', '.') : '0' }}
+                            </td>
+                            <td class="price-cell text-end" data-option="disponible_blister"
+                                style="cursor: pointer" onclick="handlePriceClick(this)">
+                                {{ $product->precio_blister > 0 ? '$' . number_format($product->precio_blister, 0, ',', '.') : '0' }}
+                            </td>
+                            <td class="price-cell text-end" data-option="disponible_unidad"
+                                style="cursor: pointer" onclick="handlePriceClick(this)">
+                                {{ $product->precio_unidad > 0 ? '$' . number_format($product->precio_unidad, 0, ',', '.') : '0' }}
+                            </td>
                             </tr>
                         @empty
                             <tr>

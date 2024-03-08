@@ -34,8 +34,6 @@ class ListComponent extends Component
 
 
      //Metodos necesarios para la usabilidad
-
-
      public function updatingSearch(): void
      {
          $this->gotoPage(1);

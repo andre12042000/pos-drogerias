@@ -355,6 +355,13 @@ return [
                     'route'      => 'ventas.cotizaciones.list',
                 ],
                 [
+                    'text'       => 'Consumo Interno',
+                    'classes'    => 'text-white',
+                    'icon'       => 'fas fa-book',
+                    'icon_color' => 'white',
+                    'route'      => 'consumo_interno.index',
+                ],
+                [
                     'text'       => 'Gastos',
                     'classes'    => 'text-white',
                     'icon'       => 'bi bi-cash-stack',
