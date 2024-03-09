@@ -17,7 +17,7 @@
             </div>
             <div class="card">
                 <div class="card-body">
-                    <table class="table table-striped" id="productos-container">
+                    <table class="table table-striped">
                         <thead>
                             <tr>
                                 <th>Descripción</th>
@@ -26,7 +26,7 @@
                                 <th>Subtotal</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="tablaProductosSeleccionados">
 
                         </tbody>
                     </table>
@@ -35,8 +35,6 @@
         </div>
         {{-- derecha --}}
         <div class="col-lg-7">
-
-
             <div class="card">
                 <div x-data class="mt-2">
                     @include('popper::assets')
@@ -148,33 +146,7 @@
 
                 @stop
 
-                @section('js')
-                    <script>
-                        document.addEventListener('DOMContentLoaded', function() {
-                            // Delegación de eventos en el contenedor de productos
-                            document.getElementById('productos-container').addEventListener('click', function(event) {
-                                var target = event.target;
 
-
-
-                                // Verificar si se hizo clic en una celda de precio
-                                if (target.classList.contains('price-cell')) {
-                                    var row = target.parentNode; // Obtener la fila completa
-                                    var productData = JSON.parse(row.getAttribute('data-product'));
-                                    var selectedOption = target.getAttribute('data-option'); // Opción seleccionada
-
-                                    // Emite el evento Livewire
-                                    Livewire.emit('agregarProductoEvent', productData, selectedOption);
-
-                                    productData = null;
-                                    selectedOption = null;
-                                    row = null;
-                                }
-                            });
-
-                        });
-                    </script>
-                @stop
 
             </div>
 
@@ -196,7 +168,7 @@
                         </div>
                         <div class="col-5">
                             <input type="text" id="inputPassword6" class="form-control"
-                                aria-describedby="passwordHelpInline"  >
+                                aria-describedby="passwordHelpInline">
                         </div>
 
                         <div class="col-7 text-end">
@@ -204,7 +176,7 @@
                         </div>
                         <div class="col-5">
                             <input type="text" id="inputPassword6" class="form-control"
-                                aria-describedby="passwordHelpInline"  >
+                                aria-describedby="passwordHelpInline">
                         </div>
 
 
@@ -225,3 +197,124 @@
 
     </div>
 </div>
+
+
+
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var productosSeleccionados = [];
+        var tablaProductosSeleccionados = document.getElementById('tablaProductosSeleccionados');
+
+        document.getElementById('productos-container').addEventListener('click', function(event) {
+            var target = event.target;
+
+            // Verificar si se hizo clic en una celda de precio
+            if (target.classList.contains('price-cell')) {
+                var row = target.parentNode; // Obtener la fila completa
+                var productData = JSON.parse(row.getAttribute('data-product'));
+
+                // Buscar el producto en la lista de productos seleccionados
+                var productoExistente = productosSeleccionados.find(p => p.id === productData.id);
+
+                if (productoExistente) {
+                    // Si el producto ya está en la lista, incrementar la cantidad
+                    productoExistente.cantidad++;
+                } else {
+                    // Si el producto no está en la lista, agregarlo con cantidad 1
+                    productData.cantidad = 1;
+                    productosSeleccionados.push(productData);
+                }
+
+                // Resto del código...
+                var clickedColumn = target.getAttribute('data-option');
+                var precio = getPrecioUnitario(productData, clickedColumn);
+                // Actualizar la tabla de productos seleccionados
+                mostrarProductosSeleccionados(precio);
+
+                // Llamar a la función handleObtenerIva aquí
+                handleObtenerIva(productData, productosSeleccionados);
+            }
+        });
+
+        // Agregar las funciones adicionales fuera del bloque anterior
+        function handleObtenerIva(producto, cantidad, productosSeleccionados) {
+            let iva = 0;
+
+            switch (productosSeleccionados) {
+                case "disponible_caja":
+                    iva = Math.round(producto.valor_iva_caja * cantidad);
+                    break;
+                case "disponible_blister":
+                    iva = Math.round(producto.valor_iva_blister * cantidad);
+                    break;
+                case "disponible_unidad":
+                    iva = Math.round(producto.valor_iva_unidad * cantidad);
+                    break;
+                default:
+                    // Manejar el caso por defecto
+                    iva = 0;
+                    break;
+            }
+
+            return iva;
+        }
+
+        function enableOptionsBasedOnProduct(producto) {
+            if (producto.disponible_caja) {
+                this.enableOption("disponible_caja");
+            }
+            if (producto.disponible_blister) {
+                this.enableOption("disponible_blister");
+            }
+            if (producto.disponible_unidad) {
+                this.enableOption("disponible_unidad");
+            }
+        }
+
+        function getPrecioUnitario(productData, productosSeleccionados) {
+            switch (productosSeleccionados) {
+                case "disponible_caja":
+                    return productData.precio_caja;
+                case "disponible_blister":
+                    return productData.precio_blister;
+                case "disponible_unidad":
+                    return productData.precio_unidad;
+                default:
+                    // Manejar el caso por defecto o mostrar un mensaje de error si es necesario
+                    return 0;
+            }
+        }
+
+        function agregarProductoSeleccionado(producto) {
+            productosSeleccionados.push(producto);
+        }
+
+        function mostrarProductosSeleccionados(precio) {
+            // Limpiar contenido existente
+            tablaProductosSeleccionados.innerHTML = '';
+
+            productosSeleccionados.forEach(function(producto) {
+                var fila = document.createElement('tr');
+                var columnaNombre = document.createElement('td');
+                columnaNombre.textContent = producto.name;
+                fila.appendChild(columnaNombre);
+
+                var columnaCantidad = document.createElement('td');
+                columnaCantidad.textContent = producto.cantidad; // Mostrar la cantidad
+                fila.appendChild(columnaCantidad);
+
+                var columnaPrecio = document.createElement('td');
+                columnaPrecio.textContent = '$' + precio;
+                fila.appendChild(columnaPrecio);
+
+                var columnaSubtotal = document.createElement('td');
+                columnaSubtotal.textContent = '$' + precio * producto.cantidad;
+                fila.appendChild(columnaSubtotal);
+
+                tablaProductosSeleccionados.appendChild(fila);
+            });
+        }
+    });
+</script>
