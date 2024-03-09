@@ -57,10 +57,10 @@
                 <tbody>
                     @forelse ($datos as $dato)
                     <tr>
-                        <td>{{ $dato->created_At }}</td>
+                        <td>{{ \Carbon\Carbon::parse($dato->created_at)->format('d M Y') }}</td>
                         <td>{{ $dato->full_nro }}</td>
-                        <td>{{ $dato->user_id }}</td>
-                        <td>{{ $dato->total }}</td>
+                        <td>{{ ucwords($dato->user->name) }}</td>
+                        <td class="text-right">$ {{ number_format($dato->total) }}</td>
                         <td>
 
                         </td>

@@ -64,7 +64,7 @@
                 <tbody>
                     @forelse ($gastos as $gasto)
                     <tr>
-                        <td>{{ ucwords($gasto->fecha) }}</td>
+                        <td>{{ \Carbon\Carbon::parse($gasto->fecha)->format('d M Y') }}</td>
                         <td>{{ ucwords($gasto->descripcion) }}</td>
                         <td>{{ ucwords($gasto->categoria->name) }}</td>
                         <td>$ {{ number_format($gasto->total) }}</td>

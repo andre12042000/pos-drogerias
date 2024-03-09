@@ -10,4 +10,10 @@ class ConsumoInternoDetalles extends Model
     use HasFactory;
 
     protected $guarded= ['id'];
+
+    //Relaciones
+
+    public function product(){
+        return $this->belongsTo(Product::class);
+    }
 }

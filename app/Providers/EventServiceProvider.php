@@ -2,13 +2,16 @@
 
 namespace App\Providers;
 
+use App\Events\ConsumoInternoRealizado;
 use App\Events\NuevaVentaRegistrada;
 use App\Events\VentaCreditoRealizada;
 use App\Events\VentaRealizada;
 use App\Listeners\CrearInventarioParaProductoNuevo;
 use App\Listeners\DescontarInventario;
+use App\Listeners\DescontarInventarioConsumoInterno;
 use App\Listeners\DescontarInventarioNuevaVenta;
 use App\Listeners\DescontarInventarioVentaCredito;
+use App\Models\ConsumoInterno;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -30,6 +33,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         VentaCreditoRealizada::class => [
             DescontarInventarioVentaCredito::class,
+        ],
+        ConsumoInternoRealizado::class => [
+            DescontarInventarioConsumoInterno::class,
         ],
     ];
 

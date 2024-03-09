@@ -35,29 +35,8 @@ class ReportesController extends Controller
 
     public function dia()
     {
-        $hoy = Carbon::now();
 
-        $hoy = $hoy->format('Y-m-d');
-
-        $movimientos = Cash::whereDate('created_at', $hoy)->with('cashesable')->get();
-
-        foreach($movimientos as $movimiento)
-        {
-            $this->calcularpagos($movimiento);
-        }
-
-
-         $efectivo      = $this->efectivo;
-         $tarjeta       = $this->tarjeta;
-         $transferencia = $this->transferencia;
-         $cheque        = $this->cheque;
-         $deposito      = $this->deposito;
-         $total         = $this->total;
-         $venta         = $this->venta;
-         $abono         = $this->abono;
-
-
-        return view('reportes.dia', compact('venta', 'abono', 'movimientos',  'efectivo', 'tarjeta', 'transferencia', 'cheque', 'deposito', 'total'));
+        return view('reportes.dia');
     }
 
     public function fecha()

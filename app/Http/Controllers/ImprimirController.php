@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ConsumoInterno;
 use App\Models\PagoCreditos;
 use Illuminate\Http\Request;
 USE App\Traits\ImprimirTrait;
@@ -94,6 +95,67 @@ class ImprimirController extends Controller
             return redirect()->back();
 
 
+
+    }
+
+    public function imprimirConsumoInterno($transaccion_id)
+    {
+        try {
+            $recibo = ConsumoInterno::findOrFail($transaccion_id);
+
+            $reciboBody = [];
+
+            // Sección 1
+            $reciboBody[] = [
+                'label' => 'OPERACION',
+                'value' => 'CONSUMO INTERNO',
+            ];
+
+            $reciboBody[] = [
+                'label' => 'Recibo',
+                'value' => $recibo->full_nro,
+            ];
+
+            $reciboBody[] = [
+                'label' => 'Fecha operacion',
+                'value' => $recibo->created_at->format('d-m-Y H:i'),
+            ];
+
+            $reciboBody[] = [
+                'label' => 'Detalles de la transacción',
+                'value' => '',
+            ];
+
+            $reciboBody[] = [
+                'label' => '------------------------',
+                'value' => '',
+            ];
+
+            //Relacion pagos
+
+            foreach($recibo->detalles as $detalle){
+                    $total = $detalle->quantity * $detalle->price;
+                    $reciboBody[] = [
+                        'label' => $detalle->quantity . ' ' . $detalle->product->name,
+                        'value' => '$ ' . number_format($total, 0),
+                    ];
+
+            }
+
+
+            $reciboBody[] = [
+                'label' => 'TOTAL PAGADO',
+                 'value' => '$ ' . number_format($recibo->total, 0),
+            ];
+
+
+            $this->imprimirRecibo($reciboBody);
+
+        } catch (\Exception $e) {
+            echo "Error: " . $e->getMessage();
+        }
+
+        return redirect()->back();
 
     }
 }

@@ -11,6 +11,19 @@ class ConsumoInterno extends Model
 
     protected $guarded= ['id'];
 
+    //Relaciones
+
+    public function detalles()
+    {
+        return $this->hasMany(ConsumoInternoDetalles::class, 'consumo_interno_id');
+    }
+
+    public function user(){
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+
+
     public function scopeSearch($query, $search)
     {
         if(strlen($search) > 0){

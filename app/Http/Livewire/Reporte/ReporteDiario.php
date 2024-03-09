@@ -33,6 +33,7 @@ class ReporteDiario extends Component
     public $metodosDePagoGroup_imprimir = 0;
     public $pagoCreditos_imprimir = 0;
     public $totalGastos_imprimir = 0;
+    public $totalConsumoInterno_imprimir = 0;
     public $filtro_operaciones;
     public $search = '';
 
@@ -62,6 +63,7 @@ class ReporteDiario extends Component
         $OtrosConceptos = $tipo_operacion_group['App\Models\Otros'] ?? 0;
         $pagoCreditos = $tipo_operacion_group['App\Models\PagoCreditos'] ?? 0;
         $totalGastos = $tipo_operacion_group['App\Models\Gastos'] ?? 0;
+        $totalConsumoInterno = $tipo_operacion_group['App\Models\ConsumoInterno'] ?? 0;
 
 
         /* Convertimos las variables en variables publicas para enviarlas facilmente al informe o a imprimir */
@@ -69,12 +71,15 @@ class ReporteDiario extends Component
         $this->totalVenta_imprimir = $totalVenta;
         $this->totalAbono_imprimir = $totalAbono;
         $this->totalGastos_imprimir = $totalGastos;
+        $this->totalConsumoInterno_imprimir = $totalConsumoInterno;
         $this->OtrosConceptos_imprimir = $OtrosConceptos;
         $this->pagoCreditos_imprimir = $pagoCreditos;
         $this->facturasAnuladas_imprimir = $facturasAnuladas;
         $this->metodosDePagoGroup_imprimir = $metodosDePagoGroup;
 
-        return view('livewire.reporte.reporte-diario', compact('ventas', 'hoy', 'totalVenta', 'totalAbono', 'OtrosConceptos', 'metodosDePagoGroup', 'facturasAnuladas', 'pagoCreditos', 'totalGastos'));
+
+
+        return view('livewire.reporte.reporte-diario', compact('ventas', 'hoy', 'totalVenta', 'totalAbono', 'OtrosConceptos', 'metodosDePagoGroup', 'facturasAnuladas', 'pagoCreditos', 'totalGastos', 'totalConsumoInterno'));
     }
 
     public function updatedFiltroOperaciones($value)
