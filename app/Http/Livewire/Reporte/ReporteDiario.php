@@ -178,7 +178,7 @@ class ReporteDiario extends Component
 
         $reciboBody[] = [
             'label' => 'CON. INTERNO:',
-            'value' => '$ 0',
+            'value' => '$ ' . number_format($this->totalConsumoInterno_imprimir, 0),
         ];
 
         $reciboBody[] = [

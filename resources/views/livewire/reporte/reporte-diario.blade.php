@@ -167,7 +167,7 @@
                                                         Gasto</span>
                                                 @elseif ($venta->cashesable_type == 'App\Models\ConsumoInterno')
                                                     <span class="badge badge-pill badge-secondary">
-                                                        Abono</span>
+                                                        Consumo Interno</span>
                                                 @else
                                                     <span class="badge badge-pill badge-info">
                                                         Abono</span>
@@ -191,7 +191,14 @@
                                                 @endif
                                             </td>
                                             {{-- Metodo de pago  --}}
-                                            <td>{{ ucwords($venta->cashesable->metodopago->name) }} </td>
+                                            <td>
+                                                @if ($venta->cashesable->metodopago)
+                                                    {{ ucwords($venta->cashesable->metodopago->name) }}
+                                                @else
+                                                   N/A
+                                                @endif
+
+                                            </td>
 
 
                                             {{-- Cantidad  --}}
@@ -218,6 +225,13 @@
 
                                                     <a @popper(Imprimir recibo) class="btn btn-outline-success btn-sm"
                                                         href="{{ route('imprimir.pago_venta_credito', $venta->cashesable_id) }}">
+                                                        <i class="bi bi-printer"></i>
+                                                    </a>
+
+                                                @elseif($venta->cashesable_type == 'App\Models\ConsumoInterno')
+
+                                                <a @popper(Imprimir comprobante) class="btn btn-outline-success btn-sm"
+                                                        href="{{ route('consumo_interno.imprimir', $venta->cashesable_id) }}">
                                                         <i class="bi bi-printer"></i>
                                                     </a>
                                                 @endif

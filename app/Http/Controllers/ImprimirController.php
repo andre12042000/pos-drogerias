@@ -112,22 +112,27 @@ class ImprimirController extends Controller
             ];
 
             $reciboBody[] = [
-                'label' => 'Recibo',
+                'label' => 'RECIBO',
                 'value' => $recibo->full_nro,
             ];
 
             $reciboBody[] = [
-                'label' => 'Fecha operacion',
+                'label' => 'FECHA OPERACION',
                 'value' => $recibo->created_at->format('d-m-Y H:i'),
             ];
 
             $reciboBody[] = [
-                'label' => 'Detalles de la transacción',
+                'label' => 'DETALLES',
                 'value' => '',
             ];
 
             $reciboBody[] = [
                 'label' => '------------------------',
+                'value' => '',
+            ];
+
+            $reciboBody[] = [
+                'label' => 'CANT. DESCRIPCION',
                 'value' => '',
             ];
 
@@ -142,11 +147,18 @@ class ImprimirController extends Controller
 
             }
 
+            $reciboBody[] = [
+                'label' => '------------------------',
+                'value' => '',
+            ];
+
 
             $reciboBody[] = [
-                'label' => 'TOTAL PAGADO',
+                'label' => 'TOTAL',
                  'value' => '$ ' . number_format($recibo->total, 0),
             ];
+
+
 
 
             $this->imprimirRecibo($reciboBody);

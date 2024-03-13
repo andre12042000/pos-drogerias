@@ -11,6 +11,7 @@
                                 <th>Forma</th>
                                 <th>Precio Unitario</th>
                                 <th>Subtotal</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody id="productos-en-transaccion" style="height:400px;">
@@ -116,7 +117,8 @@
     <div class="row">
 
         <div class="d-grid gap-2">
-            <button class="btn btn-outline-success" type="button" style="height: 50px;" onclick="handleGuardarTransaccion()" >Guardar</button>
+            <button class="btn btn-outline-success" type="button" style="height: 50px;"
+                onclick="handleGuardarTransaccion()">Guardar</button>
         </div>
 
     </div>
@@ -231,7 +233,7 @@
             tabla.innerHTML = '';
 
             // Itera sobre los productos en el array
-            selectedProducts.forEach(function(producto) {
+            selectedProducts.forEach(function(producto, index) {
                 // Crea una nueva fila
                 var fila = tabla.insertRow();
 
@@ -241,12 +243,24 @@
                 var celdaForma = fila.insertCell(2);
                 var celdaPrecioUnitario = fila.insertCell(3);
                 var celdaSubTotal = fila.insertCell(4);
+                var celdaEliminar = fila.insertCell(5);
 
                 celdaProduct.innerHTML = producto.product_name;
                 celdaCantidad.innerHTML = producto.cantidad;
                 celdaForma.innerHTML = producto.forma;
                 celdaPrecioUnitario.innerHTML = formatCurrency(producto.precio_unitario);
                 celdaSubTotal.innerHTML = formatCurrency(producto.subtotal);
+
+                var btnEliminar = document.createElement("button");
+                    btnEliminar.classList.add("btn", "btn-light"); // Establece el color del botón a gris claro
+                    btnEliminar.style.border = "none"; // Elimina el borde del botón
+                    btnEliminar.innerHTML = '<i class="fas fa-trash" style="color: gray; background: transparent;"></i>'; // Establece el color del ícono a gris
+                    btnEliminar.onclick = function() {
+                        eliminarProducto(index);
+                    };
+
+                // Añade el botón a la celda
+                celdaEliminar.appendChild(btnEliminar);
 
 
                 totalTransaccion += producto.subtotal;
@@ -257,8 +271,15 @@
             document.getElementById('total').innerHTML = 'Total: ' + formatCurrency(totalTransaccion);
         }
 
-        function handleGuardarTransaccion()
-        {
+        function eliminarProducto(index) {
+            // Elimina el producto del array en el índice dado
+            selectedProducts.splice(index, 1);
+
+            // Vuelve a renderizar la tabla
+            renderTable();
+        }
+
+        function handleGuardarTransaccion() {
             if (!selectedProducts || selectedProducts.length === 0 || totalTransaccion === 0) {
                 alertSinProductosTransaccion();
                 return;
@@ -273,25 +294,25 @@
     </script>
 
 
-<script>
-    window.addEventListener('transaccion-generada', event => {
-        const numeroVenta = event.detail.transaccion;
-        Swal.fire({
-            icon: "success",
-            title: "Transacción realizada correctamente",
-            text: `Número de transacción: ${numeroVenta}`,
-            showConfirmButton: false,
-            timer: 3000
-        });
-        setTimeout(() => {
-            const rutaDeseadaUrl = '{{ route("consumo_interno.index") }}';
+    <script>
+        window.addEventListener('transaccion-generada', event => {
+            const numeroVenta = event.detail.transaccion;
+            Swal.fire({
+                icon: "success",
+                title: "Transacción realizada correctamente",
+                text: `Número de transacción: ${numeroVenta}`,
+                showConfirmButton: false,
+                timer: 3000
+            });
+            setTimeout(() => {
+                const rutaDeseadaUrl = '{{ route('consumo_interno.index') }}';
 
-        // Redirigir a la ruta deseada
-        window.location.href = rutaDeseadaUrl;
-        }, 1500);
+                // Redirigir a la ruta deseada
+                window.location.href = rutaDeseadaUrl;
+            }, 1500);
 
-    })
-</script>
+        })
+    </script>
 
 
 @stop

@@ -55,14 +55,17 @@
                     </tr>
                 </thead>
                 <tbody>
+
                     @forelse ($datos as $dato)
                     <tr>
                         <td>{{ \Carbon\Carbon::parse($dato->created_at)->format('d M Y') }}</td>
                         <td>{{ $dato->full_nro }}</td>
                         <td>{{ ucwords($dato->user->name) }}</td>
                         <td class="text-right">$ {{ number_format($dato->total) }}</td>
-                        <td>
-
+                        <td class="text-center">
+                            <a href="{{ route('consumo_interno.imprimir', $dato->id) }}" title="Imprimir comprobante" class="mr-2" style="text-decoration: none;">
+                                <i class="bi bi-printer"></i>
+                            </a>
                         </td>
 
                     </tr>

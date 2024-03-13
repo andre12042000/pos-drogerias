@@ -17,6 +17,7 @@ class ListComponent extends Component
     public function render()
     {
         $datos = ConsumoInterno::search($this->buscar)
+                                ->orderBy('created_at', 'DESC')
                                 ->paginate($this->cantidad_registros);
 
 
