@@ -48,7 +48,7 @@
             </div>
 
 
-            <button type="submit" class="btn btn-primary" > <strong>INICIAR SESIÓN</strong> </button>
+            <button type="submit" class="btn btn-light " style="width: 100%" > <strong>INICIAR SESIÓN</strong> </button>
 
 
                 <a class="link-primary fs-7 fw-bolder" href="{{ route('password.request') }}">
