@@ -15,7 +15,7 @@ class CreateComponent extends Component
         ->search($this->buscar)
         ->orderBy('name', 'asc')
         ->active()
-        ->take(3)
+        ->take(6)
         ->get();
 
         $clientes = Client::all();

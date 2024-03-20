@@ -1,4 +1,6 @@
 <div>
+    @section('title', 'Nuevo Consumo')
+
     <div class="row py-5">
         <div class="col-lg-6">
             <div class="card">
@@ -7,7 +9,7 @@
                         <thead>
                             <tr>
                                 <th>Producto</th>
-                                <th>Cantidad</th>
+                                <th>Cant</th>
                                 <th>Forma</th>
                                 <th>Precio Unitario</th>
                                 <th>Subtotal</th>
@@ -55,7 +57,7 @@
                         <tbody style="height:365px;">
                             @forelse ($products as $product)
                                 <tr data-product='{{ json_encode($product) }}'>
-                                    <td>{{ $product->code }} </td>
+                                    <td>...{{ substr($product->code, -4) }}</td>
                                     <td>
 
                                         @if (
