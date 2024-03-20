@@ -32,6 +32,7 @@ class SearchComponent extends Component
     {
         $products = Product::with('inventario')
         ->search($this->buscar)
+        ->orderBy('is_combo', 'desc')
         ->orderBy('name', 'asc')
         ->active()
         ->take(10)
