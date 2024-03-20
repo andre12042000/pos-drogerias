@@ -2,7 +2,7 @@
     <form>
         <div class="form-row">
             <div class="form-group row col-lg-6">
-                <label for="password" class="col-md-3 col-form-label text-md-right">Nueva Contraseña</label>
+                <label for="password" class="col-md-6 col-form-label text-md-right">Nueva Contraseña</label>
                 <div class="col-md-9 input-group">
                     <input type="password"
                         class="form-control @if ($errors->has('password')) is-invalid @elseif($password != '') is-valid @endif"
