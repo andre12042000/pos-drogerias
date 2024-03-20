@@ -10,10 +10,13 @@ use App\Http\Controllers\Inventario\PurchaseController;
 use Spatie\Permission\Middlewares\PermissionMiddleware;
 use App\Http\Controllers\Inventario\ImportProductsController;
 use App\Http\Livewire\Product\CorreccionProductsComponent;
+use App\Http\Livewire\Product\ComboCreateComponent;
+
 
 Route::middleware([ PermissionMiddleware::class.':Acceso Inventario Ver'])->group(function () {
 
 Route::get('productos', [ProductController::class, 'index'])->name('product');
+
 Route::get('productos/stock/min', [ProductController::class, 'low'])->name('stock.min');
 Route::get('low_stock', LowStockComponent::class)->name('low.stock');
 Route::get('productos/detalles/{product}', ShowComponent::class)->name('product.show');
@@ -27,6 +30,8 @@ Route::post('productos/import/data',  [ImportProductsController::class, 'importa
 Route::get('productos/importar', [ImportProductsController::class, 'importar'])->name('importador');
 
 Route::get('productos/correccion', [CorreccionProductsComponent::class, '__invoke'])->name('correccion');
+
+Route::get('combo/create', [ComboCreateComponent::class, '__invoke'])->name('combo.create');
 
 });
 

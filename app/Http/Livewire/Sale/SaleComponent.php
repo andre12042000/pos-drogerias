@@ -26,6 +26,7 @@ use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
 use Illuminate\Support\Str;
 use Intervention\Image\Facades\Image;
 use App\Events\VentaRealizada;
+use App\Models\Combo;
 use App\Models\Orders;
 use App\Models\OrdersDetails;
 
@@ -115,6 +116,33 @@ class SaleComponent extends Component
     }
 
     function verificarStockInventario($product)
+    {
+
+        if($product['is_combo'] > 0){
+            /* $detalles_combo = self::obtenerDetallesCombo($product['id']);
+
+            foreach($detalles_combo as $detalle){
+
+            } */
+            //Implementar logica para recorrer el combo
+            $status = true;
+        }else{
+            $status = self::verificarProductosInventarioStock($product);
+        }
+
+        return $status;
+
+    }
+
+    function obtenerDetallesCombo($combo_id)
+    {
+        $combo = Combo::where('combo_id', $combo_id)->get();
+
+        return $combo;
+
+    }
+
+    function verificarProductosInventarioStock($product)
     {
         if($product['inventario']['cantidad_caja'] == '0' && $product['inventario']['cantidad_blister'] == '0' && $product['inventario']['cantidad_unidad'] == '0'){
             return false;
@@ -218,7 +246,7 @@ class SaleComponent extends Component
 
             $this->dispatchBrowserEvent('swal', [
                 'title' => 'Ops! Ocurrio un error',
-                'text' => '¡No es posible crear la transacción, verifica los datos!' . $e,
+                'text' => '¡No es posible crear la transacción, verifica los datos!' . $e->getMessage(),
                 'icon' => 'error'
             ]);
 

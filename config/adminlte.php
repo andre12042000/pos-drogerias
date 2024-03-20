@@ -15,7 +15,7 @@ return [
     */
 
     'title' => '',
-    'title_prefix' => 'POS-VENTA | ',
+    'title_prefix' => 'Fácil POS | ',
     'title_postfix' => '',
 
     /*

@@ -42,6 +42,8 @@
                         @can('Acceso Inventraio Crear')
                             <button type="button" class="btn btn-outline-light float-right ml-2" data-toggle="modal"
                                 data-target="#productomodal">Nuevo producto <i class="las la-plus-circle"></i></button>
+
+                            <button type="button" id="redireccionarBtn" class="btn btn-outline-light float-right ml-2">Nuevo Combo <i class="bi bi-columns-gap"></i></button>
                         @endcan
 
 
@@ -141,4 +143,16 @@
 @section('js')
 
     <script src="{{ asset('js/productos/listarProductos.js') }}"></script>
+
+    <script>
+        // Obtener el botón por su ID
+        var btn = document.getElementById('redireccionarBtn');
+
+        // Agregar un evento de clic al botón
+        btn.addEventListener('click', function() {
+            // Redirigir a la página deseada
+
+            window.location.href = '{{ route("inventarios.combo.create") }}';
+        });
+    </script>
 @stop
