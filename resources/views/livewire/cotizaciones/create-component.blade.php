@@ -1,4 +1,6 @@
 <div>
+    @section('title', 'Nueva Cotización')
+
     <div class="row py-5">
         <div class="col-lg-5">
             <div class="card">
@@ -20,17 +22,22 @@
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th>Descripción</th>
-                                <th>Cantidad</th>
+                                <th>Producto</th>
+                                <th>Cant</th>
+                                <th>Forma</th>
                                 <th>Precio Unitario</th>
                                 <th>Subtotal</th>
+                                <th></th>
                             </tr>
                         </thead>
-                        <tbody id="tablaProductosSeleccionados">
+                        <tbody id="productos-en-transaccion" style="height:400px; font-size: 10px">
 
                         </tbody>
                     </table>
                 </div>
+
+
+
             </div>
         </div>
         {{-- derecha --}}
@@ -53,36 +60,36 @@
                             <tr>
                                 <th>Código</th>
                                 <th>Descripción</th>
-                                <th>Stock</th>
                                 <th>Laboratorio</th>
                                 <th>P. Caja</th>
                                 <th>P. Blister</th>
                                 <th>P. Unidad</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody style="height:365px;">
                             @forelse ($products as $product)
                                 <tr data-product='{{ json_encode($product) }}'>
-                                    <td>{{ $product->code }} </td>
-                                    <td>{{ $product->name }}</td>
-                                    <td class="text-center">
+                                    <td>...{{ substr($product->code, -4) }}</td>
+
+                                    <td>
+
                                         @if (
                                             $product->inventario->cantidad_caja == 0 &&
                                                 $product->inventario->cantidad_blister == 0 &&
                                                 $product->inventario->cantidad_unidad == 0)
-                                            <i class="bi bi-stop-circle text-danger" data-bs-toggle="tooltip"
-                                                data-html="true" data-bs-placement="top"
-                                                title="No hay productos disponibles." style="cursor: not-allowed;"></i>
+                                            <p data-bs-toggle="tooltip" data-html="true" data-bs-placement="top"
+                                                title="No hay productos disponibles." class="text-danger"
+                                                style="cursor: default">{{ $product->name }} </p>
                                         @else
                                             <?php
                                             $tooltipContent = 'Cajas: ' . $product->inventario->cantidad_caja . ',   ' . 'Blisters: ' . $product->inventario->cantidad_blister . ',   ' . 'Unidades: ' . $product->inventario->cantidad_unidad;
                                             ?>
-                                            <i class="bi bi-check-circle text-success" data-bs-toggle="tooltip"
-                                                data-html="true" data-bs-placement="top" title="{{ $tooltipContent }}"
-                                                style="cursor: not-allowed;"></i>
+
+                                            <p data-bs-toggle="tooltip" data-html="true" data-bs-placement="top"
+                                                title="{{ $tooltipContent }}" style="cursor: default">
+                                                {{ $product->name }} </p>
                                         @endif
                                     </td>
-
                                     <td>
                                         @isset($product->laboratorio->name)
                                             {{ Illuminate\Support\Str::limit($product->laboratorio->name, 12) }}
@@ -91,20 +98,23 @@
                                         @endisset
                                     </td>
 
+                                    <td class="price-cell text-end" data-option="disponible_caja"
+                                        style="cursor: pointer" onclick="handlePriceClick(this)">
+                                        {{ $product->precio_caja > 0 ? '$' . number_format($product->precio_caja, 0, ',', '.') : '0' }}
+                                    </td>
+                                    <td class="price-cell text-end" data-option="disponible_blister"
+                                        style="cursor: pointer" onclick="handlePriceClick(this)">
+                                        {{ $product->precio_blister > 0 ? '$' . number_format($product->precio_blister, 0, ',', '.') : '0' }}
+                                    </td>
+                                    <td class="price-cell text-end" data-option="disponible_unidad"
+                                        style="cursor: pointer" onclick="handlePriceClick(this)">
+                                        {{ $product->precio_unidad > 0 ? '$' . number_format($product->precio_unidad, 0, ',', '.') : '0' }}
+                                    </td>
 
-                                    <td class="price-cell" data-option="disponible_caja" style="cursor: pointer">
-                                        {{ $product->precio_caja != 0 ? '$' . number_format($product->precio_caja, 0, ',', '.') : '0' }}
-                                    </td>
-                                    <td class="price-cell" data-option="disponible_blister" style="cursor: pointer">
-                                        {{ $product->precio_blister != 0 ? '$' . number_format($product->precio_blister, 0, ',', '.') : '0' }}
-                                    </td>
-                                    <td class="price-cell" data-option="disponible_unidad" style="cursor: pointer">
-                                        {{ $product->precio_unidad != 0 ? '$' . number_format($product->precio_unidad, 0, ',', '.') : '0' }}
-                                    </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="7" class="text-center">
+                                    <td colspan="6">
                                         <p>No se encontraron registros...</p>
                                     </td>
                                 </tr>
@@ -113,38 +123,6 @@
                     </table>
                 </div>
 
-                @section('css')
-
-                    <style>
-                        /* Estilo para la tabla */
-                        .table {
-                            width: 100%;
-                            margin-bottom: 1rem;
-                            color: #212529;
-                            border-collapse: collapse;
-                        }
-
-                        /* Estilo para las celdas del encabezado */
-                        .table th,
-                        .table td {
-                            padding: 0.75rem;
-                            vertical-align: top;
-                            border-top: 1px solid #dee2e6;
-                        }
-
-                        /* Estilo para las filas impares */
-                        .table tbody tr:nth-child(odd) {
-                            background-color: #f8f9fa;
-                        }
-
-                        /* Estilo para el mensaje cuando no hay registros */
-                        .table tbody tr td[colspan="6"] {
-                            text-align: center;
-                            padding: 10px;
-                        }
-                    </style>
-
-                @stop
 
 
 
@@ -155,37 +133,55 @@
 
                     <div class="row g-3  ">
                         <div class="col-7 text-end">
+
                             <label for="inputPassword6" class="col-form-label">Subtotal</label>
                         </div>
-                        <div class="col-5">
-                            <input type="text" id="inputPassword6" class="form-control"
-                                aria-describedby="passwordHelpInline" disabled readonly>
+                        <div class="col-5 mt-4">
+                            <h5 id="subtotal"></h5>
                         </div>
 
 
                         <div class="col-7 text-end">
                             <label for="inputPassword6" class="col-form-label">% IVA </label>
                         </div>
-                        <div class="col-5">
-                            <input type="text" id="inputPassword6" class="form-control"
-                                aria-describedby="passwordHelpInline">
+                        <div class="col-5 mt-4">
+                            <h5 id="iva"></h5>
                         </div>
 
                         <div class="col-7 text-end">
                             <label for="inputPassword6" class="col-form-label">Descuento</label>
                         </div>
                         <div class="col-5">
-                            <input type="text" id="inputPassword6" class="form-control"
-                                aria-describedby="passwordHelpInline">
+                            <div class="row">
+                                <div class="col-6">
+                                    <input type="text" id="valor_descuento" name="valor_descuento" class="form-control"
+                                     aria-describedby="passwordHelpInline" disabled oninput="calculateTotal()">
+
+                                </div>
+                                <div class="col-6 mt-1">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input mt-1" type="radio" name="inlineRadioOptions"
+                                            id="inlineRadio1" value="descuento_porcentaje" onchange="toggleInput(this)">
+                                        <label class="form-check-label" for="inlineRadio1">%</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input mt-1" type="radio" name="inlineRadioOptions"
+                                            id="inlineRadio2" value="descuento_efectivo" onchange="toggleInput(this)">
+                                        <label class="form-check-label" for="inlineRadio2">$</label>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
+                        <div class="col-5">
+                            <a class="btn btn-outline-success" href="#">Generar Cotización</a>
+                        </div>
 
-                        <div class="col-7 text-end">
+                        <div class="col-2 text-end">
                             <label for="inputPassword6" class="col-form-label">Total</label>
                         </div>
-                        <div class="col-5">
-                            <input type="text" id="inputPassword6" class="form-control"
-                                aria-describedby="passwordHelpInline" disabled readonly>
+                        <div class="col-5 mt-3">
+                            <h5 class="mt-1" id="total"></h5>
                         </div>
 
                     </div>
@@ -197,124 +193,334 @@
 
     </div>
 </div>
-
-
-
-
-
+@section('js')
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var productosSeleccionados = [];
-        var tablaProductosSeleccionados = document.getElementById('tablaProductosSeleccionados');
+    // Definir la variable total del sistema con su valor actual
+    var totalSistema = 1000; // Ejemplo, ajusta según tu necesidad
 
-        document.getElementById('productos-container').addEventListener('click', function(event) {
-            var target = event.target;
+    function toggleInput(radio) {
+        var valor_descuento_input = document.getElementById("valor_descuento");
+        if (radio.value === "descuento_porcentaje") {
+            valor_descuento_input.maxLength = 2; // Establecer máximo de 2 caracteres
+            valor_descuento_input.value = ''; // Limpiar el valor del input
+            valor_descuento_input.disabled = false; // Habilitar el input
+        } else {
+            valor_descuento_input.maxLength = 7; // Establecer máximo de 7 caracteres
+            valor_descuento_input.value = ''; // Limpiar el valor del input
+            valor_descuento_input.disabled = false; // Habilitar el input
+        }
+    }
 
-            // Verificar si se hizo clic en una celda de precio
-            if (target.classList.contains('price-cell')) {
-                var row = target.parentNode; // Obtener la fila completa
-                var productData = JSON.parse(row.getAttribute('data-product'));
+    function calculateTotal() {
+        var valor_descuento_input = document.getElementById("valor_descuento");
+        var valor_descuento = parseFloat(valor_descuento_input.value);
+        var radios = document.getElementsByName("inlineRadioOptions");
+        var selectedRadioValue = "";
 
-                // Buscar el producto en la lista de productos seleccionados
-                var productoExistente = productosSeleccionados.find(p => p.id === productData.id);
+        for (var i = 0; i < radios.length; i++) {
+            if (radios[i].checked) {
+                selectedRadioValue = radios[i].value;
+                break;
+            }
+        }
 
-                if (productoExistente) {
-                    // Si el producto ya está en la lista, incrementar la cantidad
-                    productoExistente.cantidad++;
-                } else {
-                    // Si el producto no está en la lista, agregarlo con cantidad 1
-                    productData.cantidad = 1;
-                    productosSeleccionados.push(productData);
+        if (selectedRadioValue === "descuento_porcentaje") {
+            // Calcular el descuento en base al porcentaje
+            var descuento = totalSistema * (valor_descuento / 100);
+            totalSistema -= descuento; // Restar el descuento al total del sistema
+        } else {
+            // Sumar el descuento en efectivo al total del sistema
+            totalSistema -= valor_descuento; // Restar el descuento al total del sistema
+        }
+
+        console.log("Total del sistema después del descuento: " + totalSistema);
+    }
+</script>
+
+    <script>
+        var selectedProducts = [];
+        var totalTransaccion = 0;
+        document.getElementById('total').innerHTML = formatCurrency(totalTransaccion);
+        var ivaTransaccion = 0;
+        document.getElementById('iva').innerHTML = formatCurrency(ivaTransaccion);
+
+        var subtotalTransaccion = 0;
+        document.getElementById('subtotal').innerHTML = formatCurrency(subtotalTransaccion);
+
+        function handlePriceClick(cell) {
+            var priceText = cell.innerText.trim();
+            var priceValue = parseFloat(priceText.replace(/[^\d.-]/g, ''));
+
+
+
+            if (!isNaN(priceValue) && priceValue > 0) {
+                var selectedOption = cell.dataset.option;
+                var productData = JSON.parse(cell.closest('tr').dataset.product);
+
+
+                if (productData.inventario.cantidad_caja === '0' && productData.inventario.cantidad_blister === '0' &&
+                    productData.inventario.cantidad_unidad === '0') {
+                    alertSinStock();
+                    return;
                 }
 
-                // Resto del código...
-                var clickedColumn = target.getAttribute('data-option');
-                var precio = getPrecioUnitario(productData, clickedColumn);
-                // Actualizar la tabla de productos seleccionados
-                mostrarProductosSeleccionados(precio);
 
-                // Llamar a la función handleObtenerIva aquí
-                handleObtenerIva(productData, productosSeleccionados);
-            }
-        });
+                var precioUnitario;
+                var subtotalIva
 
-        // Agregar las funciones adicionales fuera del bloque anterior
-        function handleObtenerIva(producto, cantidad, productosSeleccionados) {
-            let iva = 0;
+                if (selectedOption === 'disponible_caja') {
+                    precioUnitario = productData.precio_caja;
+                    subtotalIva = productData.valor_iva_caja
+                } else if (selectedOption === 'disponible_blister') {
+                    precioUnitario = productData.precio_blister;
+                    subtotalIva = productData.valor_iva_blister
 
-            switch (productosSeleccionados) {
-                case "disponible_caja":
-                    iva = Math.round(producto.valor_iva_caja * cantidad);
-                    break;
-                case "disponible_blister":
-                    iva = Math.round(producto.valor_iva_blister * cantidad);
-                    break;
-                case "disponible_unidad":
-                    iva = Math.round(producto.valor_iva_unidad * cantidad);
-                    break;
-                default:
-                    // Manejar el caso por defecto
-                    iva = 0;
-                    break;
-            }
+                } else {
+                    precioUnitario = productData.precio_unidad;
+                    subtotalIva = productData.valor_iva_unidad
 
-            return iva;
-        }
+                }
 
-        function enableOptionsBasedOnProduct(producto) {
-            if (producto.disponible_caja) {
-                this.enableOption("disponible_caja");
-            }
-            if (producto.disponible_blister) {
-                this.enableOption("disponible_blister");
-            }
-            if (producto.disponible_unidad) {
-                this.enableOption("disponible_unidad");
+                addProductArray(productData, selectedOption, precioUnitario, subtotalIva)
             }
         }
 
-        function getPrecioUnitario(productData, productosSeleccionados) {
-            switch (productosSeleccionados) {
-                case "disponible_caja":
-                    return productData.precio_caja;
-                case "disponible_blister":
-                    return productData.precio_blister;
-                case "disponible_unidad":
-                    return productData.precio_unidad;
-                default:
-                    // Manejar el caso por defecto o mostrar un mensaje de error si es necesario
-                    return 0;
-            }
-        }
-
-        function agregarProductoSeleccionado(producto) {
-            productosSeleccionados.push(producto);
-        }
-
-        function mostrarProductosSeleccionados(precio) {
-            // Limpiar contenido existente
-            tablaProductosSeleccionados.innerHTML = '';
-
-            productosSeleccionados.forEach(function(producto) {
-                var fila = document.createElement('tr');
-                var columnaNombre = document.createElement('td');
-                columnaNombre.textContent = producto.name;
-                fila.appendChild(columnaNombre);
-
-                var columnaCantidad = document.createElement('td');
-                columnaCantidad.textContent = producto.cantidad; // Mostrar la cantidad
-                fila.appendChild(columnaCantidad);
-
-                var columnaPrecio = document.createElement('td');
-                columnaPrecio.textContent = '$' + precio;
-                fila.appendChild(columnaPrecio);
-
-                var columnaSubtotal = document.createElement('td');
-                columnaSubtotal.textContent = '$' + precio * producto.cantidad;
-                fila.appendChild(columnaSubtotal);
-
-                tablaProductosSeleccionados.appendChild(fila);
+        function addProductArray(product, forma, precio, subtotalIva) {
+            // Busca si el producto ya existe en selectedProducts
+            var productoExistente = selectedProducts.find(function(item) {
+                return item.product_id === product.id && item.forma === forma;
             });
+            if (productoExistente) {
+                // Si el producto ya existe, actualiza la cantidad y el subtotal
+
+                productoExistente.cantidad += 1;
+                productoExistente.subtotal = productoExistente.cantidad * productoExistente.precio_unitario;
+                productoExistente.iva = productoExistente.cantidad * productoExistente.iva;
+            } else {
+                // Si el producto no existe, agrégalo al array
+                var nuevoProducto = {
+                    product_id: product.id,
+                    product_name: product.name,
+                    forma: forma,
+                    cantidad: 1,
+                    precio_unitario: precio,
+                    subtotal: precio,
+                    iva: subtotalIva,
+                };
+
+                selectedProducts.push(nuevoProducto);
+
+            }
+
+            renderTable();
         }
-    });
-</script>
+
+        function formatCurrency(value) {
+            // Utiliza Intl.NumberFormat para formatear como moneda colombiana (COP)
+            return new Intl.NumberFormat('es-CO', {
+                style: 'currency',
+                currency: 'COP',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }).format(value);
+        }
+
+        function alertSinStock() {
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: "No hay productos en stock, verifica el inventario!",
+            });
+
+        }
+
+        function alertSinProductosTransaccion() {
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: "Agrega al menos un producto para continuar la transacción!",
+            });
+
+        }
+
+
+        function renderTable() {
+            // Aquí puedes utilizar el array selectedProducts para actualizar tu tabla
+            // Por ejemplo, puedes usar DOM manipulation para añadir filas a una tabla HTML.
+            var tabla = document.getElementById('productos-en-transaccion');
+            totalTransaccion = 0;
+            ivaTransaccion = 0;
+            subtotalTransaccion = 0;
+
+            // Limpia la tabla antes de volver a renderizar
+            tabla.innerHTML = '';
+
+            // Itera sobre los productos en el array
+            selectedProducts.forEach(function(producto, index) {
+                // Crea una nueva fila
+                var fila = tabla.insertRow();
+
+                // Añade celdas con los datos del producto
+                var celdaProduct = fila.insertCell(0);
+                var celdaCantidad = fila.insertCell(1);
+                var celdaForma = fila.insertCell(2);
+                var celdaPrecioUnitario = fila.insertCell(3);
+                var celdaSubTotal = fila.insertCell(4);
+                var celdaEliminar = fila.insertCell(5);
+
+                celdaProduct.innerHTML = producto.product_name;
+                celdaCantidad.innerHTML = producto.cantidad;
+                celdaForma.innerHTML = producto.forma;
+                celdaPrecioUnitario.innerHTML = formatCurrency(producto.precio_unitario);
+                celdaSubTotal.innerHTML = formatCurrency(producto.subtotal);
+
+                var btnEliminar = document.createElement("button");
+                btnEliminar.classList.add("btn", "btn-light"); // Establece el color del botón a gris claro
+                btnEliminar.style.border = "none"; // Elimina el borde del botón
+                btnEliminar.innerHTML =
+                '<i class="fas fa-trash" style="color: gray; background: transparent;"></i>'; // Establece el color del ícono a gris
+                btnEliminar.onclick = function() {
+                    eliminarProducto(index);
+                };
+
+                // Añade el botón a la celda
+                celdaEliminar.appendChild(btnEliminar);
+
+
+                totalTransaccion += producto.subtotal;
+                ivaTransaccion += producto.iva;
+
+                subtotalTransaccion = totalTransaccion - ivaTransaccion
+            });
+
+            document.getElementById('total').innerHTML = formatCurrency(totalTransaccion);
+            document.getElementById('iva').innerHTML = formatCurrency(ivaTransaccion);
+
+            document.getElementById('subtotal').innerHTML = formatCurrency(subtotalTransaccion);
+
+        }
+
+        function eliminarProducto(index) {
+            // Elimina el producto del array en el índice dado
+            selectedProducts.splice(index, 1);
+
+            // Vuelve a renderizar la tabla
+            renderTable();
+        }
+
+        function handleGuardarTransaccion() {
+            if (!selectedProducts || selectedProducts.length === 0 || totalTransaccion === 0) {
+                alertSinProductosTransaccion();
+                return;
+            }
+
+            Livewire.emit('guardarConsumoInternoEvent', {
+                selectedProducts: selectedProducts,
+                totalTransaccion: totalTransaccion
+            });
+
+        }
+    </script>
+
+
+    <script>
+        window.addEventListener('transaccion-generada', event => {
+            const numeroVenta = event.detail.transaccion;
+            Swal.fire({
+                icon: "success",
+                title: "Transacción realizada correctamente",
+                text: `Número de transacción: ${numeroVenta}`,
+                showConfirmButton: false,
+                timer: 3000
+            });
+            setTimeout(() => {
+                const rutaDeseadaUrl = '{{ route('consumo_interno.index') }}';
+
+                // Redirigir a la ruta deseada
+                window.location.href = rutaDeseadaUrl;
+            }, 1500);
+
+        })
+    </script>
+
+
+@stop
+
+@section('css')
+
+    <style>
+        /* Estilo para la tabla */
+        .table {
+            width: 100%;
+            margin-bottom: 1rem;
+            color: #212529;
+            border-collapse: collapse;
+        }
+
+        /* Estilo para las celdas del encabezado */
+        .table th,
+        .table td {
+            padding: 0.75rem;
+            vertical-align: top;
+            border-top: 1px solid #dee2e6;
+        }
+
+        /* Estilo para las filas impares */
+        .table tbody tr:nth-child(odd) {
+            background-color: #f8f9fa;
+        }
+
+        /* Estilo para el mensaje cuando no hay registros */
+        .table tbody tr td[colspan="6"] {
+            text-align: center;
+            padding: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        /* Alinea las celdas de precio a la derecha */
+        .precio {
+            text-align: right;
+        }
+    </style>
+
+<style>
+    /* Estilo para la tabla */
+    .table {
+        width: 100%;
+        margin-bottom: 1rem;
+        color: #212529;
+        border-collapse: collapse;
+    }
+
+    /* Estilo para las celdas del encabezado */
+    .table th,
+    .table td {
+        padding: 0.75rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+    }
+
+    /* Estilo para las filas impares */
+    .table tbody tr:nth-child(odd) {
+        background-color: #f8f9fa;
+    }
+
+    /* Estilo para el mensaje cuando no hay registros */
+    .table tbody tr td[colspan="6"] {
+        text-align: center;
+        padding: 10px;
+    }
+</style>
+
+@stop
