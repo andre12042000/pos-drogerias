@@ -2,7 +2,7 @@
     <form>
         <div class="form-row">
             <div class="form-group row col-lg-6">
-                <label for="password" class="col-md-3 col-form-label text-md-right">Nueva Contraseña</label>
+                <label for="password" class="col-md-6 ml-1">Nueva Contraseña</label>
                 <div class="col-md-9 input-group">
                     <input type="password"
                         class="form-control @if ($errors->has('password')) is-invalid @elseif($password != '') is-valid @endif"
@@ -21,7 +21,7 @@
             </div>
 
             <div class="form-group row col-lg-6">
-                <label for="verify_password" class="col-md-3 col-form-label text-md-right">Confirmar </label>
+                <label for="verify_password" class="col-md-3 ml-1">Confirmar </label>
                 <div class="col-md-9 input-group">
                     <input type="password"
                         class="form-control @if ($errors->has('verify_password')) is-invalid @elseif($verify_password != '') is-valid @endif"
