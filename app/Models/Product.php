@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 
 class Product extends Model
@@ -107,5 +108,12 @@ class Product extends Model
             return $query;
         }
     }
+
+    public function getImageUrlAttribute()
+    {
+        return $this->image ? Config::get('app.URL') . '/storage/' . $this->image : Config::get('app.URL') . '/img/sinimagen.jpg';
+    }
+
+
 
 }
