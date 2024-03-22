@@ -6,8 +6,8 @@
             <div class="card">
                 <div class="card-body">
                     <div class="form-floating">
-                        <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
-                            <option selected>Selecciona Un Cliente</option>
+                        <select class="form-select" id="cliente" name="cliente" aria-label="Floating label select example">
+                            <option value="">Selecciona Un Cliente</option>
                             @foreach ($clientes as $cliente)
                                 <option value="{{ $cliente->id }}">{{ $cliente->name }}</option>
                             @endforeach
@@ -154,8 +154,8 @@
                         <div class="col-5">
                             <div class="row">
                                 <div class="col-6">
-                                    <input type="text" id="valor_descuento" name="valor_descuento" class="form-control"
-                                     aria-describedby="passwordHelpInline" disabled oninput="calculateTotal()">
+                                    <input type="text" id="valor_descuento" name="valor_descuento"
+                                        class="form-control" aria-describedby="passwordHelpInline" disabled>
 
                                 </div>
                                 <div class="col-6 mt-1">
@@ -169,19 +169,23 @@
                                             id="inlineRadio2" value="descuento_efectivo" onchange="toggleInput(this)">
                                         <label class="form-check-label" for="inlineRadio2">$</label>
                                     </div>
+
+
                                 </div>
                             </div>
                         </div>
 
                         <div class="col-5">
-                            <a class="btn btn-outline-success" href="#">Generar Cotización</a>
+                            <a class="btn btn-outline-success" onclick="handleGuardarTransaccion()">Generar Cotización</a>
                         </div>
 
                         <div class="col-2 text-end">
                             <label for="inputPassword6" class="col-form-label">Total</label>
                         </div>
                         <div class="col-5 mt-3">
-                            <h5 class="mt-1" id="total"></h5>
+                            <h5 class="mt-1" id="total"></h5> <a class="btn btn-outline-secondary float-end"
+                                title="Restuarar Total" onclick="restablecertotal()"><i
+                                    class="bi bi-arrow-clockwise"></i></a>
                         </div>
 
                     </div>
@@ -194,57 +198,33 @@
     </div>
 </div>
 @section('js')
-<script>
-    // Definir la variable total del sistema con su valor actual
-    var totalSistema = 1000; // Ejemplo, ajusta según tu necesidad
 
-    function toggleInput(radio) {
-        var valor_descuento_input = document.getElementById("valor_descuento");
-        if (radio.value === "descuento_porcentaje") {
-            valor_descuento_input.maxLength = 2; // Establecer máximo de 2 caracteres
-            valor_descuento_input.value = ''; // Limpiar el valor del input
-            valor_descuento_input.disabled = false; // Habilitar el input
-        } else {
-            valor_descuento_input.maxLength = 7; // Establecer máximo de 7 caracteres
-            valor_descuento_input.value = ''; // Limpiar el valor del input
-            valor_descuento_input.disabled = false; // Habilitar el input
-        }
-    }
 
-    function calculateTotal() {
-        var valor_descuento_input = document.getElementById("valor_descuento");
-        var valor_descuento = parseFloat(valor_descuento_input.value);
-        var radios = document.getElementsByName("inlineRadioOptions");
-        var selectedRadioValue = "";
 
-        for (var i = 0; i < radios.length; i++) {
-            if (radios[i].checked) {
-                selectedRadioValue = radios[i].value;
-                break;
-            }
-        }
 
-        if (selectedRadioValue === "descuento_porcentaje") {
-            // Calcular el descuento en base al porcentaje
-            var descuento = totalSistema * (valor_descuento / 100);
-            totalSistema -= descuento; // Restar el descuento al total del sistema
-        } else {
-            // Sumar el descuento en efectivo al total del sistema
-            totalSistema -= valor_descuento; // Restar el descuento al total del sistema
-        }
-
-        console.log("Total del sistema después del descuento: " + totalSistema);
-    }
-</script>
 
     <script>
+
+var clienteSeleccionado = '';
+
+// Función para obtener y almacenar el valor seleccionado del cliente
+function obtenerClienteSeleccionado() {
+    // Obtener el elemento select
+    var selectCliente = document.getElementById('cliente');
+
+    // Obtener el valor seleccionado del cliente
+    clienteSeleccionado = selectCliente.value;
+
+}
+
+
+
         var selectedProducts = [];
         var totalTransaccion = 0;
-        document.getElementById('total').innerHTML = formatCurrency(totalTransaccion);
-        var ivaTransaccion = 0;
-        document.getElementById('iva').innerHTML = formatCurrency(ivaTransaccion);
-
         var subtotalTransaccion = 0;
+        var ivaTransaccion = 0;
+        document.getElementById('total').innerHTML = formatCurrency(totalTransaccion);
+        document.getElementById('iva').innerHTML = formatCurrency(ivaTransaccion);
         document.getElementById('subtotal').innerHTML = formatCurrency(subtotalTransaccion);
 
         function handlePriceClick(cell) {
@@ -343,6 +323,15 @@
 
         }
 
+        function alertSinClienteTransaccion() {
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: "Debes seleccionar un cliente para continuar la transacción!",
+            });
+
+        }
+
 
         function renderTable() {
             // Aquí puedes utilizar el array selectedProducts para actualizar tu tabla
@@ -378,7 +367,7 @@
                 btnEliminar.classList.add("btn", "btn-light"); // Establece el color del botón a gris claro
                 btnEliminar.style.border = "none"; // Elimina el borde del botón
                 btnEliminar.innerHTML =
-                '<i class="fas fa-trash" style="color: gray; background: transparent;"></i>'; // Establece el color del ícono a gris
+                    '<i class="fas fa-trash" style="color: gray; background: transparent;"></i>'; // Establece el color del ícono a gris
                 btnEliminar.onclick = function() {
                     eliminarProducto(index);
                 };
@@ -400,6 +389,64 @@
 
         }
 
+        function restablecertotal() {
+
+            totalTransaccion = ivaTransaccion + subtotalTransaccion; // Restar el valor  al total del sistema
+            document.getElementById('total').innerHTML = formatCurrency(totalTransaccion);
+
+        }
+
+        function toggleInput(radio) {
+            var valor_descuento_input = document.getElementById("valor_descuento");
+            if (radio.value === "descuento_porcentaje") {
+                valor_descuento_input.maxLength = 2; // Establecer máximo de 2 caracteres
+                valor_descuento_input.value = ''; // Limpiar el valor del input
+                valor_descuento_input.disabled = false; // Habilitar el input
+                totalTransaccion = ivaTransaccion + subtotalTransaccion; // Restar el valor  al total del sistema
+
+            } else {
+                valor_descuento_input.maxLength = 7; // Establecer máximo de 7 caracteres
+                valor_descuento_input.value = ''; // Limpiar el valor del input
+                valor_descuento_input.disabled = false; // Habilitar el input
+                totalTransaccion = ivaTransaccion + subtotalTransaccion; // Restar el valor  al total del sistema
+
+            }
+            document.getElementById('total').innerHTML = formatCurrency(totalTransaccion);
+
+        }
+
+        // Esta función calcula el total cuando se hace un cambio en el campo de descuento
+        function calculateTotal() {
+            var valor_descuento_input = document.getElementById("valor_descuento");
+            var valor_descuento = parseFloat(valor_descuento_input.value);
+            var radios = document.getElementsByName("inlineRadioOptions");
+            var selectedRadioValue = "";
+
+            for (var i = 0; i < radios.length; i++) {
+                if (radios[i].checked) {
+                    selectedRadioValue = radios[i].value;
+                    break;
+                }
+            }
+
+            if (selectedRadioValue === "descuento_porcentaje" && valor_descuento > 0 && totalTransaccion > 0) {
+                // Calcular el descuento en base al porcentaje
+                var descuento = totalTransaccion * (valor_descuento / 100);
+                totalTransaccion -= descuento; // Restar el descuento al total del sistema
+            } else {
+                if (valor_descuento >= 50  && totalTransaccion > 0) {
+                    // Sumar el descuento en efectivo al total del sistema
+                    totalTransaccion -= valor_descuento; // Restar el descuento al total del sistema
+                }
+
+            }
+            document.getElementById('total').innerHTML = formatCurrency(totalTransaccion);
+        }
+
+        // Esta función asocia la ejecución de calculateTotal al evento change del campo de descuento
+        document.getElementById("valor_descuento").addEventListener("change", calculateTotal);
+
+
         function eliminarProducto(index) {
             // Elimina el producto del array en el índice dado
             selectedProducts.splice(index, 1);
@@ -409,13 +456,24 @@
         }
 
         function handleGuardarTransaccion() {
+            descuentoTototal = 0;
+             descuentoTototal = subtotalTransaccion + ivaTransaccion - totalTransaccion
+             obtenerClienteSeleccionado()
+             if (clienteSeleccionado == '') {
+                alertSinClienteTransaccion();
+                return;
+            }
             if (!selectedProducts || selectedProducts.length === 0 || totalTransaccion === 0) {
                 alertSinProductosTransaccion();
                 return;
             }
 
-            Livewire.emit('guardarConsumoInternoEvent', {
+            Livewire.emit('guardarCotizacionEvent', {
                 selectedProducts: selectedProducts,
+                subtotalTransaccion: subtotalTransaccion,
+                ivaTransaccion: ivaTransaccion,
+                descuentoTototal: descuentoTototal,
+                clienteSeleccionado: clienteSeleccionado,
                 totalTransaccion: totalTransaccion
             });
 
@@ -434,7 +492,7 @@
                 timer: 3000
             });
             setTimeout(() => {
-                const rutaDeseadaUrl = '{{ route('consumo_interno.index') }}';
+                const rutaDeseadaUrl = '{{ route('ventas.cotizaciones.list') }}';
 
                 // Redirigir a la ruta deseada
                 window.location.href = rutaDeseadaUrl;
@@ -494,33 +552,33 @@
         }
     </style>
 
-<style>
-    /* Estilo para la tabla */
-    .table {
-        width: 100%;
-        margin-bottom: 1rem;
-        color: #212529;
-        border-collapse: collapse;
-    }
+    <style>
+        /* Estilo para la tabla */
+        .table {
+            width: 100%;
+            margin-bottom: 1rem;
+            color: #212529;
+            border-collapse: collapse;
+        }
 
-    /* Estilo para las celdas del encabezado */
-    .table th,
-    .table td {
-        padding: 0.75rem;
-        vertical-align: top;
-        border-top: 1px solid #dee2e6;
-    }
+        /* Estilo para las celdas del encabezado */
+        .table th,
+        .table td {
+            padding: 0.75rem;
+            vertical-align: top;
+            border-top: 1px solid #dee2e6;
+        }
 
-    /* Estilo para las filas impares */
-    .table tbody tr:nth-child(odd) {
-        background-color: #f8f9fa;
-    }
+        /* Estilo para las filas impares */
+        .table tbody tr:nth-child(odd) {
+            background-color: #f8f9fa;
+        }
 
-    /* Estilo para el mensaje cuando no hay registros */
-    .table tbody tr td[colspan="6"] {
-        text-align: center;
-        padding: 10px;
-    }
-</style>
+        /* Estilo para el mensaje cuando no hay registros */
+        .table tbody tr td[colspan="6"] {
+            text-align: center;
+            padding: 10px;
+        }
+    </style>
 
 @stop

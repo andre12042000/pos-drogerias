@@ -56,7 +56,7 @@
                         <th>Descuento</th>
                         <th>IVA</th>
                         <th>Total</th>
-                        <th class="text-center">Acciones</th>
+                        <th class="text-center"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -65,20 +65,25 @@
                         <td>{{ ucwords($cotizacion->prefijo) }}</td>
 
                         <td>{{ $cotizacion->full_nro }} </td>
-                        <td>{{ $cotizacion->cliente_id }} </td>
+                        <td>{{ $cotizacion->client_id }} </td>
                         <td>{{ $cotizacion->cotizacion_date }} </td>
                         <td>{{ $cotizacion->discount }} </td>
                         <td>{{ $cotizacion->tax }} </td>
                         <td>{{ $cotizacion->total  }} </td>
 
                         <td class="text-center">
+                                <div class="dropdown">
+                                    <a class=" btn dropdown-toggle"  id="dropdownMenuButton1" data-toggle="dropdown" aria-expanded="false">
+                                     Acciones
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                      <li><a class="dropdown-item" href="#"> <i class="bi bi-printer"></i> Imprimir </a></li>
+                                      <li><a class="dropdown-item" href="#"><i class="bi bi-filetype-pdf"></i> Descargar PDF </a></li>
+                                      <li><a class="dropdown-item" href="#"><i class="bi bi-envelope"></i> Enviar Al Correo </a></li>
+                                      <li><a class="dropdown-item" href="#"><i class="bi bi-trash3"></i> Eliminar </a></li>
+                                    </ul>
+                                  </div>
 
-                            <a @popper(Actualizar) class="btn btn-outline-success btn-sm" href="#" role="button"
-                                data-toggle="modal" data-target="#presentacionModal"
-                                wire:click="sendData( {{ $cotizacion }} )"><i class="bi bi-pencil-square"></i></a>
-
-                            <button @popper(Eliminar) class="btn btn-outline-danger btn-sm"
-                                wire:click="destroy( {{ $cotizacion->id }} )"><i class="bi bi-trash3"></i></button>
                         </td>
                     </tr>
 
