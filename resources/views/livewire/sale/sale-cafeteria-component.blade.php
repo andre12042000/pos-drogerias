@@ -2,12 +2,19 @@
     <div class="container-fluid mt-4">
         <div class="row">
             <div class="col-md-7">
-                <div class="card" id="cuentas_por_mesas">
-                   {{--  @include('livewire.sale.subforms.productos_mesas') --}}
+
+                <div class="card" id="cuentas_mostrador" style="height: 500px;">
+                    MOSTRADOR
+                    {{-- Contenido dinámico --}}
                 </div>
+
+                <div class="card" id="cuentas_por_mesas" style="height: 500px;">
+                    {{-- Contenido dinámico --}}
+                </div>
+
             </div>
             <div class="col-md-5">
-                <div class="card" id="listado_productos" style="height: 500px;">
+                <div class="card" id="componente_pago" style="height: 500px;">
 
                 </div>
             </div>
@@ -105,16 +112,9 @@
 
 
 <script>
-    // Script para recuperar o establecer la cantidad de mesas en localStorage
-    var cantidadMesas = localStorage.getItem('cantidadMesas');
 
-    if (cantidadMesas === null) {
-        cantidadMesas = 20; // Cantidad predeterminada de mesas
-        localStorage.setItem('cantidadMesas', cantidadMesas);
-    }
-</script>
+        document.getElementById('cuentas_por_mesas').style.display = 'none';
 
-<script>
     // Obtener la cantidad de mesas del localStorage
     var cantidadMesas = localStorage.getItem('cantidadMesas');
     if (cantidadMesas !== null) {
@@ -127,19 +127,72 @@
 
     // Función para crear una mesa y asignar el evento de doble clic
     function crearMesa(numMesa) {
-    var mesaBox = document.createElement('div');
-    mesaBox.className = 'mesa-box';
-    mesaBox.textContent = 'Mesa ' + numMesa;
-    document.getElementById('mesas-container').appendChild(mesaBox);
+        var mesaBox = document.createElement('div');
+        mesaBox.className = 'mesa-box';
+        mesaBox.textContent = 'Mesa ' + numMesa;
+        mesaBox.dataset.numero = numMesa; // Agregar atributo de datos para almacenar el número de la mesa
+        document.getElementById('mesas-container').appendChild(mesaBox);
 
-    mesaBox.addEventListener('click', function() {
-        filtrarPedidosPorMesa(numMesa);
-    });
+        // Consultar y actualizar el estado de la mesa
+        consultarEstadoMesa(numMesa);
 
-    mesaBox.addEventListener('dblclick', function() {
-        abrirModal(numMesa);
-    });
-}
+        mesaBox.addEventListener('click', function() {
+            mostrarVistaMesas();
+            filtrarPedidosPorMesa(numMesa);
+        });
+
+        mesaBox.addEventListener('dblclick', function() {
+            abrirModal(numMesa);
+        });
+    }
+
+    function mostrarVistaMesas()
+    {
+        document.getElementById('cuentas_por_mesas').style.display = 'block';
+        document.getElementById('cuentas_mostrador').style.display = 'none';
+    }
+
+    function mostrarVistaMostrador()
+    {
+        document.getElementById('cuentas_por_mesas').style.display = 'none';
+        document.getElementById('cuentas_mostrador').style.display = 'block';
+    }
+
+    //Verificamos el estado de la mesa segun el pedido del localstorage
+    function consultarEstadoMesa(numMesa) {
+        // Obtener el nombre de la mesa
+        let mesaNombre = 'Mesa ' + numMesa;
+
+        // Obtener los pedidos del localStorage
+        let orders = JSON.parse(localStorage.getItem('orders'));
+
+        // Verificar si hay algún pedido para esta mesa
+        if (orders !== null) {
+            let pedidosMesa = orders.filter(order => order.mesa === mesaNombre);
+
+            // Obtener la referencia al elemento de la mesa
+            let mesa = document.querySelector(`.mesa-box[data-numero="${numMesa}"]`);
+
+            if (pedidosMesa.length > 0) {
+                // Si hay pedidos para esta mesa, marcarla como ocupada
+                mesa.dataset.estado = 'ocupada';
+                actualizarEstadoMesa(mesa); // Actualizar la apariencia de la mesa
+            } else {
+                // Si no hay pedidos para esta mesa, marcarla como desocupada
+                mesa.dataset.estado = 'desocupada';
+                actualizarEstadoMesa(mesa); // Actualizar la apariencia de la mesa
+            }
+        }
+    }
+
+    function actualizarEstadoMesa(mesaBox) {
+        // Actualizar la apariencia de la mesa según su estado
+        if (mesaBox.dataset.estado === 'desocupada') {
+            mesaBox.style.backgroundColor = 'white'; // Color para mesas desocupadas
+        } else {
+            mesaBox.style.backgroundColor = '#ff9999'; // Color para mesas ocupadas
+        }
+    }
 
 
     // Función para abrir el modal con el número de la mesa
@@ -153,45 +206,63 @@
     }
 
     document.getElementById('mostrador').addEventListener('dblclick', function() {
-            // Llama a la función para abrir el modal, pasando 'Mostrador' como parámetro
-            abrirModal('Mostrador');
+        // Llama a la función para abrir el modal, pasando 'Mostrador' como parámetro
+
     });
 
     function filtrarPedidosPorMesa(numMesa) {
-        console.log('olis');
-    // Obtener los pedidos del localStorage
-    let orders = JSON.parse(localStorage.getItem('orders'));
+        // Obtener los pedidos del localStorage
+        let orders = JSON.parse(localStorage.getItem('orders'));
 
-    // Filtrar los pedidos para la mesa seleccionada
-    let pedidosMesa = orders.filter(order => order.mesa === 'Mesa ' + numMesa);
+        // Filtrar los pedidos para la mesa seleccionada
+        let pedidosMesa = orders.filter(order => order.mesa === 'Mesa ' + numMesa);
 
-    // Construir la estructura HTML para mostrar los pedidos de la mesa seleccionada
-    let cuentasPorMesasHTML = '';
-    pedidosMesa.forEach((pedido, index) => {
+        // Construir la estructura HTML para mostrar los pedidos de la mesa seleccionada
+        let cuentasPorMesasHTML = '';
+
+        // Agregar el título con el número de la mesa
         cuentasPorMesasHTML += `
-            <div class="col-md-12">
-                <h6><strong>Pedido Nro. ${index + 1}</strong></h6>
-                <ul class="list-group">
-        `;
-        pedido.detalles.forEach(item => {
+        <div class="col-md-12">
+            <h5>Mesa ${numMesa}</h5>
+        </div>
+    `;
+
+        // Mostrar un mensaje si no hay pedidos para la mesa seleccionada
+        if (pedidosMesa.length === 0) {
             cuentasPorMesasHTML += `
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <div><input class="form-check-input ml-2" type="checkbox" value="" id="flexCheckDefault" style="margin-top: -6px;"></div>
-                    <div style="width: 25%;">${item.producto_id}</div>
-                    <div style="width: 16%;">Cant. ${item.cantidad}</div>
-                    <div style="width: 20%;">Precio Unit. $${item.precio_unitario}</div>
-                    <div style="width: 17%;">Subtotal $${item.total}</div>
-                </li>
-            `;
-        });
-        cuentasPorMesasHTML += `
-                </ul>
+            <div class="col-md-12">
+                <p>No hay pedidos para esta mesa.</p>
             </div>
         `;
-    });
+        } else {
+            // Mostrar los pedidos de la mesa seleccionada
+            pedidosMesa.forEach((pedido, index) => {
+                cuentasPorMesasHTML += `
+                <div class="col-md-12">
+                    <h6><strong>Pedido Nro. ${index + 1}</strong></h6>
+                    <h6>
+                    <ul class="list-group">
+            `;
+                pedido.detalles.forEach(item => {
+                    cuentasPorMesasHTML += `
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div><input class="form-check-input ml-2" type="checkbox" value="" id="flexCheckDefault" style="margin-top: -6px;"></div>
+                        <div style="width: 1%;">${item.producto_id}</div>
+                        <div style="width: 25%;">Cant. ${item.nombre}</div>
+                        <div style="width: 16%;">Cant. ${item.cantidad}</div>
+                        <div style="width: 20%;">Precio Unit. $${item.precio_unitario}</div>
+                        <div style="width: 17%;">Subtotal $${item.total}</div>
+                    </li>
+                `;
+                });
+                cuentasPorMesasHTML += `
+                    </ul>
+                </div>
+            `;
+            });
+        }
 
-    // Mostrar los pedidos de la mesa seleccionada en el div cuentas_por_mesas
-    document.getElementById('cuentas_por_mesas').innerHTML = cuentasPorMesasHTML;
-}
-
+        // Mostrar los pedidos de la mesa seleccionada en el div cuentas_por_mesas
+        document.getElementById('cuentas_por_mesas').innerHTML = cuentasPorMesasHTML;
+    }
 </script>

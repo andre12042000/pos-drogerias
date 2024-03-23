@@ -88,56 +88,55 @@
 
     function saveOrder() {
         // Obtener la mesa desde el contenido de la etiqueta h5
-        let mesa = document.getElementById('solicitantePedido').textContent.trim();
+    let mesa = document.getElementById('solicitantePedido').textContent.trim();
 
-        // Verificar si ya hay un pedido para esta mesa en el localStorage
-        let pedidoNro = 1; // Valor predeterminado para el primer pedido
-        let existingOrders = JSON.parse(localStorage.getItem('orders'));
-        if (existingOrders) {
-            // Buscar pedidos existentes para esta mesa
-            let mesaOrders = existingOrders.filter(order => order.mesa === mesa);
-            if (mesaOrders.length > 0) {
-                // Si hay pedidos existentes, obtener el número de pedido más alto y aumentarlo en 1
-                pedidoNro = Math.max(...mesaOrders.map(order => order.pedidoNro)) + 1;
-            }
-        }
-
-        // Obtener los detalles del pedido (productos, cantidades, precios, totales) desde el carrito
-        let detallesPedido = cart.map(product => {
-            return {
-                producto_id: product.id,
-                cantidad: product.cantidad,
-                precio_unitario: product.precio_venta,
-                total: product.total
-            };
-        });
-
-        // Construir el nuevo pedido
-        let nuevoPedido = {
-            mesa: mesa,
-            pedidoNro: pedidoNro,
-            detalles: detallesPedido
-        };
-
-        // Obtener los pedidos existentes del localStorage o inicializar un nuevo array si no hay ninguno
-        let orders = existingOrders || [];
-
-        // Agregar el nuevo pedido al array de pedidos
-        orders.push(nuevoPedido);
-
-        // Guardar el array de pedidos actualizado en el localStorage
-        localStorage.setItem('orders', JSON.stringify(orders));
-
-        // Limpiar el carrito después de guardar el pedido
-        cart = [];
-        updateCartView();
-
-         // Cerrar el modal
-        let modal = document.getElementById('numeroMesaModalPedidos');
-        let modalBootstrap = new bootstrap.Modal(modal);
-        modalBootstrap.hide();
-
-        // Notificar al usuario que el pedido ha sido guardado exitosamente (opcional)
-      //  alert('¡Pedido guardado exitosamente!');
+// Verificar si ya hay un pedido para esta mesa en el localStorage
+let pedidoNro = 1; // Valor predeterminado para el primer pedido
+let existingOrders = JSON.parse(localStorage.getItem('orders'));
+if (existingOrders) {
+    // Buscar pedidos existentes para esta mesa
+    let mesaOrders = existingOrders.filter(order => order.mesa === mesa);
+    if (mesaOrders.length > 0) {
+        // Si hay pedidos existentes, obtener el número de pedido más alto y aumentarlo en 1
+        pedidoNro = Math.max(...mesaOrders.map(order => order.pedidoNro)) + 1;
     }
+}
+
+// Obtener los detalles del pedido (productos, cantidades, precios, totales) desde el carrito
+let detallesPedido = cart.map(product => {
+    return {
+        producto_id: product.id,
+        cantidad: product.cantidad,
+        nombre: product.name,
+        precio_unitario: product.precio_venta,
+        total: product.total
+    };
+});
+
+// Construir el nuevo pedido
+let nuevoPedido = {
+    mesa: mesa,
+    pedidoNro: pedidoNro,
+    detalles: detallesPedido
+};
+
+// Obtener los pedidos existentes del localStorage o inicializar un nuevo array si no hay ninguno
+let orders = existingOrders || [];
+
+// Agregar el nuevo pedido al array de pedidos
+orders.push(nuevoPedido);
+
+// Guardar el array de pedidos actualizado en el localStorage
+localStorage.setItem('orders', JSON.stringify(orders));
+
+// Limpiar el carrito después de guardar el pedido
+cart = [];
+updateCartView();
+
+// Actualizar el estado de las mesas
+
+
+// Cerrar el modal
+location.reload();
+}
 </script>

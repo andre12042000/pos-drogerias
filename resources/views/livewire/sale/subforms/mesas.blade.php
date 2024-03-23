@@ -1,5 +1,5 @@
 <div class="bottom-section">
-    <div class="counter" id="mostrador" style="cursor: pointer;">
+    <div class="counter" id="mostrador" style="cursor: pointer;" onclick="mostrarVistaMostrador()">
         <h3 style="margin-top: 30px;">Mostrador</h3>
         <!-- Contenido del mostrador aquí -->
     </div>
