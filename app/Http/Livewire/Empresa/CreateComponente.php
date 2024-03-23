@@ -54,7 +54,6 @@ class CreateComponente extends Component
         'nit.required'            => 'El campo Nit es requerido',
         'nit.digits_between'      => 'El campo telefono debe contener entre 6 y 14 dígitos.',
         'email.max'               => 'El campo email no puede tener menos de 10 caracteres',
-        'email.max'               => 'El campo email no puede tener mas de 150 caracteres',
         'email.email'             => 'El correo electronico no es una dirección válida',
         'image.required'          => 'El campo logo es requerido',
         'image.image'             => 'El formato no es valido',
