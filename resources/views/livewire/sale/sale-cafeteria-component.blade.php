@@ -114,8 +114,84 @@
 
 
 <script>
+    let subTotal = 0;
+    let iva = 0;
+    let TOTAL = 0;
 
-        document.getElementById('cuentas_por_mesas').style.display = 'none';
+    // Asignar los valores a los elementos HTML
+    document.querySelector('.subTotal').textContent = `${subTotal}`;
+    document.querySelector('.iva').textContent = `${iva}`;
+    document.querySelector('.TOTAL').textContent = `${TOTAL}`;
+
+    // Obtener los elementos de radio button
+    const radioPorcentaje = document.getElementById('descuentoPorcentaje');
+    const radioValorFijo = document.getElementById('descuentoValorFijo');
+
+
+
+    // Agregar un controlador de eventos para detectar cambios en los elementos de radio button
+    radioPorcentaje.addEventListener('change', habilitarInputDescuento);
+    radioValorFijo.addEventListener('change', habilitarInputDescuento);
+
+    function habilitarInputDescuento() {
+
+        const totalElement = document.querySelector('.TOTAL');
+
+        // Obtener el valor total como texto del elemento y convertirlo a un número
+        const valorTotal = parseFloat(totalElement.textContent.replace('$', '').replace(',', '').trim());
+
+        // Redondear el valor total a dos decimales
+        const valorTotalRedondeado = valorTotal.toFixed(3);
+        const valorTotalEntero = parseInt(valorTotalRedondeado);
+
+        console.log(valorTotalRedondeado);
+
+        /*-----------------------------------------------------------------------------------------
+
+
+
+
+                            ACA VOY CON EL DESCUENTO
+
+
+
+
+        --------------------------------------------------------------------------------------------*/
+
+
+
+        // Obtener el valor del tipo de descuento seleccionado
+        const tipoDescuento = (radioPorcentaje.checked) ? 'porcentaje' : 'valor_fijo';
+
+        // Habilitar el input y establecer el placeholder según el tipo de descuento seleccionado
+        inputDescuento.disabled = false;
+        inputDescuento.value = ''; // Limpiar el valor actual
+
+        // Restringir el valor máximo según el tipo de descuento
+        if (tipoDescuento === 'porcentaje') {
+            inputDescuento.setAttribute('maxlength', '2'); // Máximo 2 caracteres para descuento porcentaje
+            inputDescuento.placeholder = 'Descuento en % (máx. 70%)';
+            inputDescuento.addEventListener('input', function() {
+                if (parseInt(inputDescuento.value) > 70) {
+                    inputDescuento.value = '70'; // Limitar el valor máximo a 70 si se excede
+                }
+            });
+        } else if (tipoDescuento === 'valor_fijo') {
+            inputDescuento.placeholder = `Descuento en $ (máx. ${valorTotalRedondeado})`;
+            inputDescuento.addEventListener('input', function() {
+                if (parseInt(inputDescuento.value) > valorTotalEntero) {
+                    inputDescuento.value = valorTotalEntero; // Limitar el valor máximo a valorTotalEntero si se excede
+                }
+            });
+        }
+
+    }
+
+
+
+    const pagarBtn = document.getElementById('pagarBtn');
+
+    document.getElementById('cuentas_por_mesas').style.display = 'none';
 
     // Obtener la cantidad de mesas del localStorage
     var cantidadMesas = localStorage.getItem('cantidadMesas');
@@ -148,14 +224,12 @@
         });
     }
 
-    function mostrarVistaMesas()
-    {
+    function mostrarVistaMesas() {
         document.getElementById('cuentas_por_mesas').style.display = 'block';
         document.getElementById('cuentas_mostrador').style.display = 'none';
     }
 
-    function mostrarVistaMostrador()
-    {
+    function mostrarVistaMostrador() {
         document.getElementById('cuentas_por_mesas').style.display = 'none';
         document.getElementById('cuentas_mostrador').style.display = 'block';
     }
@@ -222,10 +296,18 @@
         // Construir la estructura HTML para mostrar los pedidos de la mesa seleccionada
         let cuentasPorMesasHTML = '';
 
-        // Agregar el título con el número de la mesa
+        // Agregar el título con el número de la mesa y el checkbox para pagar todo al final
         cuentasPorMesasHTML += `
-        <div class="col-md-12">
-            <h5>Mesa ${numMesa}</h5>
+        <div class="row m-2">
+            <div class="col">
+                <h5>Mesa ${numMesa}</h5>
+            </div>
+            <div class="col text-end">
+                <div class="form-check mr-4">
+                    <input type="checkbox" class="form-check-input" id="pagar_todo_mesa_${numMesa}" style="cursor:pointer;" onchange="calcularTotalPagar(${numMesa})">
+                    <label for="pagar_todo_mesa_${numMesa}">Pagar</label>
+                </div>
+            </div>
         </div>
     `;
 
@@ -240,20 +322,30 @@
             // Mostrar los pedidos de la mesa seleccionada
             pedidosMesa.forEach((pedido, index) => {
                 cuentasPorMesasHTML += `
+                <div class="row m-2">
+                    <div class="col">
+                        <h6 class="ml-4"><strong>Pedido Nro. ${index + 1}</strong></h6>
+                    </div>
+                    <div class="col text-end">
+                        <div class="form-check mr-4">
+                            <input type="checkbox" class="form-check-input" id="pagar_ronda_mesa_${numMesa}_${index + 1}" style="cursor:pointer;" onchange="calcularTotalPagar(${numMesa})">
+                            <label for="pagar_ronda_mesa_${numMesa}_${index + 1}"></label>
+                        </div>
+                    </div>
+                </div>
                 <div class="col-md-12">
-                    <h6><strong>Pedido Nro. ${index + 1}</strong></h6>
-                    <h6>
                     <ul class="list-group">
             `;
                 pedido.detalles.forEach(item => {
+                    // Generar un identificador único para el checkbox de "Pagar Item"
+                    const uniqueItemId = `pagar_item_${numMesa}_${index + 1}_${item.producto_id}`;
                     cuentasPorMesasHTML += `
                     <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <div><input class="form-check-input ml-2" type="checkbox" value="" id="flexCheckDefault" style="margin-top: -6px;"></div>
-                        <div style="width: 1%;">${item.producto_id}</div>
-                        <div style="width: 25%;">Cant. ${item.nombre}</div>
-                        <div style="width: 16%;">Cant. ${item.cantidad}</div>
-                        <div style="width: 20%;">Precio Unit. $${item.precio_unitario}</div>
-                        <div style="width: 17%;">Subtotal $${item.total}</div>
+                        <div><input class="form-check-input ml-2" type="checkbox" value="" id="${uniqueItemId}" style="margin-top: -6px;" onchange="calcularTotalPagar(${numMesa})"></div>
+                        <div style="width: 30%;">${item.nombre}</div>
+                        <div style="width: 10%;">Cant. ${item.cantidad}</div>
+                        <div style="width: 20%;">Precio Unit: $${item.precio_unitario}</div>
+                        <div style="width: 20%;">SubTotal: $${item.total}</div>
                     </li>
                 `;
                 });
@@ -267,4 +359,120 @@
         // Mostrar los pedidos de la mesa seleccionada en el div cuentas_por_mesas
         document.getElementById('cuentas_por_mesas').innerHTML = cuentasPorMesasHTML;
     }
+
+
+    /* ------------------------ Proceso para realizar el pago -----------------------
+    -------------------------------------------------------------------------------*/
+
+
+    function calcularTotalPagar(numMesa) {
+
+
+        // Obtener los pedidos del localStorage
+        let orders = JSON.parse(localStorage.getItem('orders'));
+
+        // Filtrar los pedidos para la mesa seleccionada
+        let pedidosMesa = orders.filter(order => order.mesa === 'Mesa ' + numMesa);
+
+        // console.log(pedidosMesa);
+
+        // Inicializar el total a pagar
+        let totalPagar = 0;
+
+        // Array para almacenar las tuplas que se pagarán y que deben ser eliminadas del localStorage
+        let tuplasAPagar = [];
+
+        // Obtener los checkboxes seleccionados y calcular el total
+
+        // Obtener el estado del checkbox pagar_todo_mesa_
+        const pagarTodoCheckbox = document.getElementById(`pagar_todo_mesa_${numMesa}`);
+        const pagarTodo = pagarTodoCheckbox.checked;
+
+        // Obtener los checkboxes seleccionados y calcular el total
+        pedidosMesa.forEach((pedido, index) => {
+            if (pagarTodo) {
+                // Si el cliente decide pagar todo el pedido, agregar el total del pedido al total a pagar
+                let totalPedido = 0;
+                pedido.detalles.forEach(item => {
+                    totalPedido += item.total;
+                    // Agregar la tupla a pagar al array
+                    tuplasAPagar.push({
+                        mesa: numMesa,
+                        pedidoNro: index + 1,
+                        producto_id: item.producto_id
+                    });
+                });
+                // Agregar el total del pedido al total a pagar
+                totalPagar += totalPedido;
+            } else {
+                // Si el cliente decide pagar solo algunos productos del pedido
+                const pagarPedidoCheckbox = document.getElementById(`pagar_ronda_mesa_${numMesa}_${index + 1}`);
+                const pagarPedido = pagarPedidoCheckbox.checked;
+
+                if (pagarPedido) {
+                    pedido.detalles.forEach(item => {
+                        totalPagar += item.total;
+                        // Agregar la tupla a pagar al array
+                        tuplasAPagar.push({
+                            mesa: numMesa,
+                            pedidoNro: index + 1,
+                            producto_id: item.producto_id
+                        });
+                    });
+                } else {
+                    pedido.detalles.forEach(item => {
+                        const pagarItemCheckbox = document.getElementById(
+                            `pagar_item_${numMesa}_${index + 1}_${item.producto_id}`);
+                        if (pagarItemCheckbox.checked) {
+                            totalPagar += item.total;
+                            // Agregar la tupla a pagar al array
+                            tuplasAPagar.push({
+                                mesa: numMesa,
+                                pedidoNro: index + 1,
+                                producto_id: item.producto_id
+                            });
+                        }
+                    });
+                }
+            }
+        });
+
+        let iva = 0;
+        // Calcular el total (suma del total y el total de IVA)
+        const totalConIva = totalPagar + iva;
+
+        // Formatear el total a pagar como moneda colombiana sin decimales
+        const formatter = new Intl.NumberFormat('es-CO', {
+            style: 'currency',
+            currency: 'COP',
+            minimumFractionDigits: 0
+        });
+        const totalPagarFormatted = formatter.format(totalPagar);
+
+        // Mostrar los resultados en los elementos HTML
+        const subTotalElement = document.querySelector('.subTotal');
+        subTotalElement.textContent =
+            totalPagarFormatted; // Mostrar el total a pagar formateado como moneda colombiana sin decimales
+
+        const TotalElement = document.querySelector('.TOTAL');
+        TotalElement.textContent =
+            totalPagarFormatted; // Mostrar el total a pagar formateado como moneda colombiana sin decimal
+
+        actualizarEstadoBotonPagar(totalPagar);
+
+        return totalPagar;
+    }
+
+    function actualizarEstadoBotonPagar(totalPagar) {
+        // Verificar si el total a pagar es mayor que 0
+        if (totalPagar > 0) {
+            // Si el total a pagar es mayor que 0, habilitar el botón de pagar
+            pagarBtn.disabled = false;
+        } else {
+            // Si el total a pagar es 0 o menor, deshabilitar el botón de pagar
+            pagarBtn.disabled = true;
+        }
+    }
+
+    /*--------------------Calcular Descuentos ---------------------------------*/
 </script>

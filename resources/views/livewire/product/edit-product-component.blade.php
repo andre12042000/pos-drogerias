@@ -50,7 +50,8 @@
                         <div class="col">
                             <div class="form-floating mb-3">
                                 <select class="form-select" id="subcategoria_edit" name="subcategoria_edit"
-                                    aria-label="Floating label select example" wire:model = 'subcategoria_id'>
+                                    aria-label="Floating label select example" wire:model = "subcategoria_id">
+                                    <option value="">Seleccione una opción</option>
                                     @foreach ($subcategorias as $subcategoria)
                                         <option value="{{ $subcategoria->id }}">{{ ucwords($subcategoria->name) }}
                                         </option>
@@ -247,7 +248,7 @@
                             <div class="form-floating mb-3">
                                 <input type="number" class="form-control" id="CostoPorCajaEdit"
                                     name="inputCostoPorCaja" placeholder="name@example.com" min="0"
-                                    value="0" wire:model.lazy = 'CostoPorCajaEdit'>
+                                    value="0" wire:model.lazy = 'CostoPorCajaEdit' oninput="limitarNumerosEnteros(this)">
                                 <label for="floatingInput">Costo caja</label>
                                 @error('CostoPorCajaEdit')
                                     <span class="text-danger">{{ $message }}</span>
@@ -258,7 +259,7 @@
                             <div class="form-floating mb-3">
                                 <input type="number" class="form-control" id="CostoPorBlisterEdit"
                                     name="CostoPorBlisterEdit" placeholder="name@example.com" min="0"
-                                    value="0" {{ $estado_blister }} wire:model.lazy = 'CostoPorBlisterEdit'>
+                                    value="0" {{ $estado_blister }} wire:model.lazy = 'CostoPorBlisterEdit' oninput="limitarNumerosEnteros(this)">
                                 <label for="floatingInput">Costo blister</label>
                             </div>
                         </div>
@@ -267,7 +268,7 @@
                             <div class="form-floating mb-3">
                                 <input type="number" class="form-control" id="CostoPorUnidadEdit"
                                     name="inputCostoPorUnidad" placeholder="name@example.com" min="0"
-                                    value="0" {{ $estado_unidad }} wire:model.lazy = 'CostoPorUnidadEdit'>
+                                    value="0" {{ $estado_unidad }} wire:model.lazy = 'CostoPorUnidadEdit' oninput="limitarNumerosEnteros(this)">
                                 <label for="floatingInput">Costo unidad</label>
                                 @error('CostoPorUnidadEdit')
                                     <span class="text-danger">{{ $message }}</span>
@@ -281,7 +282,7 @@
                             <div class="form-floating mb-3">
                                 <input type="number" class="form-control" id="PrecioVentaCajaEdit"
                                     name="PrecioVentaCajaEdit" placeholder="name@example.com" min="0"
-                                    value="0" wire:model.lazy = 'PrecioVentaCajaEdit'>
+                                    value="0" wire:model.lazy = 'PrecioVentaCajaEdit' oninput="limitarNumerosEnteros(this)">
                                 <label for="floatingInput">Precio venta caja</label>
                                 @error('PrecioVentaCajaEdit')
                                     <span class="text-danger">{{ $message }}</span>
@@ -292,7 +293,7 @@
                             <div class="form-floating mb-3">
                                 <input type="number" class="form-control" id="PrecioVentaBlisterEdit"
                                     name="PrecioVentaBlisterEdit" placeholder="name@example.com" min="0"
-                                    value="0" {{ $estado_blister }} wire:model.lazy = 'PrecioVentaBlisterEdit'>
+                                    value="0" {{ $estado_blister }} wire:model.lazy = 'PrecioVentaBlisterEdit' oninput="limitarNumerosEnteros(this)">
                                 <label for="floatingInput">Precio venta blister</label>
                                 @error('PrecioVentaBlisterEdit')
                                     <span class="text-danger">{{ $message }}</span>
@@ -304,7 +305,7 @@
                             <div class="form-floating mb-3">
                                 <input type="number" class="form-control" id="PrecioVentaUnidadEdit"
                                     name="PrecioVentaUnidadEdit" placeholder="name@example.com" min="0"
-                                    value="0" {{ $estado_unidad }} wire:model.lazy = 'PrecioVentaUnidadEdit'>
+                                    value="0" {{ $estado_unidad }} wire:model.lazy = 'PrecioVentaUnidadEdit' oninput="limitarNumerosEnteros(this)">
                                 <label for="floatingInput">Precio venta unidad</label>
                                 @error('PrecioVentaUnidadEdit')
                                     <span class="text-danger">{{ $message }}</span>
@@ -352,3 +353,24 @@
         </div>
     </div>
 </div>
+
+<script>
+    function limitarNumerosEnteros(input) {
+        input.addEventListener('input', function(event) {
+            this.value = this.value.replace(/[^\d]/g, ''); // Reemplaza cualquier cosa que no sea dígito por nada
+        });
+
+        input.addEventListener('keydown', function(event) {
+            // Permitir las teclas de navegación (flechas, inicio, fin, retroceso)
+            if (event.key === "ArrowLeft" || event.key === "ArrowRight" || event.key === "ArrowUp" || event.key === "ArrowDown" ||
+                event.key === "Home" || event.key === "End" || event.key === "Backspace") {
+                return;
+            }
+            // Prevenir la acción predeterminada si la tecla presionada no es un número
+            if (isNaN(parseInt(event.key))) {
+                event.preventDefault();
+            }
+        });
+
+    }
+</script>

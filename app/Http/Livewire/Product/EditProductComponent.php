@@ -16,7 +16,8 @@ class EditProductComponent extends Component
 
     public $categorias, $subcategorias, $ubicaciones, $presentaciones, $laboratorios;
 
-    public $categoria_id, $subcategoria_id, $ubicacion_id, $presentacion_id, $laboratorio_id;
+    public $categoria_id, $ubicacion_id, $presentacion_id, $laboratorio_id;
+    public $subcategoria_id;
     public $presentacion;
     public $estado_blister, $estado_unidad;
     public $disponible_blister_edit, $disponible_unidad_edit, $product_id;
@@ -36,22 +37,22 @@ class EditProductComponent extends Component
         $this->product_id = $product['id'];
         $this->code_edit = $product['code'];
         $this->name_edit = $product['name'];
-        $this->iva_edit = $product['iva_product'];
-        $this->stock_minimo_edit = $product['stock_min'];
-        $this->stock_maximo_edit = $product['stock_max'];
-        $this->CostoPorCajaEdit = $product['costo_caja'];
-        $this->PrecioVentaCajaEdit = $product['precio_caja'];
+        $this->iva_edit = $product['iva_product'] ?? 0;
+        $this->stock_minimo_edit = $product['stock_min'] ?? 0;
+        $this->stock_maximo_edit = $product['stock_max'] ?? 0;
+        $this->CostoPorCajaEdit = $product['costo_caja'] ?? 0;
+        $this->PrecioVentaCajaEdit = $product['precio_caja'] ?? 0;
 
-        $this->blister_por_caja_edit = $product['contenido_interno_blister'];
-        $this->CostoPorBlisterEdit = $product['costo_blister'];
-        $this->PrecioVentaBlisterEdit = $product['precio_blister'];
+        $this->blister_por_caja_edit = $product['contenido_interno_blister'] ?? 0;
+        $this->CostoPorBlisterEdit = $product['costo_blister'] ?? 0;
+        $this->PrecioVentaBlisterEdit = $product['precio_blister'] ?? 0;
 
-        $this->unidad_por_caja_edit = $product['contenido_interno_unidad'];
-        $this->CostoPorUnidadEdit = $product['costo_unidad'];
-        $this->PrecioVentaUnidadEdit = $product['precio_unidad'];
+        $this->unidad_por_caja_edit = $product['contenido_interno_unidad'] ?? 0;
+        $this->CostoPorUnidadEdit = $product['costo_unidad'] ?? 0;
+        $this->PrecioVentaUnidadEdit = $product['precio_unidad'] ?? 0;
 
         $this->categoria_id = $product['category_id'];
-        $this->subcategoria_id = $product['subcategoria_id'];
+        $this->subcategoria_id = $product['subcategoria_id'] ?? 1;
         $this->ubicacion_id = $product['ubicacion_id'];
         $this->presentacion_id = $product['presentacion_id'];
         $this->laboratorio_id = $product['laboratorio_id'];
@@ -227,7 +228,7 @@ class EditProductComponent extends Component
                 'valor_iva_unidad'          => $ivas['iva_unidad'],
             ]);
 
-             return redirect()->route('inventarios.product')->with('success', 'Se ha actualizado correctamente el producto: ' . $product['name_edit']);
+             return redirect()->route('inventarios.product')->with('success', 'Se ha actualizado correctamente el producto: ' . $product->name);
          } catch (\Exception $e) {
 
             $errorCode = $e->getMessage();

@@ -80,11 +80,22 @@
             <div class="costo-compra mt-3">
                 <label>Descuento:</label>
                 <div class="input-group mb-3">
-                    <input type="text" class="form-control" aria-label="Text input with dropdown button" disabled>
+                    <input type="number" class="form-control" aria-label="Text input with dropdown button" id="inputDescuento" disabled>
                     <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false"></button>
                     <ul class="dropdown-menu dropdown-menu-end">
-                      <li><a class="dropdown-item" href="#">$</a></li>
-                      <li><a class="dropdown-item" href="#">%</a></li>
+                      <li>
+                        <div class="form-check form-check-inline m-2">
+                            <input class="form-check-input" type="radio" name="tipoDescuento" id="descuentoPorcentaje" value="porcentaje">
+                            <label class="form-check-label" for="descuentoPorcentaje">Porcentaje (%)</label>
+                        </div>
+                      </li>
+                      <li>
+                        <div class="form-check form-check-inline m-2">
+                            <input class="form-check-input" type="radio" name="tipoDescuento" id="descuentoValorFijo" value="valor_fijo">
+                            <label class="form-check-label" for="descuentoValorFijo">Valor fijo ($)</label>
+                        </div>
+                      </li>
+
                     </ul>
                   </div>
             </div>
@@ -115,19 +126,6 @@
 
 </div>
 
-<script>
-
-let subTotal = 0;
-let iva = 0;
-let TOTAL = 0;
-
-// Asignar los valores a los elementos HTML
-document.querySelector('.subTotal').textContent = `${subTotal}`;
-document.querySelector('.iva').textContent = `${iva}`;
-document.querySelector('.TOTAL').textContent = `${TOTAL}`;
-
-
-</script>
 
 <style>
     .costo-compra {
