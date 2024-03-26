@@ -57,6 +57,38 @@ Route::get('creditos/pago/detalles/{recibo}', [PagoCreditoController::class, 'sh
 
 Route::get('/obtener-informacion-cliente', [NombreDeTuControlador::class, 'obtenerInformacionCliente']);
 
+Route::get('/corregir_ivas', function(){
+    $productos = Product::where('iva_product', '>' , '0')->get();
+
+    $cantidad = 0;
+
+    foreach($productos as $producto){
+
+        $iva_porcentaje = $producto->iva_product;
+
+        $precio_caja = $producto->precio_caja;
+        $precio_blister = $producto->precio_blister;
+        $precio_unidad = $producto->precio_unidad;
+
+        $iva_caja = round($precio_caja - ($precio_caja / (1 + ($iva_porcentaje / 100))));
+        $iva_blister = round($precio_blister - ($precio_blister / (1 + ($iva_porcentaje / 100))));
+        $iva_unidad = round($precio_unidad - ($precio_unidad / (1 + ($iva_porcentaje / 100))));
+
+
+        $producto->update([
+            'valor_iva_caja'          => $iva_caja,
+            'valor_iva_blister'       => $iva_blister,
+            'valor_iva_unidad'        => $iva_unidad,
+        ]);
+
+        $cantidad += 1;
+    }
+
+    return $cantidad;
+
+
+});
+
 
 
 

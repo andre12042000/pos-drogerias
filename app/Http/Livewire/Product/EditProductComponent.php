@@ -53,11 +53,11 @@ class EditProductComponent extends Component
 
         $this->categoria_id = $product['category_id'];
         $this->subcategoria_id = $product['subcategoria_id'] ?? 1;
-        $this->ubicacion_id = $product['ubicacion_id'];
-        $this->presentacion_id = $product['presentacion_id'];
-        $this->laboratorio_id = $product['laboratorio_id'];
-        $this->disponible_blister_edit = $product['disponible_blister'];
-        $this->disponible_unidad_edit = $product['disponible_unidad'];
+        $this->ubicacion_id = $product['ubicacion_id'] ?? 1;
+        $this->presentacion_id = $product['presentacion_id'] ?? 1;
+        $this->laboratorio_id = $product['laboratorio_id'] ?? 1;
+        $this->disponible_blister_edit = $product['disponible_blister'] ?? 0;
+        $this->disponible_unidad_edit = $product['disponible_unidad'] ?? 0;
         $this->status = $product['status'];
         self::estadosDisponibilidadBlister($this->disponible_blister_edit);
         self::estadosDisponibilidadUnidad($this->disponible_unidad_edit);

@@ -161,9 +161,11 @@ class CreateComponent extends Component
         $this->precio_blister = isset($data['precio_blister']) ? (float) $data['precio_blister'] : 0;
         $this->costo_unidad = isset($data['costo_unidad']) ? (float) $data['costo_unidad'] : 0;
         $this->precio_unidad = isset($data['precio_unidad']) ? (float) $data['precio_unidad'] : 0;
-        $this->valor_iva_caja = isset($data['valor_iva_caja']) ? (float) $data['valor_iva_caja'] : 0;
-        $this->valor_iva_blister = isset($data['valor_iva_blister']) ? (float) $data['valor_iva_blister'] : 0;
-        $this->valor_iva_unidad = isset($data['valor_iva_unidad']) ? (float) $data['valor_iva_unidad'] : 0;
+        $this->valor_iva_caja = self::calcularIvaPrecioVenta($this->precio_caja, $this->iva_product);
+        $this->valor_iva_blister = self::calcularIvaPrecioVenta($this->precio_blister, $this->iva_product);
+        $this->valor_iva_unidad = self::calcularIvaPrecioVenta($this->precio_unidad, $this->iva_product);
+
+      //  dd($this->valor_iva_caja, $this->valor_iva_blister, $this->valor_iva_unidad);
 
         $rules = [
             'code'                      => 'required|min:4|max:50|unique:products,code',
@@ -181,6 +183,11 @@ class CreateComponent extends Component
             'disponible_caja'           => 'required',
             'disponible_blister'        => 'nullable',
             'disponible_unidad'         => 'nullable',
+            'costo_caja'                => 'required',
+            'precio_caja'               => 'required',
+            'valor_iva_caja'            => 'required',
+            'valor_iva_blister'         => 'required',
+            'valor_iva_unidad'          => 'required',
         ];
 
 
@@ -197,12 +204,18 @@ class CreateComponent extends Component
         }
 
 
-
-
         $validatedData = $this->validate($rules);
 
         $this->save($validatedData);
 
+    }
+
+    function calcularIvaPrecioVenta($precio_venta, $porcentajeIva)
+    {
+
+        $iva =  round($precio_venta - ($precio_venta / (1 + ($porcentajeIva / 100))));
+
+        return $iva;
     }
 
     /*--------------- Guardado ---------------------*/

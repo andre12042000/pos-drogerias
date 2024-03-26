@@ -37,16 +37,20 @@ class DescontarInventario
         $venta = $event->venta;
 
         foreach ($venta->saleDetails as $item) {
+
             $detalleVenta = $item;
             $producto = $item->product;
-          //  dd($detalleVenta);
+
             if($producto->is_combo > 0){
                 $detalles_combo = self::obtenerDetallesCombo($producto['id']);
 
-                foreach($detalles_combo as $detalle){
-                    $producto = self::obtenerProducto($detalle->product_id);
+                for ($i = 1; $i <= $item->quantity; $i++) {
+                    foreach($detalles_combo as $detalle){
 
-                    self::descontarInventario($producto, $detalle);
+                        $producto = self::obtenerProducto($detalle->product_id);
+
+                        self::descontarInventario($producto, $detalle);
+                    }
                 }
 
             }else{

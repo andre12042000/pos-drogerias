@@ -17,7 +17,6 @@ document
     .getElementById("presentacion_id")
     .addEventListener("change", function () {
 
-        console.log('hola mundo');
         // Obtener el elemento select
         var presentacion_id = document.getElementById("presentacion_id");
 
@@ -104,21 +103,31 @@ document
     .addEventListener("change", calcularPrecioVentaCaja);
 
 function calcularPrecioVentaCaja() {
-    var costo_caja = document.getElementById("costo_caja");
-    var iva_product = document.getElementById("iva_product");
+    var costo_caja_element = document.getElementById("costo_caja");
+    var iva_product_element = document.getElementById("iva_product");
     var precio_caja = document.getElementById("precio_caja");
     var cantidad_Blister = document.getElementById("contenido_interno_blister");
     var cantidad_Unidad = document.getElementById("contenido_interno_unidad");
-
-    ivaPorcentaje = convertirPorcentajeADecimal(iva_product.value);
-    gananciaPorcentaje = presentacionData.por_caja;
-    costo_caja = parseFloat(costo_caja.value);
+    var ivaPorcentaje = convertirPorcentajeADecimal(iva_product_element.value);
+    var gananciaPorcentaje = presentacionData.por_caja;
+    var costo_caja = parseFloat(costo_caja_element.value);
 
     var ganancia = parseFloat(costo_caja * (gananciaPorcentaje / 100));
-    var iva = parseFloat(costo_caja * ivaPorcentaje);
-    precio_caja.value = costo_caja + ganancia + iva;
-   // var nuevoPrecioCaja = costo_caja + ganancia + iva;
-    valor_iva_caja = iva;
+    var costo_con_ganancia = costo_caja + ganancia;
+    var iva = costo_con_ganancia * ivaPorcentaje;
+    var precio_venta_completo = costo_caja + ganancia + iva;
+
+
+    precio_caja.value = parseInt(precio_venta_completo);
+
+
+
+    var iva_real = calcularIva(precio_venta_completo, ivaPorcentaje);  // Iva descontado del precio de venta, es diferente
+
+
+    valor_iva_caja = iva_real;
+
+
 
    // Livewire.emit('actualizarPrecioCaja', nuevoPrecioCaja);
 
@@ -143,15 +152,11 @@ function calcularPreciosBlister(){
 
     costo_blister.value = parseFloat(costo_caja.value / cantidad_Blister.value);
     costoBlisterValue = parseFloat(costo_blister.value);
-
-
     var ganancia = parseFloat(costoBlisterValue * (gananciaPorcentaje / 100));
-
-
     var iva = parseFloat(costoBlisterValue * ivaPorcentaje);
     precio_blister.value = costoBlisterValue + ganancia + iva;
 
-    valor_iva_blister = iva;
+    valor_iva_blister = 0;
 
 }
 
@@ -174,7 +179,7 @@ function calcularPreciosUnidad(){
 
     var iva = parseFloat(costoUnidadValue * ivaPorcentaje);
     precio_unidad.value = costoUnidadValue + ganancia + iva;
-    valor_iva_unidad = iva;
+    valor_iva_unidad = 0;
 
 }
 

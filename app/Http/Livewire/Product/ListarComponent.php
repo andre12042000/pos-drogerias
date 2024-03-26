@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Product;
 
 use App\Models\Category;
+use App\Models\Combo;
 use App\Models\Inventario;
 use App\Models\Laboratorio;
 use App\Models\OrdersDetails;
@@ -267,6 +268,16 @@ class ListarComponent extends Component
 
             $inventario->delete();
             $product = Product::findOrFail($id);
+
+            if($product->is_combo == True){
+                $combos = Combo::where('combo_id', $id)->get();
+
+                if($combos){
+                    foreach($combos as $combo){
+                        $combo->delete();
+                    }
+                }
+            }
             $product->delete();
             session()->flash('delete', 'Producto eliminado exitosamente');
             $this->render();
