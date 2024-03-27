@@ -66,6 +66,7 @@ trait ImprimirTrait
             $printer->cut();
             $printer->close();
         } catch (\Exception $e) {
+            dd($e->getMessage());
             echo "Error: " . $e->getMessage();
         }
     }
