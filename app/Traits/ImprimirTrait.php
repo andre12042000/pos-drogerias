@@ -19,18 +19,28 @@ trait ImprimirTrait
     use ObtenerImpresora;
     public function imprimirRecibo($reciboBody)
     {
-
-        $empresa = Empresa::find(1);
-        $printerName =  $this->obtenerimpresora();
-
         try {
+            // Obtener la instancia de la empresa
+            $empresa = Empresa::find(1);
+            if (!$empresa) {
+                throw new \Exception('No se encontró la empresa.');
+            }
+
+            // Obtener el nombre de la impresora
+            $printerName = $this->obtenerImpresora();
+            if (!$printerName) {
+                throw new \Exception('No se encontró ninguna impresora disponible.');
+            }
+
+            // Conectar a la impresora
             $connector = new WindowsPrintConnector($printerName);
             $printer = new Printer($connector);
 
-            $rutaImagen = public_path('img\recibos.png');
+            // Cargar la imagen del recibo
+            $rutaImagen = public_path('img/recibos.png');
             $escposResizedImg = EscposImage::load($rutaImagen);
 
-            // Imprime la imagen redimensionada
+            // Imprimir la imagen redimensionada
             $printer->setJustification(Printer::JUSTIFY_CENTER);
             $printer->bitImage($escposResizedImg);
             $printer->text("\n");
@@ -46,24 +56,20 @@ trait ImprimirTrait
             $printer->text("\n");
             $printer->text("\n");
 
-
             // Imprimir el cuerpo del recibo
-             foreach ($reciboBody as $item) {
+            foreach ($reciboBody as $item) {
                 $printer->text($item['label'] . "  " . $item['value'] . "\n");
             }
 
             $printer->text("--------------------------------\n");
-
 
             $printer->cut();
             $printer->close();
         } catch (\Exception $e) {
             echo "Error: " . $e->getMessage();
         }
-
-
-
     }
+
 
 }
 

@@ -71,20 +71,25 @@ class SaleController extends Controller
 
     public function imprimirrecibo($id)
     {
-        $sales = Sale::find($id);
-        $empresa = Empresa::find(1);
-        $detailsales = SaleDetail::where('sale_id', $id)->get();
-        if ($sales->client->number_document) {
-            $numeoridentidad = $sales->client->number_document;
-        } else {
-            $numeoridentidad = 'No disponible';
-        }
+        try {
+            $printerName =  $this->obtenerimpresora();
 
-        $fecha = \Carbon\Carbon::parse($sales->created_at)->locale('es_ES')->formatLocalized('%d %B %Y ');
+            if(!$printerName) {
+                throw new \Exception('No se encontró ninguna impresora disponible.');
+            }
 
-         $printerName =  $this->obtenerimpresora();
+            $sales = Sale::find($id);
+            $empresa = Empresa::find(1);
+            $detailsales = SaleDetail::where('sale_id', $id)->get();
 
-         try {
+            if ($sales->client->number_document) {
+                $numeoridentidad = $sales->client->number_document;
+            } else {
+                $numeoridentidad = 'No disponible';
+            }
+
+            $fecha = \Carbon\Carbon::parse($sales->created_at)->locale('es_ES')->formatLocalized('%d %B %Y ');
+
             $connector = new WindowsPrintConnector($printerName);
             $printer = new Printer($connector);
 
@@ -132,7 +137,7 @@ class SaleController extends Controller
                 if (strlen($nombreConcepto) > 11) {
 
                     $nombreConcepto = substr($nombreConcepto, 0, 11);
-                    $nombreConcepto = $nombreConcepto. '-';
+                    $nombreConcepto = $nombreConcepto . '-';
                 }
 
                 $nombreConcepto = str_pad($nombreConcepto, 16); // Ajusta el ancho según tus necesidades
@@ -159,12 +164,13 @@ class SaleController extends Controller
             $printer->cut();
             $printer->close();
         } catch (\Exception $e) {
+            // Aquí puedes manejar el error como desees, por ejemplo, mostrar un mensaje al usuario
             echo "Error: " . $e->getMessage();
         }
 
         return redirect()->back();
-
     }
+
 
     function quitarTildes($string)
     {
@@ -179,6 +185,4 @@ class SaleController extends Controller
 
         return strtr($string, $map);
     }
-
-
 }
