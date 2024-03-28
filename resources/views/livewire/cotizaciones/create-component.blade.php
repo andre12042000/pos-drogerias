@@ -489,7 +489,7 @@
                 timer: 3000
             });
             setTimeout(() => {
-                const rutaDeseadaUrl = '{{ route('ventas.cotizaciones.list') }}';
+                const rutaDeseadaUrl = '{{ route('cotizaciones.cotizaciones.list') }}';
 
                 // Redirigir a la ruta deseada
                 window.location.href = rutaDeseadaUrl;
