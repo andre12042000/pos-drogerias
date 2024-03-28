@@ -123,6 +123,12 @@ class RouteServiceProvider extends ServiceProvider
                 ->namespace($this->namespace)
                 ->group(base_path('routes/consumo_interno.php'));
 
+                Route::middleware('web', 'auth', 'change.password')
+                ->name('cotizaciones.')
+                ->prefix('cotizaciones')
+                ->namespace($this->namespace)
+                ->group(base_path('routes/cotizaciones.php'));
+
         });
     }
 

@@ -352,7 +352,7 @@ return [
                     'classes'    => 'text-white',
                     'icon'       => 'bi bi-file-earmark-diff-fill',
                     'icon_color' => 'white',
-                    'route'      => 'ventas.cotizaciones.list',
+                    'route'      => 'cotizaciones.cotizaciones.list',
                 ],
                 [
                     'text'       => 'Consumo Interno',
