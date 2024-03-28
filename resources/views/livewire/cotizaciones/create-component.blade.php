@@ -1,26 +1,13 @@
 <div>
     @section('title', 'Nueva Cotización')
 
-    <div class="row py-5">
+    <div class="row py-2">
         <div class="col-lg-5">
-            <div class="card">
-                <div class="card-body">
-                    <div class="form-floating">
-                        <select class="form-select" id="cliente" name="cliente" aria-label="Floating label select example">
-                            <option value="">Selecciona Un Cliente</option>
-                            @foreach ($clientes as $cliente)
-                                <option value="{{ $cliente->id }}">{{ $cliente->name }}</option>
-                            @endforeach
 
-                        </select>
-                        <label for="floatingSelect">Clientes</label>
-                    </div>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-body">
+            <div class="card card-outline card-success" style="height:295px; font-size: 10px;">
+                <div class="card-body" style="overflow-y: auto;">
                     <table class="table table-striped">
-                        <thead>
+                        <thead >
                             <tr>
                                 <th>Producto</th>
                                 <th>Cant</th>
@@ -30,31 +17,106 @@
                                 <th></th>
                             </tr>
                         </thead>
-                        <tbody id="productos-en-transaccion" style="height:400px; font-size: 10px">
+                        <tbody id="productos-en-transaccion">
 
                         </tbody>
                     </table>
                 </div>
+            </div>
+
+            <div class="card card-outline card-warning">
+                <div class="card-body float-right">
+                    <div class="row ">
+                        <div class="col-7 text-end">
+
+                            <strong >Subtotal</strong>
+                        </div>
+                        <div class="col-5 ">
+                            <h5 id="subtotal"></h5>
+                        </div>
 
 
+                        <div class="col-7 text-end">
+                            <strong >% IVA </strong>
+                        </div>
+                        <div class="col-5 ">
+                            <h5 id="iva"></h5>
+                        </div>
 
+                        <div class="col-7 text-end">
+                            <strong >Descuento</strong>
+                        </div>
+                        <div class="col-5">
+                            <div class="input-group">
+                                <input type="text" id="valor_descuento" name="valor_descuento" class="form-control"
+                                    aria-describedby="passwordHelpInline" disabled>
+                                <span class="input-group-text"><input class="form-check-input mt-1" type="radio"
+                                        name="inlineRadioOptions" id="inlineRadio2" value="descuento_efectivo"
+                                        onchange="toggleInput(this)">
+                                    $</span>
+                                <span class="input-group-text"> <input class="form-check-input mt-1" type="radio"
+                                        name="inlineRadioOptions" id="inlineRadio1" value="descuento_porcentaje"
+                                        onchange="toggleInput(this)">
+                                    %</span>
+                            </div>
+
+                        </div>
+
+                        <div class="col-4">
+                            <a class="btn btn-outline-success" onclick="handleGuardarTransaccion()">Guardar</a>
+                        </div>
+                        <div class="col-1 ">
+                            <a class="btn btn-outline-secondary float-end" title="Restuarar Total"
+                                onclick="restablecertotal()"><i class="bi bi-arrow-clockwise"></i></a>
+                        </div>
+                        <div class="col-2 text-end">
+                            <label for="inputPassword6" class="col-form-label">Total</label>
+
+                        </div>
+                        <div class="col-5">
+                            <h5 class="mt-2" id="total"></h5>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         {{-- derecha --}}
         <div class="col-lg-7">
-            <div class="card">
-                <div x-data class="mt-2">
-                    @include('popper::assets')
+            <div class="card card-outline card-success" style="height:490px; font-size: 10px">
+                <div class="row">
 
-                    <div class="input-group  float-right col-5">
-                        <span class="input-group-text" id="basic-addon1"><i class="bi bi-search"></i></span>
-                        <input @popper(Buscador) type="text" class="form-control" placeholder="Buscar producto"
-                            aria-label="Username" aria-describedby="basic-addon1" wire:model="buscar">
+                    <div class="col-lg-5 ml-3 mt-3">
+                        <div class="form-floating">
+                            <select class="form-select" id="cliente" name="cliente"
+                                aria-label="Floating label select example">
+                                <option value="">Selecciona Un Cliente</option>
+                                @foreach ($clientes as $cliente)
+                                    <option value="{{ $cliente->id }}">{{ $cliente->name }}</option>
+                                @endforeach
+
+                            </select>
+                            <label for="floatingSelect">Clientes</label>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div x-data class="mt-3">
+                            @include('popper::assets')
+
+                            <div class="input-group  float-right ">
+                                <span class="input-group-text" id="basic-addon1"><i class="bi bi-search"></i></span>
+                                <input @popper(Buscador) type="text" class="form-control"
+                                    placeholder="Buscar producto" aria-label="Username" aria-describedby="basic-addon1"
+                                    wire:model="buscar">
+                            </div>
+
+
+                        </div>
                     </div>
 
-
                 </div>
-                <div class="modal-body">
+
+
+                <div class="modal-body" style="overflow-y: auto;">
                     <table class="table table-striped" id="productos-container">
                         <thead>
                             <tr>
@@ -128,71 +190,7 @@
 
             </div>
 
-            <div class="card">
-                <div class="card-body float-right">
 
-                    <div class="row g-3  ">
-                        <div class="col-7 text-end">
-
-                            <label for="inputPassword6" class="col-form-label">Subtotal</label>
-                        </div>
-                        <div class="col-5 mt-4">
-                            <h5 id="subtotal"></h5>
-                        </div>
-
-
-                        <div class="col-7 text-end">
-                            <label for="inputPassword6" class="col-form-label">% IVA </label>
-                        </div>
-                        <div class="col-5 mt-4">
-                            <h5 id="iva"></h5>
-                        </div>
-
-                        <div class="col-7 text-end">
-                            <label for="inputPassword6" class="col-form-label">Descuento</label>
-                        </div>
-                        <div class="col-5">
-                            <div class="row">
-                                <div class="col-6">
-                                    <input type="text" id="valor_descuento" name="valor_descuento"
-                                        class="form-control" aria-describedby="passwordHelpInline" disabled>
-
-                                </div>
-                                <div class="col-6 mt-1">
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input mt-1" type="radio" name="inlineRadioOptions"
-                                            id="inlineRadio1" value="descuento_porcentaje" onchange="toggleInput(this)">
-                                        <label class="form-check-label" for="inlineRadio1">%</label>
-                                    </div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input mt-1" type="radio" name="inlineRadioOptions"
-                                            id="inlineRadio2" value="descuento_efectivo" onchange="toggleInput(this)">
-                                        <label class="form-check-label" for="inlineRadio2">$</label>
-                                    </div>
-
-
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-5">
-                            <a class="btn btn-outline-success" onclick="handleGuardarTransaccion()">Generar Cotización</a>
-                        </div>
-
-                        <div class="col-2 text-end">
-                            <label for="inputPassword6" class="col-form-label">Total</label>
-                        </div>
-                        <div class="col-5 mt-3">
-                            <h5 class="mt-1" id="total"></h5> <a class="btn btn-outline-secondary float-end"
-                                title="Restuarar Total" onclick="restablecertotal()"><i
-                                    class="bi bi-arrow-clockwise"></i></a>
-                        </div>
-
-                    </div>
-                </div>
-
-
-            </div>
         </div>
 
     </div>
@@ -204,18 +202,17 @@
 
 
     <script>
+        var clienteSeleccionado = '';
 
-var clienteSeleccionado = '';
+        // Función para obtener y almacenar el valor seleccionado del cliente
+        function obtenerClienteSeleccionado() {
+            // Obtener el elemento select
+            var selectCliente = document.getElementById('cliente');
 
-// Función para obtener y almacenar el valor seleccionado del cliente
-function obtenerClienteSeleccionado() {
-    // Obtener el elemento select
-    var selectCliente = document.getElementById('cliente');
+            // Obtener el valor seleccionado del cliente
+            clienteSeleccionado = selectCliente.value;
 
-    // Obtener el valor seleccionado del cliente
-    clienteSeleccionado = selectCliente.value;
-
-}
+        }
 
 
 
@@ -434,7 +431,7 @@ function obtenerClienteSeleccionado() {
                 var descuento = totalTransaccion * (valor_descuento / 100);
                 totalTransaccion -= descuento; // Restar el descuento al total del sistema
             } else {
-                if (valor_descuento >= 50  && totalTransaccion > 0) {
+                if (valor_descuento >= 50 && totalTransaccion > 0) {
                     // Sumar el descuento en efectivo al total del sistema
                     totalTransaccion -= valor_descuento; // Restar el descuento al total del sistema
                 }
@@ -457,9 +454,9 @@ function obtenerClienteSeleccionado() {
 
         function handleGuardarTransaccion() {
             descuentoTototal = 0;
-             descuentoTototal = subtotalTransaccion + ivaTransaccion - totalTransaccion
-             obtenerClienteSeleccionado()
-             if (clienteSeleccionado == '') {
+            descuentoTototal = subtotalTransaccion + ivaTransaccion - totalTransaccion
+            obtenerClienteSeleccionado()
+            if (clienteSeleccionado == '') {
                 alertSinClienteTransaccion();
                 return;
             }

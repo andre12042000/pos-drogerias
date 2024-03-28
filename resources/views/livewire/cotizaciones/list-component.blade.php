@@ -79,8 +79,6 @@
                                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                                       <li><a class="dropdown-item" href="#"> <i class="bi bi-printer"></i> Imprimir </a></li>
                                       <li><a class="dropdown-item" href="#"><i class="bi bi-filetype-pdf"></i> Descargar PDF </a></li>
-                                      <li><a class="dropdown-item" href="#"><i class="bi bi-envelope"></i> Enviar Al Correo </a></li>
-                                      <li><a class="dropdown-item" href="#"><i class="bi bi-trash3"></i> Eliminar </a></li>
                                     </ul>
                                   </div>
 

@@ -1,31 +1,36 @@
 <div>
     <div class="table-responsive ">
-        <table id="detalles"style="background-color: #F4F6F9; " class="table">
+        <table id="detalles" style="background-color: #17A2B8; color: #fff" class="table">
             <thead>
                 <tr>
-
-                    <th class="mb-3">
-                        <span class="mb-3">{{mb_strtoupper($empresa->name)}} <br> SUCURSAL 1 <br> <br></span>
+                    <th>                <img class="img-fluid animated zoomIn" src="{{ asset('/img/logo-white.png') }}" height="80" width="70" alt="">
                     </th>
-                    <th class="text-right"> Nit: {{$empresa->nit}} <br>
-                        Teléfono: {{$empresa->telefono}} <br>
-                        Correo: {{$empresa->email}}
-                      @isset($empresa->direccion)
-                      <br>
-                           Dirección: {{$empresa->direccion}}
-                      @endisset
-</th>
+
+                    <th class="mb-3"  style="max-width: 10px;" >
+                        <span class="mb-3">{{ mb_strtoupper($empresa->name) }} <br> SUCURSAL 1 <br> <br></span>
+                        <br>
+                    </th>
+                    <th class="text-right"style="width: 600px"> Nit: {{ $empresa->nit }} <br>
+                        Teléfono: {{ $empresa->telefono }}
+
+                        @isset($empresa->direccion)
+                            <br>
+                            Dirección: {{ $empresa->direccion }}
+                        @endisset <br>
+                        Correo: {{ $empresa->email }}
+                    </th>
                 </tr>
                 </tbody>
         </table>
     </div>
 
-    <br>
+
+             <h4 class="text-center " style="color: #17A2B8; "><strong>Información Básica</strong></h4>
+
     <div class="card-body">
         <div class=" table-responsive  ">
-            <h4 class="text-center"><strong>Información Básica</strong></h4>
             <table id="detalles" class="table">
-                <thead style="background-color: #F4F6F9; ">
+                <thead style="background-color: #17A2B8; color: #fff ">
                     <tr>
                         <th class="text-center">Factura</th>
                         <th class="text-right">Cliente</th>
@@ -36,21 +41,28 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td class="text-center">{{$sales->full_nro }}</td>
-                        <td class="text-right"> {{$sales->client->name}}</td>
-                        <td class="text-right">@if($sales->client->number_document != '') {{$sales->client->number_document}} @else <span> Sin ingresar </span> @endif</td>
+                        <td class="text-center">{{ $sales->full_nro }}</td>
+                        <td class="text-right"> {{ $sales->client->name }}</td>
+                        <td class="text-right">
+                            @if ($sales->client->number_document != '')
+                                {{ $sales->client->number_document }}
+                            @else
+                                <span> Sin ingresar </span>
+                            @endif
+                        </td>
                         <td class="text-right">{{ \Carbon\Carbon::parse($sales->created_at)->format('d M Y') }}</td>
-                        <td class="text-center">{{$sales->user->name}}</td>
+                        <td class="text-center">{{ $sales->user->name }}</td>
                     </tr>
                 </tbody>
             </table>
         </div>
     </div>
-    <br>
+
+    <h4 class="text-center" style="color: #17A2B8;"><strong> Detalles De Venta</strong></h4>
+
     <div class=" table-responsive  ">
-        <h4 class="text-center"><strong> Detalles De Venta</strong></h4>
         <table id="detalles" class="table">
-            <thead style="background-color: #F4F6F9; ">
+            <thead style="background-color: #17A2B8; color: #fff ">
                 <tr>
                     <th class="text-center">Producto</th>
                     <th class="text-right">Precio Unitario</th>
@@ -59,21 +71,23 @@
 
                 </tr>
             </thead>
-            <tbody> @foreach ($detailsales as $detalles)
-                <tr>
-                    <td class="text-center">{{ $detalles->product->name}}</td>
-                    <td class="text-right"> $ {{number_format( $detalles->price,0)}}</td>
-                    <td class="text-right">{{ $detalles->quantity}}</td>
-                    <td class="text-right">$ {{ $detalles->price *  $detalles->quantity}}</td><br>
-                </tr> @endforeach
+            <tbody>
+                @foreach ($detailsales as $detalles)
+                    <tr>
+                        <td class="text-center">{{ $detalles->product->name }}</td>
+                        <td class="text-right"> $ {{ number_format($detalles->price, 0) }}</td>
+                        <td class="text-right">{{ $detalles->quantity }}</td>
+                        <td class="text-right">$ {{ $detalles->price * $detalles->quantity }}</td><br>
+                    </tr>
+                @endforeach
             </tbody>
-            <tfoot>
+            <tfoot style="color: #17A2B8;  ">
                 <tr class="">
                     <th colspan="3">
-                        <p class="text-right">TOTAL:</p>
+                        <p class="text-right" >TOTAL:</p>
                     </th>
                     <th>
-                        <p class="text-right">$ {{number_format( $sales->total,0)}}</p>
+                        <p class="text-right">$ {{ number_format($sales->total, 0) }}</p>
                     </th>
                 </tr>
 
@@ -82,7 +96,9 @@
     </div>
 </div>
 <footer class="footer text-center">
-<div class="text-center"> <strong class="text-center">Gracias Por Tu Compra</strong>  </div>
+    <div class="text-center"> <strong class="text-center">Gracias Por Tu Compra</strong> </div>
+    <div class="text-center"> <strong class="text-center">Sistema Fácil POS 3103409357 - 3134182778</strong> </div>
+
 </footer>
 
 
@@ -98,14 +114,16 @@
         -webkit-text-size-adjust: 100%;
         -ms-text-size-adjust: 100%;
     }
+
     footer {
-  background-color: #F4F6F9;
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  height: 40px;
-  color: black;
-}
+        background-color: #F4F6F9;
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        height: 40px;
+        color: black;
+    }
+
     .columna {
         width: 33%;
         float: left;
