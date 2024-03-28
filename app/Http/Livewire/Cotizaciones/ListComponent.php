@@ -2,9 +2,12 @@
 
 namespace App\Http\Livewire\Cotizaciones;
 
-use App\Models\Cotizacion;
+use Dompdf\Dompdf;
+use App\Models\Empresa;
 use Livewire\Component;
+use App\Models\Cotizacion;
 use Livewire\WithPagination;
+use App\Models\CotizacionDetalle;
 
 class ListComponent extends Component
 {
@@ -30,6 +33,7 @@ class ListComponent extends Component
     {
         $this->emit('CotizacionEvent', $cotizacion);
     }
+
 
 
 

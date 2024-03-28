@@ -52,7 +52,7 @@
                         <th>Prefijo</th>
                         <th>Código</th>
                         <th>Cliente</th>
-                        <th>Descripción</th>
+                        <th>Fecha</th>
                         <th>Descuento</th>
                         <th>IVA</th>
                         <th>Total</th>
@@ -65,7 +65,7 @@
                         <td>{{ ucwords($cotizacion->prefijo) }}</td>
 
                         <td>{{ $cotizacion->full_nro }} </td>
-                        <td>{{ $cotizacion->client_id }} </td>
+                        <td>{{ $cotizacion->client->name }} </td>
                         <td>{{ $cotizacion->cotizacion_date }} </td>
                         <td>{{ $cotizacion->discount }} </td>
                         <td>{{ $cotizacion->tax }} </td>
@@ -78,7 +78,7 @@
                                     </a>
                                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                                       <li><a class="dropdown-item" href="#"> <i class="bi bi-printer"></i> Imprimir </a></li>
-                                      <li><a class="dropdown-item" href="#"><i class="bi bi-filetype-pdf"></i> Descargar PDF </a></li>
+                                      <li><a class="dropdown-item" href="{{ route('cotizaciones.generarpdfcotizacion', $cotizacion->id) }}"><i class="bi bi-filetype-pdf"></i> Descargar PDF </a></li>
                                     </ul>
                                   </div>
 

@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ConsumoInterno;
+use Dompdf\Dompdf;
+use App\Models\Empresa;
+use App\Models\Cotizacion;
 use App\Models\PagoCreditos;
 use Illuminate\Http\Request;
+use App\Models\ConsumoInterno;
+use App\Models\CotizacionDetalle;
 USE App\Traits\ImprimirTrait;
 
 class ImprimirController extends Controller
@@ -168,6 +172,33 @@ class ImprimirController extends Controller
         }
 
         return redirect()->back();
+
+    }
+
+
+
+    public function cotizacionpdf($id)
+    {
+
+        $sales = Cotizacion::find($id);
+        $empresa = Empresa::find(1);
+        $detailsales = CotizacionDetalle::where('cotizacion_id', $id)->get();
+        $dompdf = new Dompdf();
+        $dompdf->set_option('isHtml5ParserEnabled', true);
+        $dompdf->set_option('isRemoteEnabled', true);
+        $dompdf->set_option('isPhpEnabled', true);
+        $dompdf->set_option('enable_html5_parser', true);
+        $dompdf->set_option('enable_remote', true);
+
+        // Cargar la vista que deseas convertir en PDF
+        $view = view('ventas.pos.exportar', compact('sales', 'empresa', 'detailsales'))->render();
+
+        // Renderizar la vista en un archivo PDF
+        $dompdf->loadHtml($view);
+        $dompdf->render();
+        // Devolver el PDF como respuesta
+
+        return $dompdf->stream('Cotización.pdf');
 
     }
 }

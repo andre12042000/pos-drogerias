@@ -18,4 +18,15 @@ class Cotizacion extends Model
             return $query;
         }
     }
+
+    public function client(){
+        return $this->belongsTo(Client::class);
+    }
+    public function saleDetails(){
+        return $this->hasMany(CotizacionDetalle::class, 'cotizacion_id');
+    }
+
+    public function user(){
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }

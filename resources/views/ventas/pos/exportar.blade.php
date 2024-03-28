@@ -32,7 +32,12 @@
             <table id="detalles" class="table">
                 <thead style="background-color: #17A2B8; color: #fff ">
                     <tr>
-                        <th class="text-center">Factura</th>
+                        @if(strpos($sales->full_nro, 'CTZ') === 0)
+                        <th class="text-center">Cotización</th>
+                        @else
+                         <th class="text-center">Factura</th>
+@endif
+
                         <th class="text-right">Cliente</th>
                         <th class="text-right">Identificación</th>
                         <th class="text-right"> Fecha De Venta</th>
