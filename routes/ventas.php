@@ -15,6 +15,6 @@ Route::get('imprimir/{venta}', [SaleController::class, 'imprimirrecibo'])->name(
 
 
 
-Route::get('restaurant', [SaleCafeteriaComponent::class, '__invoke'])->name('restaurante');
+Route::get('restaurant', [SaleCafeteriaComponent::class, '__invoke'])->name('restaurant');
 
 });

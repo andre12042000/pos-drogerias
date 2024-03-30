@@ -346,6 +346,13 @@ return [
                     'icon_color' => 'white',
                     'route'      => 'ventas.pos',
                 ],
+                [
+                    'text'       => 'Ventas de Mesa',
+                    'classes'    => 'text-white',
+                    'icon'       => 'fas fa-table',
+                    'icon_color' => 'white',
+                    'route'      => 'ventas.restaurant',
+                ],
 
                 [
                     'text'       => 'Cotizaciones',

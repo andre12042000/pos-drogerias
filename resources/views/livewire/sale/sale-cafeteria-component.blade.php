@@ -6,10 +6,10 @@
                 <div class="card" id="cuentas_mostrador" style="height: 550px;">
 
                     <div class="row m-2">
-                        <div class="col">
-                            <h5><span class="badge bg-success">MOSTRADOR</span></h5>
+                        <div class="col-sm-3">
+                            <h5><span class="badge bg-warning text-dark">MOSTRADOR</span></h5>
                         </div>
-                        <div class="col">
+                        <div class="col-sm-7">
 
                             <div class="col">
                                 <div class="input-group mb-2">
@@ -20,21 +20,21 @@
                                     <input type="text"
                                         class="form-control @if ($error_search) is-invalid @endif"
                                         id="inlineFormInputGroup" placeholder="Buscar producto por código"
-                                        wire:model.lazy ="codigo_de_producto" wire:keydown.enter="searchProductCode" autofocus
-                                        autocomplete="disabled"> <!--Buscador por código -->
+                                        wire:model.lazy ="codigo_de_producto" wire:keydown.enter="searchProductCode"
+                                        autofocus autocomplete="nope"> <!--Buscador por código -->
                                 </div>
                                 @error('codigo_de_producto')
                                     <span class="text-danger">{{ $message }}</span>
                                 @enderror
                             </div>
                         </div>
-                        <div class="col">
+                        <div class="col-sm-2">
                             <div class="form-check float-right">
                                 <input class="form-check-input" type="checkbox" value="" id="pagarMostrador">
                                 <label class="form-check-label" for="pagarMostrador">
-                                  <strong>Pagar</strong>
+                                    <strong>Pagar</strong>
                                 </label>
-                              </div>
+                            </div>
                         </div>
 
                     </div>
@@ -42,19 +42,19 @@
 
                         <table class="table" id="productosVentaMostrador">
                             <thead>
-                              <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Descripción</th>
-                                <th scope="col">Precio Unit.</th>
-                                <th scope="col">Cant.</th>
-                                <th scope="col">Total</th>
-                                <th scope="col"></th>
-                              </tr>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Descripción</th>
+                                    <th scope="col">Precio Unit.</th>
+                                    <th scope="col">Cant.</th>
+                                    <th scope="col">Total</th>
+                                    <th scope="col"></th>
+                                </tr>
                             </thead>
                             <tbody id="productosVentaMostrador">
 
                             </tbody>
-                          </table>
+                        </table>
 
                     </div>
 
@@ -88,7 +88,6 @@
     @include('modals.sale.pedidos')
 </div>
 @include('modals.sale.editarcantidadmesas')
-@include('modals.client.search')
 @include('modals.client.create')
 @include('modals.products.search_product_restaurant')
 
@@ -121,15 +120,20 @@
 
     .counter {
         width: 200px;
-        /* Ancho del mostrador */
         height: 150px;
-        /* Altura del mostrador */
-        background-color: #e0e0e0;
-        /* Color de fondo del mostrador */
+        background-color: #FFC107;
         border-radius: 15px;
-        /* Radio de los bordes redondeados */
         text-align: center;
         padding: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        /* Sombra suave para resaltar */
+        transition: box-shadow 0.3s ease;
+        /* Transición suave al pasar el cursor */
+    }
+
+    .counter:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        /* Aumentar la sombra al pasar el cursor */
     }
 
     .tables {
@@ -146,7 +150,7 @@
     .tables .table {
         width: 100px;
         height: 100px;
-        background-color: #ffffff;
+        background-color: #A1C398;
         border: 1px solid #000000;
         border-radius: 50%;
         margin-bottom: 10px;
@@ -155,7 +159,7 @@
     .mesa-box {
         width: 100px;
         height: 100px;
-        background-color: #ffffff;
+        background-color: #A1C398;
         border: 1px solid #000000;
         border-radius: 15px;
         margin: 10px;
@@ -166,13 +170,14 @@
     }
 
     .select2-selection--single {
-            height: 40px !important;
-        }
+        height: 40px !important;
+    }
 
-        .select2-selection__arrow {
-            top: 10px !important;
-            right: 10px !important; /* Ajusta la posición vertical del ícono */
-        }
+    .select2-selection__arrow {
+        top: 10px !important;
+        right: 10px !important;
+        /* Ajusta la posición vertical del ícono */
+    }
 </style>
 
 

@@ -146,9 +146,9 @@ function consultarEstadoMesa(numMesa) {
 function actualizarEstadoMesa(mesaBox) {
     // Actualizar la apariencia de la mesa según su estado
     if (mesaBox.dataset.estado === "desocupada") {
-        mesaBox.style.backgroundColor = "white"; // Color para mesas desocupadas
+        mesaBox.style.backgroundColor = "#E1F0DA"; // Color para mesas desocupadas
     } else {
-        mesaBox.style.backgroundColor = "#ff9999"; // Color para mesas ocupadas
+        mesaBox.style.backgroundColor = "#FC6736"; // Color para mesas ocupadas
     }
 }
 

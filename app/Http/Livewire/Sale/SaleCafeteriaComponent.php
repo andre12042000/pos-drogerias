@@ -80,8 +80,6 @@ class SaleCafeteriaComponent extends Component
 
     function save($tipo, $dataVenta)
     {
-
-
         if ($tipo == 'VENTA') {
             $prefijo = 'RE';
             $estado = 'PAGADA';
