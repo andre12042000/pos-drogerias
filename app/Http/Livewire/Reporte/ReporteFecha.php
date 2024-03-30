@@ -204,6 +204,9 @@ class ReporteFecha extends Component
 
         $reciboBody[] = ['label' => '', 'value' => ''];
 
+
+        
+
         // Métodos de pago
         foreach ($this->metodosDePagoGroup_imprimir as $nombreMetodoPago => $total) {
             $reciboBody[] = [

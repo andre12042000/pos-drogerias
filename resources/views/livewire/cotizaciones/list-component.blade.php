@@ -49,27 +49,24 @@
             <table class="table table-striped">
                 <thead>
                     <tr>
-                        <th>Prefijo</th>
                         <th>Código</th>
                         <th>Cliente</th>
                         <th>Fecha</th>
-                        <th>Descuento</th>
-                        <th>IVA</th>
-                        <th>Total</th>
+                        <th class="text-end">Descuento</th>
+                        <th class="text-end">IVA</th>
+                        <th class="text-end">Total</th>
                         <th class="text-center"></th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse ($cotizaciones as $cotizacion)
                     <tr>
-                        <td>{{ ucwords($cotizacion->prefijo) }}</td>
-
                         <td>{{ $cotizacion->full_nro }} </td>
-                        <td>{{ $cotizacion->client->name }} </td>
-                        <td>{{ $cotizacion->cotizacion_date }} </td>
-                        <td>{{ $cotizacion->discount }} </td>
-                        <td>{{ $cotizacion->tax }} </td>
-                        <td>{{ $cotizacion->total  }} </td>
+                        <td>{{ ucwords($cotizacion->client->name) }} </td>
+                        <td>{{ \Carbon\Carbon::parse($cotizacion->cotzacion_date)->format('d M Y') }}</td>
+                        <td class="text-end">$ {{ number_format($cotizacion->discount, 0) }} </td>
+                        <td class="text-end">$ {{ number_format($cotizacion->tax, 0) }} </td>
+                        <td class="text-end">$ {{ number_format($cotizacion->total, 0) }}</td>
 
                         <td class="text-center">
                                 <div class="dropdown">

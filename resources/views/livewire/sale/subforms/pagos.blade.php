@@ -13,19 +13,27 @@
                 id="tipoOperacionCredito" value="CREDITO" wire:model.defer="tipo_operacion">
             <label class="form-check-label" for="tipoOperacionCredito">CRÉDITO</label>
         </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="tipoOperacionOptions"
+                id="tipoOperacionCortesia" value="CORTESIA" wire:model.defer="tipo_operacion">
+            <label class="form-check-label" for="tipoOperacionCortesia">CORTESÍA</label>
+        </div>
     </div>
 
 </div>
 <div class="row mt-4">
     <div class="col">
-        <div class="input-group">
-            <input type="text" class="form-control" placeholder="Cliente" id="client"
-                aria-label="Recipient's username with two button addons"
-                aria-describedby="button-addon4" value="{{ $client_name }}" disabled readonly>
+        <div class="input-group" style="height: 38px; max-width: 600px;">
+            <select class="form-select js-example-basic-single" name="cliente" id="cliente">
+                    <option value="1">Consumidor final</option>
+                @forelse ($clientes as $client)
+                    <option value="{{ $client->id }}">{{ ucwords($client->name) }}</option>
+                @empty
+                <option value="">No hay registros disponibles...</option>
+                @endforelse
+
+            </select>
             <div class="input-group-append" id="button-addon4">
-                <button class="btn btn-outline-secondary" type="button"data-toggle="modal"
-                    data-target="#searchclient"><i class="bi bi-search"
-                        style="cursor: pointer"></i></button>
                 <button class="btn btn-outline-secondary" type="button"data-toggle="modal"
                     data-target="#clientmodal"><i class="bi bi-plus-circle-fill"
                         style="cursor: pointer"></i></button>
@@ -138,5 +146,28 @@
         margin-right: 10px; /* Espacio entre el label y el valor */
     }
 </style>
+
+@section('js')
+    <script>
+        $(document).ready(function() {
+            $('.js-example-basic-single').select2();
+
+            // Escucha el evento emitido por Livewire cuando se agrega un nuevo cliente
+            window.livewire.on('ClientEvent', function(client) {
+                // Agrega el nuevo cliente al select2
+                var option = new Option(client.name, client.id, true, true);
+                $('#cliente').append(option).trigger('change');
+
+                // Opcional: Puedes seleccionar automáticamente el nuevo cliente
+                // $('#cliente').val(client.id).trigger('change');
+
+                // Opcional: Puedes enfocar y abrir el select2 para que el usuario pueda ver el nuevo cliente
+                // $('#cliente').select2('open');
+            });
+
+
+        });
+    </script>
+@stop
 
 

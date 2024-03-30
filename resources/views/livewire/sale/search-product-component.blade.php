@@ -64,6 +64,8 @@
     function addToCart(product) {
         // Verificar si el producto ya está en el carrito
         let productIndex = cart.findIndex(item => item.id === product.id);
+
+
         if (productIndex !== -1) {
             // Si el producto ya está en el carrito, incrementar la cantidad
             cart[productIndex].cantidad++;
