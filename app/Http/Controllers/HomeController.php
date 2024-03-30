@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Abono;
 use App\Models\Cash;
+use App\Models\Client;
 use App\Models\Orders;
 use App\Models\Purchase;
 use App\Models\Sale;
@@ -72,14 +73,14 @@ class HomeController extends Controller
         $topProducts = $this->obtenerproductosmasvendidos();
         $ventas_ultimos_meses = $this->obtenerventasultimosmeses();
         $compras_ultimos_meses = $this->obtenercomprasultimosmeses();
-
+        $recaudo_cartera = $this->obtenerrecuadocartera();
         $months = $ventas_ultimos_meses['months'];
         $totals = $ventas_ultimos_meses['totals'];
 
         $purchasemonths = $compras_ultimos_meses['months'];
         $purchasetotals = $compras_ultimos_meses['totals'];
 
-        return view('home', compact('fecha_actual','filter_fecha', 'cantidad_consumo', 'cantidad_gastos', 'purchasemonths', 'purchasetotals', 'data', 'total_ingresos', 'mes_actual', 'topProducts', 'cantidad_ventas', 'cantidad_abonos', 'cantidad_compras', 'cantidad_deuda', 'months', 'totals'));
+        return view('home', compact('recaudo_cartera', 'fecha_actual','filter_fecha', 'cantidad_consumo', 'cantidad_gastos', 'purchasemonths', 'purchasetotals', 'data', 'total_ingresos', 'mes_actual', 'topProducts', 'cantidad_ventas', 'cantidad_abonos', 'cantidad_compras', 'cantidad_deuda', 'months', 'totals'));
 
     }
 
@@ -139,14 +140,22 @@ class HomeController extends Controller
     function obtenerdeudas()
     {
         $deudas = Orders::sum('saldo');
-
+        $saldo_clientes = Client::sum('deuda');
         if(is_null($deudas)){
             $total = null;
         }else{
-            $total = $deudas;
+            $total = $deudas + $saldo_clientes;
         }
 
         return $total;
+    }
+
+    function obtenerrecuadocartera(){
+
+        $totalQuantity = Cash::where('cashesable_type', 'App\Models\PagoCreditos')->sum('quantity');
+
+
+return $totalQuantity;
     }
 
 // no se actializan con el mes del imput

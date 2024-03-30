@@ -75,7 +75,7 @@
             <div class="inner">
                 <h3>$ {{ number_format($cantidad_deuda, 0) }}</h3>
 
-                <p>Deudas Actuales</p>
+                <p>Cartera</p>
             </div>
             <div class="icon">
                 <i class="ion ion-social-usd-outline "></i>
@@ -88,7 +88,7 @@
         <!-- small box -->
         <div class="small-box bg-teal">
             <div class="inner">
-                <h3>$ {{ number_format($cantidad_deuda, 0) }}</h3>
+                <h3>$ {{ number_format($recaudo_cartera, 0) }}</h3>
 
                 <p>Recuado Cartera</p>
             </div>
