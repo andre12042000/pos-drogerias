@@ -14,11 +14,6 @@ use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
     public function __construct()
     {
         $this->middleware('auth');
@@ -29,12 +24,20 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function index()
+    public function index(Request $request)
     {
+        $fecha_actual = date('Y-m');
+        $filter_fecha = $request->input('mes_anio');
         $hoy = Carbon::now();
         $mes_actual = $hoy->format('m');
         $year_actual = $hoy->format('Y');
-        $currentMonth = date('Y-m');
+
+        if($filter_fecha == '' || $filter_fecha == null ){
+            $currentMonth = date('Y-m');
+        }else{
+            $currentMonth = $filter_fecha;
+        }
+
 
         $mes_actual = ucfirst(utf8_encode(\Carbon\Carbon::now()->locale('es')->monthName));
 
@@ -62,6 +65,9 @@ class HomeController extends Controller
         $cantidad_abonos = $cashes->where('cashesable_type', 'App\Models\Abono')->sum('total');
         $cantidad_compras = $this->obtenercantidadcompras($currentMonth);
         $cantidad_deuda = $this->obtenerdeudas();
+        $cantidad_gastos = $this->obtenercantidadgastos($currentMonth);
+        $cantidad_consumo = $this->obtenercantidadconsumointerno($currentMonth);
+
 
         $topProducts = $this->obtenerproductosmasvendidos();
         $ventas_ultimos_meses = $this->obtenerventasultimosmeses();
@@ -73,10 +79,45 @@ class HomeController extends Controller
         $purchasemonths = $compras_ultimos_meses['months'];
         $purchasetotals = $compras_ultimos_meses['totals'];
 
-        return view('home', compact('purchasemonths', 'purchasetotals', 'data', 'total_ingresos', 'mes_actual', 'topProducts', 'cantidad_ventas', 'cantidad_abonos', 'cantidad_compras', 'cantidad_deuda', 'months', 'totals'));
+        return view('home', compact('fecha_actual','filter_fecha', 'cantidad_consumo', 'cantidad_gastos', 'purchasemonths', 'purchasetotals', 'data', 'total_ingresos', 'mes_actual', 'topProducts', 'cantidad_ventas', 'cantidad_abonos', 'cantidad_compras', 'cantidad_deuda', 'months', 'totals'));
 
+    }
 
+    public function actilizarestadisticas(Request $request){
 
+        return $this->index($request);
+
+    }
+
+    function obtenercantidadgastos($currentMonth)
+    {
+        $gastos = DB::table('gastos')
+                        ->where('status', '=', 'APLICADO')
+                        ->where(DB::raw('DATE_FORMAT(created_at, "%Y-%m")'), '=', $currentMonth)
+                        ->sum('total');
+
+        if(is_null($gastos)){
+            $total = 0;
+        }else{
+            $total = $gastos;
+        }
+
+        return $total;
+    }
+
+    function obtenercantidadconsumointerno($currentMonth)
+    {
+        $consumos = DB::table('consumo_internos')
+                        ->where('status', '=', 'APLICADA')
+                        ->where(DB::raw('DATE_FORMAT(created_at, "%Y-%m")'), '=', $currentMonth)
+                        ->sum('total');
+        if(is_null($consumos)){
+            $total = 0;
+        }else{
+            $total = $consumos;
+        }
+
+        return $total;
     }
 
     function obtenercantidadcompras($currentMonth)
@@ -108,7 +149,7 @@ class HomeController extends Controller
         return $total;
     }
 
-
+// no se actializan con el mes del imput
 
     function obtenerproductosmasvendidos()
     {

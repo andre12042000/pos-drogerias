@@ -25,7 +25,7 @@ class CreateComponent extends Component
             ->search($this->buscar)
             ->orderBy('name', 'asc')
             ->active()
-            ->take(5)
+            ->take(8)
             ->get();
 
 

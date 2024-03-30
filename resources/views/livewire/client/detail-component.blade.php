@@ -4,15 +4,15 @@
     <div class="card card-info mt-2">
         <div class="card-header mb-4">
             <div class="row">
-                <div class="col-sm-11">
+                <div class="col-sm-10">
                     <h3>Detalles del cliente</h3>
                 </div>
-                <div class="col-sm-1">
-                    <div class="input-group float-right text-end">
+                <div class="col-sm-2 text-end float-end">
 
-                        <a href="{{ route('terceros.client') }}" type="button" class="btn btn-outline-light float-right ml-2">Atrás <i class="las la-plus-circle"></i></a>
 
-                    </div>
+                        <button href="{{ route('terceros.client') }}" type="button" class="btn btn-outline-light  ml-2"><i class="bi bi-arrow-left-circle"></i> Atrás </button>
+
+
                 </div>
             </div>
         </div>

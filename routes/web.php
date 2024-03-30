@@ -41,6 +41,7 @@ Route::get('eliminar', [CategoryController::class, 'destroy'])->middleware('auth
 
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->middleware('auth', 'change.password')->name('home');
+Route::post('/estadisticas', [App\Http\Controllers\HomeController::class, 'actilizarestadisticas'])->middleware('auth', 'change.password')->name('update.estadistica');
 
 Route::get('notificaciones/', NotificationComponent::class)->middleware('auth')->name('notificaciones.index');
 Route::get('notifications/get', [App\Http\Controllers\NotificationsController::class, 'getNotificationsData'])->middleware('auth', 'change.password')->name('notifications.get');

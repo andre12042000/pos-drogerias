@@ -1,10 +1,10 @@
 <div>
     @section('title', 'Nuevo Consumo')
 
-    <div class="row py-5">
+    <div class="row py-1">
         <div class="col-lg-6">
-            <div class="card">
-                <div class="card-body">
+            <div class="card" style="height:425px; font-size: 10px">
+                <div class="card-body" style="overflow-y: auto;">
                     <table class="table table-striped">
                         <thead>
                             <tr>
@@ -16,7 +16,7 @@
                                 <th></th>
                             </tr>
                         </thead>
-                        <tbody id="productos-en-transaccion" style="height:400px;">
+                        <tbody id="productos-en-transaccion"  >
 
                         </tbody>
                     </table>
@@ -32,7 +32,7 @@
         </div>
         {{-- derecha --}}
         <div class="col-lg-6">
-            <div class="card">
+            <div class="card" style="height:425px; font-size: 10px">
                 <div x-data class="mt-2">
                     @include('popper::assets')
 
@@ -42,7 +42,7 @@
                             aria-label="Username" aria-describedby="basic-addon1" wire:model="buscar">
                     </div>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body" style="overflow-y: auto;">
                     <table class="table table-striped" id="productos-container">
                         <thead>
                             <tr>
@@ -118,7 +118,7 @@
 
     <div class="row">
 
-        <div class="d-grid gap-2">
+        <div class="d-grid  py-1">
             <button class="btn btn-outline-success" type="button" style="height: 50px;"
                 onclick="handleGuardarTransaccion()">Guardar</button>
         </div>

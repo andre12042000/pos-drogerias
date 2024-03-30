@@ -12,7 +12,18 @@
 @include('popper::assets')
 
 
-<div class="row mt-1">
+  <form method="POST" action="{{ route('update.estadistica') }}">
+    @csrf
+    <div class="input-group py-2 mb-3 col-4">
+        <span class="input-group-text">Mes - Año</span>
+        <input type="month"  class="form-control" placeholder="mes - año" id="mes_anio" name="mes_anio" value="{{ $filter_fecha ?? $fecha_actual }}">
+        <button type="submit" class="btn btn-outline-success" title="Recargar Estadísticas" ><i class="bi bi-arrow-clockwise"></i></button>
+      </div>
+
+</form>
+
+
+<div class="row ">
     <div class="col-lg-3 col-6 ">
         <!-- small box -->
         <div class="small-box bg-success">
@@ -73,10 +84,55 @@
         </div>
     </div>
     <!-- ./col -->
+    <div class="col-lg-4 ">
+        <!-- small box -->
+        <div class="small-box bg-teal">
+            <div class="inner">
+                <h3>$ {{ number_format($cantidad_deuda, 0) }}</h3>
+
+                <p>Recuado Cartera</p>
+            </div>
+            <div class="icon">
+                <i class="fas fa-hand-holding-usd"></i>
+            </div>
+
+        </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-4 ">
+        <!-- small box -->
+        <div class="small-box bg-secondary">
+            <div class="inner">
+                <h3>$ {{ number_format($cantidad_consumo, 0) }}</h3>
+
+                <p>Consumo Interno</p>
+            </div>
+            <div class="icon">
+                <i class="fas fa-file-invoice-dollar"></i>
+            </div>
+
+        </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-4 ">
+        <!-- small box -->
+        <div class="small-box bg-dark">
+            <div class="inner">
+                <h3>$ {{ number_format($cantidad_gastos, 0) }}</h3>
+
+                <p>Gastos</p>
+            </div>
+            <div class="icon">
+                <i class="far fa-money-bill-alt"></i>
+            </div>
+
+        </div>
+    </div>
+    <!-- ./col -->
 </div>
 
 
-<div class="row mt-4" >
+<div class="row " >
             <div class="col-lg-12">
                 <div class="card card-info" style="height: 350px;">
                     <div class="card-header border-0">
