@@ -237,6 +237,9 @@ function filtrarPedidosPorMesa(numMesa) {
                         <div style="width: 10%;">Cant. ${item.cantidad}</div>
                         <div style="width: 20%;">Precio Unit: $${item.precio_unitario}</div>
                         <div style="width: 20%;">SubTotal: $${item.total}</div>
+                        <div>
+                            <i class="fa fa-trash" style="cursor: pointer;" onclick="eliminarItemMesa(${numMesa}, ${index + 1}, ${item.producto_id})"></i>
+                        </div>
                     </li>
                 `;
             });
@@ -250,6 +253,31 @@ function filtrarPedidosPorMesa(numMesa) {
     // Mostrar los pedidos de la mesa seleccionada en el div cuentas_por_mesas
     document.getElementById("cuentas_por_mesas").innerHTML =
         cuentasPorMesasHTML;
+}
+
+
+function eliminarItemMesa(mesa, pedido, producto) {
+    // Mostrar el SweetAlert de confirmación
+    Swal.fire({
+        title: '¿Está seguro?',
+        text: 'Esta acción eliminará el registro. ¿Está seguro que desea continuar?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        // Si el usuario confirma la eliminación
+        if (result.isConfirmed) {
+            // Llamar a la función para eliminar el pedido del local storage
+            eliminarPedidoLocalStorageMesa(mesa, pedido, producto);
+
+            // Actualizar la vista filtrando los pedidos por mesa
+            filtrarPedidosPorMesa(mesa);
+
+            // Consultar el estado de la mesa
+            consultarEstadoMesa(mesa);
+        }
+    });
 }
 
 /* ------------------------ Proceso para realizar el pago -----------------------
@@ -488,13 +516,73 @@ function mostrarProductosMostrador() {
 
             // Agregar el evento onclick para eliminar el producto del localStorage
             botonEliminar.onclick = function () {
-                eliminarPedidoLocalStorage(order.key); // Llama a la función eliminarProducto con el índice del producto
+                eliminarItemMostrador(detalle.producto_id); // Llama a la función eliminarProducto con el índice del producto
             };
 
             // Agregar el botón al DOM
             cellEliminar.appendChild(botonEliminar);
         });
     });
+}
+
+function eliminarItemMostrador(producto) {
+    // Mostrar el SweetAlert de confirmación
+    Swal.fire({
+        title: '¿Está seguro?',
+        text: 'Esta acción eliminará el registro. ¿Está seguro que desea continuar?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        // Si el usuario confirma la eliminación
+        if (result.isConfirmed) {
+            // Llamar a la función para eliminar el pedido del local storage
+            eliminarProductoLocalStorageMostrador(producto);
+
+            // Actualizar la vista filtrando los pedidos por mesa
+            mostrarProductosMostrador();
+
+        }
+    });
+}
+
+function eliminarProductoLocalStorageMostrador(producto_id) {
+    var mesa = "MOSTRADOR";
+    var pedido = "Pedido Nro: 1";
+
+    let orders = JSON.parse(localStorage.getItem("orders")) || [];
+
+    // Filtramos las ordenes de la mesa
+    let ordenesDeMesa = orders.filter((order) => order.mesa === mesa);
+
+    let ordenEncontrada = ordenesDeMesa.find(
+        (order) => order.pedidoNro === pedido
+    );
+
+    if (ordenEncontrada) {
+        let detalles = ordenEncontrada.detalles;
+
+        // Recorrer los detalles para buscar el producto_id
+        detalles.forEach((detalle, index) => {
+            if (detalle.producto_id === producto_id) {
+                // Paso 6: Eliminar el detalle si se encontró
+                detalles.splice(index, 1);
+
+                // Paso 7: Actualizar los datos en el localStorage
+                localStorage.setItem("orders", JSON.stringify(orders));
+
+                if (detalles.length === 0) {
+                    // Eliminar el pedido si no tiene detalles
+                    orders.splice(orders.indexOf(ordenEncontrada), 1);
+                    localStorage.setItem("orders", JSON.stringify(orders));
+                    console.log("Pedido eliminado porque ya no tiene detalles");
+                }
+
+                return; // Salir del bucle una vez que se elimine el detalle
+            }
+        });
+    }
 }
 
 function calcularTotalMostrador() {
@@ -549,8 +637,6 @@ checkboxPagarMostrador.addEventListener("change", function () {
         calcularTotalMostrador();
     } else {
         // El checkbox está deseleccionado
-        // Aquí puedes ejecutar las acciones que deseas realizar cuando el checkbox se deselecciona
-        console.log("El checkbox está deseleccionado");
     }
 });
 

@@ -138,6 +138,8 @@
 
         // Cerrar el modal
         location.reload();
+
+
     }
 
 </script>
