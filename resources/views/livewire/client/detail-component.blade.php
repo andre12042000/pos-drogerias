@@ -10,7 +10,7 @@
                 <div class="col-sm-2 text-end float-end">
 
 
-                        <button href="{{ route('terceros.client') }}" type="button" class="btn btn-outline-light  ml-2"><i class="bi bi-arrow-left-circle"></i> Atrás </button>
+                    <button class="btn btn-outline-light btn-sm mt-1 float-right" onclick="redirigir()"><i class='bi bi-arrow-left-circle'></i>  Atrás</button>
 
 
                 </div>
@@ -403,4 +403,10 @@
             showConfirmButton: false,
         });
     })
+</script>
+
+<script>
+    function redirigir() {
+        location.replace('{!! Config::get('app.URL') !!}/terceros/clientes');
+    }
 </script>
