@@ -34,9 +34,8 @@
 
                     <div class="row mb-3">
                         <div class="form-floating mt-1 col-4">
-                            <input type="number"
-                                class="form-control"
-                                id="stock_min" name="stock_min" wire:model.defer="stock_min">
+                            <input type="number" class="form-control" id="stock_min" name="stock_min"
+                                wire:model.defer="stock_min">
                             <label for="floatingInput">Stock mínimo *</label>
                             @error('stock_min')
                                 <span class="text-danger">{{ $message }}</span>
@@ -44,16 +43,15 @@
                         </div>
 
                         <div class="form-floating mt-1 col-4">
-                            <input type="number"
-                                class="form-control"
-                                id="stock_max" name="stock_max" wire:model.defer="stock_max">
+                            <input type="number" class="form-control" id="stock_max" name="stock_max"
+                                wire:model.defer="stock_max">
                             <label for="floatingInput">Stock máximo *</label>
                             @error('stock_max')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>
 
-                     {{--    <div class="form-floating mt-1 col-3">
+                        {{--    <div class="form-floating mt-1 col-3">
                             <input type="number"
                                 class="form-control  @if ($stock == '') @else @error('stock') is-invalid @else is-valid @enderror @endif"
                                 id="stock" name="stock" wire:model.defer="stock" disabled>
@@ -81,10 +79,9 @@
                     <div class="row mb-3" x-data="{ categorySelected: @entangle('category_id').defer }">
 
                         <div class="form-floating mt-1 col-4">
-                            <select
-                                class="form-select"
-                                id="category_id" name="category_id" aria-label="Floating label select example"
-                                wire:model.defer="category_id" @change="categorySelected = $event.target.value">
+                            <select class="form-select" id="category_id" name="category_id"
+                                aria-label="Floating label select example" wire:model.defer="category_id"
+                                @change="categorySelected = $event.target.value">
                                 @foreach ($categories as $categoria)
                                     <option value="{{ $categoria->id }}">{{ $categoria->name }}</option>
                                 @endforeach
@@ -96,10 +93,9 @@
                         </div>
 
                         <div class="form-floating mt-1 col-4">
-                            <select
-                                class="form-select"
-                                id="subcategory_id" name="subcategory_id" aria-label="Floating label select example"
-                                wire:model.lazy="subcategory_id" :disabled="!categorySelected">
+                            <select class="form-select" id="subcategory_id" name="subcategory_id"
+                                aria-label="Floating label select example" wire:model.lazy="subcategory_id"
+                                :disabled="!categorySelected">
                                 @foreach ($subcategorias as $sub)
                                     <option value="{{ $sub->id }}">{{ $sub->name }}</option>
                                 @endforeach
@@ -111,19 +107,19 @@
                         </div>
 
 
-                        <div class="form-floating mt-1 col-4">
+                        <div class="form-floating mt-4 col-4 row">
 
                             <div class="col-lg-6">
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="active_si" id="active_si"
+                                    <input class="form-check-input mt-1" type="radio" name="active_si" id="active_si"
                                         value="ACTIVE" wire:model = "status">
                                     <label class="form-check-label" for="inlineRadio1">Activo</label>
                                 </div>
                             </div>
                             <div class="col-lg-6">
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="active_no" id="active_no"
-                                        value="DESACTIVE" wire:model = "status">
+                                    <input class="form-check-input mt-1" type="radio" name="active_no"
+                                        id="active_no" value="DESACTIVE" wire:model = "status">
                                     <label class="form-check-label" for="inlineRadio2">Inactivo</label>
                                 </div>
                             </div>
@@ -134,10 +130,8 @@
                     <div class="row mb-3">
 
                         <div class="form-floating mt-1 col-4">
-                            <select
-                                class="form-select"
-                                id="laboratorio_id" name="laboratorio_id" aria-label="Floating label select example"
-                                wire:model.lazy="laboratorio_id">
+                            <select class="form-select" id="laboratorio_id" name="laboratorio_id"
+                                aria-label="Floating label select example" wire:model.lazy="laboratorio_id">
                                 @foreach ($laboratorios as $laboratorio)
                                     <option value="{{ $laboratorio->id }}">{{ $laboratorio->name }}</option>
                                 @endforeach
@@ -151,10 +145,8 @@
 
 
                         <div class="form-floating mt-1 col-4">
-                            <select
-                                class="form-select"
-                                id="ubicacion_id" name="ubicacion_id" aria-label="Floating label select example"
-                                wire:model.defer="ubicacion_id">
+                            <select class="form-select" id="ubicacion_id" name="ubicacion_id"
+                                aria-label="Floating label select example" wire:model.defer="ubicacion_id">
                                 @foreach ($ubicaciones as $ubicacion)
                                     <option value="{{ $ubicacion->id }}">{{ $ubicacion->name }}</option>
                                 @endforeach
@@ -167,9 +159,7 @@
                         </div>
 
                         <div class="form-floating mt-1 col-4">
-                            <select
-                                class="form-select"
-                                id="presentacion_id" name="presentacion_id"
+                            <select class="form-select" id="presentacion_id" name="presentacion_id"
                                 aria-label="Floating label select example" wire:model.defer="presentacion_id">
                                 <option value="" selected>Seleccione una opción</option>
                                 @foreach ($presentaciones as $pre)
@@ -183,7 +173,38 @@
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>
+
+                        <div class="form-floating mt-1 col-5 row">
+                            <strong>¿Es Materia Prima?</strong>
+                            <div class="col-lg-6">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input mt-1" type="radio" id="is_materia_prima"
+                                        name="is_materia_prima" value="si" wire:model = "is_materia_prima">
+                                    <label class="form-check-label" for="inlineRadio1">Si</label>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input mt-1" type="radio" id="is_materia_prima"
+                                        name="is_materia_prima" value="no" wire:model = "is_materia_prima">
+                                    <label class="form-check-label" for="inlineRadio2">No</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class=" col-7">
+
+                            <label for="formFile" class="form-label">Imagen Producto</label>
+                            <input class="form-control" type="file" id="image" name="image"
+                                wire:model="image">
+                            @error('image')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+
                     </div>
+
+
                 </div>
 
                 <div class="col-lg-6">
@@ -285,7 +306,8 @@
                         <div class="form-floating mt-1 col-4">
                             <input type="number" value="0" min="0"
                                 class="form-control  @if ($costo_blister == '') @else @error('costo_blister') is-invalid @else is-valid @enderror @endif"
-                                id="costo_blister" name="costo_blister" wire:model.defer="costo_blister" disabled oninput="limitarNumerosEnteros(this)">
+                                id="costo_blister" name="costo_blister" wire:model.defer="costo_blister" disabled
+                                oninput="limitarNumerosEnteros(this)">
                             <label for="floatingInput">Costo blister </label>
                             @error('costo_blister')
                                 <span class="text-danger">{{ $message }}</span>
@@ -308,7 +330,8 @@
                         <div class="form-floating mt-1 col-4">
                             <input type="number" min="0"
                                 class="form-control @if ($precio_caja == '') @else @error('precio_caja') is-invalid @else is-valid @enderror @endif"
-                                id="precio_caja" name="precio_caja" wire:model.defer = 'precio_caja' disabled oninput="limitarNumerosEnteros(this)">
+                                id="precio_caja" name="precio_caja" wire:model.defer = 'precio_caja' disabled
+                                oninput="limitarNumerosEnteros(this)">
                             <label for="floatingInput">Precio venta caja</label>
                             @error('precio_caja')
                                 <span class="text-danger">{{ $message }}</span>
@@ -320,7 +343,8 @@
                         <div class="form-floating mt-1 col-4">
                             <input type="number" value="0" min="0"
                                 class="form-control  @if ($precio_blister == '') @else @error('precio_blister') is-invalid @else is-valid @enderror @endif"
-                                id="precio_blister" name="precio_blister" wire:model.defer="precio_blister" disabled oninput="limitarNumerosEnteros(this)">
+                                id="precio_blister" name="precio_blister" wire:model.defer="precio_blister" disabled
+                                oninput="limitarNumerosEnteros(this)">
                             <label for="floatingInput">Precio venta blister </label>
                             @error('precio_blister')
                                 <span class="text-danger">{{ $message }}</span>
@@ -330,31 +354,41 @@
                         <div class="form-floating mt-1 col-4">
                             <input type="number" value="0" min="0"
                                 class="form-control  @if ($precio_unidad == '') @else @error('precio_unidad') is-invalid @else is-valid @enderror @endif"
-                                id="precio_unidad" name="precio_unidad" wire:model.defer="precio_unidad" disabled oninput="limitarNumerosEnteros(this)">
+                                id="precio_unidad" name="precio_unidad" wire:model.defer="precio_unidad" disabled
+                                oninput="limitarNumerosEnteros(this)">
                             <label for="floatingInput">Precio venta unidad </label>
                             @error('precio_unidad')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-4">
+                            @if ($image)
+                                <div class="mb-4"> <img style="height: 100px; width: 100px;"
+                                        src="{{ $image->temporaryUrl() }}" alt="">
+                                </div>
+                            @endif
+                        </div>
+                        <div class="col-8 mt-5">
+                            <button type="button" onclick="capturarYEnviarDatos()" id="guardarProductBtn"
+                                class="btn btn-outline-success float-right ml-2 mb-1">Guardar Producto
+
+                                <img class="loader" src="{{ asset('img/loading.gif') }}" alt="Cargando..."
+                                    width="30px;" style="display: none;" />
+
+                            </button>
+                            <x-adminlte-button class="float-right" wire:click="cancel" theme="danger"
+                                label="Cancelar" data-dismiss="modal" />
+                        </div>
+                    </div>
+
+
                 </div>
             </div>
         </div>
 
-        <div class="modal-footer">
 
-
-            <button type="button" onclick="capturarYEnviarDatos()" id="guardarProductBtn"
-                class="btn btn-outline-success float-right ml-2 mb-1">Guardar Producto
-
-                <img class="loader" src="{{ asset('img/loading.gif') }}" alt="Cargando..."
-                                    width="30px;" style="display: none;" />
-
-            </button>
-            <x-adminlte-button class="float-right" wire:click="cancel" theme="danger" label="Cancelar"
-                data-dismiss="modal" />
-
-        </div>
     </div>
 
 </div>
@@ -386,12 +420,14 @@
 <script>
     function limitarNumerosEnteros(input) {
         input.addEventListener('input', function(event) {
-            this.value = this.value.replace(/[^\d]/g, ''); // Reemplaza cualquier cosa que no sea dígito por nada
+            this.value = this.value.replace(/[^\d]/g,
+            ''); // Reemplaza cualquier cosa que no sea dígito por nada
         });
 
         input.addEventListener('keydown', function(event) {
             // Permitir las teclas de navegación (flechas, inicio, fin, retroceso)
-            if (event.key === "ArrowLeft" || event.key === "ArrowRight" || event.key === "ArrowUp" || event.key === "ArrowDown" ||
+            if (event.key === "ArrowLeft" || event.key === "ArrowRight" || event.key === "ArrowUp" || event
+                .key === "ArrowDown" ||
                 event.key === "Home" || event.key === "End" || event.key === "Backspace") {
                 return;
             }

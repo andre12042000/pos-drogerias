@@ -2,19 +2,21 @@
 
 namespace App\Http\Livewire\Product;
 
+use App\Models\Product;
+use Livewire\Component;
 use App\Models\Category;
+use App\Models\Ubicacion;
 use App\Models\Laboratorio;
 use App\Models\Presentacion;
-use App\Models\Product;
 use App\Models\Subcategoria;
-use App\Models\Ubicacion;
-use Livewire\Component;
+use Livewire\WithFileUploads;
 
 class EditProductComponent extends Component
 {
+    use WithFileUploads;
     protected $listeners = ['editarProductEvent' => 'obtenerDetallesProducto'];
 
-    public $categorias, $subcategorias, $ubicaciones, $presentaciones, $laboratorios;
+    public $categorias, $subcategorias, $ubicaciones, $presentaciones, $laboratorios, $is_materia_prima, $photo, $image;
 
     public $categoria_id, $ubicacion_id, $presentacion_id, $laboratorio_id;
     public $subcategoria_id;
@@ -42,7 +44,8 @@ class EditProductComponent extends Component
         $this->stock_maximo_edit = $product['stock_max'] ?? 0;
         $this->CostoPorCajaEdit = $product['costo_caja'] ?? 0;
         $this->PrecioVentaCajaEdit = $product['precio_caja'] ?? 0;
-
+        $this->photo = $product['image'];
+        $this->is_materia_prima = $product['is_materia_prima'];
         $this->blister_por_caja_edit = $product['contenido_interno_blister'] ?? 0;
         $this->CostoPorBlisterEdit = $product['costo_blister'] ?? 0;
         $this->PrecioVentaBlisterEdit = $product['precio_blister'] ?? 0;
@@ -114,6 +117,13 @@ class EditProductComponent extends Component
     public function actualizarProduct()
     {
 
+        $img = $this->image;
+
+        if(isset($img) && $img instanceof \Illuminate\Http\UploadedFile){
+            $this->image = $img->store('livewire-tem');
+        } else {
+            $this->image = null;
+        }
         $rules = [
             'code_edit'                     => 'required|min:4|max:254|unique:products,code,' . $this->product_id,
             'name_edit'                     => 'required|min:4|max:254',
@@ -129,6 +139,8 @@ class EditProductComponent extends Component
             'disponible_unidad_edit'        => 'required',
             'CostoPorCajaEdit'              => 'required|min:0',
             'PrecioVentaCajaEdit'           => 'required|min:0',
+            'is_materia_prima'          => 'required',
+            'image'                     => 'nullable',
         ];
 
         if ($this->disponible_blister_edit == 1) {
@@ -226,6 +238,8 @@ class EditProductComponent extends Component
                 'valor_iva_caja'            => $ivas['iva_caja'],
                 'valor_iva_blister'         => $ivas['iva_blister'],
                 'valor_iva_unidad'          => $ivas['iva_unidad'],
+                'image'                     => $this->image,
+                'is_materia_prima'          => $this->is_materia_prima,
             ]);
 
              return redirect()->route('inventarios.product')->with('success', 'Se ha actualizado correctamente el producto: ' . $product->name);

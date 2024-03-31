@@ -2,17 +2,19 @@
 
 namespace App\Http\Livewire\Product;
 
+use App\Models\Product;
+use Livewire\Component;
 use App\Models\Category;
+use App\Models\Ubicacion;
 use App\Models\Laboratorio;
 use App\Models\Presentacion;
-use App\Models\Product;
 use App\Models\Subcategoria;
-use App\Models\Ubicacion;
-use Livewire\Component;
+use Livewire\WithFileUploads;
 
 class CreateComponent extends Component
 {
-    public $code, $name, $presentacion_id;
+    use WithFileUploads;
+    public $code, $name, $presentacion_id, $image;
     public $category_id = 1;
     public $subcategory_id = 1;
     public $laboratorio_id = 1;
@@ -31,6 +33,7 @@ class CreateComponent extends Component
     public $costo_caja, $costo_blister, $costo_unidad;
     public $precio_caja, $precio_blister, $precio_unidad;
     public $status = 'ACTIVE';
+    public $is_materia_prima = 'no';
 
     public $laboratorios, $ubicaciones, $presentaciones, $categories,  $subcategorias;
 
@@ -52,6 +55,8 @@ class CreateComponent extends Component
         'disponible_caja'           => 'required',
         'disponible_blister'        => 'nullable',
         'disponible_unidad'         => 'nullable',
+        'is_materia_prima'          => 'required',
+        'image'                     => 'nullable',
     ];
 
     protected $messages = [
@@ -151,8 +156,13 @@ class CreateComponent extends Component
     function guardarDatosEvent($data)
     {
 
+        $photo = $this->image;
 
-
+        if(isset($photo) && $photo instanceof \Illuminate\Http\UploadedFile){
+            $this->image = $photo->store('livewire-tem');
+        } else {
+            $this->image = null;
+        }
 
         $this->costo_caja = isset($data['costo_caja']) ? (float) $data['costo_caja'] : 0;
         $this->iva_product = isset($data['iva_product']) ? (float) $data['iva_product'] : 0;
@@ -188,6 +198,8 @@ class CreateComponent extends Component
             'valor_iva_caja'            => 'required',
             'valor_iva_blister'         => 'required',
             'valor_iva_unidad'          => 'required',
+            'is_materia_prima'          => 'required',
+            'image'                     => 'nullable',
         ];
 
 

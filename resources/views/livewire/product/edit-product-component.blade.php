@@ -127,12 +127,7 @@
                                 @enderror
                             </div>
                         </div>
-
-
                     </div>
-
-
-
 
                     <div class="row">
                         <div class="col">
@@ -157,6 +152,33 @@
                                 @enderror
                             </div>
                         </div>
+                    </div>
+
+                    <div class="row">
+                        <div class=" col-6">
+
+                            <label>Imagen Producto</label>
+                            <input class="form-control" type="file" id="image" name="image"
+                                wire:model="image">
+
+
+                            @error('image')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+                        <div class="col-6">
+                            @if($photo)
+                            <div class="mb-4"> <img style="height: 100px; width: 100px;" src="/storage/{{ $photo }}" alt="">
+                            </div>
+
+                            @elseif($image)
+                            <div class="mb-4"> <img style="height: 100px; width: 100px;" src="{{ $image->temporaryUrl() }}" alt="">
+                            </div>
+
+                            @endif
+                        </div>
+
+
                     </div>
 
                 </div>
@@ -248,7 +270,8 @@
                             <div class="form-floating mb-3">
                                 <input type="number" class="form-control" id="CostoPorCajaEdit"
                                     name="inputCostoPorCaja" placeholder="name@example.com" min="0"
-                                    value="0" wire:model.lazy = 'CostoPorCajaEdit' oninput="limitarNumerosEnteros(this)">
+                                    value="0" wire:model.lazy = 'CostoPorCajaEdit'
+                                    oninput="limitarNumerosEnteros(this)">
                                 <label for="floatingInput">Costo caja</label>
                                 @error('CostoPorCajaEdit')
                                     <span class="text-danger">{{ $message }}</span>
@@ -259,7 +282,8 @@
                             <div class="form-floating mb-3">
                                 <input type="number" class="form-control" id="CostoPorBlisterEdit"
                                     name="CostoPorBlisterEdit" placeholder="name@example.com" min="0"
-                                    value="0" {{ $estado_blister }} wire:model.lazy = 'CostoPorBlisterEdit' oninput="limitarNumerosEnteros(this)">
+                                    value="0" {{ $estado_blister }} wire:model.lazy = 'CostoPorBlisterEdit'
+                                    oninput="limitarNumerosEnteros(this)">
                                 <label for="floatingInput">Costo blister</label>
                             </div>
                         </div>
@@ -268,7 +292,8 @@
                             <div class="form-floating mb-3">
                                 <input type="number" class="form-control" id="CostoPorUnidadEdit"
                                     name="inputCostoPorUnidad" placeholder="name@example.com" min="0"
-                                    value="0" {{ $estado_unidad }} wire:model.lazy = 'CostoPorUnidadEdit' oninput="limitarNumerosEnteros(this)">
+                                    value="0" {{ $estado_unidad }} wire:model.lazy = 'CostoPorUnidadEdit'
+                                    oninput="limitarNumerosEnteros(this)">
                                 <label for="floatingInput">Costo unidad</label>
                                 @error('CostoPorUnidadEdit')
                                     <span class="text-danger">{{ $message }}</span>
@@ -282,7 +307,8 @@
                             <div class="form-floating mb-3">
                                 <input type="number" class="form-control" id="PrecioVentaCajaEdit"
                                     name="PrecioVentaCajaEdit" placeholder="name@example.com" min="0"
-                                    value="0" wire:model.lazy = 'PrecioVentaCajaEdit' oninput="limitarNumerosEnteros(this)">
+                                    value="0" wire:model.lazy = 'PrecioVentaCajaEdit'
+                                    oninput="limitarNumerosEnteros(this)">
                                 <label for="floatingInput">Precio venta caja</label>
                                 @error('PrecioVentaCajaEdit')
                                     <span class="text-danger">{{ $message }}</span>
@@ -293,7 +319,8 @@
                             <div class="form-floating mb-3">
                                 <input type="number" class="form-control" id="PrecioVentaBlisterEdit"
                                     name="PrecioVentaBlisterEdit" placeholder="name@example.com" min="0"
-                                    value="0" {{ $estado_blister }} wire:model.lazy = 'PrecioVentaBlisterEdit' oninput="limitarNumerosEnteros(this)">
+                                    value="0" {{ $estado_blister }} wire:model.lazy = 'PrecioVentaBlisterEdit'
+                                    oninput="limitarNumerosEnteros(this)">
                                 <label for="floatingInput">Precio venta blister</label>
                                 @error('PrecioVentaBlisterEdit')
                                     <span class="text-danger">{{ $message }}</span>
@@ -305,7 +332,8 @@
                             <div class="form-floating mb-3">
                                 <input type="number" class="form-control" id="PrecioVentaUnidadEdit"
                                     name="PrecioVentaUnidadEdit" placeholder="name@example.com" min="0"
-                                    value="0" {{ $estado_unidad }} wire:model.lazy = 'PrecioVentaUnidadEdit' oninput="limitarNumerosEnteros(this)">
+                                    value="0" {{ $estado_unidad }} wire:model.lazy = 'PrecioVentaUnidadEdit'
+                                    oninput="limitarNumerosEnteros(this)">
                                 <label for="floatingInput">Precio venta unidad</label>
                                 @error('PrecioVentaUnidadEdit')
                                     <span class="text-danger">{{ $message }}</span>
@@ -315,39 +343,64 @@
                     </div>
 
                     <div class="row ">
-                        <div class="col mt-4">
+                        <div class="form-floating row col-4 mt-4">
+                            <div class="col-lg-6">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input mt-1" type="radio" name="EstatusProductEdit"
+                                        id="estado_produc_active" value="ACTIVE" wire:model.defer = 'status'>
+                                    <label class="form-check-label" for="inlineRadio1">Activo</label>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input mt-1" type="radio" name="EstatusProductEdit"
+                                        id="estado_produc_inactive" value="DESACTIVE" wire:model.defer = 'status'>
+                                    <label class="form-check-label" for="inlineRadio2">Inactivo</label>
+                                </div>
+                            </div>
 
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="EstatusProductEdit"
-                                    id="estado_produc_active" value="ACTIVE" wire:model.defer = 'status'>
-                                <label class="form-check-label" for="inlineRadio1">Activo</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="EstatusProductEdit"
-                                    id="estado_produc_inactive" value="DESACTIVE" wire:model.defer = 'status'>
-                                <label class="form-check-label" for="inlineRadio2">Inactivo</label>
-                            </div>
+
                         </div>
 
 
-                        <div class="col">
-                            <div class="d-grid gap-2">
-                                <button class="btn btn-outline-success float-end mt-4" id="btnActualizar"
-                                    wire:click="actualizarProduct" wire:loading.attr="disabled"
-                                    wire:loading.class="btn-secondary"
-                                    wire:loading.class.remove="btn-outline-success">
-                                    Actualizar
-
-                                    <div wire:loading wire:target="actualizarProduct">
-                                        <img src="{!! Config::get('app.URL') !!}/assets/img/loading.gif" width="20px"
-                                            class="img-fluid" alt="">
+                        <div class="col-5 ml-4">
+                            <div class=" mt-1 row">
+                                <strong>¿Es Materia Prima?</strong>
+                                <div class="col-lg-6">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input mt-1" type="radio" id="is_materia_prima"
+                                            name="is_materia_prima" value="si" wire:model = "is_materia_prima">
+                                        <label class="form-check-label" for="inlineRadio1">Si</label>
                                     </div>
-                                </button>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input mt-1" type="radio" id="is_materia_prima"
+                                            name="is_materia_prima" value="no" wire:model = "is_materia_prima">
+                                        <label class="form-check-label" for="inlineRadio2">No</label>
+                                    </div>
+                                </div>
                             </div>
+
+
                         </div>
                     </div>
 
+                    <div class="col-12 mt-5">
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-outline-success float-end mt-4" id="btnActualizar"
+                                wire:click="actualizarProduct" wire:loading.attr="disabled"
+                                wire:loading.class="btn-secondary"
+                                wire:loading.class.remove="btn-outline-success">
+                                Actualizar
 
+                                <div wire:loading wire:target="actualizarProduct">
+                                    <img src="{!! Config::get('app.URL') !!}/assets/img/loading.gif" width="20px"
+                                        class="img-fluid" alt="">
+                                </div>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -357,12 +410,14 @@
 <script>
     function limitarNumerosEnteros(input) {
         input.addEventListener('input', function(event) {
-            this.value = this.value.replace(/[^\d]/g, ''); // Reemplaza cualquier cosa que no sea dígito por nada
+            this.value = this.value.replace(/[^\d]/g,
+            ''); // Reemplaza cualquier cosa que no sea dígito por nada
         });
 
         input.addEventListener('keydown', function(event) {
             // Permitir las teclas de navegación (flechas, inicio, fin, retroceso)
-            if (event.key === "ArrowLeft" || event.key === "ArrowRight" || event.key === "ArrowUp" || event.key === "ArrowDown" ||
+            if (event.key === "ArrowLeft" || event.key === "ArrowRight" || event.key === "ArrowUp" || event
+                .key === "ArrowDown" ||
                 event.key === "Home" || event.key === "End" || event.key === "Backspace") {
                 return;
             }

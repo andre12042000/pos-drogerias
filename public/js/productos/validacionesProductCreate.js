@@ -4,6 +4,7 @@ var valor_iva_blister = 0;
 var valor_iva_unidad = 0;
 
 
+
 /*----------------------Metodos para habilitar o deshabilitar inputs ----------*/
 document
     .getElementById("disponible_blister")
@@ -213,6 +214,7 @@ function ocultarLoader() {
 
 function validaciones() {
     // Obtener elementos del blister
+
     var disponibleBlister = document.getElementById("disponible_blister");
     var contenidoInternoBlister = document.getElementById("contenido_interno_blister");
     var costoBlister = document.getElementById("costo_blister");
