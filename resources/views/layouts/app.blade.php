@@ -35,7 +35,7 @@
 
 
         .fondo {
-        background-image: url('img/cafeteria.jpg');
+        background-image: url('img/far2.jpg');
         background-position: center;
         background-attachment: fixed;
         background-repeat: no-repeat;
