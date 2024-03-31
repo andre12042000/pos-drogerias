@@ -120,7 +120,7 @@
 
     .counter {
         width: 200px;
-        height: 150px;
+        height: 180px;
         background-color: #FFC107;
         border-radius: 15px;
         text-align: center;
@@ -148,8 +148,8 @@
 
     /* Estilos para las mesas */
     .tables .table {
-        width: 100px;
-        height: 100px;
+        width: 250px;
+        height: 250px;
         background-color: #A1C398;
         border: 1px solid #000000;
         border-radius: 50%;
@@ -157,8 +157,8 @@
     }
 
     .mesa-box {
-        width: 100px;
-        height: 100px;
+        width: 150px;
+        height: 80px;
         background-color: #A1C398;
         border: 1px solid #000000;
         border-radius: 15px;

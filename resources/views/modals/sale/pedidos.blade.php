@@ -2,8 +2,23 @@
     <div class="modal-dialog modal-dialog-centered modal-xl">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="solicitantePedido"></h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+                <div class="container">
+                    <div class="row">
+                      <div class="col">
+                        <h5 class="modal-title" id="solicitantePedido"></h5>
+                      </div>
+                      <div class="col-6">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="etiqueta" placeholder="name@example.com">
+                            <label for="etiqueta">Etiqueta mesa</label>
+                          </div>
+                      </div>
+                      <div class="col text-end">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                    </div>
+                </div>
             </div>
             <div class="modal-body">
 
@@ -15,6 +30,7 @@
                                     <thead>
                                         <tr>
                                             <th>Producto</th>
+                                            <th>Forma</th>
                                             <th>Cantidad</th>
                                             <th>Precio</th>
                                             <th>Total</th>
@@ -44,51 +60,17 @@
     </div>
 </div>
 
+
 <script>
-    function updateCartView() {
-        // Obtener la tabla y el cuerpo de la tabla
-        let tableBody = document.querySelector('.order-list tbody');
-        let noProductsMsg = document.getElementById('no-products-msg');
-
-        // Limpiar la tabla antes de actualizarla
-        tableBody.innerHTML = '';
-
-        if (cart.length === 0) {
-            // Mostrar el mensaje de "No hay productos en el carrito"
-            noProductsMsg.style.display = 'block';
-        } else {
-            // Ocultar el mensaje de "No hay productos en el carrito"
-            noProductsMsg.style.display = 'none';
-
-            // Recorrer los productos en el carrito y agregarlos a la tabla
-            cart.forEach(product => {
-                let row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${product.name}</td>
-                    <td class="text-center">${product.cantidad}</td>
-                    <td class="text-end">$${product.precio_venta}</td>
-                    <td class="text-end">$${product.total}</td>
-                    <td>
-
-                            <i class="bi bi-trash" onclick="removeFromCart(${product.id})" style="cursor:pointer;"></i> <!-- Icono de papelera -->
-
-                    </td>
-                `;
-                tableBody.appendChild(row);
-            });
-        }
-    }
-
-    function removeFromCart(productId) {
-        // Filtrar el producto a eliminar del carrito
-        cart = cart.filter(product => product.id !== productId);
-        // Actualizar la vista del carrito
-        updateCartView();
-    }
-
     function saveOrder() {
         // Obtener la mesa desde el contenido de la etiqueta h5
         let mesa = document.getElementById('solicitantePedido').textContent.trim();
+        let etiquetaInput = document.getElementById('etiqueta');
+
+        if (etiquetaInput.value.trim() === '') {
+            alert('Por favor, ingrese una etiqueta.');
+            return; // Salir de la función si el campo de la etiqueta está vacío
+        }
 
         // Verificar si ya hay un pedido para esta mesa en el localStorage
         let pedidoNro = 1; // Valor predeterminado para el primer pedido
@@ -106,6 +88,7 @@
         let detallesPedido = cart.map(product => {
             return {
                 producto_id: product.id,
+                forma: product.forma
                 cantidad: product.cantidad,
                 nombre: product.name,
                 precio_unitario: product.precio_venta,
