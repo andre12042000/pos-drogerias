@@ -94,79 +94,95 @@ class SaleCafeteriaComponent extends Component
 
     function save($tipo, $dataVenta)
     {
-        if ($tipo == 'VENTA') {
-            $prefijo = 'RE';
-            $estado = 'PAGADA';
-            $tipo_movimiento = 'VENTA';
-            $metodo_pago = $dataVenta['metodoPago'];
-        } elseif ($tipo == 'CREDITO') {
-            $prefijo = 'VCR';
-            $estado = 'VENTA CRÉDITO';
-            $tipo_movimiento = 'VENTA CRÉDITO';
-            $metodo_pago = self::obtenerMetodoPagoId('CRÉDITO');
-        } else {
-            $prefijo = 'CRT';
-            $estado = 'CORTESIA';
-            $tipo_movimiento = 'CORTESIA';
-            $metodo_pago = self::obtenerMetodoPagoId('CORTESÍA');
+        try {
+
+            DB::transaction(function () use ($tipo, $dataVenta) {
+                if ($tipo == 'VENTA') {
+                    $prefijo = 'RE';
+                    $estado = 'PAGADA';
+                    $tipo_movimiento = 'VENTA';
+                    $metodo_pago = $dataVenta['metodoPago'];
+                } elseif ($tipo == 'CREDITO') {
+                    $prefijo = 'VCR';
+                    $estado = 'VENTA CRÉDITO';
+                    $tipo_movimiento = 'VENTA CRÉDITO';
+                    $metodo_pago = self::obtenerMetodoPagoId('CRÉDITO');
+                } else {
+                    $prefijo = 'CRT';
+                    $estado = 'CORTESIA';
+                    $tipo_movimiento = 'CORTESIA';
+                    $metodo_pago = self::obtenerMetodoPagoId('CORTESÍA');
+                }
+
+                if ($dataVenta['cajero']) {
+                    $cajero = $dataVenta['cajero'];
+                } else {
+                    $cajero = Auth::user()->id;
+                }
+
+                $iva = $dataVenta['iva'] === '' ? 0 : $dataVenta['iva'];
+                $descuento = $dataVenta['descuento'] === '' ? 0 : $dataVenta['descuento'];
+                $client_id = $dataVenta['cliente_id'] === '' ? 0 : $dataVenta['cliente_id'];
+
+                $nuevoNro = $this->obtenerProximoNumero($prefijo);
+                $full_nro = $prefijo . $nuevoNro;
+
+                $observaciones = self::obtenerNombreMesa($dataVenta['resultadoCalculo']['tuplasAPagar']);
+
+                $venta = Sale::create([
+                    'prefijo'           => $prefijo,
+                    'nro'               => $nuevoNro,
+                    'full_nro'          => $full_nro,
+                    'client_id'         => $client_id,
+                    'user_id'           => $cajero,
+                    'sale_date'         => Carbon::now(),
+                    'discount'          => $descuento,
+                    'tax'               => $iva,
+                    'total'             => $dataVenta['total'],
+                    'tipo_operacion'    => $tipo_movimiento,
+                    'metodo_pago_id'    => $metodo_pago,
+                    'status'            => $estado,
+                    'observaciones'     => $observaciones,
+                ]);
+
+                $detalles = $dataVenta['resultadoCalculo']['tuplasAPagar'];
+
+                self::detallesVenta($venta, $detalles);
+
+
+                if ($tipo == 'VENTA') {
+                    self::ventaContado($venta);
+                } elseif ($tipo == 'CREDITO') {
+                    self::ventaCredito($venta);
+                    $credito =  self::crearCredito($venta);
+                    self::agregarValorDeudaCliente($venta->client_id, $dataVenta['total']);
+                } else {
+                    self::cortesia($venta);
+                }
+
+                event(new VentaRealizada($venta));
+
+                if ($dataVenta['imprimirRecibo'] > 0) {
+                    self::Imprimirecibo($venta->id);
+                }
+
+
+                $this->dispatchBrowserEvent('venta-generada', ['venta' => $venta->full_nro, 'tuplas' => $detalles]);
+
+            });
+        } catch (\Exception $e) {
+
+            DB::rollback();
+
+            $this->dispatchBrowserEvent('swal', [
+                'title' => 'Ops! Ocurrio un error',
+                'text' => '¡No es posible crear la transacción, verifica los datos!' . $e->getMessage(),
+                'icon' => 'error'
+            ]);
+
+            report($e);
         }
 
-        if ($dataVenta['cajero']) {
-            $cajero = $dataVenta['cajero'];
-        } else {
-            $cajero = Auth::user()->id;
-        }
-
-        $iva = $dataVenta['iva'] === '' ? 0 : $dataVenta['iva'];
-        $descuento = $dataVenta['descuento'] === '' ? 0 : $dataVenta['descuento'];
-        $client_id = $dataVenta['cliente_id'] === '' ? 0 : $dataVenta['cliente_id'];
-
-        $nuevoNro = $this->obtenerProximoNumero($prefijo);
-        $full_nro = $prefijo . $nuevoNro;
-
-        $observaciones = self::obtenerNombreMesa($dataVenta['resultadoCalculo']['tuplasAPagar']);
-
-        $venta = Sale::create([
-            'prefijo'           => $prefijo,
-            'nro'               => $nuevoNro,
-            'full_nro'          => $full_nro,
-            'client_id'         => $client_id,
-            'user_id'           => $cajero,
-            'sale_date'         => Carbon::now(),
-            'discount'          => $descuento,
-            'tax'               => $iva,
-            'total'             => $dataVenta['total'],
-            'tipo_operacion'    => $tipo_movimiento,
-            'metodo_pago_id'    => $metodo_pago,
-            'status'            => $estado,
-            'observaciones'     => $observaciones,
-        ]);
-
-        $detalles = $dataVenta['resultadoCalculo']['tuplasAPagar'];
-
-        self::detallesVenta($venta, $detalles);
-
-
-        if ($tipo == 'VENTA') {
-            self::ventaContado($venta);
-        } elseif ($tipo == 'CREDITO') {
-            self::ventaCredito($venta);
-            $credito =  self::crearCredito($venta);
-            self::agregarValorDeudaCliente($venta->client_id, $dataVenta['total']);
-        } else {
-            self::cortesia($venta);
-        }
-
-        dd($venta);
-
-        event(new VentaRealizada($venta));
-
-        if ($dataVenta['imprimirRecibo'] > 0) {
-            self::Imprimirecibo($venta->id);
-        }
-
-
-        $this->dispatchBrowserEvent('venta-generada', ['venta' => $venta->full_nro, 'tuplas' => $detalles]);
     }
 
     function crearCredito($venta)

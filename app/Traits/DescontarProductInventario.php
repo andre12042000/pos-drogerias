@@ -33,6 +33,10 @@ trait DescontarProductInventario
             'contenido_interno_unidad' => $producto->contenido_interno_unidad,
         ];
 
+
+
+
+
         if ($disponibilidad['disponible_caja'] == '1' && $disponibilidad['disponible_blister'] == '1' && $disponibilidad['disponible_unidad'] == '1') {
             //Si el producto se puede vender por caja, por blister o por unidad
             $this->descuentosCajaBlisterUnidad($producto, $detalleVenta, $cantidades);
@@ -180,6 +184,7 @@ trait DescontarProductInventario
         $descontar_blister = 0;
         $descontar_unidad = 0;
 
+
         if ($forma == 'disponible_caja') {
             $this->updateInventario($producto, $descontar_caja, $descontar_blister, $descontar_unidad);
         } else {
@@ -190,21 +195,24 @@ trait DescontarProductInventario
     function updateInventario($producto, $descontar_caja, $descontar_blister, $descontar_unidad)
     {
         // Obtener el producto del inventario
-        $producto_inventario = Inventario::findOrFail($producto->id);
+        $producto_inventario = Inventario::where('product_id', $producto->id)->first();
+
 
         // Actualizar stocks
         $nuevo_stock_caja = $this->calcularNuevoStock($producto_inventario->cantidad_caja, $descontar_caja);
         $nuevo_stock_blister = $this->calcularNuevoStock($producto_inventario->cantidad_blister, $descontar_blister);
         $nuevo_stock_unidad = $this->calcularNuevoStock($producto_inventario->cantidad_unidad, $descontar_unidad);
 
-
-
         // Actualizar el inventario
-        $producto_inventario->update([
+       $producto_inventario->update([
             'cantidad_caja'     => $nuevo_stock_caja,
             'cantidad_blister'  => $nuevo_stock_blister,
             'cantidad_unidad'   => $nuevo_stock_unidad,
         ]);
+
+
+
+
 
         if ($nuevo_stock_caja <= $producto->stock_min && $producto->stock_min > 0) {
             $this->sendNotifyLowStock($producto);

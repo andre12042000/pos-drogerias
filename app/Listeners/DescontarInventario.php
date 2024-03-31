@@ -41,7 +41,10 @@ class DescontarInventario
             $detalleVenta = $item;
             $producto = $item->product;
 
-            if($producto->is_combo > 0){
+
+
+            if($producto->is_combo != '0'){
+
                 $detalles_combo = self::obtenerDetallesCombo($producto['id']);
 
                 for ($i = 1; $i <= $item->quantity; $i++) {
@@ -54,6 +57,7 @@ class DescontarInventario
                 }
 
             }else{
+
                     self::descontarInventario($producto, $detalleVenta);
             }
 
