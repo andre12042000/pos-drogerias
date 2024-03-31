@@ -157,6 +157,7 @@
     }
 
     .mesa-box {
+        position: relative;
         width: 150px;
         height: 80px;
         background-color: #A1C398;
@@ -167,6 +168,8 @@
         justify-content: center;
         align-items: center;
         cursor: pointer;
+        text-align: center;
+        margin-bottom: 10px;
     }
 
     .select2-selection--single {
@@ -177,6 +180,25 @@
         top: 10px !important;
         right: 10px !important;
         /* Ajusta la posición vertical del ícono */
+    }
+
+
+
+    .etiqueta {
+        display: block;
+        background-color: transparent;
+        padding: 5px;
+        font-size: 10px;
+        position: absolute;
+        bottom: 2px;
+        /* Alinea la etiqueta en la parte inferior */
+        left: 50%;
+        /* Ajusta la posición horizontal de la etiqueta al centro */
+        transform: translateX(-50%);
+        /* Centra la etiqueta horizontalmente */
+        color: white;
+        width: 100px;
+        /* Ancho de la etiqueta, ajusta según sea necesario */
     }
 </style>
 

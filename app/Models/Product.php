@@ -100,6 +100,16 @@ class Product extends Model
         }
     }
 
+  /*   public function scopeMateriaPrima($query, $estado)
+    {
+        if(){
+
+        }else{
+
+        }
+
+    } */
+
     public function scopeCategory($query, $category)
     {
         if(strlen($category) > 0){

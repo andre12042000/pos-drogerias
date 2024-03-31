@@ -1,5 +1,5 @@
 <div class="container">
-<div class="row mt-4">
+<div class="row mt-3">
 
     <div class="col">
         <label>Tipo de Operación</label>
@@ -21,9 +21,18 @@
     </div>
 
 </div>
-<div class="row mt-4">
+<div class="row mt-2">
+    <div class="input-group" style="height: 38px; max-width: 100%">
+        <select name="cajero" class="form-control" id="cajero">
+            @foreach ($cajeros as $cajero)
+                <option value="{{ $cajero->id }}">{{ ucwords($cajero->name) }}</option>
+            @endforeach
+        </select>
+</div>
+</div>
+<div class="row mt-3">
     <div class="col">
-        <div class="input-group" style="height: 38px; max-width: 600px;">
+        <div class="input-group" style="height: 38px; max-width: 100%;">
             <select class="form-select js-example-basic-single" name="cliente" id="cliente">
                     <option value="1">Consumidor final</option>
                 @forelse ($clientes as $client)
@@ -45,7 +54,7 @@
     </div>
 </div>
 
-<div class="row mt-4">
+<div class="row mt-3">
     <div class="col-6">
         <div class="form-floating">
             <select class="form-select" id="selectMetodoPago" name="metodoPagoSelect"

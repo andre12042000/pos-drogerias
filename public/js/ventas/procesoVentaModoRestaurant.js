@@ -88,8 +88,22 @@ function crearMesa(numMesa) {
     var mesaBox = document.createElement("div");
     mesaBox.className = "mesa-box";
     mesaBox.textContent = "Mesa " + numMesa;
+
     mesaBox.dataset.numero = numMesa; // Agregar atributo de datos para almacenar el número de la mesa
     document.getElementById("mesas-container").appendChild(mesaBox);
+
+
+    let etiqueta = mostrarEtiquetaPorMesa(numMesa);
+
+    //console.log(numMesa, etiqueta);
+
+    // Mostrar la etiqueta en la vista HTML si existe
+    if (etiqueta) {
+        let etiquetaElement = document.createElement("span");
+        etiquetaElement.textContent =  etiqueta;
+        etiquetaElement.className = "etiqueta"; // Agregar clase para estilizar la etiqueta
+        mesaBox.appendChild(etiquetaElement);
+    }
 
     // Consultar y actualizar el estado de la mesa
     consultarEstadoMesa(numMesa);
@@ -103,6 +117,21 @@ function crearMesa(numMesa) {
         abrirModal(numMesa);
     });
 }
+
+function mostrarEtiquetaPorMesa(mesa) {
+    // Obtener los pedidos del localStorage
+    let orders = JSON.parse(localStorage.getItem('orders')) || [];
+
+    let mesaFiltrada = orders.find(item => item.mesa === "Mesa " + mesa);
+
+    if(mesaFiltrada){
+        return mesaFiltrada.etiqueta;
+    }else{
+        return null;
+    }
+}
+
+
 
 function mostrarVistaMesas() {
     document.getElementById("cuentas_por_mesas").style.display = "block";
@@ -726,3 +755,99 @@ function eliminarPedidoLocalStorageMostrador() {
     // Paso 4: Actualizar el localStorage con los datos filtrados
     localStorage.setItem("orders", JSON.stringify(orders));
 }
+
+/*----------------------Procesos script modal agregar productos mesa ---------------------------*/
+
+function saveOrder() {
+    // Obtener la mesa desde el contenido de la etiqueta h5
+    let mesa = document.getElementById('solicitantePedido').textContent.trim();
+    let etiquetaInput = document.getElementById('etiqueta');
+
+    if (etiquetaInput.value.trim() === '') {
+        alert('Por favor, ingrese una etiqueta.');
+        return; // Salir de la función si el campo de la etiqueta está vacío
+    }
+
+    // Verificar si ya hay un pedido para esta mesa en el localStorage
+    let pedidoNro = 1; // Valor predeterminado para el primer pedido
+    let existingOrders = JSON.parse(localStorage.getItem('orders'));
+    if (existingOrders) {
+        // Buscar pedidos existentes para esta mesa
+        let mesaOrders = existingOrders.filter(order => order.mesa === mesa);
+        if (mesaOrders.length > 0) {
+            // Si hay pedidos existentes, obtener el número de pedido más alto y aumentarlo en 1
+            pedidoNro = Math.max(...mesaOrders.map(order => order.pedidoNro)) + 1;
+        }
+    }
+
+    // Obtener los detalles del pedido (productos, cantidades, precios, totales) desde el carrito
+    let detallesPedido = cart.map(product => {
+        return {
+            producto_id: product.id,
+            forma: product.forma,
+            cantidad: product.cantidad,
+            nombre: product.name,
+            precio_unitario: product.precio_venta,
+            total: product.total
+        };
+    });
+
+     // Verificar si hay productos en la orden
+     if (detallesPedido.length === 0) {
+        alert('La orden no tiene productos.');
+        return; // Salir de la función si no hay productos en la orden
+    }
+
+    let etiqueta = etiquetaInput.value.trim();
+
+    // Construir el nuevo pedido
+    let nuevoPedido = {
+        mesa: mesa,
+        pedidoNro: pedidoNro,
+        etiqueta: etiqueta,
+        detalles: detallesPedido
+    };
+
+    // Obtener los pedidos existentes del localStorage o inicializar un nuevo array si no hay ninguno
+    let orders = existingOrders || [];
+
+    // Agregar el nuevo pedido al array de pedidos
+    orders.push(nuevoPedido);
+
+    // Guardar el array de pedidos actualizado en el localStorage
+    localStorage.setItem('orders', JSON.stringify(orders));
+
+    // Limpiar el carrito después de guardar el pedido
+    cart = [];
+    updateCartView();
+
+    // Actualizar el estado de las mesas
+
+
+    // Cerrar el modal
+    location.reload();
+
+}
+
+
+/*-----------------SubModal añadir cantidad productos mesa -----------------------*/
+
+   // Obtener una referencia al botón "cerrarModalCantidad"
+   var cerrarModalCantidadBtn = document.getElementById("cerrarModalCantidad");
+   var cancelarModalCantidadBtn = document.getElementById("cancelarModalCantidad");
+
+   cerrarModalCantidadBtn.addEventListener("click", cerrarModalCantidadModal);
+   cancelarModalCantidadBtn.addEventListener("click", cerrarModalCantidadModal);
+
+
+   function cerrarModalCantidadModal()
+   {
+       var modalAnterior = document.getElementById("cantidadModal");
+       modalAnterior.style.display = "none";
+
+       document.getElementById("selectPresentacion").value = ""; // Reinicia el select
+       document.getElementById("cantidadInput").value = "1"; // Reinicia la cantidad a 1
+       document.getElementById("precioUnitarioInput").value = "1"; // Reinicia el precio unitario a 1
+       document.getElementById("totalPrecioCompraInput").value = "1";
+
+   }

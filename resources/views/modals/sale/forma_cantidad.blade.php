@@ -73,24 +73,3 @@
     </div>
 </div>
 
-<script>
-    // Obtener una referencia al botón "cerrarModalCantidad"
-    var cerrarModalCantidadBtn = document.getElementById("cerrarModalCantidad");
-    var cancelarModalCantidadBtn = document.getElementById("cancelarModalCantidad");
-
-    cerrarModalCantidadBtn.addEventListener("click", cerrarModalCantidadModal);
-    cancelarModalCantidadBtn.addEventListener("click", cerrarModalCantidadModal);
-
-
-    function cerrarModalCantidadModal()
-    {
-        var modalAnterior = document.getElementById("cantidadModal");
-        modalAnterior.style.display = "none";
-
-        document.getElementById("selectPresentacion").value = ""; // Reinicia el select
-        document.getElementById("cantidadInput").value = "1"; // Reinicia la cantidad a 1
-        document.getElementById("precioUnitarioInput").value = "1"; // Reinicia el precio unitario a 1
-        document.getElementById("totalPrecioCompraInput").value = "1";
-
-    }
-</script>

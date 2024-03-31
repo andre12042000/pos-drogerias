@@ -15,6 +15,7 @@ use Livewire\WithPagination;
 use App\Events\VentaCreditoRealizada;
 use App\Traits\UpdateProduct;
 use App\Events\VentaRealizada;
+use App\Models\User;
 
 class SaleCafeteriaComponent extends Component
 {
@@ -52,9 +53,9 @@ class SaleCafeteriaComponent extends Component
     {
 
         $metodos_pago = MetodoPago::where('status', 'ACTIVE')->orderBy('id', 'desc')->get();
+        $cajeros =  User::role(['Cajero'])->get();
 
-
-        return view('livewire.sale.sale-cafeteria-component', compact('metodos_pago'))->extends('adminlte::page');
+        return view('livewire.sale.sale-cafeteria-component', compact('metodos_pago', 'cajeros'))->extends('adminlte::page');
     }
 
     function obtenerClientes()

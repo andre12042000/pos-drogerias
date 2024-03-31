@@ -31,12 +31,12 @@ class SearchComponent extends Component
     public function render()
     {
         $products = Product::with('inventario')
-        ->search($this->buscar)
-        ->orderBy('is_combo', 'desc')
-        ->orderBy('name', 'asc')
-        ->active()
-        ->take(10)
-        ->get();
+                    ->search($this->buscar)
+                    ->orderBy('is_combo', 'desc')
+                    ->orderBy('name', 'asc')
+                    ->active()
+                    ->take(10)
+                    ->get();
 
         return view('livewire.product.search-component', compact('products'));
     }

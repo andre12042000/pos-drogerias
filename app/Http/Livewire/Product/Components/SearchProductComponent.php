@@ -18,6 +18,7 @@ class SearchProductComponent extends Component
     {
 
         $products = Product::with('inventario')
+                ->where('is_materia_prima', 'no')
                 ->search($this->buscar)
                 ->orderBy('is_combo', 'desc')
                 ->orderBy('name', 'asc')
