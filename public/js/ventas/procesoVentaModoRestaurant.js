@@ -92,15 +92,12 @@ function crearMesa(numMesa) {
     mesaBox.dataset.numero = numMesa; // Agregar atributo de datos para almacenar el número de la mesa
     document.getElementById("mesas-container").appendChild(mesaBox);
 
-
     let etiqueta = mostrarEtiquetaPorMesa(numMesa);
-
-    //console.log(numMesa, etiqueta);
 
     // Mostrar la etiqueta en la vista HTML si existe
     if (etiqueta) {
         let etiquetaElement = document.createElement("span");
-        etiquetaElement.textContent =  etiqueta;
+        etiquetaElement.textContent = etiqueta;
         etiquetaElement.className = "etiqueta"; // Agregar clase para estilizar la etiqueta
         mesaBox.appendChild(etiquetaElement);
     }
@@ -120,18 +117,16 @@ function crearMesa(numMesa) {
 
 function mostrarEtiquetaPorMesa(mesa) {
     // Obtener los pedidos del localStorage
-    let orders = JSON.parse(localStorage.getItem('orders')) || [];
+    let orders = JSON.parse(localStorage.getItem("orders")) || [];
 
-    let mesaFiltrada = orders.find(item => item.mesa === "Mesa " + mesa);
+    let mesaFiltrada = orders.find((item) => item.mesa === "Mesa " + mesa);
 
-    if(mesaFiltrada){
+    if (mesaFiltrada) {
         return mesaFiltrada.etiqueta;
-    }else{
+    } else {
         return null;
     }
 }
-
-
 
 function mostrarVistaMesas() {
     document.getElementById("cuentas_por_mesas").style.display = "block";
@@ -190,11 +185,12 @@ function abrirModal(numeroMesa) {
     // Abrir el modal y establecer el título según corresponda
     $("#numeroMesaModalPedidos").modal("show");
     document.getElementById("solicitantePedido").textContent = tituloModal;
-}
 
-document.getElementById("mostrador").addEventListener("dblclick", function () {
-    // Llama a la función para abrir el modal, pasando 'Mostrador' como parámetro
-});
+    let etiqueta = mostrarEtiquetaPorMesa(numeroMesa);
+    if (etiqueta) {
+        $("#etiqueta").val(etiqueta);
+    }
+}
 
 function filtrarPedidosPorMesa(numMesa) {
     // Obtener los pedidos del localStorage
@@ -264,10 +260,14 @@ function filtrarPedidosPorMesa(numMesa) {
                         <div><input class="form-check-input ml-2" type="checkbox" value="" id="${uniqueItemId}" style="margin-top: -6px;" onchange="calcularTotalPagar(${numMesa})"></div>
                         <div style="width: 30%;">${item.nombre}</div>
                         <div style="width: 10%;">Cant. ${item.cantidad}</div>
-                        <div style="width: 20%;">Precio Unit: $${item.precio_unitario}</div>
+                        <div style="width: 20%;">Precio Unit: $${
+                            item.precio_unitario
+                        }</div>
                         <div style="width: 20%;">SubTotal: $${item.total}</div>
                         <div>
-                            <i class="fa fa-trash" style="cursor: pointer;" onclick="eliminarItemMesa(${numMesa}, ${index + 1}, ${item.producto_id})"></i>
+                            <i class="fa fa-trash" style="cursor: pointer;" onclick="eliminarItemMesa(${numMesa}, ${
+                    index + 1
+                }, ${item.producto_id})"></i>
                         </div>
                     </li>
                 `;
@@ -284,16 +284,15 @@ function filtrarPedidosPorMesa(numMesa) {
         cuentasPorMesasHTML;
 }
 
-
 function eliminarItemMesa(mesa, pedido, producto) {
     // Mostrar el SweetAlert de confirmación
     Swal.fire({
-        title: '¿Está seguro?',
-        text: 'Esta acción eliminará el registro. ¿Está seguro que desea continuar?',
-        icon: 'warning',
+        title: "¿Está seguro?",
+        text: "Esta acción eliminará el registro. ¿Está seguro que desea continuar?",
+        icon: "warning",
         showCancelButton: true,
-        confirmButtonText: 'Sí, eliminar',
-        cancelButtonText: 'Cancelar'
+        confirmButtonText: "Sí, eliminar",
+        cancelButtonText: "Cancelar",
     }).then((result) => {
         // Si el usuario confirma la eliminación
         if (result.isConfirmed) {
@@ -348,6 +347,7 @@ function calcularTotalPagar(numMesa) {
                     mesa: numMesa,
                     pedidoNro: index + 1,
                     producto_id: item.producto_id,
+                    forma: item.forma,
                     cantidad: item.cantidad,
                     precio_unitario: item.precio_unitario,
                     total: item.total,
@@ -371,6 +371,7 @@ function calcularTotalPagar(numMesa) {
                         mesa: numMesa,
                         pedidoNro: index + 1,
                         producto_id: item.producto_id,
+                        forma: item.forma,
                         cantidad: item.cantidad,
                         precio_unitario: item.precio_unitario,
                         total: item.total,
@@ -389,6 +390,7 @@ function calcularTotalPagar(numMesa) {
                             mesa: numMesa,
                             pedidoNro: index + 1,
                             producto_id: item.producto_id,
+                            forma: item.forma,
                             cantidad: item.cantidad,
                             precio_unitario: item.precio_unitario,
                             total: item.total,
@@ -478,7 +480,10 @@ pagarBtn.onclick = function () {
         tipoDescuentoSeleccionado = descuentoValorFijoRadio.value;
     }
 
+    var cajero = document.getElementById("cajero").value; // Metodo de pago seleccionado
+
     var cliente = document.getElementById("cliente").value;
+
 
     Livewire.emit("pagarEvent", {
         resultadoCalculo: resultadoCalculo,
@@ -488,6 +493,7 @@ pagarBtn.onclick = function () {
         subTotal: subTotal,
         tipodescuento: tipoDescuentoSeleccionado,
         descuento: inputDescuentoValor,
+        cajero: cajero,
         iva: iva,
         total: total,
         cliente_id: cliente,
@@ -557,12 +563,12 @@ function mostrarProductosMostrador() {
 function eliminarItemMostrador(producto) {
     // Mostrar el SweetAlert de confirmación
     Swal.fire({
-        title: '¿Está seguro?',
-        text: 'Esta acción eliminará el registro. ¿Está seguro que desea continuar?',
-        icon: 'warning',
+        title: "¿Está seguro?",
+        text: "Esta acción eliminará el registro. ¿Está seguro que desea continuar?",
+        icon: "warning",
         showCancelButton: true,
-        confirmButtonText: 'Sí, eliminar',
-        cancelButtonText: 'Cancelar'
+        confirmButtonText: "Sí, eliminar",
+        cancelButtonText: "Cancelar",
     }).then((result) => {
         // Si el usuario confirma la eliminación
         if (result.isConfirmed) {
@@ -571,7 +577,6 @@ function eliminarItemMostrador(producto) {
 
             // Actualizar la vista filtrando los pedidos por mesa
             mostrarProductosMostrador();
-
         }
     });
 }
@@ -637,6 +642,7 @@ function calcularTotalMostrador() {
                 mesa: "MOSTRADOR", // Cambiar a 'MOSTRADOR' en lugar de 'numMesa'
                 pedidoNro: order.pedidoNro, // Obtener el número de pedido del objeto order
                 producto_id: detalle.producto_id,
+                forma: detalle.forma,
                 cantidad: detalle.cantidad,
                 precio_unitario: detalle.precio_unitario,
                 total: detalle.cantidad * detalle.precio_unitario,
@@ -654,6 +660,11 @@ function calcularTotalMostrador() {
 document.addEventListener("DOMContentLoaded", function () {
     mostrarProductosMostrador();
 });
+
+function addProductosMostrador() {
+    $('#searchproductrestaurant').modal('show');
+    // Acciones que deseas realizar cuando se realiza un doble clic en el mostrador
+}
 
 /*------------------------------Evento para recibir empezar proceso pago mostrador ---------------------------*/
 // Obtener el checkbox
@@ -688,12 +699,12 @@ window.addEventListener("venta-generada", (event) => {
         }
     });
 
-     Swal.fire({
+    Swal.fire({
         icon: "success",
         title: "Venta realizada correctamente",
         text: `Número de venta: ${numeroVenta}`,
         showConfirmButton: false,
-        timer: 1500
+        timer: 1500,
     });
     setTimeout(() => {
         location.reload();
@@ -760,41 +771,42 @@ function eliminarPedidoLocalStorageMostrador() {
 
 function saveOrder() {
     // Obtener la mesa desde el contenido de la etiqueta h5
-    let mesa = document.getElementById('solicitantePedido').textContent.trim();
-    let etiquetaInput = document.getElementById('etiqueta');
+    let mesa = document.getElementById("solicitantePedido").textContent.trim();
+    let etiquetaInput = document.getElementById("etiqueta");
 
-    if (etiquetaInput.value.trim() === '') {
-        alert('Por favor, ingrese una etiqueta.');
+    if (etiquetaInput.value.trim() === "") {
+        alert("Por favor, ingrese una etiqueta.");
         return; // Salir de la función si el campo de la etiqueta está vacío
     }
 
     // Verificar si ya hay un pedido para esta mesa en el localStorage
     let pedidoNro = 1; // Valor predeterminado para el primer pedido
-    let existingOrders = JSON.parse(localStorage.getItem('orders'));
+    let existingOrders = JSON.parse(localStorage.getItem("orders"));
     if (existingOrders) {
         // Buscar pedidos existentes para esta mesa
-        let mesaOrders = existingOrders.filter(order => order.mesa === mesa);
+        let mesaOrders = existingOrders.filter((order) => order.mesa === mesa);
         if (mesaOrders.length > 0) {
             // Si hay pedidos existentes, obtener el número de pedido más alto y aumentarlo en 1
-            pedidoNro = Math.max(...mesaOrders.map(order => order.pedidoNro)) + 1;
+            pedidoNro =
+                Math.max(...mesaOrders.map((order) => order.pedidoNro)) + 1;
         }
     }
 
     // Obtener los detalles del pedido (productos, cantidades, precios, totales) desde el carrito
-    let detallesPedido = cart.map(product => {
+    let detallesPedido = cart.map((product) => {
         return {
             producto_id: product.id,
             forma: product.forma,
             cantidad: product.cantidad,
             nombre: product.name,
             precio_unitario: product.precio_venta,
-            total: product.total
+            total: product.total,
         };
     });
 
-     // Verificar si hay productos en la orden
-     if (detallesPedido.length === 0) {
-        alert('La orden no tiene productos.');
+    // Verificar si hay productos en la orden
+    if (detallesPedido.length === 0) {
+        alert("La orden no tiene productos.");
         return; // Salir de la función si no hay productos en la orden
     }
 
@@ -805,7 +817,7 @@ function saveOrder() {
         mesa: mesa,
         pedidoNro: pedidoNro,
         etiqueta: etiqueta,
-        detalles: detallesPedido
+        detalles: detallesPedido,
     };
 
     // Obtener los pedidos existentes del localStorage o inicializar un nuevo array si no hay ninguno
@@ -815,7 +827,7 @@ function saveOrder() {
     orders.push(nuevoPedido);
 
     // Guardar el array de pedidos actualizado en el localStorage
-    localStorage.setItem('orders', JSON.stringify(orders));
+    localStorage.setItem("orders", JSON.stringify(orders));
 
     // Limpiar el carrito después de guardar el pedido
     cart = [];
@@ -823,31 +835,25 @@ function saveOrder() {
 
     // Actualizar el estado de las mesas
 
-
     // Cerrar el modal
     location.reload();
-
 }
-
 
 /*-----------------SubModal añadir cantidad productos mesa -----------------------*/
 
-   // Obtener una referencia al botón "cerrarModalCantidad"
-   var cerrarModalCantidadBtn = document.getElementById("cerrarModalCantidad");
-   var cancelarModalCantidadBtn = document.getElementById("cancelarModalCantidad");
+// Obtener una referencia al botón "cerrarModalCantidad"
+var cerrarModalCantidadBtn = document.getElementById("cerrarModalCantidad");
+var cancelarModalCantidadBtn = document.getElementById("cancelarModalCantidad");
 
-   cerrarModalCantidadBtn.addEventListener("click", cerrarModalCantidadModal);
-   cancelarModalCantidadBtn.addEventListener("click", cerrarModalCantidadModal);
+cerrarModalCantidadBtn.addEventListener("click", cerrarModalCantidadModal);
+cancelarModalCantidadBtn.addEventListener("click", cerrarModalCantidadModal);
 
+function cerrarModalCantidadModal() {
+    var modalAnterior = document.getElementById("cantidadModal");
+    modalAnterior.style.display = "none";
 
-   function cerrarModalCantidadModal()
-   {
-       var modalAnterior = document.getElementById("cantidadModal");
-       modalAnterior.style.display = "none";
-
-       document.getElementById("selectPresentacion").value = ""; // Reinicia el select
-       document.getElementById("cantidadInput").value = "1"; // Reinicia la cantidad a 1
-       document.getElementById("precioUnitarioInput").value = "1"; // Reinicia el precio unitario a 1
-       document.getElementById("totalPrecioCompraInput").value = "1";
-
-   }
+    document.getElementById("selectPresentacion").value = ""; // Reinicia el select
+    document.getElementById("cantidadInput").value = "1"; // Reinicia la cantidad a 1
+    document.getElementById("precioUnitarioInput").value = "1"; // Reinicia el precio unitario a 1
+    document.getElementById("totalPrecioCompraInput").value = "1";
+}

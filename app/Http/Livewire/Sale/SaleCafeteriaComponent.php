@@ -68,6 +68,7 @@ class SaleCafeteriaComponent extends Component
 
     public function ProcesarCompra($data)
     {
+
         if ($data['tipoOperacion'] == 'VENTA') {
             $tipo = 'VENTA';
         } elseif ($data['tipoOperacion'] == 'CREDITO') {
@@ -77,6 +78,18 @@ class SaleCafeteriaComponent extends Component
         }
 
         self::save($tipo, $data);
+    }
+
+    function obtenerNombreMesa($tuplasAPagar)
+    {
+        if (!empty($tuplasAPagar)) {
+            $primerItem = reset($tuplasAPagar);
+            $mesa = $primerItem['mesa'];
+        } else {
+            $mesa = Null;
+        }
+
+        return $mesa;
     }
 
     function save($tipo, $dataVenta)
@@ -98,21 +111,27 @@ class SaleCafeteriaComponent extends Component
             $metodo_pago = self::obtenerMetodoPagoId('CORTESÍA');
         }
 
+        if ($dataVenta['cajero']) {
+            $cajero = $dataVenta['cajero'];
+        } else {
+            $cajero = Auth::user()->id;
+        }
+
         $iva = $dataVenta['iva'] === '' ? 0 : $dataVenta['iva'];
         $descuento = $dataVenta['descuento'] === '' ? 0 : $dataVenta['descuento'];
         $client_id = $dataVenta['cliente_id'] === '' ? 0 : $dataVenta['cliente_id'];
 
-
-
         $nuevoNro = $this->obtenerProximoNumero($prefijo);
         $full_nro = $prefijo . $nuevoNro;
+
+        $observaciones = self::obtenerNombreMesa($dataVenta['resultadoCalculo']['tuplasAPagar']);
 
         $venta = Sale::create([
             'prefijo'           => $prefijo,
             'nro'               => $nuevoNro,
             'full_nro'          => $full_nro,
             'client_id'         => $client_id,
-            'user_id'           => Auth::user()->id,
+            'user_id'           => $cajero,
             'sale_date'         => Carbon::now(),
             'discount'          => $descuento,
             'tax'               => $iva,
@@ -120,12 +139,13 @@ class SaleCafeteriaComponent extends Component
             'tipo_operacion'    => $tipo_movimiento,
             'metodo_pago_id'    => $metodo_pago,
             'status'            => $estado,
+            'observaciones'     => $observaciones,
         ]);
 
         $detalles = $dataVenta['resultadoCalculo']['tuplasAPagar'];
 
-
         self::detallesVenta($venta, $detalles);
+
 
         if ($tipo == 'VENTA') {
             self::ventaContado($venta);
@@ -137,11 +157,14 @@ class SaleCafeteriaComponent extends Component
             self::cortesia($venta);
         }
 
+        dd($venta);
+
         event(new VentaRealizada($venta));
 
         if ($dataVenta['imprimirRecibo'] > 0) {
             self::Imprimirecibo($venta->id);
         }
+
 
         $this->dispatchBrowserEvent('venta-generada', ['venta' => $venta->full_nro, 'tuplas' => $detalles]);
     }
@@ -208,10 +231,11 @@ class SaleCafeteriaComponent extends Component
     {
 
         foreach ($dataProducts as $data) {
+
             SaleDetail::create([
                 'sale_id'       => $venta->id,
                 'product_id'    => $data['producto_id'],
-                'forma'         => 'disponible_caja',
+                'forma'         => $data['forma'],
                 'quantity'      => $data['cantidad'],
                 'price'         => $data['precio_unitario'],
                 'discount'      => 0,
