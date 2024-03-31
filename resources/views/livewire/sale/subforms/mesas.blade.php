@@ -1,5 +1,5 @@
 <div class="bottom-section">
-    <div class="counter" id="mostrador" style="cursor: pointer;" onclick="mostrarVistaMostrador()">
+    <div class="counter" id="mostrador" style="cursor: pointer;" onclick="mostrarVistaMostrador()" ondblclick="addProductosMostrador()">
         <h3 style="margin-top: 50px;"><strong>Mostrador</strong></h3>
         <!-- Contenido del mostrador aquí -->
     </div>

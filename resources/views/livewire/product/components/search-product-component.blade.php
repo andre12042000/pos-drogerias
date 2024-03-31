@@ -147,6 +147,7 @@
                     pedidoNro: 'Pedido Nro: 1',
                     detalles: [{
                         producto_id: productData.id,
+                        forma: selectedOption,
                         nombre: productData.name,
                         cantidad: 1,
                         precio_unitario: precio_unitario, // Supongo que aquí está el precio unitario del producto

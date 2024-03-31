@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddMateriaprimaModificacionRelacionToProductsTable extends Migration
+class AddObservacionesToSales extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,8 @@ class AddMateriaprimaModificacionRelacionToProductsTable extends Migration
      */
     public function up()
     {
-        Schema::table('products', function (Blueprint $table) {
-            $table->enum('is_materia_prima',['si','no'])->default('no')->nullable();
-
+        Schema::table('sales', function (Blueprint $table) {
+            $table->string('observaciones')->nullable();
         });
     }
 
@@ -26,7 +25,7 @@ class AddMateriaprimaModificacionRelacionToProductsTable extends Migration
      */
     public function down()
     {
-        Schema::table('products', function (Blueprint $table) {
+        Schema::table('sales', function (Blueprint $table) {
             //
         });
     }
