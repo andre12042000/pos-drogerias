@@ -109,8 +109,8 @@
                                     @forelse ($productosCrearCombo as $index => $producto)
                                         <tr>
 
-                                            <td>{{ substr($producto['codigo'], 0, 5) }}</td>
-                                            <td>{{ substr($producto['name'], 0, 20) }}...</td>
+                                            <td>{{ $producto['codigo'] }}</td>
+                                            <td>{{ $producto['name'] }}</td>
                                             <td>{{ $producto['forma_presentacion'] }}</td>
                                             <td>
                                                 @if (isset($producto['id']))
@@ -134,8 +134,8 @@
                                                 @endif
 
                                             </td>
-                                            <td>$ {{ number_format($producto['costo_unitario'], 0) }}</td>
-                                            <td>$ {{ number_format($producto['total'], 0) }}</td>
+                                            <td class="text-end">$ {{ number_format($producto['costo_unitario'], 0) }}</td>
+                                            <td class="text-end">$ {{ number_format($producto['total'], 0) }}</td>
                                             <td class="text-center"><i class="bi bi-trash text-danger"
                                                     style="cursor: pointer"
                                                     wire:click="eliminarProducto({{ $index }})"></i></td>
