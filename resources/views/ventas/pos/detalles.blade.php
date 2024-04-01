@@ -23,7 +23,7 @@
                         @if ($empresa->image)
                         <img src="{!! Config::get('app.URL') !!}/storage/{{ $empresa->image }}" width="150px" class="mt-0">
                     @else
-                        <img src="{!! Config::get('app.URL') !!}/storage/livewire-tem/sin_image_product.jpg" width="150px" class="mt-0">
+                        <img src="{!! Config::get('app.URL') !!}/img/sinimagen.jpg" width="150px" class="mt-0">
                     @endif
                     </div>
                     <div class="col-lg-8">
@@ -36,7 +36,7 @@
 
             </div>
 
-            <div class="col-lg-4 text-center"> Nit: {{$empresa->nit}} <br>
+            <div class="col-lg-4 text-center"> Nit: {{$empresa->nit}}  - {{$empresa->dv}}<br>
                 Tel: {{$empresa->telefono}} <br>
                  {{$empresa->email}}
                 @isset($empresa->direccion)

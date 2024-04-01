@@ -51,7 +51,7 @@
                             @if($user->photo)
                                 <img src="{!! Config::get('app.URL') !!}/storage/{{ $user->photo }}" style="border-radius: 50px; width:50px; height:50px;"></td>
                             @else
-                                <img src="{!! Config::get('app.URL') !!}/storage/livewire-tem/sin_image_product.jpg"  style="border-radius: 50px; width:50px; height:50px;"></td>
+                                <img src="{!! Config::get('app.URL') !!}/img/sinimagen.jpg"  style="border-radius: 50px; width:50px; height:50px;"></td>
                             @endif
                         <td>
                             @if($user->status == 'ACTIVO')
