@@ -74,11 +74,45 @@
 
         document.getElementById("cantidadModal").style.display = "block";
 
-        deshabilitarOptionsSelect(
-        producto_seleccionado); //Deshabilita los options que no esten disponibles de acuerdo al producto
+        deshabilitarOptionsSelect(producto_seleccionado); //Deshabilita los options que no esten disponibles de acuerdo al producto
 
+        AutoSeleccionarSelect(producto);
 
     }
+
+    function AutoSeleccionarSelect(product) {
+        let precio_caja = product.precio_caja;
+        let precio_blister = product.precio_blister;
+        let precio_unidad = product.precio_unidad;
+        let precio_unitario = 1;
+        let calcular = false;
+
+        // Obtener el elemento select
+        let selectPresentacion = document.getElementById("selectPresentacion");
+        let precioUnitarioInput = document.getElementById("precioUnitarioInput");
+
+        if (precio_caja > 0 && precio_blister <= 0 && precio_unidad <= 0) {
+            selectPresentacion.value = "disponible_caja";
+            precio_unitario = product.precio_caja;
+            calcular = true;
+        } else if (precio_blister > 0 && precio_caja <= 0 && precio_unidad <= 0) {
+            selectPresentacion.value = "disponible_blister";
+            precio_unitario = product.precio_blister;
+            calcular = true;
+        } else if (precio_unidad > 0 && precio_caja <= 0 && precio_blister <= 0) {
+            selectPresentacion.value = "disponible_unidad";
+            precio_unitario = product.precio_unidad;
+            calcular = true;
+        }
+
+        if (calcular) {
+            precioUnitarioInput.value = precio_unitario;
+            calcularPrecioTotal();
+        }
+    }
+
+
+
 
 
     selectPresentacion.addEventListener("change", function() {
