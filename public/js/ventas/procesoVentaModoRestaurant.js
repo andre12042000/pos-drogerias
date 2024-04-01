@@ -18,58 +18,103 @@ radioPorcentaje.addEventListener("change", habilitarInputDescuento);
 radioValorFijo.addEventListener("change", habilitarInputDescuento);
 
 function habilitarInputDescuento() {
-    const totalElement = document.querySelector(".TOTAL");
+    const totalElement = document.querySelector(".subTotal");
 
     // Obtener el valor total como texto del elemento y convertirlo a un número
     const valorTotal = parseFloat(
         totalElement.textContent.replace("$", "").replace(",", "").trim()
     );
 
-    // Redondear el valor total a dos decimales
     const valorTotalRedondeado = valorTotal.toFixed(3);
-    const valorTotalEntero = parseInt(valorTotalRedondeado);
 
-    console.log(valorTotalRedondeado);
-
-    /*-----------------------------------------------------------------------------------------
-
-
-
-
-                            ACA VOY CON EL DESCUENTO
-
-
-
-
-        --------------------------------------------------------------------------------------------*/
+    let numeroString = valorTotalRedondeado;
+    // Eliminar el punto decimal
+    let numeroSinPunto = numeroString.replace(".", "");
+    // Convertir la cadena resultante en un entero
+    let numeroEntero = parseInt(numeroSinPunto);
 
     // Obtener el valor del tipo de descuento seleccionado
     const tipoDescuento = radioPorcentaje.checked ? "porcentaje" : "valor_fijo";
 
-    // Habilitar el input y establecer el placeholder según el tipo de descuento seleccionado
     inputDescuento.disabled = false;
     inputDescuento.value = ""; // Limpiar el valor actual
 
     // Restringir el valor máximo según el tipo de descuento
     if (tipoDescuento === "porcentaje") {
         inputDescuento.setAttribute("maxlength", "2"); // Máximo 2 caracteres para descuento porcentaje
-        inputDescuento.placeholder = "Descuento en % (máx. 70%)";
+        inputDescuento.placeholder = "% (máx. 70%)";
         inputDescuento.addEventListener("input", function () {
             if (parseInt(inputDescuento.value) > 70) {
                 inputDescuento.value = "70"; // Limitar el valor máximo a 70 si se excede
             }
         });
     } else if (tipoDescuento === "valor_fijo") {
-        inputDescuento.placeholder = `Descuento en $ (máx. ${valorTotalRedondeado})`;
+        inputDescuento.placeholder = `$ (máx. ${valorTotalRedondeado})`;
         inputDescuento.addEventListener("input", function () {
-            if (parseInt(inputDescuento.value) > valorTotalEntero) {
-                inputDescuento.value = valorTotalEntero; // Limitar el valor máximo a valorTotalEntero si se excede
+            if (parseInt(inputDescuento.value) > numeroEntero) {
+                inputDescuento.value = numeroEntero; // Limitar el valor máximo a valorTotalEntero si se excede
             }
         });
     }
 }
 
+inputDescuento.addEventListener("input", function () {
+    const tipoDescuento = radioPorcentaje.checked ? "porcentaje" : "valor_fijo";
+    let descuento = inputDescuento.value;
+
+    const subTotalElement = document.querySelector(".subTotal");
+
+
+    const valorSubTotal = parseFloat(
+        subTotalElement.textContent.replace("$", "").replace(",", "").trim()
+    );
+
+    const valorSubTotalRedondeado = valorSubTotal.toFixed(3);
+
+    let subTotalString = valorSubTotalRedondeado;
+    // Eliminar el punto decimal
+    let subTotalSinPunto = subTotalString.replace(".", "");
+    // Convertir la cadena resultante en un entero
+    let subTotalEntero = parseInt(subTotalSinPunto);  //Disponible para operar el subtotal
+
+    // Ahora convetimos el iva desde el span en integer
+
+    const ivaElement = document.querySelector(".iva");
+
+    const valorIva = parseFloat(
+        ivaElement.textContent.replace("$", "").replace(",", "").trim()
+    );
+
+    const valorIvaRedondeado = valorIva.toFixed(3);
+
+    let ivaString = valorIvaRedondeado;
+    // Eliminar el punto decimal
+    let ivaSinPunto = ivaString.replace(".", "");
+    // Convertir la cadena resultante en un entero
+    let ivaEntero = parseInt(ivaSinPunto);  //Disponible para operar el subtotal
+
+    let precioOriginal =  subTotalEntero + ivaEntero;
+
+    let nuevo_total;
+
+     if (tipoDescuento === "porcentaje") {
+        // Calcular el descuento basado en el porcentaje
+        let porcentajeDescuento = descuento / 100;
+        let valorDescuento = precioOriginal * porcentajeDescuento;
+        nuevo_total = precioOriginal - valorDescuento;
+    } else if (tipoDescuento === "valor_fijo") {
+        // Aplicar el descuento directamente si es valor fijo
+        nuevo_total = precioOriginal - descuento;
+    }
+
+    const totalElement = document.querySelector(".TOTAL");
+    totalElement.textContent = "$" + nuevo_total.toFixed(0);
+
+
+});
+
 const pagarBtn = document.getElementById("pagarBtn");
+const descuentoBtn = document.getElementById("descuentoBtn");
 
 document.getElementById("cuentas_por_mesas").style.display = "none";
 
@@ -229,7 +274,6 @@ function filtrarPedidosPorMesa(numMesa) {
     } else {
         // Mostrar los pedidos de la mesa seleccionada
         pedidosMesa.forEach((pedido, index) => {
-
             console.log(pedido);
             cuentasPorMesasHTML += `
                 <div class="row m-2">
@@ -443,13 +487,13 @@ function actualizarEstadoBotonPagar(totalPagar) {
     if (totalPagar > 0) {
         // Si el total a pagar es mayor que 0, habilitar el botón de pagar
         pagarBtn.disabled = false;
+        descuentoBtn.disabled = false;
     } else {
         // Si el total a pagar es 0 o menor, deshabilitar el botón de pagar
         pagarBtn.disabled = true;
+        descuentoBtn.disabled = true;
     }
 }
-
-/*--------------------Calcular Descuentos ---------------------------------*/
 
 /*----------------------Proceso de pago -----------------------------------*/
 
@@ -464,9 +508,11 @@ pagarBtn.onclick = function () {
     ).value;
     var inputDescuentoValor = document.getElementById("inputDescuento").value;
 
+    var subTotalSpan = document.querySelector(".subTotal");
     var ivaSpan = document.querySelector(".iva");
     var totalSpan = document.querySelector(".TOTAL");
 
+    var subTotal = parseInt(subTotalSpan.textContent.replace(/\D/g, ""), 10);
     var iva = parseInt(ivaSpan.textContent.replace(/\D/g, ""), 10);
     var total = parseInt(totalSpan.textContent.replace(/\D/g, ""), 10);
 
@@ -486,6 +532,7 @@ pagarBtn.onclick = function () {
 
     var cliente = document.getElementById("cliente").value;
 
+    console.log(subTotal);
 
     Livewire.emit("pagarEvent", {
         resultadoCalculo: resultadoCalculo,
@@ -664,7 +711,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 function addProductosMostrador() {
-    $('#searchproductrestaurant').modal('show');
+    $("#searchproductrestaurant").modal("show");
     // Acciones que deseas realizar cuando se realiza un doble clic en el mostrador
 }
 
@@ -859,3 +906,5 @@ function cerrarModalCantidadModal() {
     document.getElementById("precioUnitarioInput").value = "1"; // Reinicia el precio unitario a 1
     document.getElementById("totalPrecioCompraInput").value = "1";
 }
+
+

@@ -98,7 +98,7 @@
                 <label>Descuento:</label>
                 <div class="input-group mb-3">
                     <input type="number" class="form-control" aria-label="Text input with dropdown button" id="inputDescuento" disabled>
-                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" disabled></button>
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" disabled id="descuentoBtn"></button>
                     <ul class="dropdown-menu dropdown-menu-end">
                       <li>
                         <div class="form-check form-check-inline m-2">
@@ -158,14 +158,14 @@
 
 @section('js')
     <script>
-        $(document).ready(function() {
-            $('.js-example-basic-single').select2();
+        $(document).ready(function () {
+            $(".js-example-basic-single").select2();
 
             // Escucha el evento emitido por Livewire cuando se agrega un nuevo cliente
-            window.livewire.on('ClientEvent', function(client) {
+            window.livewire.on("ClientEvent", function (client) {
                 // Agrega el nuevo cliente al select2
                 var option = new Option(client.name, client.id, true, true);
-                $('#cliente').append(option).trigger('change');
+                $("#cliente").append(option).trigger("change");
 
                 // Opcional: Puedes seleccionar automáticamente el nuevo cliente
                 // $('#cliente').val(client.id).trigger('change');
@@ -173,10 +173,11 @@
                 // Opcional: Puedes enfocar y abrir el select2 para que el usuario pueda ver el nuevo cliente
                 // $('#cliente').select2('open');
             });
-
-
         });
     </script>
+
 @stop
+
+
 
 

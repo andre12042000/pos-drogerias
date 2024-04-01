@@ -68,7 +68,6 @@ class SaleCafeteriaComponent extends Component
 
     public function ProcesarCompra($data)
     {
-
         if ($data['tipoOperacion'] == 'VENTA') {
             $tipo = 'VENTA';
         } elseif ($data['tipoOperacion'] == 'CREDITO') {
@@ -94,6 +93,7 @@ class SaleCafeteriaComponent extends Component
 
     function save($tipo, $dataVenta)
     {
+
         try {
 
             DB::transaction(function () use ($tipo, $dataVenta) {
@@ -121,13 +121,18 @@ class SaleCafeteriaComponent extends Component
                 }
 
                 $iva = $dataVenta['iva'] === '' ? 0 : $dataVenta['iva'];
-                $descuento = $dataVenta['descuento'] === '' ? 0 : $dataVenta['descuento'];
                 $client_id = $dataVenta['cliente_id'] === '' ? 0 : $dataVenta['cliente_id'];
 
                 $nuevoNro = $this->obtenerProximoNumero($prefijo);
                 $full_nro = $prefijo . $nuevoNro;
 
                 $observaciones = self::obtenerNombreMesa($dataVenta['resultadoCalculo']['tuplasAPagar']);
+
+                if($dataVenta['cajero'] != ''){
+                    $descuento = self::obtenerValorDescuento($dataVenta['total'], $dataVenta['subTotal'], $dataVenta['iva'],$dataVenta['tipodescuento'], $dataVenta['descuento']);
+                }else{
+                    $descuento = 0;
+                }
 
                 $venta = Sale::create([
                     'prefijo'           => $prefijo,
@@ -183,6 +188,16 @@ class SaleCafeteriaComponent extends Component
             report($e);
         }
 
+    }
+
+    function obtenerValorDescuento($total, $subtotal, $iva, $tipodescuento, $descontado){
+        if($tipodescuento == 'valor_fijo'){
+            $descuento = $descontado;
+        }else{
+            $descuento = ($subtotal + $iva)  - $total;
+        }
+
+        return $descuento;
     }
 
     function crearCredito($venta)
