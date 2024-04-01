@@ -1,4 +1,6 @@
 <div>
+    @section('title', 'Crear Combo')
+
     @include('popper::assets')
     <div class="card card-info">
         <div class="card-header">
@@ -166,5 +168,11 @@
 @section('css')
     <link rel="stylesheet" href="/css/admin_custom.css">
 @stop
+
+<script>
+    function redirigir() {
+        location.replace('{!! Config::get('app.URL') !!}/inventarios/productos');
+    }
+</script>
 
 

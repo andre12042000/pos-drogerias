@@ -129,6 +129,12 @@ class RouteServiceProvider extends ServiceProvider
                 ->namespace($this->namespace)
                 ->group(base_path('routes/cotizaciones.php'));
 
+                Route::middleware('web', 'auth', 'change.password')
+                ->name('combos.')
+                ->prefix('combos')
+                ->namespace($this->namespace)
+                ->group(base_path('routes/combos.php'));
+
         });
     }
 

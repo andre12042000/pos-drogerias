@@ -89,16 +89,21 @@
                                 @endif
                             </td>
                             <td class="text-center">
-
-                               <a onclick="modalEditarProducto({{ json_encode($product) }},
+                                @if ($product->is_combo == 1)
+                                <a @popper(Editar Combo) title="Editar Combo" class="btn btn-outline-success btn-sm"
+                                href="{{ route('combos.editar', $product->id) }}"><i class="bi bi-pencil-square"></i></a>
+                                @else
+                                     <a onclick="modalEditarProducto({{ json_encode($product) }},
                                                                  {{ json_encode($categorias) }},
                                                                  {{ json_encode($subcategorias) }},
                                                                  {{ json_encode($presentaciones) }},
                                                                  {{ json_encode($ubicaciones) }},
                                                                  {{ json_encode($laboratorios) }},)"
-                                    role="button" title="Editar Inventario" class="btn btn-outline-primary btn-sm">
+                                    role="button" title="Editar Producto" class="btn btn-outline-primary btn-sm">
                                     <i class="bi bi-pencil-square"></i>
                                 </a>
+                                @endif
+
 
 
                                 <a onclick="modalAjuste({{ json_encode($product) }},
@@ -106,7 +111,7 @@
                                     role="button" title="Ajustar Inventario" class="btn btn-outline-success btn-sm">
                                     <i class="bi bi-boxes"></i>
                                 </a>
-                                <a @popper(Eliminar) class="btn btn-outline-danger btn-sm"
+                                <a @popper(Eliminar Producto) class="btn btn-outline-danger btn-sm"
                                     wire:click="destroy( {{ $product->id }} )"><i class="bi bi-trash"></i></a>
 
 

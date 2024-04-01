@@ -50,6 +50,11 @@ class Product extends Model
         return $this->hasMany(SaleDetail::class);
     }
 
+    public function combo()
+    {
+        return $this->hasMany(Combo::class, 'product_id');
+    }
+
 
     //retornar el nombre del producto en mayusculas
     public function getProductoAttribute()
