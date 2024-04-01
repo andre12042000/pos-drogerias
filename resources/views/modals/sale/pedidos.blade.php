@@ -24,7 +24,7 @@
 
                 <div class="container">
                     <div class="row">
-                        <div class="col">
+                        <div class="col-sm-6">
                             <div class="order-list">
                                 <table class="table">
                                     <thead>
@@ -44,7 +44,7 @@
                                 <p id="no-products-msg" style="display: none;">No hay productos en el carrito.</p>
                             </div>
                         </div>
-                        <div class="col">
+                        <div class="col-sm-6">
                             @livewire('sale.search-product-component')
                         </div>
                     </div>

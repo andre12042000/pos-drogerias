@@ -1,10 +1,9 @@
 <div class="card" style="height: 400px;">
     <div class="card-header">
-
         <div class="row g-2">
             <div class="col-md">
                 <div class="form-floating">
-                    <input type="text" class="form-control" id="buscarProducto">
+                    <input type="text" class="form-control" id="buscarProducto" wire:model = 'search' autocomplete="none">
                     <label for="buscarProducto">Buscar producto</label>
                 </div>
             </div>

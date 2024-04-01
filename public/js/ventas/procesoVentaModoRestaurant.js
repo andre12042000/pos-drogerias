@@ -229,6 +229,8 @@ function filtrarPedidosPorMesa(numMesa) {
     } else {
         // Mostrar los pedidos de la mesa seleccionada
         pedidosMesa.forEach((pedido, index) => {
+
+            console.log(pedido);
             cuentasPorMesasHTML += `
                 <div class="row m-2">
                     <div class="col">

@@ -98,7 +98,7 @@
                 <label>Descuento:</label>
                 <div class="input-group mb-3">
                     <input type="number" class="form-control" aria-label="Text input with dropdown button" id="inputDescuento" disabled>
-                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false"></button>
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" disabled></button>
                     <ul class="dropdown-menu dropdown-menu-end">
                       <li>
                         <div class="form-check form-check-inline m-2">
