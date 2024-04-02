@@ -10,7 +10,7 @@ use App\Http\Livewire\Facturacion\AnularFacturaComponent;
 
 //Route::get('/', [ListadoComponent::class, '__invoke'])->name('index');
 
- Route::middleware([ PermissionMiddleware::class.':Acceso Gestion Facturacion'])->group(function () {
+ Route::middleware([ PermissionMiddleware::class.':Acceso Facturacion'])->group(function () {
 
 
 

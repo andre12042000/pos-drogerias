@@ -8,6 +8,6 @@ use Spatie\Permission\Middlewares\PermissionMiddleware;
 
 
 
-Route::get('/equipos/listado', ListarComponent::class)->name('equipos.list');
+Route::get('/equipos/listado', ListarComponent::class)->name('equipos.list')->middleware([ PermissionMiddleware::class.':Acceso Equipo']);
 
 

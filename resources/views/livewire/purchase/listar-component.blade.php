@@ -18,10 +18,10 @@
                         <span class="input-group-text" id="basic-addon1"><i class="bi bi-search"></i></span>
                         <input type="text" class="form-control" placeholder="Buscar compra" aria-label="Username"
                             aria-describedby="basic-addon1"  wire:model = "buscar">
-                            @can('Acceso Inventraio Crear')
+
                             <button type="button" class="btn btn-outline-light float-right ml-2" data-toggle="modal" data-target="#purchasemodal" >Nueva compra <i class="las la-plus-circle"></i></button>
 
-                            @endcan
+
 
                     </div>
                 </div>
@@ -66,14 +66,14 @@
                             </td>
                            <td>@if($purchase->status == 'BORRADOR') <span class="badge bg-warning ">Pendiente</span> @else <span class="badge bg-success">Aplicada</span> @endif </td>
                            <td class="text-center">
-                           @can('Acceso Inventario Editar')
+
                            <a @popper(Abonar) class="btn btn-outline-info btn-sm @if($purchase->abono == $purchase->total || $purchase->payment_method == '2') disabled @endif" href="#" role="button"
                                 data-toggle="modal" data-target="#abonocompramodal"
                                 wire:click="sendDataAbono( {{ $purchase }} )" ><i class="bi bi-currency-dollar"></i></a>
 
                            <a href="{{ route('inventarios.purchase.edit', $purchase) }}" @popper(Editar) class="btn btn-outline-success btn-sm" href="#"><i class="bi bi-pencil-square"></i></a>
 
-                                @endcan
+
                                 <a  @popper(Eliminar)  wire:click="destroy( {{ $purchase->id }} )" class="btn btn-outline-danger btn-sm" ><i class="bi bi-trash3"></i></a>
                             </td>
                         </tr>

@@ -314,8 +314,8 @@ return [
             'classes'    => 'text-white',
             'icon'       => 'fas fa-chart-bar',
             'icon_color' => 'info',
-            'can'  => 'Acceso Reportes',
-            'submenu' => [
+            'can'        => 'Acceso Reportes',
+            'submenu'    => [
                 [
                     'text'       => 'Reporte por día',
                     'classes'    => 'text-white',
@@ -337,7 +337,7 @@ return [
             'classes'    => 'text-white',
             'icon'       => 'fas fa-cash-register',
             'icon_color' => 'info',
-            'can'  => 'Acceso Pos Venta',
+            'can'        => 'Acceso Movimientos',
             'submenu' => [
                 [
                     'text'       => 'POS',
@@ -345,6 +345,7 @@ return [
                     'icon'       => 'bi bi-cash-coin',
                     'icon_color' => 'white',
                     'route'      => 'ventas.pos',
+                    'can'        => 'Acceso Pos',
                 ],
                 [
                     'text'       => 'Ventas de Mesa',
@@ -352,6 +353,7 @@ return [
                     'icon'       => 'fas fa-table',
                     'icon_color' => 'white',
                     'route'      => 'ventas.restaurant',
+                    'can'        => 'Acceso Venta Mesa',
                 ],
 
                 [
@@ -360,6 +362,8 @@ return [
                     'icon'       => 'bi bi-file-earmark-diff-fill',
                     'icon_color' => 'white',
                     'route'      => 'cotizaciones.cotizaciones.list',
+                    'can'        => 'Acceso Cotizaciones',
+
                 ],
                 [
                     'text'       => 'Consumo Interno',
@@ -367,6 +371,8 @@ return [
                     'icon'       => 'fas fa-book',
                     'icon_color' => 'white',
                     'route'      => 'consumo_interno.index',
+                    'can'        => 'Acceso Consumo Interno',
+
                 ],
                 [
                     'text'       => 'Gastos',
@@ -374,6 +380,8 @@ return [
                     'icon'       => 'bi bi-cash-stack',
                     'icon_color' => 'white',
                     'route'      => 'gastos.list',
+                    'can'        => 'Acceso Gastos',
+
                 ],
                 /* [
                     'text'       => 'Ordenes de trabajo',
@@ -381,7 +389,7 @@ return [
                     'icon'       => 'bi bi-list-ol',
                     'icon_color' => 'white',
                     'route'      => 'orders.index',
-                    'can'        => 'Ordenes de trabajo',
+                    'can'        => 'Acceso Ordenes Trabajo',
                 ], */
             ],
         ],
@@ -390,7 +398,7 @@ return [
             'classes'    => 'text-white',
             'icon'       => 'fas fa-receipt',
             'icon_color' => 'info',
-            'can'  => 'Acceso Inventario Ver',
+            'can'        => 'Acceso Facturacion',
             'submenu' => [
                 [
                     'text'       => 'Facturas',
@@ -399,22 +407,7 @@ return [
                     'icon_color' => 'white',
                     'route'      => 'facturacion.index',
                 ],
-                /* [
-                    'text'       => 'Productos',
-                    'classes'    => 'text-white',
-                    'icon'       => 'bi bi-basket',
-                    'icon_color' => 'white',
-                    'route'      => 'inventarios.product',
 
-
-                ],
-                [
-                    'text'       => 'Producto stock bajo',
-                    'classes'    => 'text-white',
-                    'icon'       => 'bi bi-exclamation-triangle-fill',
-                    'icon_color' => 'white',
-                    'route'      => 'inventarios.stock.min',
-                ], */
             ],
         ],
         [
@@ -422,7 +415,7 @@ return [
             'classes'    => 'text-white',
             'icon'       => 'bi bi-columns-gap',
             'icon_color' => 'info',
-            'can'  => 'Acceso Inventario Ver',
+            'can'  => 'Acceso Inventario',
             'submenu' => [
                 [
                     'text'       => 'Compras',
@@ -430,6 +423,7 @@ return [
                     'icon'       => 'bi bi-cart-plus',
                     'icon_color' => 'white',
                     'route'      => 'inventarios.purchase',
+                    'can'        => 'Acceso Compras',
                 ],
                 [
                     'text'       => 'Productos',
@@ -437,6 +431,7 @@ return [
                     'icon'       => 'bi bi-basket',
                     'icon_color' => 'white',
                     'route'      => 'inventarios.product',
+                    'can'        => 'Acceso Producto',
 
 
                 ],
@@ -446,6 +441,7 @@ return [
                     'icon'       => 'bi bi-exclamation-triangle-fill',
                     'icon_color' => 'white',
                     'route'      => 'inventarios.stock.min',
+                    'can'        => 'Acceso Producto Stock Bajo',
                 ],
             ],
         ],
@@ -463,14 +459,9 @@ return [
                     'icon'       => 'fas fa-motorcycle',
                     'icon_color' => 'white',
                     'route'      => 'mantenimiento.equipos.list',
+                     'can'       => 'Acceso Equipo',
                 ],
-                 [
-                    'text'       => 'Servicio técnico',
-                    'classes'    => 'text-white',
-                    'icon'       => 'far fa-calendar-alt',
-                    'icon_color' => 'white',
-                    'route'      => 'reporte.fecha',
-                ],
+
             ],
         ], */
 
@@ -479,7 +470,7 @@ return [
             'classes'    => 'text-white',
             'icon'       => 'far fa-address-card',
             'icon_color' => 'info',
-            'can'  => 'Acceso Gestion Terceros',
+            'can'  => 'Acceso Terceros',
 
             'submenu' => [
                 [
@@ -488,6 +479,7 @@ return [
                     'icon'       => 'bi bi-person-lines-fill',
                     'icon_color' => 'white',
                     'route'      => 'terceros.client',
+                    'can'        => 'Acceso Clientes',
 
                 ],
                 [
@@ -496,6 +488,7 @@ return [
                     'icon'       => 'bi bi-truck',
                     'icon_color' => 'white',
                     'route'      => 'terceros.provider',
+                    'can'        => 'Acceso Proveedores',
 
                 ],
             ],
@@ -505,7 +498,7 @@ return [
             'classes'    => 'text-white',
             'icon'       => 'bi bi-collection',
             'icon_color' => 'info',
-            'can'  => 'Acceso Gestion Parametros',
+            'can'  => 'Acceso Parametros',
 
             'submenu' => [
                 [
@@ -574,7 +567,7 @@ return [
             'classes'    => 'text-white',
             'icon'       => 'bi bi-shield-shaded',
             'icon_color' => 'info',
-            'can'  => 'Acceso Gestion Usuario',
+            'can'  => 'Acceso Seguridad',
 
             'submenu' => [
                 [
@@ -583,6 +576,7 @@ return [
                     'icon'       => 'bi bi-people-fill',
                     'icon_color' => 'white',
                     'route'      => 'usuarios.index',
+                    'can'        => 'Acceso Usuario',
 
                 ],
                 [
@@ -591,7 +585,7 @@ return [
                     'icon'       => 'bi bi-person-badge',
                     'icon_color' => 'white',
                     'route'      => 'roles.index',
-                    'can'  => 'Acceso Gestion Roles',
+                    'can'        => 'Acceso Roles',
 
                 ],
             ],
@@ -610,6 +604,7 @@ return [
                     'icon'          => 'bi bi-building',
                     'icon_color'    => 'white',
                     'route'         => 'empresas',
+
                 ],
                  [
                     'text'          => 'Impresora',
@@ -669,85 +664,7 @@ return [
 
 
 
-        // Sidebar items:
 
-       /*  [
-            'text' => 'blog',
-            'url'  => 'admin/blog',
-            'can'  => 'manage-blog',
-        ],
-        [
-            'text'        => 'pages',
-            'url'         => 'admin/pages',
-            'icon'        => 'far fa-fw fa-file',
-            'label'       => 4,
-            'label_color' => 'success',
-        ],
-        ['header' => 'account_settings'],
-        [
-            'text' => 'profile',
-            'url'  => 'admin/settings',
-            'icon' => 'fas fa-fw fa-user',
-        ],
-        [
-            'text' => 'change_password',
-            'url'  => 'admin/settings',
-            'icon' => 'fas fa-fw fa-lock',
-        ],
-        [
-            'text'    => 'multilevel',
-            'icon'    => 'fas fa-fw fa-share',
-            'submenu' => [
-                [
-                    'text' => 'level_one',
-                    'url'  => '#',
-                ],
-                [
-                    'text'    => 'level_one',
-                    'url'     => '#',
-                    'submenu' => [
-                        [
-                            'text' => 'level_two',
-                            'url'  => '#',
-                        ],
-                        [
-                            'text'    => 'level_two',
-                            'url'     => '#',
-                            'submenu' => [
-                                [
-                                    'text' => 'level_three',
-                                    'url'  => '#',
-                                ],
-                                [
-                                    'text' => 'level_three',
-                                    'url'  => '#',
-                                ],
-                            ],
-                        ],
-                    ],
-                ],
-                [
-                    'text' => 'level_one',
-                    'url'  => '#',
-                ],
-            ],
-        ],
-        ['header' => 'labels'],
-        [
-            'text'       => 'important',
-            'icon_color' => 'red',
-            'url'        => '#',
-        ],
-        [
-            'text'       => 'warning',
-            'icon_color' => 'yellow',
-            'url'        => '#',
-        ],
-        [
-            'text'       => 'information',
-            'icon_color' => 'cyan',
-            'url'        => '#',
-        ], */
     ],
 
     /*

@@ -15,10 +15,10 @@ class RoleSeeder extends Seeder
     public function run()
     {
         $role =  Role::create(['name' => 'Administrador']);
-        $role->permissions()->attach([1,2,3,4,5,6,7,8,9,10,11]);
+        $role->permissions()->attach([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26]);
 
         $role = Role::create(['name' => 'Cajero']);
-        $role->permissions()->attach([2,3]);
+        $role->permissions()->attach([4,5]);
 
         $role = Role::create(['name' => 'Asistente']);
         $role->permissions()->attach([]);

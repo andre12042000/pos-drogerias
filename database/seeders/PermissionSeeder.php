@@ -19,58 +19,110 @@ class PermissionSeeder extends Seeder
         ]);
 
         Permission::create([
-            'name' => 'Acceso Pos Venta',
+            'name' => 'Acceso Movimientos',
         ]);
 
         Permission::create([
-            'name' => 'Acceso Inventario Ver',
-        ]);
-        Permission::create([
-            'name' => 'Acceso Inventraio Crear',
-        ]);
-        Permission::create([
-            'name' => 'Acceso Inventario Editar',
-        ]);
-        Permission::create([
-            'name' => 'Acceso Inventario Corregir',
+            'name' => 'Acceso Pos',
         ]);
 
         Permission::create([
-            'name' => 'Acceso Gestion Terceros',
+            'name' => 'Acceso Venta Mesa',
         ]);
 
         Permission::create([
-            'name' => 'Acceso Gestion Parametros',
+            'name' => 'Acceso Cotizaciones',
         ]);
 
         Permission::create([
-            'name' => 'Acceso Gestion Usuario',
+            'name' => 'Acceso Consumo Interno',
+        ]);
+
+        Permission::create([
+            'name' => 'Acceso Gastos',
+        ]);
+
+        Permission::create([
+            'name' => 'Acceso Ordenes Trabajo',
+        ]);
+
+        Permission::create([
+            'name' => 'Acceso Facturacion',
+        ]);
+
+
+
+        Permission::create([
+            'name' => 'Acceso Inventario',
+        ]);
+
+        Permission::create([
+            'name' => 'Acceso Compras',
+        ]);
+
+        Permission::create([
+            'name' => 'Acceso Producto',
         ]);
         Permission::create([
-            'name' => 'Acceso Gestion Roles',
+            'name' => 'Acceso Producto Crear',
+        ]);
+        Permission::create([
+            'name' => 'Acceso Producto Editar',
+        ]);
+        Permission::create([
+            'name' => 'Acceso Producto Ajustar',
+        ]);
+
+        Permission::create([
+            'name' => 'Acceso Producto Stock Bajo',
+        ]);
+
+        Permission::create([
+            'name' => 'Acceso Terceros',
+        ]);
+
+        Permission::create([
+            'name' => 'Acceso Clientes',
+        ]);
+
+        Permission::create([
+            'name' => 'Acceso Proveedores',
+        ]);
+
+        Permission::create([
+            'name' => 'Acceso Parametros',
+        ]);
+
+
+
+
+
+        Permission::create([
+            'name' => 'Acceso Seguridad',
+        ]);
+
+        Permission::create([
+            'name' => 'Acceso Usuario',
+        ]);
+        Permission::create([
+            'name' => 'Acceso Roles',
         ]);
         Permission::create([
             'name' => 'Acceso Configuración',
         ]);
 
-        Permission::create([
-            'name' => 'Acceso Mantenimiento',
-        ]);
 
 
-        Permission::create([
-            'name' => 'Ordenes de trabajo',
-        ]);
 
-        Permission::create([
-            'name' => 'Acceso Gestion Facturacion',
-        ]);
+//posibles
 
-        Permission::create([
-            'name' => 'Acceso Componente Control',
-        ]);
+Permission::create([
+    'name' => 'Acceso Mantenimiento',
+]);
 
-
+Permission::create([
+    'name' => 'Acceso Equipo',
+]);
 
 
 

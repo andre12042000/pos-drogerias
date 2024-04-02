@@ -13,16 +13,16 @@ use App\Http\Livewire\Product\CorreccionProductsComponent;
 use App\Http\Livewire\Product\ComboCreateComponent;
 
 
-Route::middleware([ PermissionMiddleware::class.':Acceso Inventario Ver'])->group(function () {
+Route::middleware([ PermissionMiddleware::class.':Acceso Inventario'])->group(function () {
 
-Route::get('productos', [ProductController::class, 'index'])->name('product');
+Route::get('productos', [ProductController::class, 'index'])->name('product')->middleware([ PermissionMiddleware::class.':Acceso Producto']);
 
-Route::get('productos/stock/min', [ProductController::class, 'low'])->name('stock.min');
+Route::get('productos/stock/min', [ProductController::class, 'low'])->name('stock.min')->middleware([ PermissionMiddleware::class.':Acceso Producto Stock Bajo']);
 Route::get('low_stock', LowStockComponent::class)->name('low.stock');
 Route::get('productos/detalles/{product}', ShowComponent::class)->name('product.show');
 
-Route::get('compras', [PurchaseController::class, 'index'])->name('purchase');
-Route::get('compras/detalles/{purchase}', [PurchaseController::class, 'edit'])->name('purchase.edit')->middleware([ PermissionMiddleware::class.':Acceso Inventario Editar']);
+Route::get('compras', [PurchaseController::class, 'index'])->name('purchase')->middleware([ PermissionMiddleware::class.':Acceso Compras']);
+Route::get('compras/detalles/{purchase}', [PurchaseController::class, 'edit'])->name('purchase.edit')->middleware([ PermissionMiddleware::class.':Acceso Compras']);
 
 Route::get('productos/import',  [ImportProductsController::class, 'importview'])->name('import.view');
 Route::post('productos/import/data',  [ImportProductsController::class, 'importardata'])->name('import.data');

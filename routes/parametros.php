@@ -10,7 +10,7 @@ use Spatie\Permission\Middlewares\PermissionMiddleware;
 use App\Http\Livewire\Parametros\SitiosTemperatura\ListSitioTemperaturaComponent;
 
 
-Route::middleware([ PermissionMiddleware::class.':Acceso Gestion Parametros'])->group(function () {
+Route::middleware([ PermissionMiddleware::class.':Acceso Parametros'])->group(function () {
 
     Route::get('eliminar', [CategoryController::class, 'destroy'])->name('destroycategory');
     Route::get('categorias', [CategoryController::class, 'index'])->name('category');

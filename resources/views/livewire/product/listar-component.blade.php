@@ -39,11 +39,13 @@
                         <span class="input-group-text" id="basic-addon1"><i class="bi bi-search"></i></span>
                         <input @popper(Buscador) type="text" class="form-control" placeholder="Buscar producto"
                             aria-label="Username" aria-describedby="basic-addon1" wire:model="buscar">
-                        @can('Acceso Inventraio Crear')
+                        @can('Acceso Producto Crear')
                             <button type="button" class="btn btn-outline-light float-right ml-2" data-toggle="modal"
                                 data-target="#productomodal">Nuevo producto <i class="las la-plus-circle"></i></button>
 
-                            <button type="button" id="redireccionarBtn" class="btn btn-outline-light float-right ml-2">Nuevo Producto Elaborado <i class="bi bi-columns-gap"></i></button>
+                            <button type="button" id="redireccionarBtn"
+                                class="btn btn-outline-light float-right ml-2">Nuevo Producto Elaborado <i
+                                    class="bi bi-columns-gap"></i></button>
                         @endcan
 
 
@@ -88,29 +90,33 @@
                                     <span class="badge badge-pill bg-dark">Inactivo</span>
                                 @endif
                             </td>
+
                             <td class="text-center">
-                                @if ($product->is_combo == 1)
-                                <a @popper(Editar Combo) title="Editar Combo" class="btn btn-outline-success btn-sm"
-                                href="{{ route('combos.editar', $product->id) }}"><i class="bi bi-pencil-square"></i></a>
-                                @else
-                                     <a onclick="modalEditarProducto({{ json_encode($product) }},
+                                @can('Acceso Producto Editar')
+                                    @if ($product->is_combo == 1)
+                                        <a @popper(Editar Combo) title="Editar Combo" class="btn btn-outline-success btn-sm"
+                                            href="{{ route('combos.editar', $product->id) }}"><i
+                                                class="bi bi-pencil-square"></i></a>
+                                    @else
+                                        <a onclick="modalEditarProducto({{ json_encode($product) }},
                                                                  {{ json_encode($categorias) }},
                                                                  {{ json_encode($subcategorias) }},
                                                                  {{ json_encode($presentaciones) }},
                                                                  {{ json_encode($ubicaciones) }},
                                                                  {{ json_encode($laboratorios) }},)"
-                                    role="button" title="Editar Producto" class="btn btn-outline-primary btn-sm">
-                                    <i class="bi bi-pencil-square"></i>
-                                </a>
-                                @endif
+                                            role="button" title="Editar Producto" class="btn btn-outline-primary btn-sm">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </a>
+                                    @endif
+                                @endcan
 
-
-
-                                <a onclick="modalAjuste({{ json_encode($product) }},
+                                @can('Acceso Producto Ajustar')
+                                    <a onclick="modalAjuste({{ json_encode($product) }},
                                                         {{ json_encode($product->inventario) }},)"
-                                    role="button" title="Ajustar Inventario" class="btn btn-outline-success btn-sm">
-                                    <i class="bi bi-boxes"></i>
-                                </a>
+                                        role="button" title="Ajustar Inventario" class="btn btn-outline-success btn-sm">
+                                        <i class="bi bi-boxes"></i>
+                                    </a>
+                                @endcan
                                 <a @popper(Eliminar Producto) class="btn btn-outline-danger btn-sm"
                                     wire:click="destroy( {{ $product->id }} )"><i class="bi bi-trash"></i></a>
 
@@ -157,7 +163,7 @@
         btn.addEventListener('click', function() {
             // Redirigir a la página deseada
 
-            window.location.href = '{{ route("inventarios.combo.create") }}';
+            window.location.href = '{{ route('inventarios.combo.create') }}';
         });
     </script>
 @stop
