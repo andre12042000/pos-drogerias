@@ -156,7 +156,8 @@
             </div>
         </div>
     </div>
-{{-- ventas y compras --}}
+
+{{-- ventas y compras y gastos --}}
     <div class="row mt-4" style="height: 250px; ">
         <div class="container-fluid">
             <div class="row">
@@ -192,11 +193,11 @@
         <div class="row mt-4">
 
             <div class="col-lg-6">
-                <div class="card card-info">
+                <div class="card bg-success">
                     <div class="card-header">
                         <h3>Productos más vendidos </h3>
                     </div>
-                    <div class="card-body " style="background-color: #D1E7DD;">
+                    <div class="card-body " style="background-color: #D1E7DD; color:black">
 
                         <div class="table-responsive ">
                             <table class="table table-success table-striped " id="tabProducts">
@@ -229,11 +230,11 @@
             </div>
             <div class="col-lg-6">
 
-                <div class="card card-danger ml-3">
+                <div class="card bg-danger ml-3">
                     <div class="card-header ">
                         <h3>Productos menos vendidos </h3>
                     </div>
-                    <div class="card-body " style="background-color: #e7d1d1;">
+                    <div class="card-body " style="background-color: #e7d1d1; color:black">
 
                         <div class="table-responsive ">
                             <table class="table table-danger table-striped " id="tabProducts">
