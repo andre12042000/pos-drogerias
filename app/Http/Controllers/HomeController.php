@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Abono;
+use DateTime;
+use Carbon\Carbon;
 use App\Models\Cash;
+use App\Models\Sale;
+use App\Models\Abono;
 use App\Models\Client;
+use App\Models\Gastos;
 use App\Models\Orders;
 use App\Models\Purchase;
-use App\Models\Sale;
-use Carbon\Carbon;
-use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -71,16 +72,23 @@ class HomeController extends Controller
 
 
         $topProducts = $this->obtenerproductosmasvendidos();
+        $MinProducts  = $this->obtenerproductosmenosvendidos();
+
         $ventas_ultimos_meses = $this->obtenerventasultimosmeses();
         $compras_ultimos_meses = $this->obtenercomprasultimosmeses();
+        $gastos_ultimos_meses = $this->obtenergastosultimosmeses();
+
         $recaudo_cartera = $this->obtenerrecuadocartera();
         $months = $ventas_ultimos_meses['months'];
         $totals = $ventas_ultimos_meses['totals'];
 
+        $gastosmonths = $gastos_ultimos_meses['months'];
+        $gastostotals = $gastos_ultimos_meses['totals'];
+
         $purchasemonths = $compras_ultimos_meses['months'];
         $purchasetotals = $compras_ultimos_meses['totals'];
 
-        return view('home', compact('recaudo_cartera', 'fecha_actual','filter_fecha', 'cantidad_consumo', 'cantidad_gastos', 'purchasemonths', 'purchasetotals', 'data', 'total_ingresos', 'mes_actual', 'topProducts', 'cantidad_ventas', 'cantidad_abonos', 'cantidad_compras', 'cantidad_deuda', 'months', 'totals'));
+        return view('home', compact('gastostotals', 'gastosmonths', 'MinProducts', 'recaudo_cartera', 'fecha_actual','filter_fecha', 'cantidad_consumo', 'cantidad_gastos', 'purchasemonths', 'purchasetotals', 'data', 'total_ingresos', 'mes_actual', 'topProducts', 'cantidad_ventas', 'cantidad_abonos', 'cantidad_compras', 'cantidad_deuda', 'months', 'totals'));
 
     }
 
@@ -176,6 +184,22 @@ return $totalQuantity;
         return $topProducts;
     }
 
+    function obtenerproductosmenosvendidos()
+    {
+
+
+        $topProducts = DB::table('sale_details')
+        ->join('products', 'sale_details.product_id', '=', 'products.id')
+        ->select('sale_details.product_id', 'products.name', 'products.code', 'products.stock', DB::raw('SUM(sale_details.quantity) as total_quantity'))
+        ->groupBy('sale_details.product_id')
+        ->orderBy('total_quantity')
+        ->take(5)
+        ->get();
+
+
+        return $topProducts;
+    }
+
     function obtenerventasultimosmeses()
     {
         $months = [];
@@ -219,4 +243,25 @@ return $totalQuantity;
         return $datos;
 
     }
+
+    function obtenergastosultimosmeses()
+    {
+        $months = [];
+        $totals = [];
+
+        for ($i = 6; $i >= 1; $i--) {
+            $date = Carbon::now()->subMonths($i)->format('Y-m');
+            $months[] = $date;
+            $total =  Gastos::selectRaw('SUM(total) as total')
+                        ->whereYear('created_at', '=', Carbon::now()->subMonths($i)->year)
+                        ->whereMonth('created_at', '=', Carbon::now()->subMonths($i)->month)
+                        ->first();
+            $totals[] = $total->total ?? 0;
+        }
+
+        $datos = ['months' => $months, 'totals' => $totals];
+
+        return $datos;
+    }
+
 }

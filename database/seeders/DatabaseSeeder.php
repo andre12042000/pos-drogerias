@@ -60,6 +60,10 @@ class DatabaseSeeder extends Seeder
             'name'      => 'N/A',
         ]);
 
+        Category::create([
+            'name'      => 'Combos',
+        ]);
+
 
         //Cliente
 
