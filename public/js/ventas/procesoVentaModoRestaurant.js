@@ -152,16 +152,6 @@ function crearMesa(numMesa) {
     mesaBox.dataset.numero = numMesa; // Agregar atributo de datos para almacenar el número de la mesa
     document.getElementById("mesas-container").appendChild(mesaBox);
 
-    let etiqueta = mostrarEtiquetaPorMesa(numMesa);
-
-    // Mostrar la etiqueta en la vista HTML si existe
-    if (etiqueta) {
-        let etiquetaElement = document.createElement("span");
-        etiquetaElement.textContent = etiqueta;
-        etiquetaElement.className = "etiqueta"; // Agregar clase para estilizar la etiqueta
-        mesaBox.appendChild(etiquetaElement);
-    }
-
     // Consultar y actualizar el estado de la mesa
     consultarEstadoMesa(numMesa);
 
@@ -309,7 +299,9 @@ function filtrarPedidosPorMesa(numMesa) {
                     <div class="col">
                         <h6 class="ml-4"><strong>Pedido Nro. ${
                             pedido.pedidoNro
-                        }</strong></h6>
+                        }</strong>
+                        <span class="badge bg-secondary ml-4"> ${
+                          pedido.etiqueta } </span></h6>
                     </div>
                     <div class="col text-end">
                         <div class="form-check mr-4">
@@ -336,7 +328,7 @@ function filtrarPedidosPorMesa(numMesa) {
                         <div style="width: 20%;">Precio Unit: $${item.precio_unitario}</div>
                         <div style="width: 20%;">SubTotal: $${item.total}</div>
                         <div>
-                            <i class="fa fa-trash" style="cursor: pointer;" onclick="eliminarItemMesa(${numMesa}, '${pedidoId}', '${uniqueItemId}')"></i>
+                            <i class="fa fa-trash" style="cursor: pointer;" onclick="eliminarLocalStoragePagoItem(${numMesa}, '${item.key}')"></i>
                         </div>
                     </li>
                 `;
@@ -640,7 +632,7 @@ function mostrarProductosMostrador() {
 
             // Agregar el evento onclick para eliminar el producto del localStorage
             botonEliminar.onclick = function () {
-                eliminarItemMostrador(detalle.producto_id); // Llama a la función eliminarProducto con el índice del producto
+                eliminarItemMostrador(detalle.producto_id, detalle.forma); // Llama a la función eliminarProducto con el índice del producto
             };
 
             // Agregar el botón al DOM
@@ -649,7 +641,7 @@ function mostrarProductosMostrador() {
     });
 }
 
-function eliminarItemMostrador(producto) {
+function eliminarItemMostrador(producto, forma) {
     // Mostrar el SweetAlert de confirmación
     Swal.fire({
         title: "¿Está seguro?",
@@ -662,7 +654,7 @@ function eliminarItemMostrador(producto) {
         // Si el usuario confirma la eliminación
         if (result.isConfirmed) {
             // Llamar a la función para eliminar el pedido del local storage
-            eliminarProductoLocalStorageMostrador(producto);
+            eliminarProductoLocalStorageMostrador(producto, forma);
 
             // Actualizar la vista filtrando los pedidos por mesa
             mostrarProductosMostrador();
@@ -670,43 +662,37 @@ function eliminarItemMostrador(producto) {
     });
 }
 
-function eliminarProductoLocalStorageMostrador(producto_id) {
-    var mesa = "MOSTRADOR";
-    var pedido = "Pedido Nro: 1";
-
+function eliminarProductoLocalStorageMostrador(producto_id, forma) {
+    let mesa = "MOSTRADOR";
     let orders = JSON.parse(localStorage.getItem("orders")) || [];
+    let ordenesMostrador = orders.filter((order) => order.mesa === mesa);
 
-    // Filtramos las ordenes de la mesa
-    let ordenesDeMesa = orders.filter((order) => order.mesa === mesa);
+    // Recorrer las órdenes en la sección de mostrador
+    ordenesMostrador.forEach((orden, index) => {
+        // Recorrer los detalles de la orden actual para buscar el producto_id
+        orden.detalles.forEach((detalle, detalleIndex) => {
+            if (detalle.producto_id === producto_id && detalle.forma === forma) {
+                // Paso 1: Eliminar el detalle si se encuentra
+                orden.detalles.splice(detalleIndex, 1);
 
-    let ordenEncontrada = ordenesDeMesa.find(
-        (order) => order.pedidoNro === pedido
-    );
-
-    if (ordenEncontrada) {
-        let detalles = ordenEncontrada.detalles;
-
-        // Recorrer los detalles para buscar el producto_id
-        detalles.forEach((detalle, index) => {
-            if (detalle.producto_id === producto_id) {
-                // Paso 6: Eliminar el detalle si se encontró
-                detalles.splice(index, 1);
-
-                // Paso 7: Actualizar los datos en el localStorage
+                // Paso 2: Actualizar los datos en el localStorage
                 localStorage.setItem("orders", JSON.stringify(orders));
 
-                if (detalles.length === 0) {
-                    // Eliminar el pedido si no tiene detalles
-                    orders.splice(orders.indexOf(ordenEncontrada), 1);
+                // Paso 3: Verificar si la orden no tiene más detalles
+                if (orden.detalles.length === 0) {
+                    // Eliminar la orden si no tiene más detalles
+                    orders.splice(index, 1);
                     localStorage.setItem("orders", JSON.stringify(orders));
-                    console.log("Pedido eliminado porque ya no tiene detalles");
+                    console.log("Orden eliminada porque ya no tiene detalles");
                 }
 
-                return; // Salir del bucle una vez que se elimine el detalle
+                // Salir del bucle una vez que se elimine el detalle
+                return;
             }
         });
-    }
+    });
 }
+
 
 function calcularTotalMostrador() {
     // Obtener los datos del local storage
@@ -840,6 +826,8 @@ function eliminarLocalStoragePagoItem(mesa, keyitem) {
 
     // Guardar el array actualizado en el localStorage
     localStorage.setItem("orders", JSON.stringify(orders));
+
+    filtrarPedidosPorMesa(mesa);
 }
 
 
