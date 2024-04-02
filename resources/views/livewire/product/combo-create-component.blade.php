@@ -75,7 +75,7 @@
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>
-                        @if ($imagen)
+                        @if ($imagen != null || $imagen != '')
                         <div class="mb-4 mt-3 float-center text-center"> <img style="height: 100px; width: 100px;"
                                 src="{{ $imagen->temporaryUrl() }}" alt="">
                         </div>
