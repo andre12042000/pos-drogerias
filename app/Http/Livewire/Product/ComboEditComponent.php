@@ -5,9 +5,11 @@ namespace App\Http\Livewire\Product;
 use App\Models\Combo;
 use App\Models\Product;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 
 class ComboEditComponent extends Component
 {
+    use WithFileUploads;
     protected $listeners = ['agregarProductoCrearCombo' => 'addProduct'];
     public $productosCrearCombo = [];
     public $costo_total = 0;
@@ -16,7 +18,7 @@ class ComboEditComponent extends Component
     public $nueva_cantidad, $selected_combo;
     public $valor_adicionar = 0;
 
-    public $codigo, $nombre, $precio_venta;
+    public $codigo, $nombre, $precio_venta, $imagen, $photo;
     public $error_cantidad_productos = false;
 
     protected $rules = [
@@ -30,6 +32,7 @@ class ComboEditComponent extends Component
         $producto = Product::find($combo_id);
       $this->nombre = $producto->name;
       $this->codigo = $producto->code;
+      $this->photo = $producto->image;
       $this->precio_venta = $producto->precio_caja;
      $this->costo_total = $producto->costo_caja;
 
@@ -208,6 +211,13 @@ class ComboEditComponent extends Component
 
     public function update()
     {
+        $photo = $this->imagen;
+
+        if(isset($photo) && $photo instanceof \Illuminate\Http\UploadedFile){
+            $this->imagen = $photo->store('livewire-tem');
+        } else {
+            $this->imagen = null;
+        }
         self::calcularCostoTotal();
         $this->validate();
 
@@ -234,7 +244,7 @@ class ComboEditComponent extends Component
             'stock'                         => 0,
             'stock_min'                     => 0,
             'stock_max'                     => 0,
-            'image'                         => null,
+            'image'                         => $this->imagen,
             'disponible_caja'               => 1,
             'disponible_blister'            => 0,
             'disponible_unidad'             => 0,

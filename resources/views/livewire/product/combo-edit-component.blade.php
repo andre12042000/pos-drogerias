@@ -65,9 +65,25 @@
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>
+                        <div >
 
+                            <label for="formFile" class="form-label">Imagen Combo</label>
+                            <input class="form-control" type="file" id="imagen" name="imagen"
+                                wire:model="imagen">
+                            @error('imagen')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
 
+                        @if($photo)
+                        <div class="mb-4 mt-3 float-center text-center"> <img style="height: 100px; width: 100px;" src="/storage/{{ $photo }}" alt="">
+                        </div>
 
+                        @elseif($imagen)
+                        <div class="mb-4 mt-3 float-center text-center"> <img style="height: 100px; width: 100px;" src="{{ $imagen->temporaryUrl() }}" alt="">
+                        </div>
+
+                        @endif
                         <div class="d-grid gap-2">
                             <hr>
                             <button class="btn btn-outline-success" type="button" style="height: 50px;"
@@ -197,3 +213,9 @@
 @section('css')
 <link rel="stylesheet" href="/css/admin_custom.css">
 @stop
+
+<script>
+    function redirigir() {
+        location.replace('{!! Config::get('app.URL') !!}/inventarios/productos');
+    }
+</script>

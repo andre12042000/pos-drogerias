@@ -3,19 +3,21 @@
 namespace App\Http\Livewire\Product;
 
 use App\Models\Combo;
-use Livewire\Component;
-use App\Models\Product;
 use Dotenv\Validator;
+use App\Models\Product;
+use Livewire\Component;
+use Livewire\WithFileUploads;
 
 class ComboCreateComponent extends Component
 {
+    use WithFileUploads;
     protected $listeners = ['agregarProductoCrearCombo' => 'addProduct'];
     public $productosCrearCombo = [];
     public $costo_total = 0;
     public $precio_sugerido = 0;
     public $iva = 0;
 
-    public $codigo, $nombre, $precio_venta;
+    public $codigo, $nombre, $precio_venta, $imagen;
     public $error_cantidad_productos = false;
 
     protected $rules = [
@@ -103,6 +105,13 @@ class ComboCreateComponent extends Component
     public function save()
     {
         $this->validate();
+        $photo = $this->imagen;
+
+        if(isset($photo) && $photo instanceof \Illuminate\Http\UploadedFile){
+            $this->imagen = $photo->store('livewire-tem');
+        } else {
+            $this->imagen = null;
+        }
 
         if (count($this->productosCrearCombo) < 2) {
             $this->error_cantidad_productos = true;
@@ -121,7 +130,7 @@ class ComboCreateComponent extends Component
             'stock'                         => 0,
             'stock_min'                     => 0,
             'stock_max'                     => 0,
-            'image'                         => null,
+            'image'                         => $this->imagen,
             'disponible_caja'               => 1,
             'disponible_blister'            => 0,
             'disponible_unidad'             => 0,

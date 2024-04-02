@@ -66,7 +66,20 @@
                             @enderror
                         </div>
 
+                        <div >
 
+                            <label for="formFile" class="form-label">Imagen Combo</label>
+                            <input class="form-control" type="file" id="imagen" name="imagen"
+                                wire:model="imagen">
+                            @error('image')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+                        @if ($imagen)
+                        <div class="mb-4 mt-3 float-center text-center"> <img style="height: 100px; width: 100px;"
+                                src="{{ $imagen->temporaryUrl() }}" alt="">
+                        </div>
+                    @endif
 
                         <div class="d-grid gap-2">
                             <hr>
