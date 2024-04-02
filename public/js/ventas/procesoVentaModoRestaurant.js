@@ -17,6 +17,24 @@ const radioValorFijo = document.getElementById("descuentoValorFijo");
 radioPorcentaje.addEventListener("change", habilitarInputDescuento);
 radioValorFijo.addEventListener("change", habilitarInputDescuento);
 
+document.addEventListener("DOMContentLoaded", function() {
+    // Asignar evento de clic al primer botón
+    var botonCerrar1 = document.getElementById("botonCerrar1");
+    if (botonCerrar1) {
+        botonCerrar1.addEventListener("click", function() {
+            cerrarModal();
+        });
+    }
+
+    // Asignar evento de clic al segundo botón
+    var botonCerrar2 = document.getElementById("botonCerrar2");
+    if (botonCerrar2) {
+        botonCerrar2.addEventListener("click", function() {
+            cerrarModal();
+        });
+    }
+});
+
 function habilitarInputDescuento() {
     const totalElement = document.querySelector(".subTotal");
 
@@ -228,10 +246,24 @@ function abrirModal(numeroMesa) {
     $("#numeroMesaModalPedidos").modal("show");
     document.getElementById("solicitantePedido").textContent = tituloModal;
 
+    var inputEtiqueta = document.getElementById("etiqueta");
+    // Limpiar el valor del input
+    inputEtiqueta.value = "";
+
     let etiqueta = mostrarEtiquetaPorMesa(numeroMesa);
     if (etiqueta) {
         $("#etiqueta").val(etiqueta);
     }
+}
+
+function cerrarModal() {
+    // Cerrar el modal
+    $("#numeroMesaModalPedidos").modal("hide");
+
+    // Limpiar las variables u opciones seleccionadas
+    $("#etiqueta").val(""); // Limpiar el valor del input de etiqueta
+
+    // Si hay otras variables u opciones que necesiten limpiarse, puedes hacerlo aquí
 }
 
 function filtrarPedidosPorMesa(numMesa) {
@@ -914,8 +946,13 @@ function saveOrder() {
     let etiquetaInput = document.getElementById("etiqueta");
 
     if (etiquetaInput.value.trim() === "") {
-        alert("Por favor, ingrese una etiqueta.");
+        mensajeError.textContent = "Por favor, ingrese una etiqueta.";
+        mensajeError.style.display = "inline"; // Mostrar el mensaje de error
         return; // Salir de la función si el campo de la etiqueta está vacío
+    } else {
+        mensajeError.textContent = ""; // Limpiar el mensaje de error si la validación pasa
+        mensajeError.style.display = "none"; // Ocultar el mensaje de error
+        // Aquí puedes hacer más acciones si la validación pasa
     }
 
     // Verificar si ya hay un pedido para esta mesa en el localStorage
