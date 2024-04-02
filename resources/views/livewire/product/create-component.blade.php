@@ -364,7 +364,7 @@
                     </div>
                     <div class="row">
                         <div class="col-4">
-                            @if ($image)
+                            @if ($image != null || $image != '')
                                 <div class="mb-4"> <img style="height: 100px; width: 100px;"
                                         src="{{ $image->temporaryUrl() }}" alt="">
                                 </div>
