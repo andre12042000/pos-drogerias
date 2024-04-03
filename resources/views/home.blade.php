@@ -156,7 +156,51 @@
             </div>
         </div>
     </div>
+    <div class="card bg-success ">
+        <div class="card-header ">
+            <h3>Nuestros Mejores Clientes </h3>
+        </div>
+        <div class="card-body " style="background-color: #d1e7d1; color:black">
 
+            <div class="table-responsive ">
+                <table class="table table-success table-striped " id="tabProducts">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Teléfono</th>
+                            <th>Dirección</th>
+                            <th>Deuda</th>
+                            <th>Compra Total</th>
+                            <th>Producto Mas Comprado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse ($clientes as $client)
+                            <tr>
+                                <td>{{ mb_strtoupper($client['cliente']) }} </td>
+                                <td>{{ $client['telefono'] }} </td>
+                                <td>@if ($client['direccion'])
+                                    {{ $client['direccion'] }}
+                                @else
+                                   <span class="text-secondary">Sin Dirección</span>
+                                @endif  </td>
+                                <td>$ {{number_format($client['deuda']) }} </td>
+                                <td>$ {{number_format($client['total_compras']) }} </td>
+                                <td>{{mb_strtoupper( $client['producto_mas_comprado']) }} </td>
+
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="10">
+                                    <p>No se encontraron registros...</p>
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 {{-- ventas y compras y gastos --}}
     <div class="row mt-4" style="height: 250px; ">
         <div class="container-fluid">
