@@ -361,10 +361,10 @@
                 celdaSubTotal.innerHTML = formatCurrency(producto.subtotal);
 
                 var btnEliminar = document.createElement("button");
-                btnEliminar.classList.add("btn", "btn-light"); // Establece el color del botón a gris claro
+                btnEliminar.classList.add("btn", "btn-outline-danger"); // Establece el color del botón a gris claro
                 btnEliminar.style.border = "none"; // Elimina el borde del botón
                 btnEliminar.innerHTML =
-                    '<i class="fas fa-trash" style="color: gray; background: transparent;"></i>'; // Establece el color del ícono a gris
+                    '<i class="bi bi-trash3" style=" background: transparent;" title="Eliminar"></i>'; // Establece el color del ícono a gris
                 btnEliminar.onclick = function() {
                     eliminarProducto(index);
                 };

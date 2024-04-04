@@ -152,9 +152,7 @@
                                             </td>
                                             <td class="text-end">$ {{ number_format($producto['costo_unitario'], 0) }}</td>
                                             <td class="text-end">$ {{ number_format($producto['total'], 0) }}</td>
-                                            <td class="text-center"><i class="bi bi-trash text-danger"
-                                                    style="cursor: pointer"
-                                                    wire:click="eliminarProducto({{ $index }})"></i></td>
+                                            <td class="text-center"><a title="Eliminar" class="btn btn-outline-danger btn-sm" wire:click="eliminarProducto({{ $index }})"><i class="bi bi-trash3" style="cursor: pointer" ></i></a> </td>
                                         </tr>
                                     @empty
                                         <tr>

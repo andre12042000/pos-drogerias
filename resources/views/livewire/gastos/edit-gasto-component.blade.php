@@ -1,4 +1,6 @@
 <div>
+    @section('title', 'Detalles Del Gasto')
+
     @include('popper::assets')
     <div class="card card-info mt-1">
         <div class="card-header">
@@ -171,9 +173,9 @@
                                                 <td class="text-right">$ {{ number_format($detalle->total, 0) }}</td>
                                                 <td class="text-right">
                                                     @if ($gasto->status == 'APLICADO')
-                                                        <i class="bi bi-trash3" style="font-size: 18px; cursor: not-allowed;"></i>
+                                                       <a class="btn btn-outline-danger btn-sm disabled" disabled ><i class="bi bi-trash3" style="font-size: 18px; cursor: not-allowed;"></i></a>
                                                     @else
-                                                        <i class="bi bi-trash3" style="font-size: 18px; cursor: pointer;" wire:click="destroy( {{ $detalle->id }} )"></i>
+                                                    <a class="btn btn-outline-danger btn-sm " title="Eliminar" wire:click="destroy( {{ $detalle->id }} )" ><i class="bi bi-trash3" style="font-size: 18px; cursor: pointer;" ></i>
                                                     @endif
                                                 </td>
                                             </tr>
