@@ -47,7 +47,7 @@
                             </td>
 
                             <td class="text-center">
-                            <a @popper(Actualizar) class="btn btn-outline-success btn-sm" data-toggle="modal" data-target="#clientmodal"  wire:click="sendData( {{ $client }} )" role="button"><i class="bi bi-pencil-square"></i></a>
+                            <a @popper(Editar) class="btn btn-outline-success btn-sm" data-toggle="modal" data-target="#clientmodal"  wire:click="sendData( {{ $client }} )" role="button"><i class="bi bi-pencil-square"></i></a>
                                     <button  @popper(Eliminar) class="btn btn-outline-danger btn-sm" wire:click="destroy( {{ $client->id }} )"><i class="bi bi-trash3"></i></button>
 
                             </td>

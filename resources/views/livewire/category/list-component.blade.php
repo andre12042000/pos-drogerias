@@ -44,7 +44,7 @@
 
                         <td class="text-center">
 
-                            <a @popper(Actualizar) class="btn btn-outline-success btn-sm" href="#" role="button"
+                            <a @popper(Editar) class="btn btn-outline-success btn-sm" href="#" role="button"
                                 data-toggle="modal" data-target="#categoryModal"
                                 wire:click="sendData( {{ $category }} )"><i class="bi bi-pencil-square"></i></a>
 

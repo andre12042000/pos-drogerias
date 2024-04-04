@@ -86,33 +86,32 @@
                         @if (\Carbon\Carbon::parse($sale->created_at)->isToday())
 
                             @if($sale->status == 'PAGADA' OR $sale->status == 'VENTA CRÉDITO')
-                                <i class="fas fa-edit" title="Función no disponible por el momento"></i>
+                                <i class="bi bi-pencil-square" title="Función no disponible por el momento"></i>
 
                                 <a href="{{ route('facturacion.anular', $sale->id) }}" title="Anular factura" class="mr-2" style="text-decoration: none;">
                                     <i class="fas fa-ban text-danger"></i>
                                 </a>
                             @else
-                                <i class="fas fa-edit" title="No es posible editar facturas anteriores al día actual o anuladas"></i>
+                             <a class="btn btn-outline-success  btn-sm" title="No es posible editar facturas anteriores al día actual o anuladas"> <i class="bi bi-pencil-square" ></i></a>
 
+<a class="btn btn-outline-danger  btn-sm" title="No es posible anular facturas anteriores al día actual"> <i class="fas fa-ban"></i> </i></a>
 
-                                <i class="fas fa-ban" title="No es posible anular facturas anteriores al día actual"></i>
 
                             @endif
                         @else
                             <!-- Si la fecha no es la actual, los iconos estarán deshabilitados -->
 
-                                <i class="fas fa-edit" title="No es posible editar facturas anteriores al día actual o anuladas"></i>
+                            <a class="btn btn-outline-success  btn-sm" title="No es posible editar facturas anteriores al día actual o anuladas"> <i class="bi bi-pencil-square" ></i></a>
 
-
-                                <i class="fas fa-ban" title="No es posible anular facturas anteriores al día actual"></i>
+                            <a class="btn btn-outline-danger  btn-sm" title="No es posible anular facturas anteriores al día actual"> <i class="fas fa-ban"></i> </i></a>
 
                         @endif
 
-                        <a href="{{ route('ventas.pos.details', $sale->id) }}" title="Detalles de factura" class="mr-2" style="text-decoration: none;">
+                        <a href="{{ route('ventas.pos.details', $sale->id) }}" title="Detalles de factura" class="mr-2 btn btn-outline-primary  btn-sm" style="text-decoration: none;">
                             <i class="fas fa-eye"></i>
                         </a>
 
-                        <a href="{{ route('ventas.pos.imprimir.recibo', $sale->id) }}" title="Detalles de factura" class="mr-2" style="text-decoration: none;">
+                        <a href="{{ route('ventas.pos.imprimir.recibo', $sale->id) }}" title="Detalles de factura" class="mr-2 btn btn-outline-secondary  btn-sm" style="text-decoration: none;">
                             <i class="bi bi-printer"></i>
                         </a>
                     </td>

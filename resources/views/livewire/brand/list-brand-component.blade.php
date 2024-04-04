@@ -36,7 +36,7 @@
                           <td> {{ ucwords($brand->name) }}</td>
 
                           <td class="text-center">
-                              <a @popper(Actualizar) class="btn btn-outline-success btn-sm" href="#" role="button" data-toggle="modal" data-target="#brandmodal" wire:click="sendData( {{ $brand }} )"><i class="bi bi-pencil-square"></i></a>
+                              <a @popper(Editar) class="btn btn-outline-success btn-sm" href="#" role="button" data-toggle="modal" data-target="#brandmodal" wire:click="sendData( {{ $brand }} )"><i class="bi bi-pencil-square"></i></a>
                               <button @popper(Eliminar) class="btn btn-outline-danger btn-sm" wire:click="destroy( {{ $brand->id }} )"><i class="bi bi-trash3"></i></button>
 
 
