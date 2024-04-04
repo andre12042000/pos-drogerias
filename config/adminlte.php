@@ -516,11 +516,26 @@ return [
                     'route'      => 'parametros.subcategoria',
                 ],
                 [
+                    'text'       => 'Categoría Gastos',
+                    'classes'    => 'text-white',
+                    'icon'       => 'fas fa-comment-dollar',
+                    'icon_color' => 'white',
+                    'route'      => 'parametros.categoriagastos',
+                ],
+                [
                     'text'       => 'Marcas',
                     'classes'    => 'text-white',
                     'icon'       => 'bi bi-bookmarks',
                     'icon_color' => 'white',
                     'route'      => 'parametros.brand',
+                ],
+
+                [
+                    'text'       => 'Métodos De Pago',
+                    'classes'    => 'text-white',
+                    'icon'       => 'far fa-credit-card',
+                    'icon_color' => 'white',
+                    'route'      => 'parametros.metodos',
                 ],
 
                 [
