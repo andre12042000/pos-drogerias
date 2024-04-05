@@ -13,7 +13,7 @@ class ListComponent extends Component
     protected $paginationTheme = 'bootstrap';
     public $cantidad_registros = 10;
     protected $listeners = ['reloadlaboratorios'];
-    public $buscar;
+    public $buscar, $search;
 
     public function reloadlaboratorios()
     {
@@ -22,11 +22,18 @@ class ListComponent extends Component
 
     public function render()
     {
-        $laboratorios = Laboratorio::search($this->buscar)->orderBy('name', 'ASC')
+        $laboratorios = Laboratorio::search($this->search)->orderBy('name', 'ASC')
             ->paginate($this->cantidad_registros);
 
 
         return view('livewire.laboratorio.list-component', compact('laboratorios'))->extends('adminlte::page');
+    }
+
+    public function updatedBuscar()
+    {
+        $this->resetPage();
+
+        $this->search = $this->buscar;
     }
 
     public function sendData($laboratorio)

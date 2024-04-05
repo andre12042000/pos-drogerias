@@ -12,7 +12,7 @@ class ListComponent extends Component
     protected $paginationTheme = 'bootstrap';
     public $cantidad_registros = 10;
     protected $listeners = ['reloadMetodoPago'];
-    public $buscar;
+    public $buscar, $search;
 
     public function reloadMetodoPago()
     {
@@ -21,9 +21,15 @@ class ListComponent extends Component
 
     public function render()
     {
-        $metodos = MetodoPago::search($this->buscar)->orderBy('name', 'ASC')
+        $metodos = MetodoPago::search($this->search)->orderBy('name', 'ASC')
         ->paginate($this->cantidad_registros);
         return view('livewire.parametros.metodos-pago.list-component', compact('metodos'))->extends('adminlte::page');
+    }
+    public function updatedBuscar()
+    {
+        $this->resetPage();
+
+        $this->search = $this->buscar;
     }
 
     public function sendData($metodo)

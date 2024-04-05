@@ -13,7 +13,7 @@ class ListComponent extends Component
     protected $paginationTheme = 'bootstrap';
     public $cantidad_registros = 10;
     protected $listeners = ['reloadubicacion'];
-    public $buscar;
+    public $buscar, $search;
 
     public function reloadubicacion()
     {
@@ -22,12 +22,20 @@ class ListComponent extends Component
 
     public function render()
     {
-        $ubicaciones = Ubicacion::search($this->buscar)->orderBy('name', 'ASC')
+        $ubicaciones = Ubicacion::search($this->search)->orderBy('name', 'ASC')
         ->paginate($this->cantidad_registros);
 
 
         return view('livewire.ubicacion.list-component', compact('ubicaciones'))->extends('adminlte::page');
     }
+
+    public function updatedBuscar()
+    {
+        $this->resetPage();
+
+        $this->search = $this->buscar;
+    }
+
     public function sendData($ubicacions)
     {
         $this->emit('UbiciacionEvent', $ubicacions);

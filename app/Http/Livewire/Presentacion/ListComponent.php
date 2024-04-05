@@ -13,7 +13,7 @@ class ListComponent extends Component
     protected $paginationTheme = 'bootstrap';
     public $cantidad_registros = 10;
     protected $listeners = ['reloadpresentaciones'];
-    public $buscar;
+    public $buscar, $search;
 
     public function reloadpresentaciones()
     {
@@ -22,9 +22,16 @@ class ListComponent extends Component
     public function render()
     {
 
-        $presentaciones = Presentacion::search($this->buscar)->orderBy('name', 'ASC')
+        $presentaciones = Presentacion::search($this->search)->orderBy('name', 'ASC')
             ->paginate($this->cantidad_registros);
         return view('livewire.presentacion.list-component', compact('presentaciones'))->extends('adminlte::page');
+    }
+
+    public function updatedBuscar()
+    {
+        $this->resetPage();
+
+        $this->search = $this->buscar;
     }
 
     public function sendData($presentacion)

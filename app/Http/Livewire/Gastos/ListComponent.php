@@ -13,7 +13,7 @@ class ListComponent extends Component
     protected $paginationTheme = 'bootstrap';
     public $cantidad_registros = 10;
     protected $listeners = ['reloadGastos'];
-    public $buscar;
+    public $buscar, $search;
 
     public function reloadGastos()
     {
@@ -21,11 +21,18 @@ class ListComponent extends Component
     }
     public function render()
     {
-        $gastos = Gastos::search($this->buscar)
+        $gastos = Gastos::search($this->search)
                         ->orderBy('fecha', 'DESC')
                         ->paginate($this->cantidad_registros);
 
         return view('livewire.gastos.list-component', compact('gastos'))->extends('adminlte::page');
+    }
+
+    public function updatedBuscar()
+    {
+        $this->resetPage();
+
+        $this->search = $this->buscar;
     }
 
     public function sendData($gastos)

@@ -15,7 +15,7 @@ class ListclientComponent extends Component
     use WithPagination;
     protected $paginationTheme = 'bootstrap';
     protected $listeners = ['reloadClients', 'redirigirEvent' => 'redirigir'];
-    public $buscar;
+    public $buscar, $search;
     public $cantidad_registros = 10;
 
     public function redirigir($cliente_id)
@@ -33,10 +33,17 @@ class ListclientComponent extends Component
 
     public function render()
     {
-        $clients = Client::search($this->buscar)
+        $clients = Client::search($this->search)
                         ->paginate($this->cantidad_registros);
 
         return view('livewire.client.list-client-component', compact('clients'));
+    }
+
+    public function updatedBuscar()
+    {
+        $this->resetPage();
+
+        $this->search = $this->buscar;
     }
 
     public function sendData($client)

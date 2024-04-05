@@ -9,7 +9,7 @@ use Livewire\WithPagination;
 
 class ListarComponent extends Component
 {
-    public $purchases, $buscar;
+    public $purchases, $buscar, $search;
     use WithPagination;
     protected $paginationTheme = 'bootstrap';
     public $cantidad_registros = 10;
@@ -21,10 +21,16 @@ class ListarComponent extends Component
 
     public function render()
     {
-        $purchaes = Purchase::search($this->buscar)->orderBy('created_at', 'desc')->paginate($this->cantidad_registros);
+        $purchaes = Purchase::search($this->search)->orderBy('created_at', 'desc')->paginate($this->cantidad_registros);
 
 
         return view('livewire.purchase.listar-component', compact('purchaes'));
+    }
+    public function updatedBuscar()
+    {
+        $this->resetPage();
+
+        $this->search = $this->buscar;
     }
 
     public function sendDataAbono($purchaes)

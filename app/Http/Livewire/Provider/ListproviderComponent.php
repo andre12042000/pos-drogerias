@@ -14,7 +14,7 @@ class ListproviderComponent extends Component
     protected $listeners = ['reloadProvider'];
   use WithPagination;
   protected $paginationTheme = 'bootstrap';
-  public $buscar;
+  public $buscar, $search;
   public $cantidad_registros = 10;
 
 
@@ -25,8 +25,14 @@ class ListproviderComponent extends Component
 
     public function render()
     {
-        $providers = Provider::search($this->buscar)->paginate($this->cantidad_registros);
+        $providers = Provider::search($this->search)->paginate($this->cantidad_registros);
         return view('livewire.provider.list-provider-component', compact('providers'));
+    }
+    public function updatedBuscar()
+    {
+        $this->resetPage();
+
+        $this->search = $this->buscar;
     }
 
     public function sendData($provider)

@@ -13,7 +13,7 @@ class ListbrandComponent extends Component
     use WithPagination;
     protected $paginationTheme = 'bootstrap';
     public $cantidad_registros = 10;
-    public  $buscar;
+    public  $buscar, $search;
     protected $listeners = ['reloadBrands', 'destroy'];
 
     public function reloadBrands()
@@ -23,10 +23,17 @@ class ListbrandComponent extends Component
 
     public function render()
     {
-        $brands = Brand::search($this->buscar)
+        $brands = Brand::search($this->search)
                          ->paginate($this->cantidad_registros);
 
         return view('livewire.brand.list-brand-component', compact('brands'));
+    }
+
+    public function updatedBuscar()
+    {
+        $this->resetPage();
+
+        $this->search = $this->buscar;
     }
 
     public function sendData($brand)

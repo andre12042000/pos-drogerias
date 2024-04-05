@@ -12,7 +12,7 @@ class ListComponent extends Component
     protected $paginationTheme = 'bootstrap';
     public $cantidad_registros = 10;
     protected $listeners = ['reloadImpresora'];
-    public $buscar;
+    public $buscar, $search;
 
     public function reloadImpresora()
     {
@@ -21,11 +21,17 @@ class ListComponent extends Component
 
     public function render()
     {
-        $impresoras = Impresora::search($this->buscar)->orderBy('nombre', 'ASC')
+        $impresoras = Impresora::search($this->search)->orderBy('nombre', 'ASC')
         ->paginate($this->cantidad_registros);
         return view('livewire.impresora.list-component', compact('impresoras'));
     }
 
+    public function updatedBuscar()
+    {
+        $this->resetPage();
+
+        $this->search = $this->buscar;
+    }
     public function sendData($category)
     {
         $this->emit('impresoraEvent', $category);

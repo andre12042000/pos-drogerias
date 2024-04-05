@@ -13,7 +13,7 @@ class ListComponent extends Component
     protected $paginationTheme = 'bootstrap';
     public $cantidad_registros = 10;
     protected $listeners = ['reloadmotivos'];
-    public $buscar;
+    public $buscar, $search;
 
     public function reloadmotivos()
     {
@@ -22,9 +22,15 @@ class ListComponent extends Component
 
     public function render()
     {
-        $motivos = MotivoAnulacion::search($this->buscar)->orderBy('name', 'ASC')->paginate($this->cantidad_registros);
+        $motivos = MotivoAnulacion::search($this->search)->orderBy('name', 'ASC')->paginate($this->cantidad_registros);
 
         return view('livewire.anulacion.list-component', compact('motivos'))->extends('adminlte::page');
+    }
+    public function updatedBuscar()
+    {
+        $this->resetPage();
+
+        $this->search = $this->buscar;
     }
 
     public function sendData($motivo_anulacion)

@@ -38,6 +38,8 @@ class ListComponent extends Component
             return view('livewire.control.vencimientos.list-component', compact('vencimientos', 'hoy', 'tres', 'seis'))->extends('adminlte::page');
     }
 
+
+
     public function filtrosesis()
     {
         $this->mayoryear = false;

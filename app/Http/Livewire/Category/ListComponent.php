@@ -14,7 +14,7 @@ class ListComponent extends Component
     protected $paginationTheme = 'bootstrap';
     public $cantidad_registros = 10;
     protected $listeners = ['reloadcategories'];
-    public $buscar;
+    public $buscar, $search;
 
     public function reloadcategories()
     {
@@ -23,10 +23,16 @@ class ListComponent extends Component
 
     public function render()
     {
-        $categories = Category::search($this->buscar)->orderBy('name', 'ASC')
+        $categories = Category::search($this->search)->orderBy('name', 'ASC')
             ->paginate($this->cantidad_registros);
 
         return view('livewire.category.list-component', compact('categories'));
+    }
+    public function updatedBuscar()
+    {
+        $this->resetPage();
+
+        $this->search = $this->buscar;
     }
 
     public function sendData($category)

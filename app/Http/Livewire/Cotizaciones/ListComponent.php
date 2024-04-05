@@ -14,7 +14,7 @@ class ListComponent extends Component
     use WithPagination;
     protected $paginationTheme = 'bootstrap';
     public $cantidad_registros = 10;
-    public  $buscar;
+    public  $buscar, $search;
     protected $listeners = ['reloadCotizaciones'];
 
     public function reloadCotizaciones()
@@ -23,12 +23,17 @@ class ListComponent extends Component
     }
     public function render()
     {
-        $cotizaciones = Cotizacion::search($this->buscar)
+        $cotizaciones = Cotizacion::search($this->search)
         ->paginate($this->cantidad_registros);
         return view('livewire.cotizaciones.list-component', compact('cotizaciones'))->extends('adminlte::page');
     }
 
+    public function updatedBuscar()
+    {
+        $this->resetPage();
 
+        $this->search = $this->buscar;
+    }
     public function sendData($cotizacion)
     {
         $this->emit('CotizacionEvent', $cotizacion);

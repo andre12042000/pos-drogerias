@@ -14,7 +14,7 @@ class ListComponent extends Component
     protected $paginationTheme = 'bootstrap';
     public $cantidad_registros = 10;
     protected $listeners = ['reloadsub'];
-    public $buscar;
+    public $buscar, $search;
 
     public function reloadsub()
     {
@@ -23,9 +23,15 @@ class ListComponent extends Component
     public function render()
     {
 
-        $Subcategorias = Subcategoria::search($this->buscar)->orderBy('name', 'ASC')
+        $Subcategorias = Subcategoria::search($this->search)->orderBy('name', 'ASC')
             ->paginate($this->cantidad_registros);
             return view('livewire.subcategoria.list-component', compact('Subcategorias'))->extends('adminlte::page');
+    }
+    public function updatedBuscar()
+    {
+        $this->resetPage();
+
+        $this->search = $this->buscar;
     }
 
     public function sendData($sub)

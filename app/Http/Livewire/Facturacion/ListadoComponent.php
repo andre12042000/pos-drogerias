@@ -13,15 +13,22 @@ class ListadoComponent extends Component
     public $cantidad_registros = 10;
 
     public $buscar = '';
+    public $search;
 
 
     public function render()
     {
-        $sales = Sale::search($this->buscar)->orderBy('id', 'DESC')
+        $sales = Sale::search($this->search)->orderBy('id', 'DESC')
         ->paginate($this->cantidad_registros);
 
 
         return view('livewire.facturacion.listado-component',compact('sales'))->extends('adminlte::page');
+    }
+    public function updatedBuscar()
+    {
+        $this->resetPage();
+
+        $this->search = $this->buscar;
     }
 
 

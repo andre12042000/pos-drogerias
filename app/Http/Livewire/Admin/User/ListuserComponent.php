@@ -14,7 +14,7 @@ class ListuserComponent extends Component
     use WithPagination;
     protected $paginationTheme = 'bootstrap';
     public $cantidad_registros = 10;
-    public  $buscar, $user, $filter_estado;
+    public  $buscar, $user, $filter_estado, $search;
 
     protected $listeners = ['reloadusuario'];
 
@@ -30,12 +30,19 @@ class ListuserComponent extends Component
     {
         $users = User::with('roles')
                         ->orderBy('name', 'ASC')
-                        ->search($this->buscar)
+                        ->search($this->search)
                         ->estado($this->filter_estado)
                         ->where('id', '>', '1')
                         ->paginate($this->cantidad_registros);
 
         return view('livewire.admin.user.list-user-component', compact('users'));
+    }
+
+    public function updatedBuscar()
+    {
+        $this->resetPage();
+
+        $this->search = $this->buscar;
     }
     public function sendData($user)
     {

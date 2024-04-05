@@ -11,18 +11,24 @@ class ListComponent extends Component
     use WithPagination;
     protected $paginationTheme = 'bootstrap';
     public $cantidad_registros = 10;
-    public  $buscar;
+    public  $buscar, $search;
 
 
     public function render()
     {
-        $datos = ConsumoInterno::search($this->buscar)
+        $datos = ConsumoInterno::search($this->search)
                                 ->orderBy('created_at', 'DESC')
                                 ->paginate($this->cantidad_registros);
 
 
 
         return view('livewire.consumo-interno.list-component', compact('datos'))->extends('adminlte::page');
+    }
+    public function updatedBuscar()
+    {
+        $this->resetPage();
+
+        $this->search = $this->buscar;
     }
 
 
