@@ -114,7 +114,7 @@
 
 
 
-                    <button type="button" class="btn btn-success float-right ml-2"
+                    <button type="button" class="btn btn-outline-success float-right ml-2"
                         wire:click="storeOrupdate">Guardar</button>
                     <x-adminlte-button class="float-right" wire:click="cleanData" theme="danger" label="Cancelar"
                         data-dismiss="modal" />

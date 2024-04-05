@@ -40,7 +40,7 @@
 
 
                     <div class="modal-footer">
-                        <button class="btn btn-primary" wire:click="applyDiscount" type="button"
+                        <button class="btn btn-success" wire:click="applyDiscount" type="button"
                             data-dismiss="modal">Aplicar
                             <div wire:loading wire:target="savediscount">
                                 <img src="{!! Config::get('app.URL') !!}/assets/img/loading.gif" width="20px"

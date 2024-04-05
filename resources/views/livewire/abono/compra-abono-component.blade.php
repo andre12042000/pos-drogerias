@@ -23,7 +23,7 @@
                 </div>
             </div>
 
-          
+
 
             <div class="form-group row">
                 <label for="staticEmail" class="col-sm-5 col-form-label text-end">Total</label>
@@ -108,7 +108,7 @@
             </div>
         </div>
 
-        <button type="button" class="btn btn-success float-right ml-2"
+        <button type="button" class="btn btn-outline-success float-right ml-2"
                         wire:click="save">Guardar</button>
         <x-adminlte-button class="float-right" wire:click="cleanData" theme="danger" label="Cancelar"
                         data-dismiss="modal" />

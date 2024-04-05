@@ -125,8 +125,9 @@
             </div>
         </div>
         <div class="modal-footer">
+            <button type="button" class="btn btn-outline-success" wire:click="storeOrupdate">Guardar</button>
             <button type="button" class="btn btn-danger" data-dismiss="modal" wire:click="cancel">Cancelar</button>
-            <button type="button" class="btn btn-success" wire:click="storeOrupdate">Guardar</button>
+
         </div>
     </div>
 </div>

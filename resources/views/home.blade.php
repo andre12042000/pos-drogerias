@@ -255,8 +255,8 @@
                                 <tbody>
                                     @forelse ($topProducts as $product)
                                         <tr>
-                                            <td>{{ substr($product->name, 0, 22) }}... </td>
-                                            <td>{{ $product->code }} </td>
+                                            <td title="{{$product->name}}">{{ substr($product->name, 0, 22) }}... </td>
+                                            <td title="{{$product->code}}">{{ substr($product->code, 0, 15) }}... </td>
                                             <td class="text-center">{{ $product->total_quantity }} </td>
                                         </tr>
                                     @empty
@@ -292,8 +292,8 @@
                                 <tbody>
                                     @forelse ($MinProducts as $product)
                                         <tr>
-                                            <td>{{ substr($product->name, 0, 22) }}... </td>
-                                            <td>{{ $product->code }} </td>
+                                            <td title="{{$product->name}}">{{ substr($product->name, 0, 22) }}... </td>
+                                            <td title="{{$product->code}}">{{ substr($product->code, 0, 15) }}... </td>
                                             <td class="text-center">{{ $product->total_quantity }} </td>
                                         </tr>
                                     @empty

@@ -46,12 +46,13 @@
             </div>
 
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
-                    onclick="cerrarModalajsutes()">Cerrar</button>
-                    <button type="button" class="btn btn-primary" onclick="ajustarInventario()" style="width: 200px;" id="BtnAjustarInventario">
+               <button type="button" class="btn btn-outline-success" onclick="ajustarInventario()" style="width: 200px;" id="BtnAjustarInventario">
                         Guardar
                         <img class="loader" src="{{ asset('img/loading.gif') }}" alt="Cargando..." width="30px;" style="vertical-align: middle; display: none;" />
                     </button>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal"
+                    onclick="cerrarModalajsutes()">Cancelar</button>
+
             </div>
         </div>
     </div>

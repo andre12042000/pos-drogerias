@@ -54,8 +54,8 @@
 
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="botonCerrar1">Cerrar</button>
-                <button type="button" class="btn btn-primary" onclick="saveOrder()">Guardar Pedido</button>
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal" id="botonCerrar1">Cancelar</button>
+                <button type="button" class="btn btn-outline-success" onclick="saveOrder()">Guardar Pedido</button>
             </div>
         </div>
     </div>

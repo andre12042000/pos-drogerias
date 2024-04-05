@@ -60,8 +60,8 @@
         </div>
         <div class="modal-footer">
 
-          <button type="button" class="btn btn-secondary" id="cancelarTransaccion">Cancelar</button>
-          <button type="button" class="btn btn-primary" id="actualizarProductosArrayVenta">Editar item</button>
+          <button type="button" class="btn btn-danger" id="cancelarTransaccion">Cancelar</button>
+          <button type="button" class="btn btn-outline-success" id="actualizarProductosArrayVenta">Editar item</button>
         </div>
       </div>
     </div>
