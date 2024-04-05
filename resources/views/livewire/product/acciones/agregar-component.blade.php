@@ -30,7 +30,7 @@
         <input type="number" class="form-control" id="exampleFormControlInput1"  wire:model.lazy = "nuevo_stock" readonly disabled>
     </div>
 
-    <button type="button" class="btn btn-success float-right ml-2" wire:click="agregar" data-dismiss="modal">Guardar</button>
+    <button type="button" class="btn btn-outline-success float-right ml-2" wire:click="agregar" data-dismiss="modal">Guardar</button>
     <x-adminlte-button class="float-right" wire:click="cancelar" theme="danger" label="Cancelar" data-dismiss="modal"/>
 
     <x-slot name="footerSlot" class="mt-0 mb-0 p-0">

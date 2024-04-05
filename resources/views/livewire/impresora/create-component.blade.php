@@ -26,8 +26,9 @@
     </div>
 
       <div class="div mt-2">
-        <x-adminlte-button class="float-right" data-dismiss="modal" theme="danger" label="Cerrar" />
-        <button type="button" class="btn btn-success float-right mr-2" wire:click="storeOrupdate">Guardar</button>
+        <button type="button" class="btn btn-outline-success float-right mr-2" wire:click="storeOrupdate">Guardar</button>
+        <x-adminlte-button class="float-right" data-dismiss="modal" theme="danger" label="Cancelar" />
+
     </div>
 
 </div>

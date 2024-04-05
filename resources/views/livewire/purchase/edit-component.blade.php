@@ -62,7 +62,7 @@
 
                             <div class="card-footer">
                                 <div class="d-grid gap-2">
-                                    <button class="btn btn-primary btn-lg" wire:click="confirmacionaplicar"
+                                    <button class="btn btn-success btn-lg" wire:click="confirmacionaplicar"
                                         @if ($purchase->status == 'APLICADO') disabled @endif> Aplicar en
                                         inventario
                                         <div wire:loading wire:target="confirmacionaplicar">

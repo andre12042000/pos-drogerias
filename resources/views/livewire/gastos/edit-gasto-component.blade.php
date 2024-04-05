@@ -70,7 +70,7 @@
 
                             <div class="card-footer">
                                 <div class="d-grid gap-2">
-                                    <button class="btn btn-primary btn-lg" wire:click="confirmacionaplicar"
+                                    <button class="btn btn-success btn-lg" wire:click="confirmacionaplicar"
                                         @if ($gasto->status == 'APLICADO') disabled @endif> Finalizar registro
                                         <div wire:loading wire:target="confirmacionaplicar">
                                             <img src="{{ asset('img/loading.gif') }}" width="20px" class="img-fluid"

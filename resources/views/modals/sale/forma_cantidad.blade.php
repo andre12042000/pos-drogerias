@@ -65,8 +65,8 @@
 
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" id="agregarProductosArrayVenta">Agregar</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                <button type="button" class="btn btn-success" id="agregarProductosArrayVenta">Agregar</button>
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal"
                     id="cancelarModalCantidad">Cancelar</button>
             </div>
         </div>
