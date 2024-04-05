@@ -210,11 +210,13 @@
     const mensajeErrorCliente = document.getElementById('cambiarClienteHelp');
     const mensajeErrorMetodoPagoHelp = document.getElementById('cambiarMetodoPagoHelp');
 
+    const radioSi = document.getElementById('opcionSi');
+    const radioNo = document.getElementById('opcionNo');
+
     const buscarProductoCodigo = document.getElementById('buscarProductoCodigo');
 
     const MetodoPago = document.getElementById('selectMetodoPago');
     const CantidadPagada = document.getElementById('inputCantidadPagada');
-
 
     const spanSubTotal = document.querySelector('.subtotal');
     const spanDescuento = document.querySelector('.descuento');
@@ -244,6 +246,15 @@
         asignarValoresTotalesAVista();
         calcularTotales();
     });
+
+    MetodoPago.onchange = function() {
+            if (MetodoPago.value === '1') {
+                radioSi.checked = true;
+            } else {
+                radioNo.checked = true;
+            }
+        };
+
 
     function asignarValoresTotalesAVista() {
         // Asignar valores a elementos HTML
