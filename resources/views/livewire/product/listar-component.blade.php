@@ -104,7 +104,7 @@
                                                                  {{ json_encode($presentaciones) }},
                                                                  {{ json_encode($ubicaciones) }},
                                                                  {{ json_encode($laboratorios) }},)"
-                                            role="button" title="Editar Producto" class="btn btn-outline-primary btn-sm">
+                                            role="button" title="Editar " class="btn btn-outline-success btn-sm">
                                             <i class="bi bi-pencil-square"></i>
                                         </a>
                                     @endif
@@ -113,12 +113,12 @@
                                 @can('Acceso Producto Ajustar')
                                     <a onclick="modalAjuste({{ json_encode($product) }},
                                                         {{ json_encode($product->inventario) }},)"
-                                        role="button" title="Ajustar Inventario" class="btn btn-outline-success btn-sm">
+                                        role="button" title="Ajustar " class="btn btn-outline-secondary btn-sm">
                                         <i class="bi bi-boxes"></i>
                                     </a>
                                 @endcan
-                                <a @popper(Eliminar Producto) class="btn btn-outline-danger btn-sm"
-                                    wire:click="destroy( {{ $product->id }} )"><i class="bi bi-trash"></i></a>
+                                <a @popper(Eliminar ) class="btn btn-outline-danger btn-sm"
+                                    wire:click="destroy( {{ $product->id }} )"><i class="bi bi-trash3"></i></a>
 
 
                                 @include('popper::assets')

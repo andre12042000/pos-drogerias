@@ -235,7 +235,7 @@
                     <td class="text-end">$${product.precio_venta}</td>
                     <td class="text-end">$${product.total}</td>
                     <td>
-                            <i class="bi bi-trash" onclick="removeFromCart(${product.id})" style="cursor:pointer;"></i> <!-- Icono de papelera -->
+                            <i class="bi bi-trash3" onclick="removeFromCart(${product.id})" style="cursor:pointer;"></i> <!-- Icono de papelera -->
 
                     </td>
                 `;

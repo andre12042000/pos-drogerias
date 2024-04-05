@@ -69,7 +69,7 @@
                         @endif</td>
                         <td class="text-center">
 
-                            <a @popper(Actualizar) class="btn btn-outline-success btn-sm" href="#" role="button"
+                            <a @popper(Editar) class="btn btn-outline-success btn-sm" href="#" role="button"
                                 data-toggle="modal" data-target="#ubiModal"
                                 wire:click="sendData( {{ $ubi }} )"><i class="bi bi-pencil-square"></i></a>
 

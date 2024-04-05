@@ -99,11 +99,11 @@
                                 data-toggle="modal" data-target="#abonomodal"
                                 wire:click="sendDataAbono( {{ $order }} )" ><i class="bi bi-currency-dollar"></i></a>
 
+
+                            <a @popper(Editar) class="btn btn-outline-success btn-sm @if($order->status == 2) disabled @endif" href="{{ route('orders.edit', $order) }} " role="button"><i class="bi bi-pencil-square"></i></a>
                             <a @popper(Detalles) class="btn btn-outline-primary btn-sm" href="{{ route('orders.show', $order->id) }} " role="button"><i class="bi bi-eye-fill"></i></a>
 
-                            <a @popper(Actualizar) class="btn btn-outline-success btn-sm @if($order->status == 2) disabled @endif" href="{{ route('orders.edit', $order) }} " role="button"><i class="bi bi-pencil-square"></i></a>
-
-                            <button @popper(Cancelar) class="btn btn-outline-danger btn-sm @if($order->status == 2) disabled @endif"
+                            <button @popper(Eliminar) class="btn btn-outline-danger btn-sm @if($order->status == 2) disabled @endif"
                                 wire:click="destroy( {{ $order->id }} )"><i class="bi bi-trash3"></i></button>
                         </td>
                     </tr>
