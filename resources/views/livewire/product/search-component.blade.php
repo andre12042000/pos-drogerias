@@ -59,18 +59,18 @@
                                 </td>
 
 
-                                <td class="price-cell text-end" data-option="disponible_caja"
-                                style="cursor: pointer" onclick="handlePriceClick(this)">
-                                {{ $product->precio_caja > 0 ? '$' . number_format($product->precio_caja, 0, ',', '.') : '0' }}
-                            </td>
-                            <td class="price-cell text-end" data-option="disponible_blister"
-                                style="cursor: pointer" onclick="handlePriceClick(this)">
-                                {{ $product->precio_blister > 0 ? '$' . number_format($product->precio_blister, 0, ',', '.') : '0' }}
-                            </td>
-                            <td class="price-cell text-end" data-option="disponible_unidad"
-                                style="cursor: pointer" onclick="handlePriceClick(this)">
-                                {{ $product->precio_unidad > 0 ? '$' . number_format($product->precio_unidad, 0, ',', '.') : '0' }}
-                            </td>
+                                <td class="price-cell text-end" data-option="disponible_caja" style="cursor: pointer"
+                                    onclick="handlePriceClick(event)">
+                                    {{ $product->precio_caja > 0 ? '$' . number_format($product->precio_caja, 0, ',', '.') : '0' }}
+                                </td>
+                                <td class="price-cell text-end" data-option="disponible_blister" style="cursor: pointer"
+                                    onclick="handlePriceClick(event)">
+                                    {{ $product->precio_blister > 0 ? '$' . number_format($product->precio_blister, 0, ',', '.') : '0' }}
+                                </td>
+                                <td class="price-cell text-end" data-option="disponible_unidad" style="cursor: pointer"
+                                    onclick="handlePriceClick(event)">
+                                    {{ $product->precio_unidad > 0 ? '$' . number_format($product->precio_unidad, 0, ',', '.') : '0' }}
+                                </td>
                             </tr>
                         @empty
                             <tr>
@@ -83,19 +83,82 @@
                 </table>
 
 
-                {{-- <div class="modal-footer mt-2">
+                <div class="modal-footer mt-2">
                     <nav class="" aria-label="">
                         <ul class="pagination">
                             {{ $products->links() }}
                         </ul>
                     </nav>
-                </div> --}}
+                </div>
 
 
             </div>
         </div>
     </div>
 </div>
+
+
+
+<script>
+    function handlePriceClick(event) {
+        var target = event.target;
+
+        console.log(target);
+
+        if (target.tagName === 'TD' && target.classList.contains('price-cell')) {
+
+            let row = target.parentNode; // Obtener la fila completa
+            let productData = JSON.parse(row.getAttribute('data-product'));
+            let selectedOption = target.getAttribute('data-option');
+            let precio_unitario = 0;
+            let iva = 0;
+
+            if (selectedOption === 'disponible_caja') {
+                precio_unitario = productData.precio_caja;
+                iva = productData.valor_iva_caja;
+            } else if (selectedOption === 'disponible_blister') {
+                precio_unitario = productData.precio_blister;
+                iva = productData.valor_iva_blister;
+            } else {
+                precio_unitario = productData.precio_unidad;
+                iva = productData.valor_iva_unidad;
+            }
+
+            var orders = JSON.parse(localStorage.getItem('ordersPos')) || []; //Obtenemos el localstorage
+
+            // Verificar si el producto ya está en el pedido para MOSTRADOR
+            var existingOrder = orders.find(function(order) {
+                return order.producto_id === productData.id && order.forma === selectedOption;
+            });
+
+            if (existingOrder) {
+                // Si el producto ya está en el pedido con la misma forma, aumenta la cantidad y actualiza el total
+                existingOrder.cantidad++;
+                existingOrder.total = existingOrder.cantidad * existingOrder.precio_unitario;
+            } else {
+                // Si el producto no está en el pedido o tiene una forma diferente, agrega un nuevo pedido
+                var newOrder = {
+                    key: Date.now(), // Se añade una clave única basada en la fecha actual
+                    producto_id: productData.id,
+                    forma: selectedOption,
+                    code: productData.code,
+                    nombre: productData.name,
+                    cantidad: 1,
+                    precio_unitario: precio_unitario, // Supongo que aquí está el precio unitario del producto
+                    iva: iva,
+                    descuento: 0,
+                    total: precio_unitario // Inicialmente establecido como el total igual al precio unitario
+                };
+                orders.push(newOrder);
+            }
+
+            localStorage.setItem('ordersPos', JSON.stringify(orders));
+
+            mostrarDatosLocalStorageEnTabla();
+        }
+    }
+</script>
+
 
 @section('css')
 
@@ -128,34 +191,4 @@
         }
     </style>
 
-@stop
-
-@section('js')
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Delegación de eventos en el contenedor de productos
-            document.getElementById('productos-container').addEventListener('click', function(event) {
-                var target = event.target;
-
-
-
-                // Verificar si se hizo clic en una celda de precio
-                if (target.classList.contains('price-cell')) {
-                    var row = target.parentNode; // Obtener la fila completa
-                    var productData = JSON.parse(row.getAttribute('data-product'));
-                    var selectedOption = target.getAttribute('data-option'); // Opción seleccionada
-
-                    // Emite el evento Livewire
-                    Livewire.emit('agregarProductoEvent', productData, selectedOption);
-
-                    productData = null;
-                    selectedOption = null;
-                    row = null;
-                }
-            });
-
-        });
-
-
-    </script>
 @stop

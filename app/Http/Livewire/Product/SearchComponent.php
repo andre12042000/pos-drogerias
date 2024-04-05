@@ -9,6 +9,7 @@ use Livewire\WithPagination;
 class SearchComponent extends Component
 {
     public $buscar = '';
+    public $search;
     use WithPagination;
     protected $paginationTheme = 'bootstrap';
 
@@ -18,8 +19,8 @@ class SearchComponent extends Component
 
     public function mount($key)
     {
+        $this->resetPage();
         $this->key = $key;
-        $this->listeners[] = 'refreshSearchComponent';
     }
 
     public function refreshSearchComponent()
@@ -31,14 +32,20 @@ class SearchComponent extends Component
     public function render()
     {
         $products = Product::with('inventario')
-                    ->search($this->buscar)
+                    ->where('is_materia_prima', 'no')
+                    ->search($this->search)
                     ->orderBy('is_combo', 'desc')
                     ->orderBy('name', 'asc')
                     ->active()
-                    ->take(10)
-                    ->get();
+                    ->paginate(10);
 
         return view('livewire.product.search-component', compact('products'));
+    }
+
+    public function updatedBuscar()
+    {
+        $this->resetPage();
+        $this->search = $this->buscar;
     }
 
     public function selectProduct($tipo, $product, $precio )

@@ -2,244 +2,375 @@
 
 namespace App\Http\Livewire\Sale;
 
-use App\Events\VentaCreditoRealizada;
+use App\Events\ConsumoInternoRealizado;
+use App\Events\VentaRealizada;
 use App\Models\Cash;
-use App\Models\Impresora;
 use Livewire\Component;
+
 use App\Models\Client;
+use App\Models\ConsumoInterno;
+use App\Models\ConsumoInternoDetalles;
+use App\Models\Cotizacion;
+use App\Models\CotizacionDetalle;
 use App\Models\Credit;
-use App\Models\CreditResidue;
 use App\Models\Empresa;
-use App\Models\HistoryPayment;
+use App\Models\MetodoPago;
 use App\Models\Product;
 use App\Models\Sale;
 use App\Models\SaleDetail;
-use App\Models\MetodoPago;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
-use App\Traits\UpdateProduct;
 use Illuminate\Support\Facades\DB;
-use Mike42\Escpos\EscposImage;
-use Mike42\Escpos\PrintConnectors\FilePrintConnector;
-use Mike42\Escpos\Printer;
-use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
-use Illuminate\Support\Str;
-use Intervention\Image\Facades\Image;
-use App\Events\VentaRealizada;
-use App\Models\Combo;
-use App\Models\Orders;
-use App\Models\OrdersDetails;
 
 class SaleComponent extends Component
 {
-    use UpdateProduct;
-
-    public $client_id, $client_name, $codigo_de_producto, $valuedescuento, $total_producto, $descontado, $precio_producto, $key, $pago, $cambio, $cantidad_recibida, $saldo, $abona;
+    public $empresa, $clientes, $metodos_pago;
     public $error_search = false;
-    public $productssale = [];
-    public $total_venta = 0;
-    public $total_descuento = 0;
-    public $metodo_pago = 1;
-    public $showadddiscount = false;
-    public $showpay = false;
-    public $tipo_porcentaje = 'porcentaje';
-    public $tipo_transaccion = 'contado';
-    public $precio = 0;
-    public $prefijo, $nuevo_nro_factura, $nro_factura, $nuevoprecio;
-    public $productorandom = false;
-    public $impresora = null;
-    public $tipo_operacion = 'VENTA';
-    public $imprimirecibo = 0;
-    public $nuevo_nro_order, $nro_order;
 
-    protected $listeners = ['ClientEvent', 'ProductEvent', 'agregarProductoEvent', 'crearVentaEvent' => 'tipoOperacion'];
-
-    function agregarProductoEvent($product, $opcionSeleccionada)
-    {
-        if(self::verificarStockInventario($product)){
-            $this->dispatchBrowserEvent('agregarProductoAlArrayCode', ['producto' => $product, 'opcionSeleccionada' => $opcionSeleccionada]);
-        }else{
-            $this->dispatchBrowserEvent('errorProductosStock');
-        }
-    }
-
-    public function ClientEvent($client)
-    {
-        $this->client_id    = $client['id'];
-        $this->client_name  = ucwords($client['name']);
-
-        if ($this->client_id) {
-            self::consultarDeudaClient($this->client_id);
-        }
-    }
-
-    function consultarDeudaClient($cliente_id)
-    {
-        $cliente = Client::findOrFail($cliente_id);
-
-        if ($cliente->deuda > 0) {
-            $this->dispatchBrowserEvent('notify_client_deuda', ['data' => $cliente]);
-        }
-
-        if($this->tipo_operacion == 'CRÉDITO'){
-            $this->metodo_pago = 3;
-        }
-    }
-
-    public function ProductEvent($product, $precio)
-    {
-
-        $product = json_decode(json_encode($product));
-        $this->precio = $precio;
-        $this->verifyProduct($product);
-    }
+    protected $listeners = ['almacenarTransaccion'];
 
     public function Mount()
     {
-        $this->impresora = Impresora::where('predeterminada', True)->first();
-        $this->client_id = 1;
-        $this->client_name = 'Consumidor final';
+        $this->empresa = Empresa::find(1);
+        $this->clientes = Client::orderBy('name', 'asc')->get();
+        $this->metodos_pago = MetodoPago::where('status', 'ACTIVE')->orderBy('id', 'desc')->get();
     }
 
     public function render()
     {
-        $empresa = Empresa::find(1);
-        $metodos_pago = MetodoPago::where('status', 'ACTIVE')->orderBy('id', 'desc')->get();
-
-        return view('livewire.sale.sale-component', compact('empresa', 'metodos_pago'));
+        return view('livewire.sale.sale-component');
     }
 
-    public function Imprimirecibo($venta)
+    public function almacenarTransaccion($data)
     {
 
-        return redirect()->route('ventas.pos.imprimir.recibo', $venta);
+        $tipo_operacion = $data['tipoOperacion'];
+
+        switch ($tipo_operacion) {
+            case "VENTA":
+                self::guardarTipoVenta($data);
+                break;
+            case "CREDITO":
+                self::guardarTipoVenta($data);
+                break;
+            case "CONSUMO_INTERNO":
+                self::guardarConsumoInterno($data);
+                break;
+            case "COTIZACION":
+                self::guardarCotizacion($data);
+                break;
+        }
     }
 
-    function verificarStockInventario($product)
+    /*---------------------Proceso para consumo interno -------------------------*/
+
+    function guardarConsumoInterno($data)
     {
+         try {
 
-        if($product['is_combo'] > 0){
-            /* $detalles_combo = self::obtenerDetallesCombo($product['id']);
+            DB::transaction(function () use ($data) {
 
-            foreach($detalles_combo as $detalle){
 
-            } */
-            //Implementar logica para recorrer el combo
-            $status = true;
-        }else{
-            $status = self::verificarProductosInventarioStock($product);
+                $prefijo = 'CIN';
+                $nuevoNro = self::obtenerProximoNumeroConsumoInterno($prefijo);
+                $full_nro = $prefijo . $nuevoNro;
+
+
+                $transaccion =  ConsumoInterno::create([
+                    'prefijo'       => $prefijo,
+                    'nro'           => $nuevoNro,
+                    'full_nro'      => $full_nro,
+                    'user_id'       =>  Auth::user()->id,
+                    'total'         =>  0,
+                    'status'        => 'APLICADA',
+                ]);
+
+               $detalles =  self::guardarDetallesConsumo($transaccion, $data['productos']);
+
+                $transaccion->update([
+                    'total'     => $detalles,
+                ]);
+
+                self::crearRegistroCashConsumoInterno($transaccion);
+
+                event(new  ConsumoInternoRealizado($transaccion));
+
+                $this->dispatchBrowserEvent('proceso-guardado', ['venta' => $transaccion->full_nro]);
+
+             });
+        } catch (\Exception $e) {
+
+            DB::rollback();
+
+            $this->dispatchBrowserEvent('swal', [
+                'title' => 'Ops! Ocurrio un error',
+                'text' => '¡No es posible crear la transacción, verifica los datos!' . $e,
+                'icon' => 'error'
+            ]);
+
+            report($e);
+        }
+    }
+
+    function guardarDetallesConsumo($transaccion, $detalles)
+    {
+        $total = 0;
+
+        foreach ($detalles as $detalle) {
+
+            $precio_unitario = self::obtenerPrecioCostoProducto($detalle['producto_id'], $detalle['forma'], $detalle['precio_unitario']);
+
+            $subtotal = $detalle['cantidad'] * $precio_unitario;
+
+            $total += $subtotal;
+
+            ConsumoInternoDetalles::create([
+                'consumo_interno_id'     => $transaccion->id,
+                'product_id'             => $detalle['producto_id'],
+                'forma'                  => $detalle['forma'],
+                'quantity'               => $detalle['cantidad'],
+                'price'                  => $precio_unitario,
+            ]);
         }
 
-        return $status;
-
+        return $total;
     }
 
-    function obtenerDetallesCombo($combo_id)
+    function obtenerPrecioCostoProducto($producto_id, $forma, $precio_venta)
     {
-        $combo = Combo::where('combo_id', $combo_id)->get();
+        $producto = Product::findOrFail($producto_id);
+        $precio_unitario = 0;
 
-        return $combo;
-
-    }
-
-    function verificarProductosInventarioStock($product)
-    {
-        if($product['inventario']['cantidad_caja'] == '0' && $product['inventario']['cantidad_blister'] == '0' && $product['inventario']['cantidad_unidad'] == '0'){
-            return false;
+        if($forma == 'disponible_unidad'){
+            $precio_unitario = $producto->costo_caja;
+        }elseif($forma == 'disponible_blister'){
+            $precio_unitario = $producto->costo_blister;
         }else{
-            return true;
+            $precio_unitario = $producto->costo_unidad;
         }
 
+        //Si en dado caso el precio_unitario esta vacio o igual a 0, se deja el valor original o precio de venta
+
+        if($precio_unitario == '' OR !is_null($precio_unitario) OR $precio_unitario == 0){
+            $precio_unitario = $precio_venta;
+        }
+
+        return $precio_unitario;
+
     }
 
-
-    public function searchProductCode()
+    public static function obtenerProximoNumeroConsumoInterno($prefijo)
     {
-        $this->validate([
-            'codigo_de_producto'    => 'required|min:3|max:254'
+
+        $ultimoRecibo = ConsumoInterno::where('prefijo', $prefijo)
+            ->orderBy('nro', 'desc')
+            ->first();
+
+        if ($ultimoRecibo) {
+            // Obtener el número actual y sumar 1
+            $numero = (int) $ultimoRecibo->nro + 1;
+        } else {
+            // Si no hay registros previos, iniciar desde 1
+            $numero = 1;
+        }
+
+        // Formatear el número con ceros a la izquierda (ej. 001, 002, ..., 199, 200, ...)
+        $numeroFormateado = str_pad($numero, 3, '0', STR_PAD_LEFT);
+
+        // Combinar el prefijo y el número formateado
+
+        return $numeroFormateado;
+    }
+
+    function crearRegistroCashConsumoInterno($transaccion)
+    {
+        Cash::create([
+            'user_id'           => Auth::user()->id,
+            'cashesable_id'     => $transaccion->id,
+            'cashesable_type'   => 'App\Models\ConsumoInterno',
+            'quantity'          => $transaccion->total,
         ]);
 
-        $product = Product::where('code', '=', $this->codigo_de_producto)->with('inventario')->first();
-
-        if ($product) {
-
-            if(self::verificarStockInventario($product)){
-                $this->dispatchBrowserEvent('agregarProductoAlArrayCode', ['producto' => $product, 'opcionSeleccionada' => null]);
-                $product = '';
-                $this->codigo_de_producto = '';
-            }else{
-                $this->dispatchBrowserEvent('errorProductosStock');
-                $product = '';
-                $this->codigo_de_producto = '';
-            }
-
-            // Emitir el evento Livewire para notificar que se ha encontrado un producto
-
-        } else {
-            $this->addError('codigo_de_producto', 'Producto no encontrado');
-        }
-    }
-
-    function tipoOperacion($dataVenta)
-    {
-
-        $this->generarVenta($dataVenta);
-
     }
 
 
-    /*--------------Funciones generar venta ------------------*/
+    /*-----------------Proceso para cotización -----------------------------------*/
 
-    function generarVenta($dataVenta)
+    function guardarCotizacion($data)
     {
         try {
 
-            DB::transaction(function () use ($dataVenta) {
+            DB::transaction(function () use ($data) {
 
-                $prefijo = $this->tipo_operacion == 'VENTA' ? 'RE' : 'VCR';
-                $nuevoNro = $this->obtenerProximoNumero($prefijo);
-                $full_nro = $prefijo . $nuevoNro;
-                $estado = $this->tipo_operacion == 'VENTA' ? 'PAGADA' : 'VENTA CRÉDITO';
-                $tipo_movimiento = $this->tipo_operacion == 'VENTA' ? 'VENTA' : 'VENTA CRÉDITO';
-                $metodo_pago_id = $this->tipo_operacion == 'VENTA' ? $dataVenta['metodoPago'] : 3;
+            $hoy =  Carbon::now();
+            $hoy = $hoy->format('Y-m-d');
 
-                $venta = Sale::create([
-                    'prefijo'           => $prefijo,
-                    'nro'               => $nuevoNro,
-                    'full_nro'          => $full_nro,
-                    'client_id'         => $this->client_id,
-                    'user_id'           => Auth::user()->id,
-                    'sale_date'         => Carbon::now(),
-                    'discount'          => $dataVenta['descuentoGlobal'],
-                    'tax'               => $dataVenta['ivaTotalGlobal'],
-                    'total'             => $dataVenta['granTotal'],
-                    'tipo_operacion'    => $tipo_movimiento,
-                    'metodo_pago_id'    => $metodo_pago_id,
-                    'status'            => $estado,
-                ]);
+            $prefijo = 'CTZ';
+            $nuevoNro = self::obtenerProximoNumeroCotizacion($prefijo);
+            $full_nro = $prefijo . $nuevoNro;
 
 
-                $this->detallesVenta($venta, $dataVenta['productosParaVenta']);
+            $transaccion =  Cotizacion::create([
+                'prefijo'            => $prefijo,
+                'nro'                => $nuevoNro,
+                'full_nro'           => $full_nro,
+                'user_id'            =>  Auth::user()->id,
+                'client_id'          =>  $data['cliente_id'],
+                'cotizacion_date'    =>  $hoy,
+                'discount'           =>  $data['totales']['descuentoTotal'],
+                'tax'                =>  $data['totales']['ivaTotal'],
+                'total'              =>  $data['totales']['total'],
+            ]);
 
-                if ($this->tipo_operacion == 'VENTA') {
-                    $this->ventaContado($venta);
-                } elseif ($this->tipo_operacion == 'CREDITO') {
-                    $this->ventaCredito($venta);
-                    $credito =  $this->crearCredito($venta);
-                    self::agregarValorDeudaCliente($this->client_id, $dataVenta['granTotal']);
-                }
 
-                event(new VentaRealizada($venta));
 
-                if ($dataVenta['imprimirRecibo'] > 0) {
-                    $this->Imprimirecibo($venta->id);
-                }
+            self::guardarDetallesCotizacion($transaccion, $data['productos']);
 
-                $this->dispatchBrowserEvent('venta-generada', ['venta' => $venta->full_nro]);
-                //  return redirect('/ventas/pos')->with('venta_exitosa' , $venta->id);
-
+            $this->dispatchBrowserEvent('proceso-guardado', ['venta' => $transaccion->full_nro]);
 
             });
+        } catch (\Exception $e) {
+
+            DB::rollback();
+
+            $this->dispatchBrowserEvent('swal', [
+                'title' => 'Ops! Ocurrio un error',
+                'text' => '¡No es posible crear la transacción, verifica los datos!' . $e,
+                'icon' => 'error'
+            ]);
+
+            report($e);
+        }
+
+
+    }
+
+    function guardarDetallesCotizacion($transaccion, $detalles)
+    {
+
+        foreach ($detalles as $detalle) {
+            CotizacionDetalle::create([
+                'cotizacion_id'          => $transaccion->id,
+                'product_id'             => $detalle['producto_id'],
+                'forma'                  => $detalle['forma'],
+                'quantity'               => $detalle['cantidad'],
+                'price'                  => $detalle['precio_unitario'],
+                'tax'                    => $detalle['iva'],
+                'discount'               => $detalle['descuento'],
+            ]);
+        }
+    }
+
+    public static function obtenerProximoNumeroCotizacion($prefijo)
+    {
+
+        $ultimoRecibo = Cotizacion::where('prefijo', $prefijo)
+            ->orderBy('nro', 'desc')
+            ->first();
+
+        if ($ultimoRecibo) {
+            // Obtener el número actual y sumar 1
+            $numero = (int) $ultimoRecibo->nro + 1;
+        } else {
+            // Si no hay registros previos, iniciar desde 1
+            $numero = 1;
+        }
+
+        // Formatear el número con ceros a la izquierda (ej. 001, 002, ..., 199, 200, ...)
+        $numeroFormateado = str_pad($numero, 3, '0', STR_PAD_LEFT);
+
+        // Combinar el prefijo y el número formateado
+
+        return $numeroFormateado;
+    }
+
+
+
+    /*-----------------------Proceso de venta -------------------------------------*/
+
+
+    function guardarTipoVenta($dataVenta)  //Incluye proceso de venta y venta crédito
+    {
+     try {
+
+        $tipo = $dataVenta['tipoOperacion'];
+
+         DB::transaction(function () use ($tipo, $dataVenta) {
+
+            if ($tipo == 'VENTA') {
+                $prefijo = 'RE';
+                $estado = 'PAGADA';
+                $tipo_movimiento = 'VENTA';
+                $metodo_pago = $dataVenta['metodoPago'];
+            } elseif ($tipo == 'CREDITO') {
+                $prefijo = 'VCR';
+                $estado = 'VENTA CRÉDITO';
+                $tipo_movimiento = 'VENTA CRÉDITO';
+                $metodo_pago = self::obtenerMetodoPagoId('CRÉDITO');
+            } else {
+                $prefijo = 'CRT';
+                $estado = 'CORTESIA';
+                $tipo_movimiento = 'CORTESIA';
+                $metodo_pago = self::obtenerMetodoPagoId('CORTESÍA');
+            }
+
+
+            $iva = $dataVenta['totales']['ivaTotal'];
+            $descuento = $dataVenta['totales']['descuentoTotal'];
+            $total = $dataVenta['totales']['total'];
+
+            $client_id = $dataVenta['cliente_id'] === '' ? 1 : $dataVenta['cliente_id'];
+
+            $nuevoNro = $this->obtenerProximoNumero($prefijo);
+            $full_nro = $prefijo . $nuevoNro;
+
+            // $observaciones = self::obtenerNombreMesa($dataVenta['resultadoCalculo']['tuplasAPagar']);
+
+
+
+            $venta =  Sale::create([
+                'prefijo'           => $prefijo,
+                'nro'               => $nuevoNro,
+                'full_nro'          => $full_nro,
+                'client_id'         => $client_id,
+                'user_id'           => Auth::user()->id,
+                'sale_date'         => Carbon::now(),
+                'discount'          => $descuento,
+                'tax'               => $iva,
+                'total'             => $total,
+                'tipo_operacion'    => $tipo_movimiento,
+                'metodo_pago_id'    => $metodo_pago,
+                'status'            => $estado,
+                'observaciones'     => '',
+            ]);
+
+
+
+            $detalles = $dataVenta['productos'];
+
+            self::detallesVenta($venta, $detalles);
+
+
+            if ($tipo == 'VENTA') {
+                self::ventaContado($venta);
+            } elseif ($tipo == 'CREDITO') {
+                self::ventaCredito($venta);
+                $credito =  self::crearCredito($venta);
+                self::agregarValorDeudaCliente($venta->client_id, $venta->total);
+            } else {
+                self::cortesia($venta);
+            }
+
+            event(new  VentaRealizada($venta));
+
+            if ($dataVenta['imprimir'] > 0) {
+                self::Imprimirecibo($venta->id);
+            }
+
+
+            $this->dispatchBrowserEvent('proceso-guardado', ['venta' => $venta->full_nro]);
+
+          });
         } catch (\Exception $e) {
 
             DB::rollback();
@@ -250,45 +381,18 @@ class SaleComponent extends Component
                 'icon' => 'error'
             ]);
 
-            report($e);
+            report($e->getMessage());
         }
-    }
-
-    function crearCredito($venta)
-    {
-        $credito =  Credit::create([
-            'sale_id'   => $venta->id,
-            'client_id' => $venta->client_id,
-            'active'    => 1,
-            'valor'     => $venta->total,
-            'abono'     => 0,
-            'saldo'     => $venta->total,
-        ]);
-
-        return $credito;
-    }
-
-    function agregarValorDeudaCliente($cliente_id, $valor_compra)
-    {
-        $cliente = Client::findOrFail($cliente_id);
-
-        $nuevo_valor_deuda = $cliente->deuda + $valor_compra;
-
-        $cliente->update([
-            'deuda'     => $nuevo_valor_deuda,
-        ]);
-
-        return true;
-
     }
 
     function detallesVenta($venta, $dataProducts)
     {
 
         foreach ($dataProducts as $data) {
+
             SaleDetail::create([
                 'sale_id'       => $venta->id,
-                'product_id'    => $data['id_producto'],
+                'product_id'    => $data['producto_id'],
                 'forma'         => $data['forma'],
                 'quantity'      => $data['cantidad'],
                 'price'         => $data['precio_unitario'],
@@ -297,8 +401,6 @@ class SaleComponent extends Component
             ]);
         }
     }
-
-
 
     public static function obtenerProximoNumero($prefijo)
     {
@@ -323,6 +425,53 @@ class SaleComponent extends Component
         return $numeroFormateado;
     }
 
+    function obtenerMetodoPagoId($nombre_metodo)
+    {
+        $metodo_pago_id = MetodoPago::where('name', $nombre_metodo)->first();
+
+        if ($metodo_pago_id) {
+            $metodo_pago = $metodo_pago_id->id;
+        } else {
+            $metodo_pago = 2;
+        }
+
+        return $metodo_pago;
+    }
+
+    function crearCredito($venta)
+    {
+        $credito = Credit::create([
+            'sale_id'   => $venta->id,
+            'client_id' => $venta->client_id,
+            'active'    => 1,
+            'valor'     => $venta->total,
+            'abono'     => 0,
+            'saldo'     => $venta->total,
+        ]);
+
+        return $credito;
+    }
+
+    function agregarValorDeudaCliente($cliente_id, $valor_compra)
+    {
+        $cliente = Client::findOrFail($cliente_id);
+
+        $nuevo_valor_deuda = $cliente->deuda + $valor_compra;
+
+        $cliente->update([
+            'deuda'     => $nuevo_valor_deuda,
+        ]);
+
+        return true;
+    }
+
+    public function Imprimirecibo($venta)
+    {
+
+        return redirect()->route('ventas.pos.imprimir.recibo', $venta);
+    }
+
+    /*-----------------Pasar los datos a caja -----------------------*/
 
     public function ventaContado($sale)
     {
@@ -342,13 +491,12 @@ class SaleComponent extends Component
         ]);
     }
 
-
-
-
-    /*--------------Fin funciones generar venta ------------------*/
-
-    public function close()
+    public function cortesia($sale)
     {
-        $this->showpay = false;
+        $sale->cashs()->create([
+            'user_id'           => Auth::user()->id,
+            'cashesable_id'     => $sale['id'],
+            'quantity'          => 0,
+        ]);
     }
 }
