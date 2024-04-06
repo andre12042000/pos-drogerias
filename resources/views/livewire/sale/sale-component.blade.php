@@ -165,7 +165,7 @@
                         <span class="subtotal"></span>
                     </div>
                     <div class="costo-compra mt-2">
-                        <label>Descuento:</label>
+                        <label>Descuento:  </label>
                         <span class="descuento"></span>
                     </div>
 
@@ -455,8 +455,6 @@
     }
 
 
-
-
     function obtenerPrecioSuperiorACero(producto) {
         var verificar = {
             precio_caja: producto.precio_caja,
@@ -732,7 +730,8 @@
             // IVA formateado como moneda
             var ivaCell = row.insertCell();
             if (order.iva > 100) {
-                ivaCell.textContent = formatCurrency(order.iva);
+                var ivaSinDecimales = Math.round(order.iva).toFixed(0);
+                ivaCell.textContent = formatCurrency(ivaSinDecimales);
                 ivaCell.classList.add('align-right'); // Alinear a la derecha
             } else {
                 ivaCell.textContent = '$' + 0;
@@ -790,12 +789,17 @@
         // Calcular total sumando el subtotal, el impuesto y restando el descuento
         total = subtotal + ivaTotal - descuentoTotal;
 
+        var ivaSinDecimales = Math.round(ivaTotal).toFixed(0);
+        var descuentoSinDecimales = Math.round(descuentoTotal).toFixed(0);
+
         spanSubTotal.textContent = formatCurrency(subtotal);
-        spanDescuento.textContent = formatCurrency(descuentoTotal);
-        spanIva.textContent = formatCurrency(ivaTotal);
+        spanDescuento.textContent = formatCurrency(descuentoSinDecimales);
+        spanIva.textContent = formatCurrency(ivaSinDecimales);
         spanTotal.textContent = formatCurrency(total);
 
         cambiarEstadoBotonPagar(total);
+
+      // mostrarBotonDescuentoGlobal(total, descuentoTotal);
 
         return {
             subtotal: subtotal,
@@ -805,6 +809,7 @@
         };
 
     }
+
 
     // Función para formatear un valor como moneda en pesos sin decimales
     function formatCurrency(amount) {
