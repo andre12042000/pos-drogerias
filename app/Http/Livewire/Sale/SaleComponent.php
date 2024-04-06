@@ -27,7 +27,64 @@ class SaleComponent extends Component
     public $empresa, $clientes, $metodos_pago;
     public $error_search = false;
 
-    protected $listeners = ['almacenarTransaccion'];
+
+    protected $listeners = ['almacenarTransaccion', 'buscarCotizacion'];
+
+    public function buscarCotizacion($codigo)
+    {
+
+       $cotizacion = Cotizacion::where('full_nro', $codigo)->first();
+
+       if($cotizacion){
+
+        $cliente = $cotizacion->client_id;
+        $detalles = $cotizacion->saleDetails;
+        $productos = [];
+
+        foreach($detalles as $detalle){
+
+            $item = $detalle->product;
+            $total = (($detalle->quantity * $detalle->price) + $detalle->tax) -  $detalle->discount;
+
+            $tax = $detalle->tax;
+
+            if ($tax === '0.00') {
+                $tax = 0;
+            }else {
+                $tax = intval($tax);
+            }
+
+            $productos[] = [
+                'cantidad'          => $detalle->quantity,
+                'key'               => Carbon::now(),
+                'code'              => $item->code,
+                'descuento'         => $detalle->discount,
+                'forma'             => $detalle->forma,
+                'iva'               => $tax,
+                'nombre'            => $item->name,
+                'precio_unitario'   => $detalle->price,
+                'producto_id'       => $item->id,
+                'total'             => $total,
+            ];
+        }
+
+        $data = [
+            'cliente'   => $cliente,
+            'productos' => $productos,
+        ];
+
+            $this->dispatchBrowserEvent('datos-cotizacion', ['datos' => $data]);
+
+       }else{
+            $mensaje = 'No hay cotización disponible';
+         $this->dispatchBrowserEvent('error-busqueda', ['mensaje' => $mensaje]);
+       }
+    }
+
+    function obtenerDetallesCotizacion()
+    {
+
+    }
 
     public function Mount()
     {

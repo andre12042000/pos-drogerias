@@ -23,8 +23,10 @@ class ListComponent extends Component
     }
     public function render()
     {
-        $cotizaciones = Cotizacion::search($this->search)
-        ->paginate($this->cantidad_registros);
+        $cotizaciones = Cotizacion::orderBy('id', 'desc')
+                                    ->search($this->search)
+                                    ->paginate($this->cantidad_registros);
+
         return view('livewire.cotizaciones.list-component', compact('cotizaciones'))->extends('adminlte::page');
     }
 

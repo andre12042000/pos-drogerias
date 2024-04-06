@@ -1,971 +1,628 @@
-var productosParaVenta = [];
-var productoActual;
-let granTotal = 0;
-let subTotalGlobal = 0;
-let ivaTotalGlobal = 0;
-let descuentoGlobal = 0;
-
-class ProductManager {
-    constructor() {
-        const granTotalFormateado = granTotal;
-        const granIvaFormateado = ivaTotalGlobal;
-        const subTotalGlobalFormateado = subTotalGlobal; //
-        const subdescuentoGlobalFormateado = descuentoGlobal;
-
-
-
-        this.botonPagar = document.getElementById("pagarBtn");
-        this.loader = this.botonPagar.querySelector(".loader");
-
-        const selectMetodoPago = document.getElementById("selectMetodoPago");
-
-        selectMetodoPago.querySelectorAll('option').forEach(option => {
-            if (option.value == "3") {
-                option.disabled = true;
-            }
-        });
-
-        selectMetodoPago.addEventListener("change", () =>
-            this.handleChangeMetodoPago()
-        );
-
-        // Asignar el valor al elemento span con la clase granTotal
-        document.querySelector(".granTotal").textContent = granTotalFormateado;
-        document.querySelector(".ivaTotalGlobal").textContent =
-            granIvaFormateado;
-        document.querySelector(".subTotalGlobal").textContent =
-            subTotalGlobalFormateado;
-        document.querySelector(".descuentoGlobal").textContent =
-            subdescuentoGlobalFormateado;
-
-        this.productosParaVenta = [];
-        this.productoActual;
-        this.cantidadModal = new bootstrap.Modal(
-            document.getElementById("cantidadModal")
-        );
-        this.selectPresentacion = document.getElementById("selectPresentacion");
-        this.totalPrecioCompraInput = document.getElementById(
-            "totalPrecioCompraInput"
-        );
-        this.precioUnitarioInput = document.getElementById(
-            "precioUnitarioInput"
-        );
-        this.cantidadInput = document.getElementById("cantidadInput");
-
-        this.inputCantidadPagada = document.getElementById(
-            "inputCantidadPagada"
-        );
-
-        inputCantidadPagada.addEventListener("input", () =>
-            this.handleCantidadPagadaInputChange()
-        );
-
-        this.granTotalSpan = document.querySelector(".granTotal");
-
-        this.granTotalSpan.addEventListener("DOMSubtreeModified", () => {
-            this.handleGranTotalChange();
-        });
-
-        const cantidadInput = document.getElementById("cantidadInput");
-        cantidadInput.addEventListener("input", () =>
-            this.handleCantidadInputChange()
-        );
-
-        const precioUnitarioInput = document.getElementById(
-            "precioUnitarioInput"
-        );
-        precioUnitarioInput.addEventListener("input", () =>
-            this.handlePrecioUnitarioInputChange()
-        );
-
-        const selectPresentacion =
-            document.getElementById("selectPresentacion");
-        selectPresentacion.addEventListener("change", () =>
-            this.handlePresentacionChange()
-        );
-
-        /*-------------Eventos de todos los botones del modal -------------*/
-
-        const agregarBtn = document.getElementById(
-            "agregarProductosArrayVenta"
-        );
-        agregarBtn.addEventListener("click", () =>
-            this.handleAgregarButtonClick()
-        );
-
-        const pagarBtn = document.getElementById("pagarBtn");
-        pagarBtn.addEventListener("click", () => this.handlePagarButtonClick());
-
-        const btnIncrementar = document.getElementById("btnIncrementar");
-        btnIncrementar.addEventListener("click", () =>
-            this.handleIncrementarCantidadButtonClick()
-        );
-
-        const btnDecrementar = document.getElementById("btnDecrementar");
-        btnDecrementar.addEventListener("click", () =>
-            this.handleDecrementarCantidadButtonClick()
-        );
-
-        /*------------------------------Evento para cambiar tipo de operacion -------------------*/
-
-        const radioVenta = document.getElementById("tipoOperacionVenta");
-        const radioCredito = document.getElementById("tipoOperacionCredito");
-        radioCredito.addEventListener("click", () => this.handleCambioOperacion());
-        radioVenta.addEventListener("click", () => this.handleCambioOperacion());
-
-        /*-------------------------Fin evento para cambiar tipo de operacion ----------------------*/
-
-        var valorSeleccionado;
-
-        this.initializeListeners();
-    }
-
-    initializeListeners() {
-        window.addEventListener("agregarProductoAlArrayCode", (event) =>
-            this.handleAgregarProducto(event)
-        );
-    }
-
-    handleCambioOperacion() {
-        const tipoOperacionVenta = document.getElementById("tipoOperacionVenta");
-        const tipoOperacionCredito = document.getElementById("tipoOperacionCredito");
-        const cambiarClienteHelp = document.getElementById('cambiarClienteHelp');
-        const opcionSi = document.getElementById('opcionSi');
-        const opcionNo = document.getElementById('opcionNo');
-        const selectMetodoPago = document.getElementById("selectMetodoPago");
-
-
-        let operacionSeleccionada = "VENTA";
-        let metodoPagoSeleccionado = "EFECTIVO"; // Establece el valor predeterminado
-
-        if (tipoOperacionCredito.checked) {
-            operacionSeleccionada = "CRÉDITO";
-            cambiarClienteHelp.style.display = 'block';
-            opcionSi.checked = true;
-            opcionNo.checked = false;
-            metodoPagoSeleccionado = "3"; // Establece el método de pago en "CRÉDITO"
-        } else {
-            cambiarClienteHelp.style.display = 'none';
-            opcionSi.checked = false;
-            opcionNo.checked = true;
-        }
-
-        selectMetodoPago.querySelectorAll('option').forEach(option => {
-            if (operacionSeleccionada === "CRÉDITO" && option.value !== "3") {
-                option.disabled = true;
-            } else if (operacionSeleccionada === "VENTA" && option.value === "3") {
-                option.disabled = true;
-                metodoPagoSeleccionado = "2";
-            } else {
-                option.disabled = false;  // Habilita todas las demás opciones
-
-            }
-        });
-
-
-
-        // Actualiza el valor del método de pago
-        selectMetodoPago.value = metodoPagoSeleccionado;
-
-        let title, text;
-
-        if (operacionSeleccionada === "CRÉDITO") {
-            title = 'MODO VENTA CRÉDITO';
-            text = 'En modo venta crédito no ingresa dinero a la caja, pero se crea una deuda que podrás visualizar en los detalles del cliente.';
-        } else {
-            title = 'MODO VENTA';
-            text = 'Modo venta rápida activado.';
-        }
-
-        Swal.fire({
-            icon: 'info',
-            title,
-            text,
-        });
-
-        // Mostrar el mensaje de ayuda para cambiar de cliente
-    }
-
-
-    handleChangeMetodoPago() {
-        var opcionSi = document.getElementById("opcionSi");
-        var opcionNo = document.getElementById("opcionNo");
-        var selectMetodoPago = document.getElementById("selectMetodoPago");
-
-        if (selectMetodoPago.value === "1") {
-            // Selecciona la opción "Si"
-            opcionSi.checked = true;
-        } else {
-            opcionNo.checked = true;
-        }
-    }
-
-    handleGranTotalChange() {
-        var granTotalSpan = document.querySelector(".granTotal");
-
-        var valorGranTotal = granTotalSpan.textContent;
-
-        const pagarBtn = document.getElementById("pagarBtn");
-
-        if (valorGranTotal > 0) {
-            pagarBtn.removeAttribute("disabled");
-        } else {
-            pagarBtn.setAttribute("disabled", true);
-        }
-    }
-
-    handleIncrementarCantidadButtonClick() {
-        const selectElement = document.getElementById("selectPresentacion");
-        const selectedIndex = selectElement.selectedIndex;
-
-        if (selectedIndex === 0) {
-            selectElement.classList.add("is-invalid");
-        } else {
-            selectElement.classList.remove("is-invalid");
-
-            const cantidadInput = document.getElementById("cantidadInput");
-            cantidadInput.value = parseInt(cantidadInput.value, 10) + 1;
-            productManager.handleCantidadInputChange();
-        }
-    }
-
-    handleDecrementarCantidadButtonClick() {
-        const selectElement = document.getElementById("selectPresentacion");
-        const selectedIndex = selectElement.selectedIndex;
-
-        if (selectedIndex === 0) {
-            selectElement.classList.add("is-invalid");
-        } else {
-            selectElement.classList.remove("is-invalid");
-
-            const cantidadInput = document.getElementById("cantidadInput");
-            if (cantidadInput.value > 1) {
-                cantidadInput.value = parseInt(cantidadInput.value, 10) - 1;
-                productManager.handleCantidadInputChange();
-            }
-        }
-    }
-
-    handlePagarButtonClick() {
-        this.mostrarLoader();
-
-        // Obtenemos el tipo de transaccion
-        const tipoOperacionCredito = document.getElementById("tipoOperacionCredito");
-        const cliente = document.getElementById("client");
-        const cambiarClienteHelp = document.getElementById('cambiarClienteHelp');
-
-        if (tipoOperacionCredito.checked && cliente.value === "Consumidor final") {
-            // Si la condición se cumple, agregamos la clase "is-invalid" al elemento cliente
-            cliente.classList.add("is-invalid");
-            cambiarClienteHelp.style.display = 'block';
-
-            this.ocultarLoader();
-            return;
-        }else{
-            cambiarClienteHelp.style.display = 'none';
-        }
-
-
-
-        // Obtener los elementos de los radio buttons
-        const opcionSi = document.getElementById("opcionSi");
-        const opcionNo = document.getElementById("opcionNo");
-
-        // Obtener el valor seleccionado
-        const opcionSeleccionada = document.querySelector(
-            'input[name="opcionRadio"]:checked'
-        ).value;
-
-        const selectMetodoPago = document.getElementById("selectMetodoPago");
-        const metodoPagoSeleccionado = selectMetodoPago.value;
-
-        const descuentoGlobalSpan = document.querySelector(".descuentoGlobal");
-        const subTotalGlobalSpan = document.querySelector(".subTotalGlobal");
-        const ivaTotalGlobalSpan = document.querySelector(".ivaTotalGlobal");
-        const granTotalSpan = document.querySelector(".granTotal");
-
-        // Obtener los valores de los elementos span
-        const descuentoGlobal = parseFloat(descuentoGlobalSpan.textContent);
-        const subTotalGlobal = parseFloat(subTotalGlobalSpan.textContent);
-        const ivaTotalGlobal = parseFloat(ivaTotalGlobalSpan.textContent);
-        const granTotal = parseFloat(granTotalSpan.textContent);
-
-        // Crear un objeto con los datos
-        const datosVenta = {
-            granTotal: granTotal,
-            subTotalGlobal: subTotalGlobal,
-            ivaTotalGlobal: ivaTotalGlobal,
-            descuentoGlobal: descuentoGlobal,
-            imprimirRecibo: opcionSeleccionada,
-            metodoPago: metodoPagoSeleccionado,
-            productosParaVenta: productosParaVenta,
-        };
-
-        // Emitir los datos al componente Livewire
-        Livewire.emit("crearVentaEvent", datosVenta);
-    }
-
-    mostrarLoader() {
-        this.botonPagar.setAttribute("disabled", true);
-        this.loader.style.display = "inline-block";
-    }
-
-    ocultarLoader() {
-        this.loader.style.display = "none";
-    }
-
-    handleAgregarButtonClick() {
-        // Obtener la información del producto del modal (puedes acceder a esto según tu implementación específica)
-        const producto = this.cantidadModal.producto;
-        const cantidadIngresada = parseInt(this.cantidadInput.value);
-
-        // Validar que la cantidad sea mayor que 0
-        if (cantidadIngresada <= 0 || isNaN(cantidadIngresada)) {
-            console.log("Ingrese una cantidad válida mayor que 0.");
-            return;
-        }
-
-        // Validar que se haya seleccionado una presentación
-        const presentacionSeleccionada = this.selectPresentacion.value;
-        if (!presentacionSeleccionada) {
-            console.log("Seleccione una presentación.");
-            return;
-        }
-
-        // Validar que el precio unitario sea mayor que 0
-        const precioUnitario = parseFloat(this.precioUnitarioInput.value);
-        if (precioUnitario <= 0 || isNaN(precioUnitario)) {
-            console.log("Ingrese un precio unitario válido mayor que 0.");
-            return;
-        }
-
-        // Validar que el subtotal sea mayor que 0
-        const subtotal = parseFloat(this.totalPrecioCompraInput.value);
-        if (subtotal <= 0 || isNaN(subtotal)) {
-            console.log("Ingrese un subtotal válido mayor que 0.");
-            return;
-        }
-
-        this.handleActualizarOAgregarProducto(
-            producto,
-            presentacionSeleccionada,
-            precioUnitario,
-            cantidadIngresada
-        );
-
-        this.cantidadModal.hide();
-    }
-
-    handleLimpiarFormatoMoneda = (valorMoneda) => {
-        // Eliminar cualquier carácter no numérico o símbolo de moneda
-        const valorNumerico = valorMoneda.replace(/[^\d.-]/g, "");
-        // Convertir a número
-        return parseFloat(valorNumerico);
-    };
-
-    handlePrecioUnitarioInputChange() {
-        const nuevoPrecioUnitario = parseFloat(
-            document.getElementById("precioUnitarioInput").value
-        );
-        const cantidadIngresada = parseInt(
-            document.getElementById("cantidadInput").value,
-            10
-        );
-
-        // Verifica si la cantidadIngresada es un número válido antes de continuar
-        if (isNaN(cantidadIngresada)) {
-            console.log(
-                "Ingrese una cantidad válida antes de cambiar el precio unitario."
-            );
-            return;
-        }
-
-        this.displayPrecioUnitarioYTotal(
-            nuevoPrecioUnitario,
-            cantidadIngresada
-        );
-    }
-
-    handleCantidadInputChange() {
-        // Obtener el valor de cantidadInput
-        const nuevoValor = parseInt(
-            document.getElementById("cantidadInput").value
-        );
-
-        // Verificar si se ha seleccionado una presentación
-        const presentacionSeleccionada = this.selectPresentacion.value;
-
-        if (!presentacionSeleccionada) {
-            // Si no se ha seleccionado una presentación, mostrar un mensaje o realizar la lógica correspondiente
-            console.log(
-                "Seleccione una presentación antes de ingresar la cantidad."
-            );
-            return;
-        }
-
-        // Verificar si hay un valor en el precio unitario
-        const precioUnitarioInputValue = this.precioUnitarioInput.value;
-
-        if (!precioUnitarioInputValue) {
-            // Si no hay un valor en el precio unitario, mostrar un mensaje o realizar la lógica correspondiente
-            console.log(
-                "Ingrese un precio unitario antes de ingresar la cantidad."
-            );
-            return;
-        }
-
-        // Realizar el cálculo de cantidad y actualizar el total
-        this.displayPrecioUnitarioYTotal(precioUnitarioInputValue, nuevoValor);
-    }
-
-    handlePresentacionChange() {
-        const producto = productoActual;
-        // Lógica a ejecutar cuando cambia el valor de selectPresentacion
-        const nuevoValor = this.selectPresentacion.value;
-
-        // Verificar si hay un producto actualmente seleccionado
-        if (!producto) {
-            console.log(
-                "Seleccione un producto antes de cambiar la presentación."
-            );
-            return;
-        }
-
-        // Obtener el precio unitario según la nueva presentación seleccionada
-        const precioUnitario = this.getPrecioUnitario(producto, nuevoValor);
-
-        // Obtener la cantidad actualmente ingresada
-        const cantidadIngresada = parseInt(
-            document.getElementById("cantidadInput").value
-        );
-
-        // Calcular y mostrar el precio unitario y el total
-        this.displayPrecioUnitarioYTotal(precioUnitario, cantidadIngresada);
-    }
-
-    handleActualizarOAgregarProducto(
-        producto,
-        presentacionSeleccionada,
-        precioUnitario,
-        cantidadIngresada
-    ) {
-        // Buscar el producto en productosParaVenta
-        const productoExistente = productosParaVenta.find(
-            (item) =>
-                item.id_producto === producto.id &&
-                item.forma === presentacionSeleccionada
-        );
-
-        if (productoExistente) {
-            const iva = productManager.handleObtenerIva(
-                producto,
-                cantidadIngresada,
-                presentacionSeleccionada
-            );
-            // El producto ya existe, actualizar cantidad y subtotal
-            productoExistente.cantidad += cantidadIngresada;
-            //  productoExistente.subtotal =
-            productoExistente.cantidad * precioUnitario;
-            productoExistente.iva = productoExistente.cantidad * iva;
-            productoExistente.subtotal =
-                productoExistente.precio_unitario * productoExistente.cantidad;
-        } else {
-            // El producto no existe, agregar un nuevo producto
-
-            const iva = productManager.handleObtenerIva(
-                producto,
-                cantidadIngresada,
-                presentacionSeleccionada
-            );
-
-            const nuevoProducto = {
-                item: productosParaVenta.length + 1,
-                id_producto: producto.id,
-                codigo: producto.code,
-                descripcion: producto.name,
-                forma: presentacionSeleccionada,
-                precio_unitario: precioUnitario,
-                cantidad: cantidadIngresada,
-                porcentaje_iva: producto.iva_product,
-                iva: iva,
-                descuento: 0,
-                subtotal: cantidadIngresada * precioUnitario,
-            };
-
-            // Agregar el nuevo producto al array
-            productosParaVenta.push(nuevoProducto);
-        }
-
-        this.reinicializarVariables();
-        this.actualizarTabla();
-    }
-
-    handleObtenerIva(producto, cantidad, presentacionSeleccionada) {
-        let iva = 0;
-
-        switch (presentacionSeleccionada) {
-            case "disponible_caja":
-                iva = Math.round(producto.valor_iva_caja * cantidad);
-                break;
-            case "disponible_blister":
-                iva = Math.round(producto.valor_iva_blister * cantidad);
-                break;
-            case "disponible_unidad":
-                iva = Math.round(producto.valor_iva_unidad * cantidad);
-                break;
-            default:
-                // Manejar el caso por defecto
-                iva = 0;
-                break;
-        }
-
-        return iva;
-    }
-
-    handleAgregarProducto(event) {
-        productoActual = event.detail.producto;
-        const producto = event.detail.producto;
-
-        if (event.detail.opcionSeleccionada != null) {
-            const cantidadIngresada = 1;
-            const presentacionSeleccionada = event.detail.opcionSeleccionada;
-            const precioUnitario = this.getPrecioUnitario(
-                producto,
-                presentacionSeleccionada
-            );
-
-            if (precioUnitario === 0) {
-                return;
-            }
-
-            this.handleActualizarOAgregarProducto(
-                producto,
-                presentacionSeleccionada,
-                precioUnitario,
-                cantidadIngresada
-            );
-        } else {
-            const cantidadIngresada = parseInt(
-                document.getElementById("cantidadInput").value
-            );
-
-            this.showCantidadModal(producto);
-
-            this.disableAllOptions();
-            this.enableOptionsBasedOnProduct(producto);
-
-            this.autoSelectOption();
-
-            const presentacionSeleccionada = this.selectPresentacion.value;
-            const precioUnitario = this.getPrecioUnitario(
-                producto,
-                presentacionSeleccionada
-            );
-
-            this.displayPrecioUnitarioYTotal(precioUnitario, cantidadIngresada);
-        }
-    }
-
-    showCantidadModal(producto) {
-        this.cantidadModal.producto = producto;
-        this.cantidadModal.show();
-    }
-
-    disableAllOptions() {
-        for (const option of this.selectPresentacion.options) {
-            option.disabled = true;
-        }
-    }
-
-    enableOptionsBasedOnProduct(producto) {
-        if (producto.disponible_caja) {
-            this.enableOption("disponible_caja");
-        }
-        if (producto.disponible_blister) {
-            this.enableOption("disponible_blister");
-        }
-        if (producto.disponible_unidad) {
-            this.enableOption("disponible_unidad");
-        }
-    }
-
-    enableOption(value) {
-        this.selectPresentacion.querySelector(
-            `[value="${value}"]`
-        ).disabled = false;
-    }
-
-    autoSelectOption() {
-        const opcionesDisponibles = Array.from(
-            this.selectPresentacion.options
-        ).filter((opcion) => !opcion.disabled);
-        if (opcionesDisponibles.length === 1) {
-            opcionesDisponibles[0].selected = true;
-        }
-    }
-
-    getPrecioUnitario(producto, presentacionSeleccionada) {
-        switch (presentacionSeleccionada) {
-            case "disponible_caja":
-                return producto.precio_caja;
-            case "disponible_blister":
-                return producto.precio_blister;
-            case "disponible_unidad":
-                return producto.precio_unidad;
-            default:
-                // Manejar el caso por defecto o mostrar un mensaje de error si es necesario
-                return 0;
-        }
-    }
-
-    displayPrecioUnitarioYTotal(precioUnitario, cantidadIngresada) {
-        this.precioUnitarioInput.value = precioUnitario;
-        const totalPrecioProducts = precioUnitario * cantidadIngresada;
-        this.totalPrecioCompraInput.value = totalPrecioProducts;
-    }
-
-    handleCantidadPagadaInputChange() {
-        const inputCantidadPagada = document.getElementById(
-            "inputCantidadPagada"
-        );
-        const cantidadPagada = parseFloat(inputCantidadPagada.value);
-        const granTotal =
-            parseFloat(document.querySelector(".granTotal").textContent) || 0;
-
-        // Calcula el cambio
-        const cambio = cantidadPagada - granTotal;
-
-        // Actualiza el valor del input de cambio
-        const inputCambio = document.getElementById("inputCambio"); // Reemplaza 'inputCambio' con el ID real de tu input de cambio
-        inputCambio.value = cambio.toFixed(0); // Puedes ajustar la cantidad de decimales según tus necesidades
-    }
-
-    actualizarTabla() {
-        // Obtener la referencia del cuerpo de la tabla
-        var tbody = document.querySelector("#tablaProductos tbody");
-
-        // Limpiar el contenido actual del cuerpo de la tabla
-        tbody.innerHTML = "";
-
-        function formatearForma(valor) {
-            switch (valor) {
-                case "disponible_caja":
-                    return "Caja";
-                case "disponible_blister":
-                    return "Blister";
-                case "disponible_unidad":
-                    return "Unidad";
-                // Agrega más casos según sea necesario
-                default:
-                    return valor;
-            }
-        }
-
-        let subGranTotal = 0;
-
-        // Iterar sobre el array y agregar filas al cuerpo de la tabla
-        productosParaVenta.forEach(function (producto, index) {
-            var fila = tbody.insertRow();
-            fila.dataset.index = index;
-            fila.style.cursor = "pointer";
-
-            for (var key in producto) {
-                var celda = fila.insertCell();
-                celda.textContent = producto[key];
-
-                // Agregar una clase a la celda de la columna id_producto
-                if (key === "id_producto") {
-                    celda.classList.add("ocultar-columna-id");
-                }
-
-                if(key == 'porcentaje_iva'){
-                    celda.classList.add("ocultar-columna-id");
-                }
-
-                if (
-                    ["precio_unitario", "descuento", "subtotal"].includes(key)
-                ) {
-                    celda.style.textAlign = "right";
-
-                    // celda.textContent = formatearMoneda(producto[key]);
-                }
-
-                if (key === "subtotal") {
-                    subGranTotal += parseFloat(producto[key]);
-                }
-
-                if (key === "cantidad") {
-                    celda.classList.add("text-center");
-                }
-
-                if (key === "forma") {
-                    // Formatear el valor del campo 'forma'
-                    celda.textContent = formatearForma(producto[key]);
-                }
-            }
-
-            fila.addEventListener("dblclick", function () {
-                // Llama a handleDoubleClickRow al hacer doble clic en la fila
-                productManager.handleDoubleClickRow(index);
-            });
-
-
-            // Agregar una celda para el botón de eliminar
-            var celdaEliminar = fila.insertCell();
-            celdaEliminar.classList.add("celda-eliminar");
-
-            var btnEliminar = document.createElement("button");
-            btnEliminar.classList.add("btn-eliminar");
-            btnEliminar.innerHTML = '<i class="fas fa-trash-alt"></i>';
-
-            btnEliminar.addEventListener(
-                "click",
-                function () {
-                    // Llama a EliminarFila sin necesidad de almacenar en una variable
-                    productManager.EliminarFila(fila.dataset.index);
-                }.bind(this)
-            );
-
-            celdaEliminar.appendChild(btnEliminar);
-        });
-
-        this.calcularDatosGlobales();
-    }
-
-
-
-    EliminarFila(fila) {
-        productosParaVenta.splice(fila, 1);
-        productManager.actualizarTabla();
-    }
-
-    handleDoubleClickRow(index) {
-        const producto_editar = productosParaVenta[index];
-
-        productManager.openModalEditar(producto_editar, index);
-    }
-
-
-    openModalEditar(producto, index) {
-
-        const modal = document.getElementById("editProductSaleModal");
-        const modalContent = document.getElementById("modalContent");
-
-        const selectPresentacionEdit = document.getElementById("selectPresentacionEdit");
-        const cantidadInputEdit = document.getElementById("cantidadInputEdit");
-        const precioUnitarioInputEdit = document.getElementById("precioUnitarioInputEdit");
-        const totalPrecioCompraInputEdit = document.getElementById("totalPrecioCompraInputEdit");
-        const ivaInputEdit = document.getElementById("ivaInputEdit");
-        const btnIncrementarEditar = document.getElementById("btnIncrementarEditar");
-        const btnDecrementarEditar = document.getElementById("btnDecrementarEditar");
-
-        const cancelarTransaccionBtn = document.getElementById("cancelarTransaccion");
-        const cerrarModalBtn = document.getElementById("cerrarModalBtn");
-
-
-        selectPresentacionEdit.value = producto.forma;
-        cantidadInputEdit.value = producto.cantidad;
-        precioUnitarioInputEdit.value = producto.precio_unitario;
-        totalPrecioCompraInputEdit.value = producto.subtotal;
-        ivaInputEdit.value = producto.iva;
-
-        if(producto.iva > 0){
-            var ivaUnitario = obtenerIvaUnitario(producto);
-        }else{
-            var ivaUnitario = 0;
-        }
-
-        cantidadInputEdit.addEventListener("change", calcularTotal);
-        precioUnitarioInputEdit.addEventListener("change", calcularTotal);
-
-        const btnActualizarModal = document.getElementById("actualizarProductosArrayVenta");
-            btnActualizarModal.addEventListener("click", function () {
-                // Aquí puedes actualizar el array según el índice obtenido
-                actualizarProductoEnArray(index);
-            });
-
-
-        // Mostrar el modal
-        modal.style.display = "block";
-
-        btnIncrementarEditar.addEventListener("click", function() {
-            // Obtener el valor actual del input y convertirlo a un número
-            let cantidad = parseInt(cantidadInputEdit.value);
-
-            // Incrementar la cantidad
-            cantidad += 1;
-
-            // Actualizar el valor del input
-            cantidadInputEdit.value = cantidad;
-
-            calcularTotal();
-          });
-
-          btnDecrementarEditar.addEventListener("click", function() {
-            // Obtener el valor actual del input y convertirlo a un número
-            let cantidad = parseInt(cantidadInputEdit.value);
-
-            // Incrementar la cantidad
-            cantidad -= 1;
-
-            // Actualizar el valor del input
-            cantidadInputEdit.value = cantidad;
-            calcularTotal();
-          });
-
-          cancelarTransaccionBtn.addEventListener("click", function() {
-            // Obtener el valor actual del input y convertirlo a un número
-            productManager.closeModalEditar();
-          });
-
-          cerrarModalBtn.addEventListener("click", function() {
-            // Obtener el valor actual del input y convertirlo a un número
-            productManager.closeModalEditar();
-          });
-
-
-        function obtenerIvaUnitario(producto)
-        {
-            const valorIvaUnitario = producto.iva / producto.cantidad;
-
-            return valorIvaUnitario;
-        }
-
-
-
-        function calcularTotal() {
-            const cantidad = parseFloat(cantidadInputEdit.value);
-            const precio = parseFloat(precioUnitarioInputEdit.value);
-
-
-            // Verificar si las entradas son números válidos
-            if (!isNaN(cantidad) && !isNaN(precio)) {
-                ivaInputEdit.value = Math.round(ivaUnitario * cantidad);
-                const total = cantidad * precio;
-                totalPrecioCompraInputEdit.value = total.toFixed(0); // Ajustar según necesidades de formato
-            } else {
-                spanTotal.textContent = "Error"; // Puedes manejar el error de otra manera si es necesario
-            }
-        }
-
-
-
-        function actualizarProductoEnArray(index) {
-
-            const nuevoSubTotal = totalPrecioCompraInputEdit.value;
-            const nuevaCantidad = cantidadInputEdit.value;
-            const nuevoPrecioUnitario = precioUnitarioInputEdit.value;
-            const nuevoIva = ivaInputEdit.value;
-
-            // Actualizar el array ProductosParaVenta
-            productosParaVenta[index].cantidad = nuevaCantidad;
-            productosParaVenta[index].iva = nuevoIva;
-            productosParaVenta[index].precio_unitario = nuevoPrecioUnitario;
-            productosParaVenta[index].subtotal = nuevoSubTotal;
-
-            productManager.actualizarTabla();
-            productManager.closeModalEditar();
-
-        }
-
-
-      }
-
-      closeModalEditar() {
-        const modal = document.getElementById("editProductSaleModal");
-
-        modal.style.display = "none";
-      }
-
-
-    limpiarValoresIniciales() {
-        // Limpiar el producto y el índice
-
-
-         // Limpiar valores de campos
-        const selectPresentacionEdit = document.getElementById("selectPresentacionEdit");
-        const cantidadInputEdit = document.getElementById("cantidadInputEdit");
-        const precioUnitarioInputEdit = document.getElementById("precioUnitarioInputEdit");
-        const totalPrecioCompraInputEdit = document.getElementById("totalPrecioCompraInputEdit");
-        const ivaInputEdit = document.getElementById("ivaInputEdit");
-
-        selectPresentacionEdit.value = "";
-        cantidadInputEdit.value = "";
-        precioUnitarioInputEdit.value = "";
-        totalPrecioCompraInputEdit.value = "";
-        ivaInputEdit.value = "";
-    }
-
-
-
-    calcularDatosGlobales() {
-        let descuentoGlobal = 0;
-        let subTotalGlobal = 0;
-        let ivaTotalGlobal = 0;
-        let granTotal = 0;
-
-        // Recorrer el array productosParaVenta
-        productosParaVenta.forEach((producto) => {
-            const subtotal = parseFloat(producto.subtotal);
-            const itemDescuento = parseFloat(producto.descuento);
-            const itemIva = parseFloat(producto.iva);
-
-            // Acumular valores
-            descuentoGlobal += itemDescuento;
-            granTotal += subtotal;
-            ivaTotalGlobal += itemIva;
-        });
-
-        subTotalGlobal = granTotal - ivaTotalGlobal;
-        granTotal = granTotal - descuentoGlobal;
-
-        // Calcular granTotal como la suma de descuentoGlobal, subTotalGlobal e ivaTotalGlobal
-
-        // Actualizar elementos en el DOM si es necesario
-        const granTotalFormateado = granTotal;
-        document.querySelector(".granTotal").textContent = granTotalFormateado;
-        document.querySelector(".descuentoGlobal").textContent =
-            descuentoGlobal;
-        document.querySelector(".subTotalGlobal").textContent = subTotalGlobal;
-        document.querySelector(".ivaTotalGlobal").textContent = ivaTotalGlobal;
-    }
-
-    formatearMonedaCOP(valor) {
-        // Formatear el valor como moneda colombiana (COP)
-        const valorFormateado = valor.toLocaleString("es-CO", {
-            style: "currency",
-            currency: "COP",
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0,
-        });
-
-        return valorFormateado;
-    }
-
-    reinicializarVariables() {
-        // Reinicializar las variables según sea necesario
-        this.cantidadInput.value = 1; // Limpiar el campo de cantidad
-        this.selectPresentacion.value = ""; // Reiniciar el select de presentación
-        this.precioUnitarioInput.value = ""; // Limpiar el campo de precio unitario
-        this.totalPrecioCompraInput.value = ""; // Limpiar el campo de total
-        this.productoActual = "";
-        // Otros campos y variables que necesiten reinicialización
-    }
-}
-
-document.addEventListener("livewire:load", function () {
-    // Escuchar un evento de Livewire
-    Livewire.on(
-        "agregarProductoAlArraySearch",
-        function (producto, opcionSeleccionada) {
-            // Manejar el evento en JavaScript
-            // console.log("Producto agregado:", producto);
-            // Puedes realizar acciones adicionales aquí
-        }
-    );
-});
-
-// Crear una instancia de la clase para empezar el proceso
-const productManager = new ProductManager();
-
-/*---------------------Script que recibe los datos desde el modal de busqueda  ------------*/
+ /*--------------------Asignación de variables a objetos html ---------------*/
+ var ivaUnitario = 0; //Usado en el modal de editar Item
+ var totalDescontado = 0;
+ let indiceItem;
+ let productoEditar;
+ const tipoOperacion = document.getElementById('tipoOperacion');
+ const botonEjecutar = document.getElementById('pagarBtn');
+ const nroCotizacion = document.getElementById('codigo_cotizacion');
+ const cliente = document.getElementById('cliente');
+ const mensajeErrorCliente = document.getElementById('cambiarClienteHelp');
+ const mensajeErrorMetodoPagoHelp = document.getElementById('cambiarMetodoPagoHelp');
+
+ const radioSi = document.getElementById('opcionSi');
+ const radioNo = document.getElementById('opcionNo');
+
+ const buscarProductoCodigo = document.getElementById('buscarProductoCodigo');
+
+ const MetodoPago = document.getElementById('selectMetodoPago');
+ const CantidadPagada = document.getElementById('inputCantidadPagada');
+
+ const spanSubTotal = document.querySelector('.subtotal');
+ const spanDescuento = document.querySelector('.descuento');
+ const spanIva = document.querySelector('.iva');
+ const spanTotal = document.querySelector('.total');
+
+ // Inicializar los elementos span en 0
+ spanSubTotal.textContent = '0';
+ spanDescuento.textContent = '0';
+ spanIva.textContent = '0';
+ spanTotal.textContent = '0';
+
+ // Manejar valores adecuadamente (por ejemplo, convertir texto a números si es necesario)
+ const subTotal = spanSubTotal ? parseFloat(spanSubTotal.textContent) : 0;
+ const descuento = spanDescuento ? parseFloat(spanDescuento.textContent) : 0;
+ const iva = spanIva ? parseFloat(spanIva.textContent) : 0;
+ const total = spanTotal ? parseFloat(spanTotal.textContent) : 0;
+
+
+ // Variables Modal Editar Item
+
+ const selectPresentacionEdit = document.getElementById("selectPresentacionEdit");
+ const cantidadInputEdit = document.getElementById("cantidadInputEdit");
+ const precioUnitarioInputEdit = document.getElementById("precioUnitarioInputEdit");
+ const totalPrecioCompraInputEdit = document.getElementById("totalPrecioCompraInputEdit");
+ const ivaInputEdit = document.getElementById("ivaInputEdit");
+ const inputDescuento = document.getElementById("inputDescuento");
+ const descuentoPorcentaje = document.getElementById('descuentoPorcentaje');
+ const descuentoValorFijo = document.getElementById('descuentoValorFijo');
+ const btnIncrementarEditar = document.getElementById("btnIncrementarEditar");
+ const btnDecrementarEditar = document.getElementById("btnDecrementarEditar");
+ const cancelarTransaccionBtn = document.getElementById("cancelarTransaccion");
+ const cerrarModalBtn = document.getElementById("cerrarModalBtn");
+ const descuentoBtn = document.getElementById("descuentoBtn");
+ const actualizarItemVentaBtn = document.getElementById('actualizarItemVenta');
+
+ // Agregar el evento onchange a los radio inputs
+ descuentoPorcentaje.addEventListener('change', handleChange);
+ descuentoValorFijo.addEventListener('change', handleChange);
+
+
+
+ botonEjecutar.addEventListener('click', function() {
+     // Código a ejecutar cuando se haga clic en el botón
+     ejecutarProcesoGuardado();
+     // Por ejemplo, puedes agregar aquí la lógica para procesar el pago
+ });
+
+
+ document.addEventListener('DOMContentLoaded', function() {
+     asignarValoresTotalesAVista();
+     calcularTotales();
+ });
+
+ MetodoPago.onchange = function() {
+     if (MetodoPago.value === '1') {
+         radioSi.checked = true;
+     } else {
+         radioNo.checked = true;
+     }
+ };
+
+
+ function asignarValoresTotalesAVista() {
+     // Asignar valores a elementos HTML
+     document.querySelector('.subtotal').textContent = subTotal;
+     document.querySelector('.descuento').textContent = descuento;
+     document.querySelector('.iva').textContent = iva;
+     document.querySelector('.total').textContent = total;
+ }
+
+ function cambiarEstadoBotonPagar($value) {
+     var btnPagar = botonEjecutar;
+
+     if ($value > 0) {
+         btnPagar.disabled = false;
+     } else {
+         btnPagar.disabled = true;
+     }
+
+ }
+
+
+ function actualizarBoton() {
+     var Total = spanTotal.textContent;
+     const indiceSeleccionado = tipoOperacion.value;
+     var btnPagar = botonEjecutar;
+     var textoBtn = '';
+
+
+     var selectMetodoPago = MetodoPago;
+     var inputCantidadPagada = CantidadPagada;
+
+     // Cambiar estado de los elementos selectMetodoPago e inputCantidadPagada
+     if (indiceSeleccionado === 'VENTA') {
+         selectMetodoPago.disabled = false;
+         inputCantidadPagada.disabled = false;
+     } else {
+         selectMetodoPago.disabled = true;
+         inputCantidadPagada.disabled = true;
+     }
+
+     switch (indiceSeleccionado) {
+         case 'VENTA':
+             textoBtn = 'PAGAR';
+             cambiarClienteHelp.style.display = 'none';
+             break;
+         case 'CREDITO':
+             textoBtn = 'GUARDAR VENTA CRÉDITO';
+             if (cliente.value === '1') {
+                 cambiarClienteHelp.style.display = 'block';
+             } else {
+                 cambiarClienteHelp.style.display = 'none';
+             }
+             break;
+         case 'CONSUMO_INTERNO':
+             textoBtn = 'GUARDAR CONSUMO INTERNO';
+             cambiarClienteHelp.style.display = 'none';
+             break;
+         case 'COTIZACION':
+             textoBtn = 'REALIZAR COTIZACIÓN';
+             if (cliente.value === '1') {
+                 cambiarClienteHelp.style.display = 'block';
+             } else {
+                 cambiarClienteHelp.style.display = 'none';
+             }
+
+             break;
+         default:
+             textoBtn = '';
+             break;
+     }
+
+     btnPagar.querySelector('strong').innerText = textoBtn;
+
+     calcularTotales();
+ }
+
+ function mostrarDatosLocalStorageEnTabla() {
+     var orders = JSON.parse(localStorage.getItem('ordersPos')) || [];
+     var tablaBody = document.querySelector('#tablaProductos tbody');
+
+     // Limpiar tabla antes de agregar datos
+     tablaBody.innerHTML = '';
+
+     orders.forEach(function(order, index) {
+         var row = tablaBody.insertRow(); // Insertar una nueva fila en la tabla
+
+         // Insertar celdas en la fila
+         row.insertCell().textContent = index + 1; // Índice de orden
+         row.insertCell().textContent = order.code; // Código del producto
+         row.insertCell().textContent = order.nombre; // Descripción del producto
+
+         // Agregar evento doble clic a la fila
+         row.addEventListener('dblclick', function() {
+             mostrarModalEditarItem(order, index); // Pasar el objeto de pedido como argumento
+         });
+
+         // Mostrar el texto correspondiente según la forma del producto
+         var formaText = '';
+         if (order.forma === 'disponible_caja') {
+             formaText = 'Caja';
+         } else if (order.forma === 'disponible_blister') {
+             formaText = 'Blister';
+         } else if (order.forma === 'disponible_unidad') {
+             formaText = 'Unidad';
+         }
+         row.insertCell().textContent = formaText; // Mostrar la forma del producto
+
+         // Precio unitario formateado como moneda
+         var precioUnitarioCell = row.insertCell();
+         precioUnitarioCell.textContent = formatCurrency(order.precio_unitario);
+         precioUnitarioCell.classList.add('align-right'); // Alinear a la derecha
+
+         // Cantidad del producto
+         row.insertCell().textContent = order.cantidad;
+
+         // IVA formateado como moneda
+         var ivaCell = row.insertCell();
+         if (order.iva > 100) {
+             ivaCell.textContent = formatCurrency(order.iva);
+             ivaCell.classList.add('align-right'); // Alinear a la derecha
+         } else {
+             ivaCell.textContent = '$' + 0;
+             ivaCell.classList.add('align-right'); // Alinear a la derecha
+         }
+
+         // Descuento formateado como moneda
+         var descuentoCell = row.insertCell();
+         descuentoCell.textContent = formatCurrency(order.descuento);
+         descuentoCell.classList.add('align-right'); // Alinear a la derecha
+
+         // Total formateado como moneda
+         var totalCell = row.insertCell();
+         totalCell.textContent = formatCurrency(order.total);
+         totalCell.classList.add('align-right'); // Alinear a la derecha
+
+         // Agregar ícono de eliminar
+         var opcionesCell = row.insertCell();
+         var iconEliminar = document.createElement('i');
+         iconEliminar.classList.add('fas', 'fa-trash-alt', 'btn-eliminar');
+         opcionesCell.appendChild(iconEliminar);
+         opcionesCell.classList.add('align-center'); // Alinear a la derecha
+
+         // Agregar evento mouseover al ícono de eliminar
+         iconEliminar.addEventListener('mouseover', function() {
+             iconEliminar.style.cursor = 'pointer';
+         });
+
+         // Agregar evento click al ícono de eliminar
+         iconEliminar.addEventListener('click', function() {
+             eliminarOrden(index);
+         });
+
+
+     });
+
+     calcularTotales();
+ }
+
+ function calcularTotales() {
+     var orders = JSON.parse(localStorage.getItem('ordersPos')) || [];
+
+     var subtotal = 0;
+     var descuentoTotal = 0;
+     var ivaTotal = 0;
+     var total = 0;
+
+     // Recorrer los productos y calcular los totales
+     orders.forEach(function(order) {
+         subtotal += order.precio_unitario * order.cantidad; // Calcular subtotal
+         descuentoTotal += order.descuento; // Sumar descuentos
+         ivaTotal += order.iva; // Sumar impuestos
+     });
+
+     // Calcular total sumando el subtotal, el impuesto y restando el descuento
+     total = subtotal + ivaTotal - descuentoTotal;
+
+     spanSubTotal.textContent = formatCurrency(subtotal);
+     spanDescuento.textContent = formatCurrency(descuentoTotal);
+     spanIva.textContent = formatCurrency(ivaTotal);
+     spanTotal.textContent = formatCurrency(total);
+
+     cambiarEstadoBotonPagar(total);
+
+     return {
+         subtotal: subtotal,
+         descuentoTotal: descuentoTotal,
+         ivaTotal: ivaTotal,
+         total: total
+     };
+
+ }
+
+ // Función para formatear un valor como moneda en pesos sin decimales
+ function formatCurrency(amount) {
+     return '$' + amount.toLocaleString('es-ES', {
+         minimumFractionDigits: 0
+     });
+ }
+
+ // Función para eliminar una orden del localStorage
+ function eliminarOrden(index) {
+     let orders = JSON.parse(localStorage.getItem("ordersPos")) || [];
+
+     // Verificar si el índice está dentro del rango de la matriz
+     if (index >= 0 && index < orders.length) {
+         // Eliminar el elemento en el índice dado
+         orders.splice(index, 1);
+         // Actualizar el localStorage con los datos actualizados
+         localStorage.setItem("ordersPos", JSON.stringify(orders));
+         // Luego, puedes actualizar la tabla o cualquier otra cosa que necesites hacer después de eliminar la orden.
+     } else {
+         console.error("Índice fuera de rango.");
+     }
+
+     mostrarDatosLocalStorageEnTabla();
+
+
+ }
+
+ /*------------------------------------------Proceso guardado de datos --------------------------------------*/
+
+ function ejecutarProcesoGuardado() {
+     validaciones();
+
+     const orderPosData = localStorage.getItem('ordersPos');
+     if (orderPosData) {
+         // Convertir los datos de formato JSON a un array de JavaScript
+         var orderPosArray = JSON.parse(orderPosData);
+     } else {
+         let mensaje = 'Ops!, ocurrio un error con la data, comuniquese con el administrador del sistema';
+         mostrarError(mensaje);
+     }
+
+     const radios = document.querySelectorAll('input[name="opcionRadio"]');
+     let imprimir;
+     // Iterar sobre los radios para verificar cuál está seleccionado
+     radios.forEach(radio => {
+         // Obtener el valor del radio seleccionado
+         imprimir = radio.value;
+     });
+
+     let totales = calcularTotales();
+
+     const datos = {
+         'tipoOperacion': tipoOperacion.value,
+         'cliente_id': cliente.value,
+         'productos': orderPosArray,
+         'metodoPago': MetodoPago.value,
+         'imprimir': imprimir,
+         'totales': totales,
+     };
+
+     Livewire.emit('almacenarTransaccion', datos);
+
+ }
+
+ function validaciones() {
+
+     var total = spanTotal.textContent.trim(); // Elimina espacios en blanco al inicio y al final
+
+     if (total == '0' && total == '') {
+         let mensaje = 'Por favor, agrega al menos un producto para comenzar.'
+         mostrarError(mensaje);
+         return;
+     }
+
+
+     if (tipoOperacion.value === 'COTIZACION' || tipoOperacion.value === 'CREDITO') {
+         if (cliente.value === 1 || cliente.value === '') {
+             cambiarClienteHelp.style.display = 'block';
+             return;
+         } else {
+             cambiarClienteHelp.style.display = 'none';
+         }
+     }
+
+
+     if (tipoOperacion.value === 'VENTA') {
+         if (MetodoPago.value === '3') {
+             cambiarMetodoPagoHelp.style.display = 'block';
+             return;
+         } else {
+             cambiarMetodoPagoHelp.style.display = 'none';
+         }
+
+     }
+
+ }
+
+ function verificarMetodoPagoConProceso() {
+     if (tipoOperacion.value === 'VENTA' && MetodoPago.value === '3') {
+         cambiarMetodoPagoHelp.style.display = 'block';
+     } else {
+         cambiarMetodoPagoHelp.style.display = 'none';
+     }
+
+ }
+
+ // Metodo para editar pedido
+
+ function mostrarModalEditarItem(producto, index) {
+     const modal = document.getElementById("editProductSaleModal");
+     indiceItem = index;
+     productoEditar = producto;
+
+     const modalContent = document.getElementById("modalContent");
+
+
+     selectPresentacionEdit.value = producto.forma;
+     cantidadInputEdit.value = producto.cantidad;
+     precioUnitarioInputEdit.value = producto.precio_unitario;
+     totalPrecioCompraInputEdit.value = producto.subtotal;
+     ivaInputEdit.value = producto.iva;
+
+     if (producto.iva > 0) {
+         ivaUnitario = obtenerIvaUnitario(producto);
+     } else {
+         ivaUnitario = 0;
+     }
+
+     if (producto.descuento > 0) {
+         // Si el descuento es mayor que 0, habilitar el input de descuento
+         inputDescuento.disabled = false;
+         inputDescuento.value = producto.descuento;
+
+         // Seleccionar el radio de descuento fijo
+         descuentoValorFijo.checked = true;
+         // Deseleccionar el radio de descuento porcentaje
+         descuentoPorcentaje.checked = false;
+         descuentoBtn.disabled = true;
+     } else {
+         // Si el descuento es 0, deshabilitar el input de descuento
+         inputDescuento.disabled = true;
+         inputDescuento.value = 0;
+
+         // Desseleccionar ambos radios
+         descuentoValorFijo.checked = false;
+         descuentoPorcentaje.checked = false;
+     }
+
+     calcularTotalEditItem();
+     // Mostrar el modal
+     modal.style.display = "block";
+
+
+ }
+
+ inputDescuento.addEventListener('change', function() {
+     calcularTotalEditItem
+ (); // Llamar a la función calcularTotalEditItem cuando cambie el valor del inputDescuento
+ });
+
+ // Función para manejar el evento onchange de los radio inputs
+ function handleChange() {
+     if (descuentoPorcentaje.checked) {
+         // Si se selecciona el descuento porcentaje, habilitar el inputDescuento
+         inputDescuento.disabled = false;
+         inputDescuento.maxLength = 2; // Establecer el máximo a 2 dígitos
+         inputDescuento.placeholder = 'Ingrese porcentaje (%)';
+     } else if (descuentoValorFijo.checked) {
+         // Si se selecciona el descuento valor fijo, habilitar el inputDescuento
+         inputDescuento.disabled = false;
+         inputDescuento.maxLength =
+         totalPrecioCompraInputEdit; // Establecer el máximo al valor almacenado en totalPrecioCompraInputEdit
+         inputDescuento.placeholder = 'Ingrese valor fijo ($)';
+     }
+ }
+
+ function obtenerIvaUnitario(producto) {
+     const valorIvaUnitario = producto.iva / producto.cantidad;
+
+     return valorIvaUnitario;
+ }
+
+ btnIncrementarEditar.addEventListener("click", function() {
+     // Obtener el valor actual del input y convertirlo a un número
+     let cantidad = parseInt(cantidadInputEdit.value);
+
+     // Incrementar la cantidad
+     cantidad += 1;
+
+     // Actualizar el valor del input
+     cantidadInputEdit.value = cantidad;
+
+     calcularTotalEditItem();
+ });
+
+ btnDecrementarEditar.addEventListener("click", function() {
+     // Obtener el valor actual del input y convertirlo a un número
+     let cantidad = parseInt(cantidadInputEdit.value);
+
+     // Incrementar la cantidad
+     cantidad -= 1;
+
+     // Actualizar el valor del input
+     cantidadInputEdit.value = cantidad;
+     calcularTotalEditItem();
+ });
+
+ function calcularTotalEditItem() {
+     const cantidad = parseFloat(cantidadInputEdit.value);
+     const precio = parseFloat(precioUnitarioInputEdit.value);
+     const descuento = parseFloat(inputDescuento.value);
+
+     // Verificar si las entradas son números válidos
+     if (!isNaN(cantidad) && !isNaN(precio)) {
+         // Calcular el total sin descuento
+         let total = cantidad * precio;
+
+         // Aplicar el descuento si hay un valor en el inputDescuento
+         if (!isNaN(descuento)) {
+             if (descuento > 0) {
+                 // Si hay descuento, determinar si es por valor fijo o porcentaje
+                 if (descuento > 99) {
+                     // Descuento por valor fijo
+                     total -= descuento; // Restar el valor fijo al total
+                     totalDescontado = descuento;
+                 } else {
+                     // Descuento por porcentaje
+                     totalDescontado = total * (descuento / 100); // Calcular el descuento por porcentaje
+                     total -= totalDescontado; // Restar el descuento al total
+                 }
+             } else {
+                 totalDescontado = 0; // No hay descuento
+             }
+         }
+
+         // Calcular el IVA
+         ivaInputEdit.value = Math.round(ivaUnitario * cantidad);
+
+         // Actualizar el input de total con el descuento aplicado
+         totalPrecioCompraInputEdit.value = total.toFixed(0);
+     } else {
+         spanTotal.textContent = "Error"; //
+     }
+ }
+
+ actualizarItemVentaBtn.addEventListener('click', function() {
+     let ordersPos = JSON.parse(localStorage.getItem('ordersPos')) || [];
+
+     let item_actualizar = {};
+
+     item_actualizar.key = productoEditar.key;
+     item_actualizar.producto_id = productoEditar.producto_id;
+     item_actualizar.forma = productoEditar.forma;
+     item_actualizar.nombre = productoEditar.nombre;
+     item_actualizar.code = productoEditar.code;
+     item_actualizar.cantidad = cantidadInputEdit.value;
+     item_actualizar.precio_unitario = precioUnitarioInputEdit.value;
+     item_actualizar.descuento = totalDescontado;
+     item_actualizar.total = totalPrecioCompraInputEdit.value;
+     item_actualizar.iva = ivaUnitario;
+
+     ordersPos[indiceItem] = item_actualizar;
+
+     // Actualizar el localStorage con el array actualizado ordersPos
+     localStorage.setItem('ordersPos', JSON.stringify(ordersPos));
+
+     mostrarDatosLocalStorageEnTabla();
+
+     cerrarModalYLimpiar();
+
+ });
+
+ function cerrarModalYLimpiar() {
+     const modal = document.getElementById("editProductSaleModal");
+
+     modal.style.display = "none";
+
+
+     ivaUnitario = 0;
+     productoEditar = '';
+     indiceItem = '';
+     ivaInputEdit.value = '';
+     precioUnitarioInputEdit.value = '';
+     inputDescuento.value = '';
+     selectPresentacionEdit = '';
+     cantidadInputEdit = '';
+     totalPrecioCompraInputEdit = '';
+
+
+
+
+     // Puedes agregar más limpieza de variables aquí según sea necesario
+
+ }
+
+cerrarModalBtn.addEventListener('click', cerrarModalYLimpiar);
+
+
+
+ document.querySelectorAll('.fila-datos').forEach(function(row) {
+     row.addEventListener('dblclick', function() {
+         var index = this.rowIndex - 1; // Restar 1 para obtener el índice correcto
+         var orders = JSON.parse(localStorage.getItem('ordersPos')) || [];
+         var order = orders[index];
+         mostrarModalEditarItem(order);
+     });
+ });
+
+
+
+
+ // Llamar a la función para mostrar los datos del localStorage en la tabla cuando se cargue la página
+ mostrarDatosLocalStorageEnTabla();
+
+ /*------------------------------------------------Alertas sweet Alert ---------------------------------*/
+ function mostrarError(mensaje) {
+     Swal.fire({
+         icon: 'error',
+         title: 'Error',
+         text: mensaje
+     });
+ }
+
+
+ window.addEventListener("proceso-guardado", (event) => {
+     const numeroVenta = event.detail.venta;
+     limpiarLocalStorage();
+
+
+     Swal.fire({
+         icon: "success",
+         title: "Venta realizada correctamente",
+         text: `Número de venta: ${numeroVenta}`,
+         showConfirmButton: false,
+         timer: 1500,
+     });
+     setTimeout(() => {
+         location.reload();
+     }, 1500);
+ });
+
+ function limpiarLocalStorage() {
+     let orders = JSON.parse(localStorage.getItem("ordersPos")) || [];
+
+     // Filtrar los pedidos que quieres mantener en un nuevo array
+     let filteredOrders = orders.filter(order => {
+         return false; // Esto elimina todos los pedidos
+     });
+
+     // Actualizar el localStorage con los datos filtrados
+     localStorage.setItem("ordersPos", JSON.stringify(filteredOrders));
+ }
+
+
+

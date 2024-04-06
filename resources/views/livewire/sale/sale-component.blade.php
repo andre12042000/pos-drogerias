@@ -197,15 +197,19 @@
     </div>
 
 </div>
+@include('modals.sale.edit_product_added_to_sale')
 
 
 
 <script>
     /*--------------------Asignación de variables a objetos html ---------------*/
-
+    var ivaUnitario = 0; //Usado en el modal de editar Item
+    var totalDescontado = 0;
+    let indiceItem;
+    let productoEditar;
     const tipoOperacion = document.getElementById('tipoOperacion');
     const botonEjecutar = document.getElementById('pagarBtn');
-    const nroCotizacion = document.getElementById('codigo_cotizacion');
+    const inputCodigoCotizacion = document.getElementById('codigo_cotizacion');
     const cliente = document.getElementById('cliente');
     const mensajeErrorCliente = document.getElementById('cambiarClienteHelp');
     const mensajeErrorMetodoPagoHelp = document.getElementById('cambiarMetodoPagoHelp');
@@ -235,6 +239,77 @@
     const iva = spanIva ? parseFloat(spanIva.textContent) : 0;
     const total = spanTotal ? parseFloat(spanTotal.textContent) : 0;
 
+
+    // Variables Modal Editar Item
+
+    const selectPresentacionEdit = document.getElementById("selectPresentacionEdit");
+    const cantidadInputEdit = document.getElementById("cantidadInputEdit");
+    const precioUnitarioInputEdit = document.getElementById("precioUnitarioInputEdit");
+    const totalPrecioCompraInputEdit = document.getElementById("totalPrecioCompraInputEdit");
+    const ivaInputEdit = document.getElementById("ivaInputEdit");
+    const inputDescuento = document.getElementById("inputDescuento");
+    const descuentoPorcentaje = document.getElementById('descuentoPorcentaje');
+    const descuentoValorFijo = document.getElementById('descuentoValorFijo');
+    const btnIncrementarEditar = document.getElementById("btnIncrementarEditar");
+    const btnDecrementarEditar = document.getElementById("btnDecrementarEditar");
+    const cancelarTransaccionBtn = document.getElementById("cancelarTransaccion");
+    const cerrarModalBtn = document.getElementById("cerrarModalBtn");
+    const descuentoBtn = document.getElementById("descuentoBtn");
+    const actualizarItemVentaBtn = document.getElementById('actualizarItemVenta');
+
+    // Agregar el evento onchange a los radio inputs
+    descuentoPorcentaje.addEventListener('change', handleChange);
+    descuentoValorFijo.addEventListener('change', handleChange);
+
+
+    /*---------------------------------Logica para proceso de cotizacion -----------------------*/
+
+
+
+        inputCodigoCotizacion.addEventListener('keyup', function(event) {
+            // Verificar si la tecla presionada es "Enter" (código de tecla 13)
+            if (event.keyCode === 13) {
+                // Obtener el valor del input
+                const valorInput = inputCodigoCotizacion.value;
+
+                // Emitir un evento Livewire con el valor como parámetro
+                Livewire.emit('buscarCotizacion', valorInput);
+            }
+        });
+
+
+        window.addEventListener('datos-cotizacion', function(event) {  //Evento que trae los datos desde el backend
+        // Capturas los datos pasados desde Laravel
+        const data = event.detail.datos;
+        const productos = data.productos;
+        cliente.value = data.cliente;
+        tipoOperacion.value = "VENTA";
+
+        console.log(productos);
+
+        // Almacenas los datos en el localStorage
+        localStorage.setItem('ordersPos', JSON.stringify(productos));
+
+        mostrarDatosLocalStorageEnTabla();
+    });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /*------------------------------------Hasta aqui toda la logica de cotizacion -----------------*/
+
+
+
     botonEjecutar.addEventListener('click', function() {
         // Código a ejecutar cuando se haga clic en el botón
         ejecutarProcesoGuardado();
@@ -248,12 +323,12 @@
     });
 
     MetodoPago.onchange = function() {
-            if (MetodoPago.value === '1') {
-                radioSi.checked = true;
-            } else {
-                radioNo.checked = true;
-            }
-        };
+        if (MetodoPago.value === '1') {
+            radioSi.checked = true;
+        } else {
+            radioNo.checked = true;
+        }
+    };
 
 
     function asignarValoresTotalesAVista() {
@@ -346,6 +421,11 @@
             row.insertCell().textContent = order.code; // Código del producto
             row.insertCell().textContent = order.nombre; // Descripción del producto
 
+            // Agregar evento doble clic a la fila
+            row.addEventListener('dblclick', function() {
+                mostrarModalEditarItem(order, index); // Pasar el objeto de pedido como argumento
+            });
+
             // Mostrar el texto correspondiente según la forma del producto
             var formaText = '';
             if (order.forma === 'disponible_caja') {
@@ -401,6 +481,8 @@
             iconEliminar.addEventListener('click', function() {
                 eliminarOrden(index);
             });
+
+
         });
 
         calcularTotales();
@@ -546,6 +628,210 @@
 
     }
 
+    // Metodo para editar pedido
+
+    function mostrarModalEditarItem(producto, index) {
+        const modal = document.getElementById("editProductSaleModal");
+        indiceItem = index;
+        productoEditar = producto;
+
+        const modalContent = document.getElementById("modalContent");
+
+
+        selectPresentacionEdit.value = producto.forma;
+        cantidadInputEdit.value = producto.cantidad;
+        precioUnitarioInputEdit.value = producto.precio_unitario;
+        totalPrecioCompraInputEdit.value = producto.subtotal;
+        ivaInputEdit.value = producto.iva;
+
+        if (producto.iva > 0) {
+            ivaUnitario = obtenerIvaUnitario(producto);
+        } else {
+            ivaUnitario = 0;
+        }
+
+        if (producto.descuento > 0) {
+            // Si el descuento es mayor que 0, habilitar el input de descuento
+            inputDescuento.disabled = false;
+            inputDescuento.value = producto.descuento;
+
+            // Seleccionar el radio de descuento fijo
+            descuentoValorFijo.checked = true;
+            // Deseleccionar el radio de descuento porcentaje
+            descuentoPorcentaje.checked = false;
+            descuentoBtn.disabled = true;
+        } else {
+            // Si el descuento es 0, deshabilitar el input de descuento
+            inputDescuento.disabled = true;
+            inputDescuento.value = 0;
+
+            // Desseleccionar ambos radios
+            descuentoValorFijo.checked = false;
+            descuentoPorcentaje.checked = false;
+        }
+
+        calcularTotalEditItem();
+        // Mostrar el modal
+        modal.style.display = "block";
+
+
+    }
+
+    inputDescuento.addEventListener('change', function() {
+        calcularTotalEditItem
+    (); // Llamar a la función calcularTotalEditItem cuando cambie el valor del inputDescuento
+    });
+
+    // Función para manejar el evento onchange de los radio inputs
+    function handleChange() {
+        if (descuentoPorcentaje.checked) {
+            // Si se selecciona el descuento porcentaje, habilitar el inputDescuento
+            inputDescuento.disabled = false;
+            inputDescuento.maxLength = 2; // Establecer el máximo a 2 dígitos
+            inputDescuento.placeholder = 'Ingrese porcentaje (%)';
+        } else if (descuentoValorFijo.checked) {
+            // Si se selecciona el descuento valor fijo, habilitar el inputDescuento
+            inputDescuento.disabled = false;
+            inputDescuento.maxLength =
+            totalPrecioCompraInputEdit; // Establecer el máximo al valor almacenado en totalPrecioCompraInputEdit
+            inputDescuento.placeholder = 'Ingrese valor fijo ($)';
+        }
+    }
+
+    function obtenerIvaUnitario(producto) {
+        const valorIvaUnitario = producto.iva / producto.cantidad;
+
+        return valorIvaUnitario;
+    }
+
+    btnIncrementarEditar.addEventListener("click", function() {
+        // Obtener el valor actual del input y convertirlo a un número
+        let cantidad = parseInt(cantidadInputEdit.value);
+
+        // Incrementar la cantidad
+        cantidad += 1;
+
+        // Actualizar el valor del input
+        cantidadInputEdit.value = cantidad;
+
+        calcularTotalEditItem();
+    });
+
+    btnDecrementarEditar.addEventListener("click", function() {
+        // Obtener el valor actual del input y convertirlo a un número
+        let cantidad = parseInt(cantidadInputEdit.value);
+
+        // Incrementar la cantidad
+        cantidad -= 1;
+
+        // Actualizar el valor del input
+        cantidadInputEdit.value = cantidad;
+        calcularTotalEditItem();
+    });
+
+    function calcularTotalEditItem() {
+        const cantidad = parseFloat(cantidadInputEdit.value);
+        const precio = parseFloat(precioUnitarioInputEdit.value);
+        const descuento = parseFloat(inputDescuento.value);
+
+        // Verificar si las entradas son números válidos
+        if (!isNaN(cantidad) && !isNaN(precio)) {
+            // Calcular el total sin descuento
+            let total = cantidad * precio;
+
+            // Aplicar el descuento si hay un valor en el inputDescuento
+            if (!isNaN(descuento)) {
+                if (descuento > 0) {
+                    // Si hay descuento, determinar si es por valor fijo o porcentaje
+                    if (descuento > 99) {
+                        // Descuento por valor fijo
+                        total -= descuento; // Restar el valor fijo al total
+                        totalDescontado = descuento;
+                    } else {
+                        // Descuento por porcentaje
+                        totalDescontado = total * (descuento / 100); // Calcular el descuento por porcentaje
+                        total -= totalDescontado; // Restar el descuento al total
+                    }
+                } else {
+                    totalDescontado = 0; // No hay descuento
+                }
+            }
+
+            // Calcular el IVA
+            ivaInputEdit.value = Math.round(ivaUnitario * cantidad);
+
+            // Actualizar el input de total con el descuento aplicado
+            totalPrecioCompraInputEdit.value = total.toFixed(0);
+        } else {
+            spanTotal.textContent = "Error"; //
+        }
+    }
+
+    actualizarItemVentaBtn.addEventListener('click', function() {
+        let ordersPos = JSON.parse(localStorage.getItem('ordersPos')) || [];
+
+        let item_actualizar = {};
+
+        item_actualizar.key = productoEditar.key;
+        item_actualizar.producto_id = productoEditar.producto_id;
+        item_actualizar.forma = productoEditar.forma;
+        item_actualizar.nombre = productoEditar.nombre;
+        item_actualizar.code = productoEditar.code;
+        item_actualizar.cantidad = cantidadInputEdit.value;
+        item_actualizar.precio_unitario = precioUnitarioInputEdit.value;
+        item_actualizar.descuento = totalDescontado;
+        item_actualizar.total = totalPrecioCompraInputEdit.value;
+        item_actualizar.iva = ivaUnitario;
+
+        ordersPos[indiceItem] = item_actualizar;
+
+        // Actualizar el localStorage con el array actualizado ordersPos
+        localStorage.setItem('ordersPos', JSON.stringify(ordersPos));
+
+        mostrarDatosLocalStorageEnTabla();
+
+        cerrarModalYLimpiar();
+
+    });
+
+    function cerrarModalYLimpiar() {
+        const modal = document.getElementById("editProductSaleModal");
+
+        modal.style.display = "none";
+
+
+        ivaUnitario = 0;
+        productoEditar = '';
+        indiceItem = '';
+        ivaInputEdit.value = '';
+        precioUnitarioInputEdit.value = '';
+        inputDescuento.value = '';
+        selectPresentacionEdit = '';
+        cantidadInputEdit = '';
+        totalPrecioCompraInputEdit = '';
+
+
+
+
+        // Puedes agregar más limpieza de variables aquí según sea necesario
+
+    }
+
+cerrarModalBtn.addEventListener('click', cerrarModalYLimpiar);
+
+
+
+    document.querySelectorAll('.fila-datos').forEach(function(row) {
+        row.addEventListener('dblclick', function() {
+            var index = this.rowIndex - 1; // Restar 1 para obtener el índice correcto
+            var orders = JSON.parse(localStorage.getItem('ordersPos')) || [];
+            var order = orders[index];
+            mostrarModalEditarItem(order);
+        });
+    });
+
+
+
 
     // Llamar a la función para mostrar los datos del localStorage en la tabla cuando se cargue la página
     mostrarDatosLocalStorageEnTabla();
@@ -558,6 +844,14 @@
             text: mensaje
         });
     }
+
+    window.addEventListener("error-busqueda", (event) => {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'No hay datos disponibles'
+        });
+    });
 
 
     window.addEventListener("proceso-guardado", (event) => {
