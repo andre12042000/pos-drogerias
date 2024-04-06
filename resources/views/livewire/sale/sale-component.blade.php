@@ -198,6 +198,7 @@
 
 </div>
 @include('modals.sale.edit_product_added_to_sale')
+@include('modals.sale.add_product_code')
 
 
 
@@ -262,30 +263,323 @@
     descuentoValorFijo.addEventListener('change', handleChange);
 
 
-    /*---------------------------------Logica para proceso de cotizacion -----------------------*/
+    /*---------------------Variables para el modal de crear producto por code -----------------------*/
+
+    const ivaInputCreate = document.getElementById("ivaInputCreate");
+    const selectPresentacionCreate = document.getElementById("selectPresentacionCreate");
+    const cantidadInputCreate = document.getElementById("cantidadInputCreate");
+    const inputDescuentoCreate = document.getElementById("inputDescuentoCreate");
+    const totalPrecioCompraInputCreate = document.getElementById("totalPrecioCompraInputCreate");
+    const precioUnitarioInputCreate = document.getElementById("precioUnitarioInputCreate");
+    const cancelarTransaccionCreate = document.getElementById("cancelarTransaccionCreate");
+    const guardarItemVenta = document.getElementById("guardarItemVenta");
+
+    const descuentoPorcentajeCreate = document.getElementById('descuentoPorcentajeCreate');
+    const descuentoValorFijoCreate = document.getElementById('descuentoValorFijoCreate');
+    const btnIncrementarCreate = document.getElementById("btnIncrementarCreate");
+    const btnDecrementarCreate = document.getElementById("btnDecrementarCreate");
+
+    const cerrarModalBtnCreate = document.getElementById("cerrarModalBtnCreate");
+    const descuentoBtnCreate = document.getElementById("descuentoBtnCreate");
+
+    descuentoPorcentajeCreate.addEventListener('change', handleChangeDescuentoCreate);
+    descuentoValorFijoCreate.addEventListener('change', handleChangeDescuentoCreate);
 
 
+    /*---------------------Buscar producto codigo de barras --------------------------------------*/
 
-        inputCodigoCotizacion.addEventListener('keyup', function(event) {
-            // Verificar si la tecla presionada es "Enter" (código de tecla 13)
-            if (event.keyCode === 13) {
-                // Obtener el valor del input
-                const valorInput = inputCodigoCotizacion.value;
+    buscarProductoCodigo.addEventListener('keyup', function(event) {
+        if (event.keyCode === 13) {
+            // Obtener el valor del input
+            const valorInput = buscarProductoCodigo.value;
 
+            if (valorInput.length > 3) {
                 // Emitir un evento Livewire con el valor como parámetro
-                Livewire.emit('buscarCotizacion', valorInput);
+                Livewire.emit('buscarProductoCodigo', valorInput);
+            } else {
+                // Aquí puedes agregar una acción adicional si el valor no supera los 3 dígitos, por ejemplo, mostrar un mensaje de error.
+                console.log("El valor ingresado debe tener más de 3 dígitos.");
             }
+        }
+    });
+
+    window.addEventListener('seleccionarProductoEvent', function(event) { //Evento que trae los datos desde el backend
+
+        // Mostrar el modal
+        const modal = document.getElementById("addProductCode");
+        const modalContent = document.getElementById("modalContent");
+        modal.style.display = "block";
+
+        productoEditar = event.detail;
+
+        let precioUnico = obtenerPrecioSuperiorACero(productoEditar);
+        let tipo;
+        let precioventa;
+
+        if (precioUnico) {
+            if (precioUnico === "precio_caja") {
+                tipo = 'disponible_caja';
+                precioventa = productoEditar.precio_caja;
+
+
+
+            } else if (precioUnico === "precio_blister") {
+                tipo = 'disponible_blister';
+                precioventa = productoEditar.precio_blister; // Corregido aquí
+            } else {
+                tipo = 'disponible_unidad';
+                precioventa = productoEditar.precio_unidad; // Corregido aquí
+            }
+
+            selectPresentacionCreate.value = tipo;
+            precioUnitarioInputCreate.value = precioventa;
+            totalPrecioCompraInputCreate.value = precioventa;
+
+            deshabilitarOpcionesSelect(precioUnico);
+        }
+
+    });
+
+    function deshabilitarOpcionesSelect(precioUnico)
+    {
+        const opciones = selectPresentacionCreate.options;
+
+        // Iterar sobre las opciones y deshabilitar según la condición
+        for (let i = 0; i < opciones.length; i++) {
+            if (precioUnico === "precio_caja") {
+                if (opciones[i].value === 'disponible_blister' || opciones[i].value === 'disponible_unidad') {
+                    opciones[i].disabled = true;
+                }
+            } else if (precioUnico === "precio_blister") {
+                if (opciones[i].value === 'disponible_caja' || opciones[i].value === 'disponible_unidad') {
+                    opciones[i].disabled = true;
+                }
+            } else {
+                if (opciones[i].value === 'disponible_caja' || opciones[i].value === 'disponible_blister') {
+                    opciones[i].disabled = true;
+                }
+            }
+        }
+    }
+
+    btnIncrementarCreate.addEventListener("click", function() {
+        // Obtener el valor actual del input y convertirlo a un número
+        let cantidad = parseInt(cantidadInputCreate.value);
+
+        // Incrementar la cantidad
+        cantidad += 1;
+
+        // Actualizar el valor del input
+        cantidadInputCreate.value = cantidad;
+
+        calcularTotalCreateItem();
+    });
+
+    btnDecrementarCreate.addEventListener("click", function() {
+        // Obtener el valor actual del input y convertirlo a un número
+        let cantidad = parseInt(cantidadInputCreate.value);
+
+        // Incrementar la cantidad
+        if (cantidad >= 1) {
+            cantidad -= 1;
+        } else {
+            cantidad = 1;
+        }
+
+
+        // Actualizar el valor del input
+        cantidadInputCreate.value = cantidad;
+        calcularTotalCreateItem();
+    });
+
+    inputDescuentoCreate.addEventListener('change', function() {
+        calcularTotalCreateItem();
+    });
+
+    function handleChangeDescuentoCreate() {
+        if (descuentoPorcentajeCreate.checked) {
+            // Si se selecciona el descuento porcentaje, habilitar el inputDescuento
+            inputDescuentoCreate.disabled = false;
+            inputDescuentoCreate.maxLength = 2; // Establecer el máximo a 2 dígitos
+            inputDescuentoCreate.placeholder = 'Ingrese porcentaje (%)';
+        } else if (descuentoValorFijoCreate.checked) {
+            // Si se selecciona el descuento valor fijo, habilitar el inputDescuento
+            inputDescuentoCreate.disabled = false;
+            inputDescuentoCreate.maxLength =
+                totalPrecioCompraInputEdit; // Establecer el máximo al valor almacenado en totalPrecioCompraInputEdit
+            inputDescuentoCreate.placeholder = 'Ingrese valor fijo ($)';
+        }
+    }
+
+    inputDescuentoCreate.addEventListener('change', function() {
+        calcularTotalCreateItem
+    (); // Llamar a la función calcularTotalEditItem cuando cambie el valor del inputDescuento
+    });
+
+    function calcularTotalCreateItem() {
+        const cantidad = parseFloat(cantidadInputCreate.value);
+        const precio = parseFloat(precioUnitarioInputCreate.value);
+        const descuento = parseFloat(inputDescuentoCreate.value);
+
+        // Verificar si las entradas son números válidos
+        if (!isNaN(cantidad) && !isNaN(precio)) {
+            // Calcular el total sin descuento
+            let total = cantidad * precio;
+
+            // Aplicar el descuento si hay un valor en el inputDescuento
+            if (!isNaN(descuento)) {
+                if (descuento > 0) {
+                    // Si hay descuento, determinar si es por valor fijo o porcentaje
+                    if (descuento > 99) {
+                        // Descuento por valor fijo
+                        total -= descuento; // Restar el valor fijo al total
+                        totalDescontado = descuento;
+                    } else {
+                        // Descuento por porcentaje
+                        totalDescontado = total * (descuento / 100); // Calcular el descuento por porcentaje
+                        total -= totalDescontado; // Restar el descuento al total
+                    }
+                } else {
+                    totalDescontado = 0; // No hay descuento
+                }
+            }
+
+            // Calcular el IVA
+            ivaInputCreate.value = Math.round(ivaUnitario * cantidad);
+
+            // Actualizar el input de total con el descuento aplicado
+            totalPrecioCompraInputCreate.value = total.toFixed(0);
+        } else {
+            spanTotal.textContent = "Error"; //
+        }
+    }
+
+
+
+
+    function obtenerPrecioSuperiorACero(producto) {
+        var verificar = {
+            precio_caja: producto.precio_caja,
+            precio_blister: producto.precio_blister,
+            precio_unidad: producto.precio_unidad
+        };
+
+        var preciosMayoresACero = Object.keys(verificar).filter(function(key) {
+            return verificar[key] > 0;
         });
 
+        if (preciosMayoresACero.length === 1) {
+            return preciosMayoresACero[0];
+        } else {
+            return null;
+        }
+    }
 
-        window.addEventListener('datos-cotizacion', function(event) {  //Evento que trae los datos desde el backend
+
+    guardarItemVenta.addEventListener('click', function() {
+
+        let item = {};
+
+        item.cantidad = cantidadInputCreate.value;
+        item.code = productoEditar.code;
+        item.descuento = parseInt(totalDescontado);
+        item.iva = parseInt(ivaInputEdit.value);
+        item.key = generarKey();
+        item.nombre = productoEditar.name;
+        item.precio_unitario = parseInt(precioUnitarioInputCreate.value);
+        item.producto_id = productoEditar.id;
+        item.total = parseInt(totalPrecioCompraInputCreate.value);
+        item.forma = selectPresentacionCreate.value;
+
+
+
+        // Verificar si el producto ya existe
+        const productoExistente = verificarExistencia(item.producto_id, item.forma);
+
+        // Si el producto ya existe, emitir un mensaje de error
+        if (productoExistente) {
+            alert('pailas');
+            return;
+        } else {
+            // Si el producto no existe, guardar el registro en el local storage
+            let ordersPos = JSON.parse(localStorage.getItem('ordersPos')) || [];
+            ordersPos.push(item);
+            localStorage.setItem('ordersPos', JSON.stringify(ordersPos));
+            console.log('Producto registrado correctamente.');
+        }
+
+
+
+        mostrarDatosLocalStorageEnTabla();
+
+        cerrarModalYLimpiarCreate();
+
+    });
+
+    function generarKey() {
+        const fechaHoraActual = new Date();
+        const key =
+            `${fechaHoraActual.getFullYear()}${fechaHoraActual.getMonth()}${fechaHoraActual.getDate()}${fechaHoraActual.getHours()}${fechaHoraActual.getMinutes()}${fechaHoraActual.getSeconds()}${fechaHoraActual.getMilliseconds()}`;
+        return key;
+    }
+
+    function verificarExistencia(producto_id, forma) {
+        const ordersPos = JSON.parse(localStorage.getItem('ordersPos')) || [];
+        return ordersPos.some(item => item.producto_id === producto_id && item.forma === forma);
+    }
+
+    function cerrarModalYLimpiarCreate() {
+        const modal = document.getElementById("addProductCode");
+
+        modal.style.display = "none";
+
+
+        ivaUnitario = 0;
+        productoEditar = '';
+        indiceItem = '';
+        ivaInputCreate.value = '';
+        precioUnitarioInputCreate.value = '';
+        inputDescuentoCreate.value = '';
+        selectPresentacionCreate = '';
+        cantidadInputCreate = '';
+        totalPrecioCompraInputCreate = '';
+
+
+
+
+        // Puedes agregar más limpieza de variables aquí según sea necesario
+
+    }
+
+    cerrarModalBtnCreate.addEventListener('click', cerrarModalYLimpiarCreate);
+
+
+
+
+
+    /*---------------------Hasta aqui la logica producto codigo de barras --------------------------------------*/
+
+
+    /*---------------------------------Logica para proceso de cotizacion -----------------------*/
+
+    inputCodigoCotizacion.addEventListener('keyup', function(event) {
+        // Verificar si la tecla presionada es "Enter" (código de tecla 13)
+        if (event.keyCode === 13) {
+            // Obtener el valor del input
+            const valorInput = inputCodigoCotizacion.value;
+
+            // Emitir un evento Livewire con el valor como parámetro
+            Livewire.emit('buscarCotizacion', valorInput);
+        }
+    });
+
+
+    window.addEventListener('datos-cotizacion', function(event) { //Evento que trae los datos desde el backend
         // Capturas los datos pasados desde Laravel
         const data = event.detail.datos;
         const productos = data.productos;
         cliente.value = data.cliente;
         tipoOperacion.value = "VENTA";
-
-        console.log(productos);
 
         // Almacenas los datos en el localStorage
         localStorage.setItem('ordersPos', JSON.stringify(productos));
@@ -293,21 +587,7 @@
         mostrarDatosLocalStorageEnTabla();
     });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
     /*------------------------------------Hasta aqui toda la logica de cotizacion -----------------*/
-
 
 
     botonEjecutar.addEventListener('click', function() {
@@ -443,7 +723,11 @@
             precioUnitarioCell.classList.add('align-right'); // Alinear a la derecha
 
             // Cantidad del producto
-            row.insertCell().textContent = order.cantidad;
+
+            var cantidadCell = row.insertCell();
+            cantidadCell.textContent = order.cantidad;
+            cantidadCell.classList.add('text-center'); // Alineación al centro
+
 
             // IVA formateado como moneda
             var ivaCell = row.insertCell();
@@ -693,7 +977,7 @@
             // Si se selecciona el descuento valor fijo, habilitar el inputDescuento
             inputDescuento.disabled = false;
             inputDescuento.maxLength =
-            totalPrecioCompraInputEdit; // Establecer el máximo al valor almacenado en totalPrecioCompraInputEdit
+                totalPrecioCompraInputEdit; // Establecer el máximo al valor almacenado en totalPrecioCompraInputEdit
             inputDescuento.placeholder = 'Ingrese valor fijo ($)';
         }
     }
@@ -783,6 +1067,7 @@
         item_actualizar.total = totalPrecioCompraInputEdit.value;
         item_actualizar.iva = ivaUnitario;
 
+
         ordersPos[indiceItem] = item_actualizar;
 
         // Actualizar el localStorage con el array actualizado ordersPos
@@ -817,7 +1102,7 @@
 
     }
 
-cerrarModalBtn.addEventListener('click', cerrarModalYLimpiar);
+    cerrarModalBtn.addEventListener('click', cerrarModalYLimpiar);
 
 
 

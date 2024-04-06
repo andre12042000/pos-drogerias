@@ -28,7 +28,21 @@ class SaleComponent extends Component
     public $error_search = false;
 
 
-    protected $listeners = ['almacenarTransaccion', 'buscarCotizacion'];
+    protected $listeners = ['almacenarTransaccion', 'buscarCotizacion', 'buscarProductoCodigo'];
+
+    public function buscarProductoCodigo($code)
+    {
+        $product = Product::where('code', $code)->first();
+
+        if($product){
+            $this->dispatchBrowserEvent('seleccionarProductoEvent', $product);
+        }else{
+            $mensaje = 'El producto no existe';
+            $this->dispatchBrowserEvent('error-busqueda', ['mensaje' => $mensaje]);
+        }
+
+
+    }
 
     public function buscarCotizacion($codigo)
     {
@@ -81,10 +95,6 @@ class SaleComponent extends Component
        }
     }
 
-    function obtenerDetallesCotizacion()
-    {
-
-    }
 
     public function Mount()
     {
