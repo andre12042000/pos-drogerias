@@ -136,7 +136,7 @@
 
     <div class="row ">
         <div class="col-lg-12">
-            <div class="card card-info" style="height: 350px;">
+            <div class="card bg-info" style="height: 350px;">
                 <div class="card-header border-0">
                     <div class="d-flex justify-content-between">
                         <h3 class="">Ingresos de {{ $mes_actual }} </h3>
@@ -147,7 +147,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="card-body">
+                <div class="card-body" style="background-color: #c4eefb; color:black">
                     <div class="position-relative mb-4">
                         {{-- <canvas id="salesChart"  style="height: 180px;"></canvas> --}}
                         <canvas id="chart" style="height: 500px;" height="180px"></canvas>
