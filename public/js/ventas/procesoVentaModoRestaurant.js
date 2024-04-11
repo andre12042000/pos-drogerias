@@ -337,6 +337,8 @@ function filtrarPedidosPorMesa(numMesa) {
             `;
         });
     }
+}
+
 
     // Mostrar los pedidos de la mesa seleccionada en el div cuentas_por_mesas
     document.getElementById("cuentas_por_mesas").innerHTML =
