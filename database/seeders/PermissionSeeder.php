@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Permission;
 
 class PermissionSeeder extends Seeder
@@ -14,82 +15,86 @@ class PermissionSeeder extends Seeder
      */
     public function run()
     {
-        Permission::create([
+        Permission::query()->delete();
+        $table = 'permissions';
+        $resetAutoIncrementQuery = "ALTER TABLE $table AUTO_INCREMENT = 1;";
+        DB::statement($resetAutoIncrementQuery);
+        Permission::updateOrCreate([
             'name' => 'Acceso Reportes',
         ]);
 
-        Permission::create([
+        Permission::updateOrCreate([
             'name' => 'Acceso Movimientos',
         ]);
 
-        Permission::create([
+        Permission::updateOrCreate([
             'name' => 'Acceso Pos',
         ]);
 
-        Permission::create([
+        Permission::updateOrCreate([
             'name' => 'Acceso Venta Mesa',
         ]);
 
-        Permission::create([
+        Permission::updateOrCreate([
             'name' => 'Acceso Cotizaciones',
         ]);
 
-        Permission::create([
+        Permission::updateOrCreate([
             'name' => 'Acceso Consumo Interno',
         ]);
 
-        Permission::create([
+        Permission::updateOrCreate([
             'name' => 'Acceso Gastos',
         ]);
 
-        Permission::create([
+        Permission::updateOrCreate([
             'name' => 'Acceso Ordenes Trabajo',
         ]);
 
-        Permission::create([
+        Permission::updateOrCreate([
             'name' => 'Acceso Facturacion',
         ]);
 
 
 
-        Permission::create([
+        Permission::updateOrCreate([
             'name' => 'Acceso Inventario',
         ]);
 
-        Permission::create([
+        Permission::updateOrCreate([
             'name' => 'Acceso Compras',
         ]);
 
-        Permission::create([
+        Permission::updateOrCreate([
             'name' => 'Acceso Producto',
         ]);
-        Permission::create([
+        Permission::updateOrCreate([
             'name' => 'Acceso Producto Crear',
         ]);
-        Permission::create([
+        Permission::updateOrCreate([
             'name' => 'Acceso Producto Editar',
         ]);
-        Permission::create([
+        Permission::updateOrCreate([
             'name' => 'Acceso Producto Ajustar',
         ]);
 
-        Permission::create([
+        Permission::updateOrCreate([
             'name' => 'Acceso Producto Stock Bajo',
         ]);
 
-        Permission::create([
+        Permission::updateOrCreate([
             'name' => 'Acceso Terceros',
         ]);
 
-        Permission::create([
+        Permission::updateOrCreate([
             'name' => 'Acceso Clientes',
         ]);
 
-        Permission::create([
+        Permission::updateOrCreate([
             'name' => 'Acceso Proveedores',
         ]);
 
-        Permission::create([
+        Permission::updateOrCreate([
             'name' => 'Acceso Parametros',
         ]);
 
@@ -97,17 +102,17 @@ class PermissionSeeder extends Seeder
 
 
 
-        Permission::create([
+        Permission::updateOrCreate([
             'name' => 'Acceso Seguridad',
         ]);
 
-        Permission::create([
+        Permission::updateOrCreate([
             'name' => 'Acceso Usuario',
         ]);
-        Permission::create([
+        Permission::updateOrCreate([
             'name' => 'Acceso Roles',
         ]);
-        Permission::create([
+        Permission::updateOrCreate([
             'name' => 'Acceso Configuración',
         ]);
 
@@ -116,11 +121,11 @@ class PermissionSeeder extends Seeder
 
 //posibles
 
-Permission::create([
+Permission::updateOrCreate([
     'name' => 'Acceso Mantenimiento',
 ]);
 
-Permission::create([
+Permission::updateOrCreate([
     'name' => 'Acceso Equipo',
 ]);
 
