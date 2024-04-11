@@ -94,7 +94,7 @@
     </tbody>
     </table>
 
-@include('modals.products.corregirproducts')
+{{-- @include('modals.products.corregirproducts') --}}
 </div>
 
 <script>

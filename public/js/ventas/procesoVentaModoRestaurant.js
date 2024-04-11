@@ -276,7 +276,7 @@ function filtrarPedidosPorMesa(numMesa) {
             </div>
             <div class="col text-end">
                 <div class="form-check mr-4">
-                    <input type="checkbox" class="form-check-input" id="pagar_todo_mesa_${numMesa}" style="cursor:pointer;" value="PagarTodo_${numMesa}" onchange="calcularTotalPagar(${numMesa}, 'todo')">
+                    <input type="checkbox" class="form-check-input" id="pagar_todo_mesa_${numMesa}" style="cursor:pointer;" value="PagarTodo_${numMesa}" onchange="pagarTodo(${numMesa})">
                     <label for="pagar_todo_mesa_${numMesa}">Pagar Todo</label>
                 </div>
             </div>
@@ -305,12 +305,10 @@ function filtrarPedidosPorMesa(numMesa) {
                     </div>
                     <div class="col text-end">
                         <div class="form-check mr-4">
-                            <input type="checkbox" class="form-check-input" id="pagar_ronda_mesa_${numMesa}_${pedidoIndex}" style="cursor:pointer;" value="${
-                pedido.key
-            }" onchange="calcularTotalPagar(${numMesa}, 'pedido', '${
-                pedido.key
-            }')">
-                            <label for="pagar_ronda_mesa_${numMesa}_${pedidoIndex}">Pagar Pedido</label>
+                        <input type="checkbox" class="form-check-input" id="pagar_ronda_mesa_${numMesa}_${pedidoIndex}" style="cursor:pointer;" value="${pedido.key}" onchange="pagarPorPedido(${numMesa}, '${pedido.key}', '${pedidoIndex}')">
+
+
+                            <label for="pagarPorPedido${numMesa}_${pedidoIndex}">Pagar Pedido</label>
                         </div>
                     </div>
                 </div>
@@ -322,7 +320,7 @@ function filtrarPedidosPorMesa(numMesa) {
                 const uniqueItemId = `item_${numMesa}_${pedidoIndex}_${itemIndex}`;
                 cuentasPorMesasHTML += `
                     <li class="list-group-item d-flex justify-content-between align-items-center" id="${uniqueItemId}"> <!-- Usar uniqueItemId como ID del LI -->
-                        <div><input class="form-check-input ml-2" type="checkbox" value="${item.key}" id="${uniqueItemId}_checkbox" style="margin-top: -6px;" onchange="calcularTotalPagar(${numMesa}, 'item', '${item.key}')"></div>
+                        <div><input class="form-check-input ml-2" type="checkbox" value="${item.key}" id="${uniqueItemId}_checkbox" style="margin-top: -6px;" onchange="obtenerDetallesSeleccionados(${numMesa})"></div>
                         <div style="width: 30%;">${item.nombre}</div>
                         <div style="width: 10%;">Cant. ${item.cantidad}</div>
                         <div style="width: 20%;">Precio Unit: $${item.precio_unitario}</div>
@@ -344,6 +342,160 @@ function filtrarPedidosPorMesa(numMesa) {
     document.getElementById("cuentas_por_mesas").innerHTML =
         cuentasPorMesasHTML;
 }
+
+function pagarTodo(numMesa) {
+    // Obtener el checkbox de Pagar Todo
+    const pagarTodoCheckbox = document.getElementById(`pagar_todo_mesa_${numMesa}`);
+
+    // Verificar si el checkbox está habilitado
+    if (!pagarTodoCheckbox.checked) {
+
+        // Si está deshabilitado, deseleccionar todos los checkboxes y salir
+        deseleccionarTodosCheckboxes(numMesa);
+
+        return;
+    }
+    // Obtener los elementos checkbox de detalles de la mesa seleccionada
+    const checkboxes = document.querySelectorAll(`input[type="checkbox"][id^="item_${numMesa}"]`);
+    // Recorrer los checkboxes y seleccionarlos
+    checkboxes.forEach((checkbox) => {
+        checkbox.checked = true;
+    });
+
+    // Llamar a la función para calcular el total a pagar
+    obtenerDetallesSeleccionados(numMesa);
+}
+
+function pagarPorPedido(numMesa, keyPedido, pedidoIndex) {
+
+    // Obtener los detalles del pedido del localStorage usando su número de mesa y número de pedido
+    const mesaString = "Mesa " + numMesa;
+    const orders = JSON.parse(localStorage.getItem("orders")) || [];
+    const pedido = orders.find(order => order.mesa === mesaString && order.key === keyPedido);
+
+    if (!pedido) {
+        console.log(`No se encontró el pedido con la clave ${keyPedido} en la Mesa ${numMesa}.`);
+        return;
+    }
+
+    // Verificar si el checkbox del pedido está seleccionado
+    const checkboxPedido = document.getElementById(`pagar_ronda_mesa_${numMesa}_${pedidoIndex}`);
+    const pedidoSeleccionado = checkboxPedido.checked;
+
+    pedido.detalles.forEach((item, itemIndex) => {
+        // Generar un identificador único para cada ítem
+        const checkboxId = `item_${numMesa}_${pedidoIndex}_${itemIndex}_checkbox`;
+
+        // Buscar el checkbox en el DOM
+        const checkbox = document.getElementById(checkboxId);
+        // Verificar si se encontró el checkbox y seleccionarlo si es así
+        if (checkbox) {
+            checkbox.checked = pedidoSeleccionado;
+        } else {
+            console.log(`No se encontró el checkbox con el id ${checkboxId}.`);
+        }
+    });
+
+    // Calcular el total a pagar después de seleccionar los detalles del pedido
+    obtenerDetallesSeleccionados(numMesa);
+}
+
+
+function deseleccionarTodosCheckboxes(numMesa) {
+    // Obtener todos los checkboxes de detalles de la mesa seleccionada
+    const checkboxes = document.querySelectorAll(`input[type="checkbox"][id^="item_${numMesa}"]`);
+
+    // Recorrer los checkboxes y deseleccionarlos
+    checkboxes.forEach((checkbox) => {
+        checkbox.checked = false;
+    });
+
+    // Llamar a la función para calcular el total a pagar
+    obtenerDetallesSeleccionados(numMesa);
+}
+
+
+
+
+
+
+function obtenerDetallesTupla(mesa, keyitem) {
+    // Obtener los detalles de la tupla del localStorage usando su clave
+    const mesaString = "Mesa " + mesa;
+
+    // Obtener los pedidos del localStorage
+    const orders = JSON.parse(localStorage.getItem("orders")) || [];
+
+    // Inicializar el detalle encontrado
+    let detalleTuplaEncontrado = null;
+
+    // Recorrer todos los pedidos de la mesa
+    orders.forEach((pedidoMesa) => {
+        // Verificar si el pedido corresponde a la mesa especificada
+        if (pedidoMesa.mesa === mesaString) {
+            // Buscar el detalle que coincide con la keyitem en los detalles del pedido
+            const detalleTupla = pedidoMesa.detalles.find((detalle) => detalle.key === keyitem);
+
+            // Si se encontró el detalle, asignarlo a detalleTuplaEncontrado y salir del bucle
+            if (detalleTupla) {
+                detalleTuplaEncontrado = detalleTupla;
+                return; // Salir del bucle forEach
+            }
+        }
+    });
+
+    // Devolver el detalle encontrado
+    return detalleTuplaEncontrado;
+}
+
+
+
+function obtenerDetallesSeleccionados(numMesa) {
+    // Array para almacenar las claves de los detalles seleccionados
+    let detallesSeleccionados = [];
+
+    // Obtener los elementos checkbox de detalles de la mesa seleccionada
+    const checkboxes = document.querySelectorAll(`input[type="checkbox"][id^="item_${numMesa}"]:checked`);
+
+    // Recorrer los checkboxes seleccionados y obtener las claves
+    checkboxes.forEach((checkbox) => {
+        const key = checkbox.value;
+        const tuplaPagar = obtenerDetallesTupla(numMesa, key);
+        detallesSeleccionados.push(tuplaPagar);
+    });
+
+    const tipoPago = 'pagoItem';
+    calcularTotalPagar(numMesa, tipoPago, detallesSeleccionados);
+
+}
+
+function calcularTotalPagar(numMesa, tipoPago, detallesSeleccionados) {
+    let totalPagar = 0;
+    let tuplasAPagar = [];
+
+    detallesSeleccionados.forEach((item) => {
+        // Sumar el total del item al total a pagar
+        totalPagar += item.total;
+
+        // Agregar la tupla a pagar al array
+        tuplasAPagar.push({
+            mesa: numMesa,
+            producto_id: item.producto_id,
+            keyitem: item.key,
+            forma: item.forma,
+            cantidad: item.cantidad,
+            precio_unitario: item.precio_unitario,
+            total: item.total,
+            tipo: tipoPago,
+        });
+    });
+
+    // Llamar a la función para pasar los valores a la vista
+    pasarValoresPagoVista(totalPagar, tuplasAPagar);
+
+    return totalPagar;
+}
+
 
 function eliminarItemMesa(mesa, pedido, producto) {
     // Mostrar el SweetAlert de confirmación
@@ -372,118 +524,7 @@ function eliminarItemMesa(mesa, pedido, producto) {
 /* ------------------------ Proceso para realizar el pago -----------------------
     -------------------------------------------------------------------------------*/
 
-function calcularTotalPagar(numMesa, tipoPago, keyPago) {
-    console.log(numMesa, tipoPago, keyPago);
-    resultadoCalculo = {};
-    // Obtener los pedidos del localStorage
-    let orders = JSON.parse(localStorage.getItem("orders"));
 
-    // Filtrar los pedidos para la mesa seleccionada
-
-    // Inicializar el total a pagar
-    let totalPagar = 0;
-
-    // Array para almacenar las tuplas que se pagarán y que deben ser eliminadas del localStorage
-    let tuplasAPagar = [];
-
-    // Obtener los checkboxes seleccionados y calcular el total
-
-    // Obtener el estado del checkbox pagar_todo_mesa_
-    const pagarTodoCheckbox = document.getElementById(
-        `pagar_todo_mesa_${numMesa}`
-    );
-    const pagarTodo = pagarTodoCheckbox.checked;
-
-    // Obtener los checkboxes seleccionados y calcular el total
-
-    if (tipoPago === "todo") {
-        let pedidosMesa = orders.filter(
-            (order) => order.mesa === "Mesa " + numMesa
-        );
-
-        pedidosMesa.forEach((pedido, index) => {
-            // Si el cliente decide pagar todo el pedido, agregar el total del pedido al total a pagar
-            let totalPedido = 0;
-            pedido.detalles.forEach((item) => {
-                totalPedido += item.total;
-                // Agregar la tupla a pagar al array
-                tuplasAPagar.push({
-                    mesa: numMesa,
-                    pedidoNro: index + 1,
-                    producto_id: item.producto_id,
-                    forma: item.forma,
-                    cantidad: item.cantidad,
-                    precio_unitario: item.precio_unitario,
-                    total: item.total,
-                    tipo: "pagototal",
-                });
-            });
-            // Agregar el total del pedido al total a pagar
-            totalPagar += totalPedido;
-        });
-    } else if (tipoPago === "pedido") {
-        let pedidosMesa = orders.filter((order) => order.key === keyPago);
-
-        pedidosMesa.forEach((pedido, index) => {
-            // Si el cliente decide pagar todo el pedido, agregar el total del pedido al total a pagar
-            let totalPedido = 0;
-            pedido.detalles.forEach((item) => {
-                totalPedido += item.total;
-                // Agregar la tupla a pagar al array
-                tuplasAPagar.push({
-                    keyPedido: keyPago,
-                    mesa: numMesa,
-                    pedidoNro: index + 1,
-                    producto_id: item.producto_id,
-                    forma: item.forma,
-                    cantidad: item.cantidad,
-                    precio_unitario: item.precio_unitario,
-                    total: item.total,
-                    tipo: "pagoPedido",
-                });
-            });
-            // Agregar el total del pedido al total a pagar
-            totalPagar += totalPedido;
-        });
-    } else if (tipoPago === "item") {
-        let pedidosMesa = orders.filter(
-            (order) => order.mesa === "Mesa " + numMesa
-        );
-
-        pedidosMesa.forEach((pedido, index) => {
-            // Si el cliente decide pagar todo el pedido, agregar el total del pedido al total a pagar
-            let totalPedido = 0;
-            pedido.detalles.forEach((item) => {
-                totalPedido += item.total;
-
-                if (item.key === keyPago) {
-                    // Agregar la tupla a pagar al array
-                    tuplasAPagar.push({
-                        mesa: numMesa,
-                        pedidoNro: index + 1,
-                        producto_id: item.producto_id,
-                        keyitem: keyPago,
-                        forma: item.forma,
-                        cantidad: item.cantidad,
-                        precio_unitario: item.precio_unitario,
-                        total: item.total,
-                        tipo: "pagoItem",
-                    });
-
-                    // Agregar el total del pedido al total a pagar
-                    totalPagar += totalPedido;
-                }
-            });
-        });
-    } else {
-        tuplasAPagar = [];
-        totalPagar = 0;
-    }
-
-    pasarValoresPagoVista(totalPagar, tuplasAPagar);
-
-    return totalPagar;
-}
 
 function pasarValoresPagoVista(totalPagar, tuplasAPagar) {
     let iva = 0;
@@ -564,7 +605,6 @@ pagarBtn.onclick = function () {
 
     var cliente = document.getElementById("cliente").value;
 
-    console.log(subTotal);
 
     Livewire.emit("pagarEvent", {
         resultadoCalculo: resultadoCalculo,
