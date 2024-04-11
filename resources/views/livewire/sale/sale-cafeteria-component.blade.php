@@ -63,7 +63,7 @@
                     {{-- Contenido dinámico --}}
                 </div>
 
-                <div class="card" id="cuentas_por_mesas" style="max-height: 550px; overflow-y: auto;">
+                <div class="card" id="cuentas_por_mesas" style="height: 550px;">
                     {{-- Contenido dinámico --}}
                 </div>
 
@@ -202,10 +202,6 @@
         width: 100px;
         /* Ancho de la etiqueta, ajusta según sea necesario */
     }
-
-
-
-
 </style>
 
 

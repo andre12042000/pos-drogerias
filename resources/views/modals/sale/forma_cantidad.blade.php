@@ -6,6 +6,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
                     id="cerrarModalCantidad"></button>
             </div>
+
             <div class="modal-body p-4">
 
                 <div class="container">
@@ -63,19 +64,10 @@
                 </div>
 
             </div>
-
-
-
             <div class="modal-footer">
-
-                <div class="container text-end">
-                    <button type="button" class="btn btn-outline-success mr-2" id="agregarProductosArrayVenta" style="width: 200px;" >Agregar</button>
+                <button type="button" class="btn btn-success" id="agregarProductosArrayVenta">Agregar</button>
                 <button type="button" class="btn btn-danger" data-bs-dismiss="modal"
-                    id="cancelarModalCantidad" style="display: none;" >Cancelar</button>
-
-                </div>
-
-
+                    id="cancelarModalCantidad">Cancelar</button>
             </div>
         </div>
     </div>
