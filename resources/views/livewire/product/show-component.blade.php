@@ -37,7 +37,7 @@
                                             height="50px">
 
                                     @else
-                                        <img src="{!! Config::get('app.URL') !!}/img/sinimagen.jpg"
+                                        <img src="{!! Config::get('app.URL') !!}/storage/livewire-tem/sin_image_product.jpg"
                                             width="50px">
                                     @endif
                                     </p>

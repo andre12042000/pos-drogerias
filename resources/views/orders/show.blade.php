@@ -24,7 +24,7 @@
                         <img src="{!! Config::get('app.URL') !!}/storage/{{ $empresa->image }}" width="50px"
                             class="mt-0">
                         @else
-                        <img src="{!! Config::get('app.URL') !!}/img/sinimagen.jpg"
+                        <img src="{!! Config::get('app.URL') !!}/storage/livewire-tem/sin_image_product.jpg"
                             width="50px" class="mt-0">
                         @endif
                     </div>
@@ -35,7 +35,7 @@
 
             </div>
 
-            <div class="col-lg-4 text-center"> Nit: {{$empresa->nit}} - {{$empresa->dv}} <br>
+            <div class="col-lg-4 text-center"> Nit: {{$empresa->nit}} <br>
                 Tel: {{$empresa->telefono}} <br>
                 Correo: {{$empresa->email}}
 

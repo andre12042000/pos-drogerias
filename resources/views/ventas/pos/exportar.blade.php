@@ -10,7 +10,7 @@
                         <span class="mb-3">{{ mb_strtoupper($empresa->name) }} <br> SUCURSAL 1 <br> <br></span>
                         <br>
                     </th>
-                    <th class="text-right"style="width: 600px"> Nit: {{ $empresa->nit }}  - {{$empresa->dv}} <br>
+                    <th class="text-right"style="width: 600px"> Nit: {{ $empresa->nit }} <br>
                         Teléfono: {{ $empresa->telefono }}
 
                         @isset($empresa->direccion)

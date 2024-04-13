@@ -102,7 +102,7 @@ class SaleController extends Controller
             $printer->text("\n");
             $printer->setJustification(Printer::JUSTIFY_CENTER);
             $printer->text(strtoupper($empresa->name) . "\n");
-            $printer->text("NIT: " . $empresa->nit . "-"  . $empresa->dv .  "\n");
+            $printer->text("NIT: " . $empresa->nit . "\n");
             $printer->text("Telefono: " . $empresa->telefono . "\n");
             $printer->text($empresa->email . "\n");
             $printer->text($empresa->direccion . "\n");
