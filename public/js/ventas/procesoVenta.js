@@ -247,13 +247,15 @@
 
      // Recorrer los productos y calcular los totales
      orders.forEach(function(order) {
-         subtotal += order.precio_unitario * order.cantidad; // Calcular subtotal
+         total += order.precio_unitario * order.cantidad; // Calcular subtotal
          descuentoTotal += order.descuento; // Sumar descuentos
          ivaTotal += order.iva; // Sumar impuestos
      });
 
      // Calcular total sumando el subtotal, el impuesto y restando el descuento
-     total = subtotal + ivaTotal - descuentoTotal;
+     //total = subtotal + ivaTotal - descuentoTotal;
+
+     subtotal = total - (ivaTotal - descuentoTotal);
 
      spanSubTotal.textContent = formatCurrency(subtotal);
      spanDescuento.textContent = formatCurrency(descuentoTotal);

@@ -496,7 +496,8 @@
 
         // Si el producto ya existe, emitir un mensaje de error
         if (productoExistente) {
-            alert('pailas');
+            alert('No es posible añadir este producto, ya ha sido agregado a la lista anteriormente');
+            cerrarModalYLimpiarCreate();
             return;
         } else {
             // Si el producto no existe, guardar el registro en el local storage
@@ -505,8 +506,6 @@
             localStorage.setItem('ordersPos', JSON.stringify(ordersPos));
             console.log('Producto registrado correctamente.');
         }
-
-
 
         mostrarDatosLocalStorageEnTabla();
 
@@ -781,21 +780,23 @@
 
         // Recorrer los productos y calcular los totales
         orders.forEach(function(order) {
-            subtotal += order.precio_unitario * order.cantidad; // Calcular subtotal
+            total += order.precio_unitario * order.cantidad; // Calcular subtotal
             descuentoTotal += order.descuento; // Sumar descuentos
             ivaTotal += order.iva; // Sumar impuestos
         });
 
         // Calcular total sumando el subtotal, el impuesto y restando el descuento
-        total = subtotal + ivaTotal - descuentoTotal;
+        subtotal = total - (ivaTotal - descuentoTotal);
 
+        var subTotalSinDecimales = Math.round(subtotal).toFixed(0);
         var ivaSinDecimales = Math.round(ivaTotal).toFixed(0);
         var descuentoSinDecimales = Math.round(descuentoTotal).toFixed(0);
+        var totalSinDecimales = Math.round(total).toFixed(0);
 
-        spanSubTotal.textContent = formatCurrency(subtotal);
+        spanSubTotal.textContent = formatCurrency(subTotalSinDecimales);
         spanDescuento.textContent = formatCurrency(descuentoSinDecimales);
         spanIva.textContent = formatCurrency(ivaSinDecimales);
-        spanTotal.textContent = formatCurrency(total);
+        spanTotal.textContent = formatCurrency(totalSinDecimales);
 
         cambiarEstadoBotonPagar(total);
 
@@ -852,13 +853,23 @@
             mostrarError(mensaje);
         }
 
-        const radios = document.querySelectorAll('input[name="opcionRadio"]');
+       // const radios = document.querySelectorAll('input[name="opcionRadio"]');
         let imprimir;
         // Iterar sobre los radios para verificar cuál está seleccionado
-        radios.forEach(radio => {
+
+        var radioSi = document.getElementById('opcionSi');
+        var radioNo = document.getElementById('opcionNo');
+
+        if (radioSi.checked) {
+            imprimir = radioSi.value;
+        } else if (radioNo.checked) {
+            imprimir = radioNo.value;
+        }
+
+       /*  radios.forEach(radio => {
             // Obtener el valor del radio seleccionado
             imprimir = radio.value;
-        });
+        }); */
 
         let totales = calcularTotales();
 

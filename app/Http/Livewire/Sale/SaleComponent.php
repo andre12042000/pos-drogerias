@@ -359,7 +359,6 @@ class SaleComponent extends Component
     function guardarTipoVenta($dataVenta)  //Incluye proceso de venta y venta crédito
     {
      try {
-
         $tipo = $dataVenta['tipoOperacion'];
 
          DB::transaction(function () use ($tipo, $dataVenta) {
@@ -428,14 +427,14 @@ class SaleComponent extends Component
                 self::cortesia($venta);
             }
 
+
             event(new  VentaRealizada($venta));
 
-            if ($dataVenta['imprimir'] > 0) {
-                self::Imprimirecibo($venta->id);
-            }
-
-
             $this->dispatchBrowserEvent('proceso-guardado', ['venta' => $venta->full_nro]);
+
+            if ($dataVenta['imprimir'] === "1") {
+                return redirect()->route('ventas.pos.imprimir.recibo', $venta->id);
+            }
 
           });
         } catch (\Exception $e) {
@@ -450,6 +449,8 @@ class SaleComponent extends Component
 
             report($e->getMessage());
         }
+
+
     }
 
     function detallesVenta($venta, $dataProducts)
@@ -534,8 +535,8 @@ class SaleComponent extends Component
 
     public function Imprimirecibo($venta)
     {
-
         return redirect()->route('ventas.pos.imprimir.recibo', $venta);
+
     }
 
     /*-----------------Pasar los datos a caja -----------------------*/

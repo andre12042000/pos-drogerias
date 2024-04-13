@@ -42,7 +42,6 @@ class HomeController extends Controller
             $currentMonth = $filter_fecha;
         }
 
-
         $mes_actual = ucfirst(utf8_encode(\Carbon\Carbon::now()->locale('es')->monthName));
 
 
