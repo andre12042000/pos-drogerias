@@ -71,6 +71,7 @@ class SaleController extends Controller
 
     public function imprimirrecibo($id)
     {
+
         try {
             $printerName =  $this->obtenerimpresora();
 
