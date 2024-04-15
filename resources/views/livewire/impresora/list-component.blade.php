@@ -6,7 +6,7 @@
 
             <div class="row">
                 <div class="col-sm-6">
-                    <h3>Categorías</h3>
+                    <h3>Impresora</h3>
                 </div>
 
 
