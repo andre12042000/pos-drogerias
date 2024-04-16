@@ -139,7 +139,7 @@
             <div class="card bg-info" style="height: 350px;">
                 <div class="card-header border-0">
                     <div class="d-flex justify-content-between">
-                        <h3 class="">Ingresos de {{ $mes_actual }} </h3>
+                        <h3 class="">Ingresos de {{\Carbon\Carbon::parse($mes_actual)->locale('es_ES')->translatedFormat(('F'))}} </h3>
                         <div class="d-flex">
                             <p class="d-flex flex-column">
                                 <span class="mt-2">Total ingresos $ {{ number_format($total_ingresos, 0) }} </span>
