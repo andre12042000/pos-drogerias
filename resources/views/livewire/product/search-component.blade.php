@@ -151,7 +151,7 @@
                 };
                 orders.push(newOrder);
             }
-
+console.log(newOrder);
             localStorage.setItem('ordersPos', JSON.stringify(orders));
 
             mostrarDatosLocalStorageEnTabla();
