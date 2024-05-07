@@ -103,15 +103,20 @@
     function handlePriceClick(event) {
         var target = event.target;
 
-        console.log(target);
 
         if (target.tagName === 'TD' && target.classList.contains('price-cell')) {
+
 
             let row = target.parentNode; // Obtener la fila completa
             let productData = JSON.parse(row.getAttribute('data-product'));
             let selectedOption = target.getAttribute('data-option');
             let precio_unitario = 0;
             let iva = 0;
+
+            if(parseInt(productData.inventario.cantidad_caja) === 0 && parseInt(productData.inventario.cantidad_blister) === 0 && parseInt(productData.inventario.cantidad_unidad) === 0){
+                mostrarError('No hay productos en stock, por favor verifica el inventario y vuelve a intentarlo');
+                return;
+            }
 
             if (selectedOption === 'disponible_caja') {
                 precio_unitario = productData.precio_caja;
@@ -135,6 +140,7 @@
                 // Si el producto ya está en el pedido con la misma forma, aumenta la cantidad y actualiza el total
                 existingOrder.cantidad++;
                 existingOrder.total = existingOrder.cantidad * existingOrder.precio_unitario;
+                existingOrder.iva = existingOrder.cantidad * iva;
             } else {
                 // Si el producto no está en el pedido o tiene una forma diferente, agrega un nuevo pedido
                 var newOrder = {

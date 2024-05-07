@@ -15,9 +15,8 @@
                 <div class="form-group row" style="margin-bottom: 20px;">
                   <label for="selectPresentacionCreate" class="col-form-label col-md-4 mt-1">Presentación</label>
                   <div class="col-md-8">
-                    <select class="form-select form-select-lg" id="selectPresentacionCreate" aria-label="Floating label select example">
-                      <option value="">Seleccione una opción</option>
-                      <option value="disponible_caja">Caja</option>
+                    <select class="form-select form-select-lg" id="selectPresentacionCreate" aria-label="Floating label select example" onchange="cambiarModoPresentacion()" >
+                      <option value="disponible_caja" selected>Caja</option>
                       <option value="disponible_blister">Blister</option>
                       <option value="disponible_unidad">Unidad</option>
                     </select>

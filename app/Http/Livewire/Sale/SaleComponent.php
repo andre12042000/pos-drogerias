@@ -32,13 +32,41 @@ class SaleComponent extends Component
 
     public function buscarProductoCodigo($code)
     {
-        $product = Product::where('code', $code)->first();
+        $product = Product::where('code', $code)->with('inventario')->first();
 
         if($product){
-            $this->dispatchBrowserEvent('seleccionarProductoEvent', $product);
+            if($product->inventario->cantidad_caja === "0" && $product->inventario->cantidad_blister === "0" && $product->inventario->cantidad_unidad === "0"){
+                $mensaje = 'No hay stock del producto' . $product->name . ' verifica el inventario y vuelve a intentarlo';
+                $this->dispatchBrowserEvent('mostrarErrorLivewire', ['mensaje' => $mensaje]);
+                return false;
+            }
+
+            if($product->disponible_caja == 1 && $product->disponible_blister == 0 && $product->disponible_unidad == 0){
+
+                $dataProduct = [];  //En caso que el producto solo este disponible por caja, pasa directamente al localstorage
+
+                $dataProduct = [
+                    'code'              => $product->code,
+                    'descuento'         => 0,
+                    'forma'             => 'disponible_caja',
+                    'iva'               => $product->valor_iva_caja,
+                    'key'               => date('YmdHis'),
+                    'nombre'            => $product->name,
+                    'precio_unitario'   => $product->precio_caja,
+                    'producto_id'       => $product->id,
+                    'total'             => $product->precio_caja,
+                    'cantidad'          => 1,
+                ];
+
+                $this->dispatchBrowserEvent('addProductLocalStorageDesdeCode', ['dataProduct' => $dataProduct]);
+            }else{
+                $this->dispatchBrowserEvent('seleccionarProductoEvent', $product);
+            }
+
         }else{
-            $mensaje = 'El producto no existe';
-            $this->dispatchBrowserEvent('error-busqueda', ['mensaje' => $mensaje]);
+            $mensaje = 'El producto con codigo: ' . $code . '  no existe';
+            $this->dispatchBrowserEvent('mostrarErrorLivewire', ['mensaje' => $mensaje]);
+            return false;
         }
 
 
