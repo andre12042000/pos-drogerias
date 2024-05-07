@@ -41,8 +41,15 @@ class HomeController extends Controller
         } else {
             $currentMonth = $filter_fecha;
         }
+        if($currentMonth != $mes_actual){
+            Carbon::setLocale('es');
+            $fecha = Carbon::createFromFormat('Y-m', $currentMonth);
+            $mes_actual = $fecha->format('F');
 
-        $mes_actual = ucfirst(utf8_encode(\Carbon\Carbon::now()->locale('es')->monthName));
+        }else{
+            $mes_actual = ucfirst(utf8_encode(\Carbon\Carbon::now()->locale('es')->monthName));
+
+        }
 
 
 

@@ -1,8 +1,11 @@
 <div>
     @include('popper::assets')
+    @section('title', 'Orden De Trabajo')
 
+<div class="py-2">
+    <a href="{{ route('orders.index') }}" class="btn btn-outline-secondary float-end"><i class="bi bi-arrow-left-circle"></i> Atrás</a>
 
-
+</div>
     <div class="card-body mt-4">
         <div class="row">
             <div class="col-lg-5">
