@@ -42,7 +42,7 @@
                         <span class="input-group-text" id="basic-addon1"><i class="bi bi-search"></i></span>
                         <input type="text" class="form-control" placeholder="Buscar orden" aria-label="Username"
                             aria-describedby="basic-addon1" wire:model="buscar">
-                        <button type="button" class="btn btn-outline-light float-right ml-2" onclick="redirigir()">Nueva
+                        <button type="button" class="btn btn-outline-light float-right ml-2"  data-toggle="modal" data-target="#ordenModal">Nueva
                             orden <i class="las la-plus-circle"></i></button>
                     </div>
 

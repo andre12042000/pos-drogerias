@@ -22,6 +22,11 @@ class Purchase extends Model
         return $this->belongsTo(Provider::class);
     }
 
+    public function metodopago()
+    {
+        return $this->belongsTo(metodopago::class, 'payment_method');
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);
