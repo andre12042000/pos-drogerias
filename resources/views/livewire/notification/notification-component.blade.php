@@ -44,7 +44,7 @@
                         </div>
                     </div> --}}
                     <div class="col-sm-3"> <a class=" btn btn-outline-light"
-                            href="{{ route('markAsRead') }}" id="mark-all"><strong><i class="bi bi-check2-all"></i> Marcar
+                            href="{{ route('markAsRead') }}" id="mark-all"><strong class="text-dark"><i class="bi bi-check2-all"></i> Marcar
                                 todas como leídas</strong></a>
                     </div>
                 </div>
