@@ -293,6 +293,8 @@
         var totalDescontado = 0;
         let indiceItem;
         let productoEditar;
+        let productosSeleccionados = [];
+
 
 
         const buscarProductoCodigo = document.getElementById('buscarProductoCodigo');
@@ -534,27 +536,38 @@
 
 
 
-            // Verificar si el producto ya existe
-            const productoExistente = verificarExistencia(item.producto_id, item.forma);
+            productosSeleccionados.push(item); // Agregar el producto a la matriz temporal
 
-            // Si el producto ya existe, emitir un mensaje de error
-            if (productoExistente) {
-                alert('No es posible añadir este producto, ya ha sido agregado a la lista anteriormente');
-                cerrarModalYLimpiarCreate();
-                return;
-            } else {
-                // Si el producto no existe, guardar el registro en el local storage
-                let ordersPos = JSON.parse(localStorage.getItem('ordersPos')) || [];
-                ordersPos.push(item);
-                localStorage.setItem('ordersPos', JSON.stringify(ordersPos));
-                console.log('Producto registrado correctamente.');
-            }
-
-            mostrarDatosLocalStorageEnTabla();
-
-            cerrarModalYLimpiarCreate();
+    mostrarDatosEnTabla(productosSeleccionados); // Mostrar los datos en la tabla
+    cerrarModalYLimpiarCreate(); // Cerrar el modal y limpiar los campos
 
         });
+
+        function mostrarDatosEnTabla(productos) {
+    var tablaBody = document.querySelector('#tablaProductos tbody');
+
+    // Limpiar tabla antes de agregar datos
+    tablaBody.innerHTML = '';
+
+    productos.forEach(function(producto, index) {
+        var row = tablaBody.insertRow(); // Insertar una nueva fila en la tabla
+
+        // Insertar celdas en la fila
+        // ... tu lógica para insertar las celdas con los datos del producto
+    });
+
+    calcularTotales(productos); // Calcular totales a partir de la matriz de productos
+}
+
+
+function eliminarOrden(index) {
+    if (index >= 0 && index < productosSeleccionados.length) {
+        productosSeleccionados.splice(index, 1);
+        mostrarDatosEnTabla(productosSeleccionados); // Actualizar la tabla después de eliminar
+    } else {
+        console.error("Índice fuera de rango.");
+    }
+}
 
         function generarKey() {
             const fechaHoraActual = new Date();
@@ -583,23 +596,13 @@
             selectPresentacionCreate = '';
             cantidadInputCreate = '';
             totalPrecioCompraInputCreate = '';
-
-
-
-
             // Puedes agregar más limpieza de variables aquí según sea necesario
 
         }
 
         cerrarModalBtnCreate.addEventListener('click', cerrarModalYLimpiarCreate);
 
-
-
-
-
         /*---------------------Hasta aqui la logica producto codigo de barras --------------------------------------*/
-
-
         /*---------------------------------Logica para proceso de cotizacion -----------------------*/
 
         inputCodigoCotizacion.addEventListener('keyup', function(event) {
@@ -659,16 +662,6 @@
             document.querySelector('.total').textContent = total;
         }
 
-        function cambiarEstadoBotonPagar($value) {
-            var btnPagar = botonEjecutar;
-
-            if ($value > 0) {
-                btnPagar.disabled = false;
-            } else {
-                btnPagar.disabled = true;
-            }
-
-        }
 
 
 
@@ -786,7 +779,7 @@
             spanIva.textContent = formatCurrency(ivaSinDecimales);
             spanTotal.textContent = formatCurrency(totalSinDecimales);
 
-            cambiarEstadoBotonPagar(total);
+
 
             // mostrarBotonDescuentoGlobal(total, descuentoTotal);
 
@@ -874,96 +867,6 @@
 
         }
 
-        function validaciones() {
-
-            var total = spanTotal.textContent.trim(); // Elimina espacios en blanco al inicio y al final
-
-            if (total == '0' && total == '') {
-                let mensaje = 'Por favor, agrega al menos un producto para comenzar.'
-                mostrarError(mensaje);
-                return;
-            }
-
-
-            if (tipoOperacion.value === 'COTIZACION' || tipoOperacion.value === 'CREDITO') {
-                if (cliente.value === 1 || cliente.value === '') {
-                    cambiarClienteHelp.style.display = 'block';
-                    return;
-                } else {
-                    cambiarClienteHelp.style.display = 'none';
-                }
-            }
-
-
-            if (tipoOperacion.value === 'VENTA') {
-                if (MetodoPago.value === '3') {
-                    cambiarMetodoPagoHelp.style.display = 'block';
-                    return;
-                } else {
-                    cambiarMetodoPagoHelp.style.display = 'none';
-                }
-
-            }
-
-        }
-
-        function verificarMetodoPagoConProceso() {
-            if (tipoOperacion.value === 'VENTA' && MetodoPago.value === '3') {
-                cambiarMetodoPagoHelp.style.display = 'block';
-            } else {
-                cambiarMetodoPagoHelp.style.display = 'none';
-            }
-
-        }
-
-        // Metodo para editar pedido
-
-        function mostrarModalEditarItem(producto, index) {
-            const modal = document.getElementById("editProductSaleModal");
-            indiceItem = index;
-            productoEditar = producto;
-
-            const modalContent = document.getElementById("modalContent");
-
-
-            selectPresentacionEdit.value = producto.forma;
-            cantidadInputEdit.value = producto.cantidad;
-            precioUnitarioInputEdit.value = producto.precio_unitario;
-            totalPrecioCompraInputEdit.value = producto.subtotal;
-            ivaInputEdit.value = producto.iva;
-
-            if (producto.iva > 0) {
-                ivaUnitario = obtenerIvaUnitario(producto);
-            } else {
-                ivaUnitario = 0;
-            }
-
-            if (producto.descuento > 0) {
-                // Si el descuento es mayor que 0, habilitar el input de descuento
-                inputDescuento.disabled = false;
-                inputDescuento.value = producto.descuento;
-
-                // Seleccionar el radio de descuento fijo
-                descuentoValorFijo.checked = true;
-                // Deseleccionar el radio de descuento porcentaje
-                descuentoPorcentaje.checked = false;
-                descuentoBtn.disabled = true;
-            } else {
-                // Si el descuento es 0, deshabilitar el input de descuento
-                inputDescuento.disabled = true;
-                inputDescuento.value = 0;
-
-                // Desseleccionar ambos radios
-                descuentoValorFijo.checked = false;
-                descuentoPorcentaje.checked = false;
-            }
-
-            calcularTotalEditItem();
-            // Mostrar el modal
-            modal.style.display = "block";
-
-
-        }
 
         inputDescuento.addEventListener('change', function() {
             calcularTotalEditItem
@@ -1098,18 +1001,11 @@
             selectPresentacionEdit = '';
             cantidadInputEdit = '';
             totalPrecioCompraInputEdit = '';
-
-
-
-
             // Puedes agregar más limpieza de variables aquí según sea necesario
 
         }
 
         cerrarModalBtn.addEventListener('click', cerrarModalYLimpiar);
-
-
-
         document.querySelectorAll('.fila-datos').forEach(function(row) {
             row.addEventListener('dblclick', function() {
                 var index = this.rowIndex - 1; // Restar 1 para obtener el índice correcto
@@ -1118,10 +1014,6 @@
                 mostrarModalEditarItem(order);
             });
         });
-
-
-
-
         // Llamar a la función para mostrar los datos del localStorage en la tabla cuando se cargue la página
         mostrarDatosLocalStorageEnTabla();
 
@@ -1172,24 +1064,4 @@
             localStorage.setItem("ordersPos", JSON.stringify(filteredOrders));
         }
     </script>
-
-
-        <script>
-            $(document).ready(function() {
-                $(".js-example-basic-single").select2();
-
-                // Escucha el evento emitido por Livewire cuando se agrega un nuevo cliente
-                window.livewire.on("ClientEvent", function(client) {
-                    // Agrega el nuevo cliente al select2
-                    var option = new Option(client.name, client.id, true, true);
-                    $("#cliente").append(option).trigger("change");
-
-                    // Opcional: Puedes seleccionar automáticamente el nuevo cliente
-                    // $('#cliente').val(client.id).trigger('change');
-
-                    // Opcional: Puedes enfocar y abrir el select2 para que el usuario pueda ver el nuevo cliente
-                    // $('#cliente').select2('open');
-                });
-            });
-        </script>
 </div>

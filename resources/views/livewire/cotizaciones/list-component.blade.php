@@ -69,15 +69,7 @@
                         <td class="text-end">$ {{ number_format($cotizacion->total, 0) }}</td>
 
                         <td class="text-center">
-                                <div class="dropdown">
-                                    <a class=" btn dropdown-toggle"  id="dropdownMenuButton1" data-toggle="dropdown" aria-expanded="false">
-                                     Acciones
-                                    </a>
-                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                      <li><a class="dropdown-item" href="#"> <i class="bi bi-printer"></i> Imprimir </a></li>
-                                      <li><a class="dropdown-item" href="{{ route('cotizaciones.generarpdfcotizacion', $cotizacion->id) }}"><i class="bi bi-filetype-pdf"></i> Descargar PDF </a></li>
-                                    </ul>
-                                  </div>
+                            <a class="btn btn-outline-secondary" href="{{ route('cotizaciones.generarpdfcotizacion', $cotizacion->id) }}" title="Descargar PDF"> <i class="bi bi-filetype-pdf"></i>  </a></li>
 
                         </td>
                     </tr>

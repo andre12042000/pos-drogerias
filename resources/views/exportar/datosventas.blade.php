@@ -355,11 +355,14 @@
     <table class="table table-striped" >
         <thead>
             <tr>
-                <th> <strong>Fecha</strong> </th>
+             {{--    detalles  --}}
+             <th> <strong>Producto</strong> </th>
+             <th> <strong>Forma</strong> </th>
+             <th> <strong>Cantidad</strong> </th>
+             <th> <strong>Precio</strong> </th>
+                {{-- venta --}}
                 <th> <strong>Tipo</strong> </th>
                 <th> <strong>Código</strong> </th>
-                <th> <strong>Vendedor/a</strong> </th>
-                <th> <strong>Cliente</strong> </th>
                 <th> <strong>Metodo de pago</strong> </th>
                 <th> <strong>Total</strong> </th>
 
@@ -369,66 +372,69 @@
 
           @foreach($ventas as $venta)
             @if ($venta->cashesable_type == 'App\Models\Sale')
-                <tr >
-                    <td>{{ \Carbon\Carbon::parse($venta->created_at)->format('d-m-Y h:i A') }}
+
+                @foreach ($venta->cashesable->saleDetails as $detalle)
+<tr>
+                 <td>{{$detalle->product->name}}</td>
+                <td>
+                    @if ($detalle->forma == 'disponible_caja')
+                        Caja
+                    @elseif ( $detalle->forma == 'disponible_blister')
+Blister
+
+                    @else
+                        Unidad
+                    @endif
+
                     </td>
-                    {{-- Tipo de operacion  --}}
-                    <td>
-                        @if ($venta->cashesable_type == 'App\Models\Sale')
-                            @if ($venta->cashesable->tipo_operacion == 'VENTA')
-                                <span class="badge badge-pill badge-primary">
-                                    Venta</span>
-                            @else
-                                <span class="badge badge-pill badge-warning">
-                                    Crédito</span>
-                            @endif
-                        @elseif ($venta->cashesable_type == 'App\Models\PagoCreditos')
-                            <span class="badge badge-pill badge-success">
-                                Pago crédito</span>
-                        @elseif ($venta->cashesable_type == 'App\Models\Gastos')
-                            <span class="badge badge-pill badge-danger">
-                                Gasto</span>
-                        @elseif ($venta->cashesable_type == 'App\Models\ConsumoInterno')
-                            <span class="badge badge-pill badge-secondary">
-                                Consumo Interno</span>
+                <td>{{$detalle->quantity}}</td>
+                <td>{{$detalle->quantity *$detalle->price}}</td>
+                <td>
+                    @if ($venta->cashesable_type == 'App\Models\Sale')
+                        @if ($venta->cashesable->tipo_operacion == 'VENTA')
+                            <span class="badge badge-pill badge-primary">
+                                Venta</span>
                         @else
-                            <span class="badge badge-pill badge-info">
-                                Abono</span>
+                            <span class="badge badge-pill badge-warning">
+                                Crédito</span>
                         @endif
+                    @elseif ($venta->cashesable_type == 'App\Models\PagoCreditos')
+                        <span class="badge badge-pill badge-success">
+                            Pago crédito</span>
+                    @elseif ($venta->cashesable_type == 'App\Models\Gastos')
+                        <span class="badge badge-pill badge-danger">
+                            Gasto</span>
+                    @elseif ($venta->cashesable_type == 'App\Models\ConsumoInterno')
+                        <span class="badge badge-pill badge-secondary">
+                            Consumo Interno</span>
+                    @else
+                        <span class="badge badge-pill badge-info">
+                            Abono</span>
+                    @endif
 
-                    </td>
-                    {{-- Fin Tipo de operacion  --}}
+                </td>
 
-                    {{-- Consecutivo de operacion  --}}
-                    <td>{{ $venta->cashesable->full_nro }}</td>
+                <td>{{ $venta->cashesable->full_nro }}</td>
 
-                    {{-- Usuario que registro  --}}
-                    <td>{{ ucwords($venta->cashesable->user->name) }}</td>
-                    <td>
+                <td>
+                    @if ($venta->cashesable->metodopago)
+                        {{ ucwords($venta->cashesable->metodopago->name) }}
+                    @else
+                        N/A
+                    @endif
 
-                        {{-- Cliente  --}}
-                        @if ($venta->cashesable_type == 'App\Models\Gastos' or $venta->cashesable_type == 'App\Models\ConsumoInterno')
-                            N/A
-                        @else
-                            {{ ucwords($venta->cashesable->client->name) }}
-                        @endif
-                    </td>
-                    {{-- Metodo de pago  --}}
-                    <td>
-                        @if ($venta->cashesable->metodopago)
-                            {{ ucwords($venta->cashesable->metodopago->name) }}
-                        @else
-                            N/A
-                        @endif
-
-                    </td>
+                </td>
+                {{-- total  --}}
+                <td class="text-end">$ {{ number_format($venta->quantity, 0) }}</td>
+</tr>
 
 
-                    {{-- Cantidad  --}}
+              @endforeach
 
-                    <td class="text-end">$ {{ number_format($venta->quantity, 0) }}</td>
 
-                </tr>
+
+
+
             @endif
 
 
