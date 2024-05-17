@@ -47,24 +47,7 @@ class AbonoComponent extends Component
         return view('livewire.abono.abono-component');
     }
 
-    public function updatedAbonar()
-    {
-        if($this->abonar > 0){
-            $data = $this->saldo_operacion - $this->abonar;
 
-
-            $this->nuevo_saldo = round($data, 2);
-
-            if($this->nuevo_saldo < 0)
-            {
-                session()->flash('warning', 'Un saldo no puede ser negativo');
-                return false;
-            }
-        }else{
-            $this->nuevo_saldo = '';
-        }
-
-    }
 
     public function save()
     {

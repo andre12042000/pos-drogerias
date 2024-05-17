@@ -8,7 +8,7 @@ use Livewire\WithPagination;
 
 class BasicSearchComponent extends Component
 {
-    public $buscar;
+    public $buscar,$search;
     use WithPagination;
     protected $paginationTheme = 'bootstrap';
 

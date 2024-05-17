@@ -1,4 +1,4 @@
-<div class="modal fade" id="abonomodal"   data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+<div class="modal fade" id="abonomodal" data-bs-backdrop="statics" aria-labelledby="exampleModalLabel" data-keyboard="true" tabindex="-1"  aria-hidden="false">
 
      @livewire('abono.abono-component')
 

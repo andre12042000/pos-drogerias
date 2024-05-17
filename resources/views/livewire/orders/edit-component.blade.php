@@ -46,15 +46,46 @@
                                 <p> {{ \Carbon\Carbon::parse($fecha)->format('d M Y') }} </p>
                             </li>
 
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <label class="form-control-label" for="num_compra"><strong>Asignado a</strong></label>
-                                <p>
-                                    {{ $asignado }} <button class="btn btn-outlife-success"
-                                        wire:click="sendOrden( {{ $order }} )"><i
-                                            class="bi bi-plus-circle text-success " style="cursor: pointer"
-                                            data-toggle="modal" data-target="#asignadomodal"
-                                            title="Actualizar asignación"></i></button>
-                                </p>
+                            <li class="list-group-item  justify-content-between align-items-center">
+
+                                <div class="form-floating col-12">
+                                    <select class="form-select" id="floatingSelect"
+                                        aria-label="Floating label select example" wire:model="asignado">
+                                        <option selected>Seleccionar Técnico</option>
+                                        @foreach ($tecnicos as $tecnico)
+                                            <option value="{{ $tecnico->id }}">{{ $tecnico->name }}</option>
+                                        @endforeach
+
+
+                                    </select>
+                                    <label for="floatingSelect">Asignar a técnico</label>
+                                </div>
+
+                                @if (session()->has('warning'))
+                                    <div class="alert alert-warning alert-dismissible fade show t:0.2 mt-2 "
+                                        role="alert">
+                                        <i class="bi bi-exclamation-triangle bold"></i> {{ session('warning') }}
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                            aria-label="Close"></button>
+                                    </div>
+
+
+
+                                    {{ session()->forget('warning') }}
+                                @endif
+
+                                @if (session()->has('success'))
+                                    <div class="alert alert-success alert-dismissible fade show t:0.2 mt-2 "
+                                        role="alert">
+                                        <i class="bi bi-exclamation-triangle bold"></i> {{ session('success') }}
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                            aria-label="Close"></button>
+                                    </div>
+
+
+
+                                    {{ session()->forget('success') }}
+                                @endif
                             </li>
 
 
@@ -111,16 +142,27 @@
                         <hr>
 
                         <ul class="mt-5">
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <label class="form-control-label" for="nombre"><strong>TOTAL</strong></label>
-                                <p class="text-bold">$ {{ number_format($valor, 0) }}</p>
-                            </li>
+                            <div class="col columna-cuentas " style="background-color: #d1fad3">
+                                <div class="costo-compra mt-2">
+                                    <label>Subtotal:</label>
+                                    <span class="subtotal float-end text-end"></span>
+                                </div>
+                                <div class="costo-compra mt-2">
+                                    <label>Descuento: </label>
+                                    <span class="descuento float-end text-end"></span>
+                                </div>
 
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <label class="form-control-label" for="nombre"><strong>ABONADO</strong></label>
-                                <p class="text-bold">$ {{ number_format($abono, 0) }}</p>
-                            </li>
-
+                                <div class="costo-compra mt-2">
+                                    <label>IVA:</label>
+                                    <span class="iva float-end text-end"></span>
+                                </div>
+                                <div class="costo-compra mt-1">
+                                    <label>Total:</label>
+                                    <span class="total float-end text-end"
+                                        style="font-size: 24px; font-weight: bold;"></span>
+                                </div>
+                            </div>
+<br>
                             <li
                                 class="list-group-item d-flex justify-content-between align-items-center @if ($saldo > 0) list-group-item-danger
                         @else
@@ -128,13 +170,16 @@
                                 <label class="form-control-label" for="nombre"><strong>SALDO</strong></label>
                                 <p class="text-bold">$ {{ number_format($saldo, 0) }}</p>
                             </li>
+                            @if ($saldo < 0 )
+                            <strong>Nota:  </strong> <span>Tienes un saldo a favor de</span> $ {{ number_format(abs($saldo), 0) }}
+                        @endif
                         </ul>
 
 
                         <ul class="mt-5">
                             <div class="d-grid gap-2">
                                 <button
-                                    class="btn btn-outline-dark float-right @if ($status == 2 || $saldo != 0) disabled @endif"
+                                    class="btn btn-outline-dark float-right @if ($status == 2 || $saldo > 0) disabled @endif"
                                     wire:click = 'cerrar_orden'> Cerrar Orden</button>
 
                             </div>
@@ -164,6 +209,7 @@
                                         <th class="text-right">Precio Unitario</th>
                                         <th class="text-right">Cantidad</th>
                                         <th class="text-right">Subtotal</th>
+                                        <td></td>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -174,6 +220,7 @@
                                             <td class="text-center">$ {{ number_format($detalle->price, 0) }}</td>
                                             <td class="text-center">{{ $detalle->quantity }}</td>
                                             <td class="text-center">$ {{ $detalle->price * $detalle->quantity }}</td>
+                                            <td><a style="cursor: pointer" wire:click="eliminarproducto({{$detalle->id}})"><i class=" text-darkbi bi-trash3-fill"></i></a></td>
 
                                         </tr>
                                     @endforeach
@@ -213,7 +260,7 @@
                                             <td>{{ $loop->iteration }}</td>
                                             <td class="text-center">
                                                 {{ \Carbon\Carbon::parse($abono->created_at)->format('d M
-                                                                                                                                                                                                                                                                                                                                        Y') }}
+                                                                                                                                                                                                                                                                                                                                                                                        Y') }}
                                             </td>
                                             <td class="text-center">{{ $abono->full_nro }}</td>
                                             <td class="text-center">{{ $abono->metodopago }}</td>
@@ -238,7 +285,7 @@
                             <div class="input-group mb-2">
                                 <div class="input-group-prepend">
                                     <i class="bi bi-search mr-3 mt-2" style="cursor: pointer" data-toggle="modal"
-                                        data-target="#searchproduct"></i>
+                                        data-target="#basicsearchproduct"></i>
                                 </div>
                                 <input type="text"
                                     class="form-control @if ($error_search) is-invalid @endif"
@@ -265,6 +312,7 @@
                                     <th scope="col" class="text-end">Precio Unit.</th>
                                     <th scope="col" class="text-center">Cant.</th>
                                     <th scope="col" class="text-end">Iva</th>
+                                    <th scope="col" class="text-end">Descuento</th>
                                     <th scope="col" class="text-end">Total</th>
 
                                 </tr>
@@ -275,31 +323,45 @@
                         </table>
                     </div>
 
+                    <div class="card-footer">
+                        <button class="btn btn-outline-success float-end" id="miBoton">Actualizar Productos</button>
+                    </div>
                 </div>
             </div>
             @livewire('orders.comentario-component', ['order' => $id_order, 'status' => $status])
         </div>
+
     </div>
 
 
-    @include('modals.products.search')
-    @include('modals.orders.updateasig')
+    @include('modals.products.basicbusqueda')
 
 
-    @include('modals.abono.abono')
+
     <script>
+            document.getElementById('miBoton').addEventListener('click', function () {
+                ejecutarProcesoGuardado();
+    });
         /*--------------------Asignación de variables a objetos html ---------------*/
         var ivaUnitario = 0; //Usado en el modal de editar Item
         var totalDescontado = 0;
         let indiceItem;
         let productoEditar;
-        let productosSeleccionados = [];
+        const tipoOperacion = document.getElementById('tipoOperacion');
+        const botonEjecuta = document.getElementById('pagarBtns');
+        const inputCodigoCotizacion = document.getElementById('codigo_cotizacion');
+        const cliente = document.getElementById('cliente');
+        const mensajeErrorCliente = document.getElementById('cambiarClienteHelp');
+        const mensajeErrorMetodoPagoHelp = document.getElementById('cambiarMetodoPagoHelp');
 
-
+        const radioSi = document.getElementById('opcionSi');
+        const radioNo = document.getElementById('opcionNo');
 
         const buscarProductoCodigo = document.getElementById('buscarProductoCodigo');
 
+        const MetodoPago = document.getElementById('selectMetodoPago');
         const CantidadPagada = document.getElementById('inputCantidadPagada');
+        const inputCambio = document.getElementById('inputCambio');
 
         const spanSubTotal = document.querySelector('.subtotal');
         const spanDescuento = document.querySelector('.descuento');
@@ -318,9 +380,67 @@
         const iva = spanIva ? parseFloat(spanIva.textContent) : 0;
         const total = spanTotal ? parseFloat(spanTotal.textContent) : 0;
 
+
+        // Variables Modal Editar Item
+
+        const selectPresentacionEdit = document.getElementById("selectPresentacionEdit");
+        const cantidadInputEdit = document.getElementById("cantidadInputEdit");
+        const precioUnitarioInputEdit = document.getElementById("precioUnitarioInputEdit");
+        const totalPrecioCompraInputEdit = document.getElementById("totalPrecioCompraInputEdit");
+        const ivaInputEdit = document.getElementById("ivaInputEdit");
+        const inputDescuento = document.getElementById("inputDescuento");
+        const descuentoPorcentaje = document.getElementById('descuentoPorcentaje');
+        const descuentoValorFijo = document.getElementById('descuentoValorFijo');
+        const btnIncrementarEditar = document.getElementById("btnIncrementarEditar");
+        const btnDecrementarEditar = document.getElementById("btnDecrementarEditar");
+        const cancelarTransaccionBtn = document.getElementById("cancelarTransaccion");
+        const cerrarModalBtn = document.getElementById("cerrarModalBtn");
+        const descuentoBtn = document.getElementById("descuentoBtn");
+        const actualizarItemVentaBtn = document.getElementById('actualizarItemVenta');
+
         // Agregar el evento onchange a los radio inputs
         descuentoPorcentaje.addEventListener('change', handleChange);
         descuentoValorFijo.addEventListener('change', handleChange);
+
+        function calcularVueltos() {
+        const totalSpan = document.querySelector('.total');
+        const totalTexto = totalSpan.textContent;
+
+        // Eliminar el símbolo de la moneda ($) y los separadores de miles (.)
+        const totalLimpio = totalTexto.replace(/[$.]/g, '');
+
+        // Convertir a número entero
+        const totalEntero = parseInt(totalLimpio);
+
+        const inputCantidadPagada = document.getElementById('inputCantidadPagada');
+        const inputCambio = document.getElementById('inputCambio');
+
+        if (!isNaN(totalEntero)) {
+            // Obtener la cantidad pagada
+            let cantidadPagada = parseFloat(inputCantidadPagada.value);
+
+            // Verificar si la cantidad pagada es válida y mayor que cero
+            if (!isNaN(cantidadPagada) && cantidadPagada > 0) {
+                let cambio = cantidadPagada - totalEntero;
+
+                // Mostrar el cambio solo si es mayor o igual a cero
+                if (cambio >= 0) {
+                    inputCambio.value = cambio.toFixed(0); // Mostrar el cambio sin decimales
+                } else {
+                    inputCambio.value = "La cantidad pagada es insuficiente";
+                }
+            } else {
+                inputCambio.value = "Ingrese una cantidad válida";
+            }
+        } else {
+            inputCambio.value = "No se pudo calcular el cambio";
+        }
+    }
+        function cambioCliente() {
+            if (cliente.value > 1) {
+                cambiarClienteHelp.style.display = 'none';
+            }
+        }
 
 
         /*---------------------Variables para el modal de crear producto por code -----------------------*/
@@ -342,7 +462,8 @@
         const cerrarModalBtnCreate = document.getElementById("cerrarModalBtnCreate");
         const descuentoBtnCreate = document.getElementById("descuentoBtnCreate");
 
-
+        descuentoPorcentajeCreate.addEventListener('change', handleChangeDescuentoCreate);
+        descuentoValorFijoCreate.addEventListener('change', handleChangeDescuentoCreate);
 
 
         /*---------------------Buscar producto codigo de barras --------------------------------------*/
@@ -355,10 +476,15 @@
                 if (valorInput.length > 3) {
                     // Emitir un evento Livewire con el valor como parámetro
                     Livewire.emit('buscarProductoCodigo', valorInput);
+
                 } else {
                     // Aquí puedes agregar una acción adicional si el valor no supera los 3 dígitos, por ejemplo, mostrar un mensaje de error.
-                    console.log("El valor ingresado debe tener más de 3 dígitos.");
+                    let mensaje = 'El producto no existe';
+                    mostrarError(mensaje);
                 }
+
+                limpiarSearchCode();
+
             }
         });
 
@@ -371,54 +497,30 @@
 
             productoEditar = event.detail;
 
-            let precioUnico = obtenerPrecioSuperiorACero(productoEditar);
-            let tipo;
-            let precioventa;
-
-            if (precioUnico) {
-                if (precioUnico === "precio_caja") {
-                    tipo = 'disponible_caja';
-                    precioventa = productoEditar.precio_caja;
-
-
-
-                } else if (precioUnico === "precio_blister") {
-                    tipo = 'disponible_blister';
-                    precioventa = productoEditar.precio_blister; // Corregido aquí
-                } else {
-                    tipo = 'disponible_unidad';
-                    precioventa = productoEditar.precio_unidad; // Corregido aquí
-                }
-
-                selectPresentacionCreate.value = tipo;
-                precioUnitarioInputCreate.value = precioventa;
-                totalPrecioCompraInputCreate.value = precioventa;
-
-                deshabilitarOpcionesSelect(precioUnico);
-            }
-
+            precioUnitarioInputCreate.value = productoEditar.precio_caja;
+            totalPrecioCompraInputCreate.value = productoEditar.precio_caja;
+            deshabilitarOpcionesSelect();
         });
 
-        function deshabilitarOpcionesSelect(precioUnico) {
+        function deshabilitarOpcionesSelect() {
             const opciones = selectPresentacionCreate.options;
 
-            // Iterar sobre las opciones y deshabilitar según la condición
             for (let i = 0; i < opciones.length; i++) {
-                if (precioUnico === "precio_caja") {
-                    if (opciones[i].value === 'disponible_blister' || opciones[i].value === 'disponible_unidad') {
-                        opciones[i].disabled = true;
-                    }
-                } else if (precioUnico === "precio_blister") {
-                    if (opciones[i].value === 'disponible_caja' || opciones[i].value === 'disponible_unidad') {
-                        opciones[i].disabled = true;
-                    }
-                } else {
-                    if (opciones[i].value === 'disponible_caja' || opciones[i].value === 'disponible_blister') {
-                        opciones[i].disabled = true;
-                    }
+                if (opciones[i].value === 'disponible_caja' && productoEditar.disponible_caja === 0) {
+                    opciones[i].disabled = true;
+                }
+
+                if (opciones[i].value === 'disponible_blister' && productoEditar.disponible_blister === 0) {
+                    opciones[i].disabled = true;
+                }
+
+                if (opciones[i].value === 'disponible_unidad' && productoEditar.disponible_unidad === 0) {
+                    opciones[i].disabled = true;
                 }
             }
+
         }
+
 
         btnIncrementarCreate.addEventListener("click", function() {
             // Obtener el valor actual del input y convertirlo a un número
@@ -454,12 +556,45 @@
             calcularTotalCreateItem();
         });
 
+        precioUnitarioInputCreate.addEventListener('blur', function() {
+            calcularTotalCreateItem();
+        });
 
+
+
+        function handleChangeDescuentoCreate() {
+            if (descuentoPorcentajeCreate.checked) {
+                // Si se selecciona el descuento porcentaje, habilitar el inputDescuento
+                inputDescuentoCreate.disabled = false;
+                inputDescuentoCreate.maxLength = 2; // Establecer el máximo a 2 dígitos
+                inputDescuentoCreate.placeholder = 'Ingrese porcentaje (%)';
+            } else if (descuentoValorFijoCreate.checked) {
+                // Si se selecciona el descuento valor fijo, habilitar el inputDescuento
+                inputDescuentoCreate.disabled = false;
+                inputDescuentoCreate.maxLength =
+                    totalPrecioCompraInputEdit; // Establecer el máximo al valor almacenado en totalPrecioCompraInputEdit
+                inputDescuentoCreate.placeholder = 'Ingrese valor fijo ($)';
+            }
+        }
 
         inputDescuentoCreate.addEventListener('change', function() {
-            calcularTotalCreateItem
-                (); // Llamar a la función calcularTotalEditItem cuando cambie el valor del inputDescuento
+            calcularTotalCreateItem(); // Llamar a la función calcularTotalEditItem cuand
         });
+
+        function cambiarModoPresentacion() {
+            console.log(productoEditar);
+            let presentacion = selectPresentacionCreate.value;
+
+            if (presentacion === 'disponible_caja') {
+                precioUnitarioInputCreate.value = productoEditar.precio_caja;
+            } else if (presentacion === 'disponible_blister') {
+                precioUnitarioInputCreate.value = productoEditar.precio_blister;
+            } else {
+                precioUnitarioInputCreate.value = productoEditar.precio_unidad;
+            }
+            calcularTotalCreateItem();
+
+        }
 
         function calcularTotalCreateItem() {
             const cantidad = parseFloat(cantidadInputCreate.value);
@@ -500,33 +635,27 @@
         }
 
 
-        function obtenerPrecioSuperiorACero(producto) {
-            var verificar = {
-                precio_caja: producto.precio_caja,
-                precio_blister: producto.precio_blister,
-                precio_unidad: producto.precio_unidad
-            };
-
-            var preciosMayoresACero = Object.keys(verificar).filter(function(key) {
-                return verificar[key] > 0;
-            });
-
-            if (preciosMayoresACero.length === 1) {
-                return preciosMayoresACero[0];
-            } else {
-                return null;
-            }
-        }
-
 
         guardarItemVenta.addEventListener('click', function() {
 
             let item = {};
 
+            if (selectPresentacionCreate.value === 'disponible_caja') {
+                let iva = productoEditar.valor_iva_caja * cantidadInputCreate.value;
+            } else if (selectPresentacionCreate.value === 'disponible_blister') {
+                let iva = productoEditar.valor_iva_blister * cantidadInputCreate.value;
+            } else {
+                let iva = productoEditar.valor_iva_unidad * cantidadInputCreate.value;
+            }
+
+            if (iva == null || iva == isNaN) {
+                iva = 0;
+            }
+
             item.cantidad = cantidadInputCreate.value;
             item.code = productoEditar.code;
             item.descuento = parseInt(totalDescontado);
-            item.iva = parseInt(ivaInputEdit.value);
+            item.iva = parseInt(iva);
             item.key = generarKey();
             item.nombre = productoEditar.name;
             item.precio_unitario = parseInt(precioUnitarioInputCreate.value);
@@ -536,38 +665,27 @@
 
 
 
-            productosSeleccionados.push(item); // Agregar el producto a la matriz temporal
+            // Verificar si el producto ya existe
+            const productoExistente = verificarExistencia(item.producto_id, item.forma);
 
-    mostrarDatosEnTabla(productosSeleccionados); // Mostrar los datos en la tabla
-    cerrarModalYLimpiarCreate(); // Cerrar el modal y limpiar los campos
+            // Si el producto ya existe, emitir un mensaje de error
+            if (productoExistente) {
+                mostrarError('No es posible añadir este producto, ya ha sido agregado a la lista anteriormente');
+                cerrarModalYLimpiarCreate();
+                return;
+            } else {
+                // Si el producto no existe, guardar el registro en el local storage
+                let ordersPos = JSON.parse(localStorage.getItem('orderstrabajoPos')) || [];
+                ordersPos.push(item);
+                localStorage.setItem('orderstrabajoPos', JSON.stringify(ordersPos));
+                console.log('Producto registrado correctamente.');
+            }
+
+            mostrarDatosLocalStorageEnTabla();
+
+            cerrarModalYLimpiarCreate();
 
         });
-
-        function mostrarDatosEnTabla(productos) {
-    var tablaBody = document.querySelector('#tablaProductos tbody');
-
-    // Limpiar tabla antes de agregar datos
-    tablaBody.innerHTML = '';
-
-    productos.forEach(function(producto, index) {
-        var row = tablaBody.insertRow(); // Insertar una nueva fila en la tabla
-
-        // Insertar celdas en la fila
-        // ... tu lógica para insertar las celdas con los datos del producto
-    });
-
-    calcularTotales(productos); // Calcular totales a partir de la matriz de productos
-}
-
-
-function eliminarOrden(index) {
-    if (index >= 0 && index < productosSeleccionados.length) {
-        productosSeleccionados.splice(index, 1);
-        mostrarDatosEnTabla(productosSeleccionados); // Actualizar la tabla después de eliminar
-    } else {
-        console.error("Índice fuera de rango.");
-    }
-}
 
         function generarKey() {
             const fechaHoraActual = new Date();
@@ -577,7 +695,7 @@ function eliminarOrden(index) {
         }
 
         function verificarExistencia(producto_id, forma) {
-            const ordersPos = JSON.parse(localStorage.getItem('ordersPos')) || [];
+            const ordersPos = JSON.parse(localStorage.getItem('orderstrabajoPos')) || [];
             return ordersPos.some(item => item.producto_id === producto_id && item.forma === forma);
         }
 
@@ -596,13 +714,21 @@ function eliminarOrden(index) {
             selectPresentacionCreate = '';
             cantidadInputCreate = '';
             totalPrecioCompraInputCreate = '';
-            // Puedes agregar más limpieza de variables aquí según sea necesario
+
+            limpiarSearchCode();
+            mostrarDatosLocalStorageEnTabla();
 
         }
 
         cerrarModalBtnCreate.addEventListener('click', cerrarModalYLimpiarCreate);
 
+
+
+
+
         /*---------------------Hasta aqui la logica producto codigo de barras --------------------------------------*/
+
+
         /*---------------------------------Logica para proceso de cotizacion -----------------------*/
 
         inputCodigoCotizacion.addEventListener('keyup', function(event) {
@@ -625,7 +751,7 @@ function eliminarOrden(index) {
             tipoOperacion.value = "VENTA";
 
             // Almacenas los datos en el localStorage
-            localStorage.setItem('ordersPos', JSON.stringify(productos));
+            localStorage.setItem('orderstrabajoPos', JSON.stringify(productos));
 
             mostrarDatosLocalStorageEnTabla();
         });
@@ -633,8 +759,10 @@ function eliminarOrden(index) {
         /*------------------------------------Hasta aqui toda la logica de cotizacion -----------------*/
 
 
-        botonEjecutar.addEventListener('click', function() {
+
+        botonEjecuta.addEventListener('click', function() {
             // Código a ejecutar cuando se haga clic en el botón
+            console.log('holamundo');
             ejecutarProcesoGuardado();
             // Por ejemplo, puedes agregar aquí la lógica para procesar el pago
         });
@@ -662,12 +790,88 @@ function eliminarOrden(index) {
             document.querySelector('.total').textContent = total;
         }
 
+        function cambiarEstadoBotonPagar($value) {
+            var btnPagar = botonEjecuta;
+
+            if ($value > 0) {
+                btnPagar.disabled = false;
+            } else {
+                btnPagar.disabled = true;
+            }
+
+        }
 
 
+        function actualizarBoton() {
+            var Total = spanTotal.textContent;
+            const indiceSeleccionado = tipoOperacion.value;
+            var btnPagar = botonEjecuta;
+            var textoBtn = '';
 
+
+            var selectMetodoPago = MetodoPago;
+            var inputCantidadPagada = CantidadPagada;
+
+            // Cambiar estado de los elementos selectMetodoPago e inputCantidadPagada
+            if (indiceSeleccionado === 'VENTA') {
+                selectMetodoPago.disabled = false;
+                inputCantidadPagada.disabled = false;
+            } else {
+                selectMetodoPago.disabled = true;
+                inputCantidadPagada.disabled = true;
+            }
+
+            switch (indiceSeleccionado) {
+                case 'VENTA':
+                    textoBtn = 'PAGAR';
+                    cambiarClienteHelp.style.display = 'none';
+                    break;
+                case 'CREDITO':
+                    textoBtn = 'GUARDAR VENTA CRÉDITO';
+                    cambiarOpcionImprimir("1");
+                    if (cliente.value === '1') {
+                        cambiarClienteHelp.style.display = 'block';
+                    } else {
+                        cambiarClienteHelp.style.display = 'none';
+                    }
+                    break;
+                case 'CONSUMO_INTERNO':
+                    textoBtn = 'GUARDAR CONSUMO INTERNO';
+                    cambiarOpcionImprimir("1");
+                    cambiarClienteHelp.style.display = 'none';
+                    break;
+                case 'COTIZACION':
+                    textoBtn = 'REALIZAR COTIZACIÓN';
+                    cambiarOpcionImprimir("1");
+                    if (cliente.value === '1') {
+                        cambiarClienteHelp.style.display = 'block';
+                    } else {
+                        cambiarClienteHelp.style.display = 'none';
+                    }
+
+                    break;
+                default:
+                    textoBtn = '';
+                    break;
+            }
+
+            btnPagar.querySelector('strong').innerText = textoBtn;
+
+            calcularTotales();
+        }
+
+        function cambiarOpcionImprimir(activar) {
+
+            if (activar === '1') {
+                radioSi.checked = true;
+            } else {
+                radioNo.checked = true;
+            }
+
+        }
 
         function mostrarDatosLocalStorageEnTabla() {
-            var orders = JSON.parse(localStorage.getItem('ordersPos')) || [];
+            var orders = JSON.parse(localStorage.getItem('orderstrabajoPos')) || [];
             var tablaBody = document.querySelector('#tablaProductos tbody');
 
             // Limpiar tabla antes de agregar datos
@@ -711,17 +915,14 @@ function eliminarOrden(index) {
 
                 // IVA formateado como moneda
                 var ivaCell = row.insertCell();
-                if (order.iva > 100) {
-                    var ivaSinDecimales = Math.round(order.iva).toFixed(0);
-                    ivaCell.textContent = formatCurrency(ivaSinDecimales);
-                    ivaCell.classList.add('align-right'); // Alinear a la derecha
-                } else {
-                    ivaCell.textContent = '$' + 0;
-                    ivaCell.classList.add('align-right'); // Alinear a la derecha
-                }
+                ivaCell.textContent = formatCurrency(order.iva);
+                ivaCell.classList.add('align-right'); // Alinear a la derecha
+
 
                 // Descuento formateado como moneda
-
+                var descuentoCell = row.insertCell();
+                descuentoCell.textContent = formatCurrency(order.descuento);
+                descuentoCell.classList.add('align-right'); // Alinear a la derecha
 
                 // Total formateado como moneda
                 var totalCell = row.insertCell();
@@ -752,7 +953,7 @@ function eliminarOrden(index) {
         }
 
         function calcularTotales() {
-            var orders = JSON.parse(localStorage.getItem('ordersPos')) || [];
+            var orders = JSON.parse(localStorage.getItem('orderstrabajoPos')) || [];
 
             var subtotal = 0;
             var descuentoTotal = 0;
@@ -767,17 +968,17 @@ function eliminarOrden(index) {
             });
 
             // Calcular total sumando el subtotal, el impuesto y restando el descuento
-            subtotal = total - (ivaTotal - descuentoTotal);
+            subtotal = total - (ivaTotal);
 
-            var subTotalSinDecimales = Math.round(subtotal).toFixed(0);
-            var ivaSinDecimales = Math.round(ivaTotal).toFixed(0);
-            var descuentoSinDecimales = Math.round(descuentoTotal).toFixed(0);
-            var totalSinDecimales = Math.round(total).toFixed(0);
+            if(descuentoTotal > 0){
+                total = total - descuentoTotal;
+            }
 
-            spanSubTotal.textContent = formatCurrency(subTotalSinDecimales);
-            spanDescuento.textContent = formatCurrency(descuentoSinDecimales);
-            spanIva.textContent = formatCurrency(ivaSinDecimales);
-            spanTotal.textContent = formatCurrency(totalSinDecimales);
+
+            spanSubTotal.textContent = formatCurrency(subtotal);
+            spanDescuento.textContent = formatCurrency(descuentoTotal);
+            spanIva.textContent = formatCurrency(ivaTotal);
+            spanTotal.textContent = formatCurrency(total);
 
 
 
@@ -802,14 +1003,14 @@ function eliminarOrden(index) {
 
         // Función para eliminar una orden del localStorage
         function eliminarOrden(index) {
-            let orders = JSON.parse(localStorage.getItem("ordersPos")) || [];
+            let orders = JSON.parse(localStorage.getItem("orderstrabajoPos")) || [];
 
             // Verificar si el índice está dentro del rango de la matriz
             if (index >= 0 && index < orders.length) {
                 // Eliminar el elemento en el índice dado
                 orders.splice(index, 1);
                 // Actualizar el localStorage con los datos actualizados
-                localStorage.setItem("ordersPos", JSON.stringify(orders));
+                localStorage.setItem("orderstrabajoPos", JSON.stringify(orders));
                 // Luego, puedes actualizar la tabla o cualquier otra cosa que necesites hacer después de eliminar la orden.
             } else {
                 console.error("Índice fuera de rango.");
@@ -823,9 +1024,9 @@ function eliminarOrden(index) {
         /*------------------------------------------Proceso guardado de datos --------------------------------------*/
 
         function ejecutarProcesoGuardado() {
-            validaciones();
 
-            const orderPosData = localStorage.getItem('ordersPos');
+
+            const orderPosData = localStorage.getItem('orderstrabajoPos');
             if (orderPosData) {
                 // Convertir los datos de formato JSON a un array de JavaScript
                 var orderPosArray = JSON.parse(orderPosData);
@@ -834,39 +1035,111 @@ function eliminarOrden(index) {
                 mostrarError(mensaje);
             }
 
-            // const radios = document.querySelectorAll('input[name="opcionRadio"]');
-            let imprimir;
-            // Iterar sobre los radios para verificar cuál está seleccionado
 
-            var radioSi = document.getElementById('opcionSi');
-            var radioNo = document.getElementById('opcionNo');
-
-            if (radioSi.checked) {
-                imprimir = radioSi.value;
-            } else if (radioNo.checked) {
-                imprimir = radioNo.value;
-            }
-
-            /*  radios.forEach(radio => {
-                 // Obtener el valor del radio seleccionado
-                 imprimir = radio.value;
-             }); */
 
             let totales = calcularTotales();
 
             const datos = {
-                'tipoOperacion': tipoOperacion.value,
-                'cliente_id': cliente.value,
+
                 'productos': orderPosArray,
-                'metodoPago': MetodoPago.value,
-                'imprimir': imprimir,
+
                 'totales': totales,
             };
 
-            Livewire.emit('almacenarTransaccion', datos);
+            Livewire.emit('guardardetallesordenEvent', datos);
 
         }
 
+        function validaciones() {
+
+            var total = spanTotal.textContent.trim(); // Elimina espacios en blanco al inicio y al final
+
+            if (total == '0' && total == '') {
+                let mensaje = 'Por favor, agrega al menos un producto para comenzar.'
+                mostrarError(mensaje);
+                return;
+            }
+
+
+            if (tipoOperacion.value === 'COTIZACION' || tipoOperacion.value === 'CREDITO') {
+                if (cliente.value === 1 || cliente.value === '') {
+                    cambiarClienteHelp.style.display = 'block';
+                    return;
+                } else {
+                    cambiarClienteHelp.style.display = 'none';
+                }
+            }
+
+
+            if (tipoOperacion.value === 'VENTA') {
+                if (MetodoPago.value === '3') {
+                    cambiarMetodoPagoHelp.style.display = 'block';
+                    return;
+                } else {
+                    cambiarMetodoPagoHelp.style.display = 'none';
+                }
+
+            }
+
+        }
+
+        function verificarMetodoPagoConProceso() {
+            if (tipoOperacion.value === 'VENTA' && MetodoPago.value === '3') {
+                cambiarMetodoPagoHelp.style.display = 'block';
+            } else {
+                cambiarMetodoPagoHelp.style.display = 'none';
+            }
+
+        }
+
+        // Metodo para editar pedido
+
+        function mostrarModalEditarItem(producto, index) {
+            const modal = document.getElementById("editProductSaleModal");
+            indiceItem = index;
+            productoEditar = producto;
+
+            const modalContent = document.getElementById("modalContent");
+
+
+            selectPresentacionEdit.value = producto.forma;
+            cantidadInputEdit.value = producto.cantidad;
+            precioUnitarioInputEdit.value = producto.precio_unitario;
+            totalPrecioCompraInputEdit.value = producto.subtotal;
+            ivaInputEdit.value = producto.iva;
+
+            if (producto.iva > 0) {
+                ivaUnitario = obtenerIvaUnitario(producto);
+            } else {
+                ivaUnitario = 0;
+            }
+
+            if (producto.descuento > 0) {
+                // Si el descuento es mayor que 0, habilitar el input de descuento
+                inputDescuento.disabled = false;
+                inputDescuento.value = producto.descuento;
+
+                // Seleccionar el radio de descuento fijo
+                descuentoValorFijo.checked = true;
+                // Deseleccionar el radio de descuento porcentaje
+                descuentoPorcentaje.checked = false;
+                descuentoBtn.disabled = true;
+            } else {
+                // Si el descuento es 0, deshabilitar el input de descuento
+                inputDescuento.disabled = true;
+                inputDescuento.value = 0;
+
+                // Desseleccionar ambos radios
+                descuentoValorFijo.checked = false;
+                descuentoPorcentaje.checked = false;
+            }
+
+            calcularTotalEditItem();
+            // Mostrar el modal
+            modal.style.display = "block";
+
+
+        }
 
         inputDescuento.addEventListener('change', function() {
             calcularTotalEditItem
@@ -959,7 +1232,7 @@ function eliminarOrden(index) {
         }
 
         actualizarItemVentaBtn.addEventListener('click', function() {
-            let ordersPos = JSON.parse(localStorage.getItem('ordersPos')) || [];
+            let ordersPos = JSON.parse(localStorage.getItem('orderstrabajoPos')) || [];
 
             let item_actualizar = {};
 
@@ -972,13 +1245,13 @@ function eliminarOrden(index) {
             item_actualizar.precio_unitario = precioUnitarioInputEdit.value;
             item_actualizar.descuento = totalDescontado;
             item_actualizar.total = totalPrecioCompraInputEdit.value;
-            item_actualizar.iva = ivaUnitario;
+            item_actualizar.iva = ivaUnitario * cantidadInputEdit.value;
 
 
             ordersPos[indiceItem] = item_actualizar;
 
             // Actualizar el localStorage con el array actualizado ordersPos
-            localStorage.setItem('ordersPos', JSON.stringify(ordersPos));
+            localStorage.setItem('orderstrabajoPos', JSON.stringify(ordersPos));
 
             mostrarDatosLocalStorageEnTabla();
 
@@ -1001,21 +1274,59 @@ function eliminarOrden(index) {
             selectPresentacionEdit = '';
             cantidadInputEdit = '';
             totalPrecioCompraInputEdit = '';
+
             // Puedes agregar más limpieza de variables aquí según sea necesario
 
         }
 
+        function limpiarSearchCode() {
+            const inputBuscarProductoCodigo = document.getElementById('buscarProductoCodigo');
+            inputBuscarProductoCodigo.value = '';
+        }
+
         cerrarModalBtn.addEventListener('click', cerrarModalYLimpiar);
+
+
+
         document.querySelectorAll('.fila-datos').forEach(function(row) {
             row.addEventListener('dblclick', function() {
                 var index = this.rowIndex - 1; // Restar 1 para obtener el índice correcto
-                var orders = JSON.parse(localStorage.getItem('ordersPos')) || [];
+                var orders = JSON.parse(localStorage.getItem('orderstrabajoPos')) || [];
                 var order = orders[index];
                 mostrarModalEditarItem(order);
             });
         });
+
+
+
         // Llamar a la función para mostrar los datos del localStorage en la tabla cuando se cargue la página
         mostrarDatosLocalStorageEnTabla();
+
+        window.addEventListener('addProductLocalStorageDesdeCode', function(event) { //Traigo el mensaje desde livewire
+            const dataProduct = event.detail.dataProduct;
+            console.log(dataProduct);
+            let ordersPos = JSON.parse(localStorage.getItem('orderstrabajoPos')) || [];
+
+            let existingProductIndex = ordersPos.findIndex(product => product.producto_id === dataProduct
+                .producto_id);
+
+            if (existingProductIndex !== -1) {
+                // Si el producto ya existe, actualiza la cantidad y el total
+                ordersPos[existingProductIndex].total += dataProduct.total;
+                ordersPos[existingProductIndex].iva += dataProduct.iva;
+                ordersPos[existingProductIndex].cantidad += 1;
+            } else {
+                // Si es un producto nuevo, agrégalo al local storage
+                ordersPos.push(dataProduct);
+            }
+
+            localStorage.setItem('orderstrabajoPos', JSON.stringify(ordersPos));
+            limpiarSearchCode();
+            mostrarDatosLocalStorageEnTabla();
+
+        });
+
+
 
         /*------------------------------------------------Alertas sweet Alert ---------------------------------*/
         function mostrarError(mensaje) {
@@ -1026,6 +1337,13 @@ function eliminarOrden(index) {
             });
         }
 
+        window.addEventListener('mostrarErrorLivewire', function(event) { //Traigo el mensaje desde livewire
+            const mensaje = event.detail.mensaje;
+            mostrarError(mensaje);
+            limpiarSearchCode();
+
+        });
+
         window.addEventListener("error-busqueda", (event) => {
             Swal.fire({
                 icon: 'error',
@@ -1034,26 +1352,16 @@ function eliminarOrden(index) {
             });
         });
 
-
-        window.addEventListener("proceso-guardado", (event) => {
-            const numeroVenta = event.detail.venta;
-            limpiarLocalStorage();
-
-
-            Swal.fire({
-                icon: "success",
-                title: "Venta realizada correctamente",
-                text: `Número de venta: ${numeroVenta}`,
-                showConfirmButton: false,
-                timer: 1500,
-            });
-            setTimeout(() => {
-                location.reload();
-            }, 1500);
+        document.addEventListener('DOMContentLoaded', function () {
+        Livewire.on('procesoGuardadoCompleto', function () {
+            window.dispatchEvent(new CustomEvent('proceso-guardado-completo'));
         });
+    });
 
-        function limpiarLocalStorage() {
-            let orders = JSON.parse(localStorage.getItem("ordersPos")) || [];
+
+        window.addEventListener("proceso-guardado-completo", (event) => {
+
+            let orders = JSON.parse(localStorage.getItem("orderstrabajoPos")) || [];
 
             // Filtrar los pedidos que quieres mantener en un nuevo array
             let filteredOrders = orders.filter(order => {
@@ -1061,7 +1369,175 @@ function eliminarOrden(index) {
             });
 
             // Actualizar el localStorage con los datos filtrados
-            localStorage.setItem("ordersPos", JSON.stringify(filteredOrders));
-        }
+            localStorage.setItem("orderstrabajoPos", JSON.stringify(filteredOrders));
+
+        });
+
+
     </script>
+
+    @section('js')
+        <script>
+            $(document).ready(function() {
+                $(".js-example-basic-single").select2();
+
+                // Escucha el evento emitido por Livewire cuando se agrega un nuevo cliente
+                window.livewire.on("ClientEvent", function(client) {
+                    // Agrega el nuevo cliente al select2
+                    var option = new Option(client.name, client.id, true, true);
+                    $("#cliente").append(option).trigger("change");
+
+                    // Opcional: Puedes seleccionar automáticamente el nuevo cliente
+                    // $('#cliente').val(client.id).trigger('change');
+
+                    // Opcional: Puedes enfocar y abrir el select2 para que el usuario pueda ver el nuevo cliente
+                    // $('#cliente').select2('open');
+                });
+            });
+
+            function limpiartabla(){
+                localStorage.removeItem('orderstrabajoPos');
+            }
+        </script>
+
+    @stop
+
+
+    @section('css')
+        <style>
+            .select2-selection--single {
+                height: 39px !important;
+            }
+
+            .select2-selection__arrow {
+                top: 10px !important;
+                right: 10px !important;
+                /* Ajusta la posición vertical del ícono */
+            }
+
+            .align-right {
+                text-align: right;
+            }
+
+            .align-center {
+                text-align: center;
+            }
+
+            .btn-eliminar {
+                background: none;
+                border: none;
+                cursor: pointer;
+                padding: 0;
+                font-size: 16px;
+                color: #888;
+                /* Color normal del icono */
+                transition: color 0.3s;
+                /* Transición de color para el efecto hover */
+                display: inline-block;
+                /* Hacer que el botón sea un bloque en línea para poder alinear a la derecha */
+
+                /* Estilo de cursor al pasar el ratón sobre el botón */
+                cursor: pointer;
+            }
+
+            .btn-eliminar:hover {
+                color: #dc3545;
+                /* Color del icono al pasar el ratón sobre el botón */
+            }
+
+            /* Alineación a la derecha y colocación al final de la celda */
+            .celda-eliminar {
+                text-align: right !important;
+                /* Alinear el contenido a la derecha */
+                white-space: nowrap;
+                /* Evitar que el contenido se divida en varias líneas */
+            }
+
+            /* Estilo para el botón de pago si es relevante en tu formulario */
+            .campo-pago button {
+                padding: 8px;
+                font-size: 16px;
+                background-color: #4CAF50;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+            }
+
+
+            /* Estilo para el nombre del método de pago */
+            .metodo-pago span {
+                font-size: 14px;
+            }
+
+            .ocultar-columna-id {
+                display: none;
+            }
+
+            .table-responsive-md {
+                max-height: 400px;
+                /* Establece la altura máxima que prefieras */
+                overflow-y: auto;
+                /* Añade un scrollbar vertical cuando sea necesario */
+            }
+
+            /* Estilo del botón de pago */
+            button.btn-pagar {
+                background-color: #4CAF50;
+                /* Color de fondo */
+                color: #ffffff;
+                /* Color del texto */
+                border: none;
+                /* Sin borde */
+                border-radius: 5px;
+                /* Esquinas redondeadas */
+                padding: 10px 20px;
+                /* Relleno interno */
+                font-size: 16px;
+                /* Tamaño del texto */
+                cursor: pointer;
+                /* Cambia el cursor al pasar sobre el botón */
+                transition: background-color 0.3s ease;
+                /* Animación de transición suave */
+            }
+
+            /* Cambia el color de fondo cuando el mouse está sobre el botón */
+            button.btn-pagar:hover {
+                background-color: #45a049;
+            }
+
+            /* Agrega estilos generales a los elementos de clase costo-compra */
+            .costo-compra {
+                margin-bottom: 10px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            /* Estilo específico para la etiqueta (label) */
+            .costo-compra label {
+                font-weight: bold;
+                margin-right: 10px;
+            }
+
+            /* Estilo específico para el span */
+            .costo-compra span {
+                font-size: 16px;
+                /* Ajusta el tamaño de fuente según tus preferencias */
+            }
+
+            /* Estilo específico para el elemento total */
+            .costo-compra.total label,
+            .costo-compra.total span {
+                font-size: 30px;
+                font-weight: bold;
+            }
+
+            /* Alineación del texto en el elemento total */
+            .costo-compra.total {
+                text-align: right;
+            }
+        </style>
+    @stop
 </div>
+@include('modals.abono.abono')
