@@ -109,6 +109,7 @@ class SearchProductComponent extends Component
     public function seleccionarProducto($producto)
     {
         if (is_array($producto)) {
+
             $this->producto_id = $producto['id'];
             $this->code = $producto['code'];
             $this->name = $producto['name'];
@@ -121,6 +122,9 @@ class SearchProductComponent extends Component
             $this->porcentaje_por_unidad = $producto['presentacion']['por_unidad'];
             $this->disponible_blister = $producto['disponible_blister'];
             $this->disponible_unidad =  $producto['disponible_unidad'];
+            $this->precio_venta_unidad = $producto['precio_unidad'];
+            $this->precio_venta_blister = $producto['precio_blister'];
+            $this->precio_venta_caja = $producto['precio_caja'];
 
             $this->contenido_interno_unidad = $producto['contenido_interno_unidad'] !== null ? $producto['contenido_interno_unidad'] : 0;
             $this->contenido_interno_blister =  $producto['contenido_interno_blister'] !== null ? $producto['contenido_interno_blister'] : 0;
@@ -137,6 +141,10 @@ class SearchProductComponent extends Component
             $this->porcentaje_por_unidad = $producto->presentacion->por_unidad;
             $this->disponible_blister =  $producto->disponible_blister !== null ? $producto->disponible_blister : 0;
             $this->disponible_unidad = $producto->disponible_unidad !== null ? $producto->disponible_unidad : 0;
+
+            $this->precio_venta_unidad = $producto->precio_unidad;
+            $this->precio_venta_blister = $producto->precio_blister;
+            $this->precio_venta_caja = $producto->precio_caja;
 
             $this->contenido_interno_unidad = $producto->contenido_interno_unidad !== null ? $producto->contenido_interno_unidad : 0;
             $this->contenido_interno_blister = $producto->contenido_interno_blister !== null ? $producto->contenido_interno_blister : 0;

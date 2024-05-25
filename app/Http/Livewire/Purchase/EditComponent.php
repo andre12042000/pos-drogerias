@@ -7,6 +7,7 @@ use Livewire\Component;
 use App\Traits\AddProductsInventario;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\QueryException;
+use App\Models\Product;
 
 class EditComponent extends Component
 {
@@ -73,6 +74,7 @@ class EditComponent extends Component
             DB::transaction(function () {
                 foreach ($this->purchaseDetails as $detalle) {
                     $this->addProducts($detalle);
+                    self::updateProduct($detalle);
                 }
 
 
@@ -112,6 +114,21 @@ class EditComponent extends Component
             // Manejo de otras excepciones generales
             $this->dispatchBrowserEvent('error', ['error' => 'Error desconocido']);
         }
+    }
+
+    function updateProduct($detail)
+    {
+        $product = Product::findOrFail($detail->product_id);
+
+        $product->update([
+            'costo_caja'    => $detail->purchase_price,
+            'precio_caja'  => $detail->precio_caja,
+            'precio_blister' => $detail->precio_blister,
+            'precio_unidad' => $detail->precio_unidad,
+        ]);
+
+        return true;
+
     }
 
 
