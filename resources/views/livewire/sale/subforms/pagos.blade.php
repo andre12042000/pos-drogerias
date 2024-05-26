@@ -4,17 +4,17 @@
     <div class="col">
         <label>Tipo de Operación</label>
         <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="tipoOperacionOptions"
+            <input class="form-check-input mt-1" type="radio" name="tipoOperacionOptions"
                 id="tipoOperacionVenta" value="VENTA" checked wire:model.defer="tipo_operacion">
             <label class="form-check-label" for="tipoOperacionVenta">VENTA</label>
         </div>
         <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="tipoOperacionOptions"
+            <input class="form-check-input mt-1" type="radio" name="tipoOperacionOptions"
                 id="tipoOperacionCredito" value="CREDITO" wire:model.defer="tipo_operacion">
             <label class="form-check-label" for="tipoOperacionCredito">CRÉDITO</label>
         </div>
         <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="tipoOperacionOptions"
+            <input class="form-check-input mt-1" type="radio" name="tipoOperacionOptions"
                 id="tipoOperacionCortesia" value="CORTESIA" wire:model.defer="tipo_operacion">
             <label class="form-check-label" for="tipoOperacionCortesia">CORTESÍA</label>
         </div>
