@@ -21,6 +21,16 @@
                         <button class="btn btn-outline-light dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
                             data-bs-toggle="dropdown" aria-expanded="false">
                             Generar Recibo
+
+                            <div wire:loading wire:target="exportarventas">
+                                <img src="{!! Config::get('app.URL') !!}/img/loading.gif" width="20px"
+                                    class="img-fluid" alt="">
+                            </div>
+
+                            <div wire:loading wire:target="imprimirInforme">
+                                <img src="{!! Config::get('app.URL') !!}/img/loading.gif" width="20px"
+                                    class="img-fluid" alt="">
+                            </div>
                         </button>
 
                         <ul class="dropdown-menu text-dark" aria-labelledby="dropdownMenuLink">
