@@ -186,22 +186,25 @@
 
 
 
-    .etiqueta {
-        display: block;
-        background-color: transparent;
-        padding: 5px;
-        font-size: 10px;
-        position: absolute;
-        bottom: 2px;
-        /* Alinea la etiqueta en la parte inferior */
-        left: 50%;
-        /* Ajusta la posición horizontal de la etiqueta al centro */
-        transform: translateX(-50%);
-        /* Centra la etiqueta horizontalmente */
-        color: white;
-        width: 100px;
-        /* Ancho de la etiqueta, ajusta según sea necesario */
-    }
+    .mesa-texto {
+    position: absolute;
+    top: 10px;
+    width: 100%;
+}
+
+.etiqueta-mesa {
+    position: absolute;
+    bottom: 10px;
+    width: 80%; /* Reducido para que no toque los bordes */
+    margin: 0 auto; /* Centrado horizontalmente */
+    background-color: #ffffcc; /* Amarillo claro */
+    border: 1px solid #cccc00; /* Borde amarillo oscuro */
+    border-radius: 5px; /* Bordes redondeados */
+    padding: 2px;
+    box-sizing: border-box; /* Incluir padding y border en el tamaño total */
+    font-size: 12px; /* Tamaño de fuente  */
+    line-height: 1.2em; /* Altura de línea */
+}
 </style>
 
 

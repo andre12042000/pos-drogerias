@@ -18,6 +18,7 @@ use App\Models\MetodoPago;
 use App\Models\Product;
 use App\Models\Sale;
 use App\Models\SaleDetail;
+use App\Models\Temperature;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -129,6 +130,46 @@ class SaleComponent extends Component
         $this->empresa = Empresa::find(1);
         $this->clientes = Client::orderBy('name', 'asc')->get();
         $this->metodos_pago = MetodoPago::where('status', 'ACTIVE')->orderBy('id', 'desc')->get();
+
+        date_default_timezone_set('America/New_York');
+
+        // Obtener la hora actual
+        $horaActual = date('H');
+
+        if($horaActual > '9' && $horaActual <= '12'){
+            self::consultarRegistroTemperatura(1);  //Opcion de busqueda en la mañana
+        }else if($horaActual > '14' && $horaActual <= '16'){
+            self::consultarRegistroTemperatura(2); //opcion de busqueda en la tarde
+        }
+
+
+    }
+
+    function consultarRegistroTemperatura($registro_numero){
+
+        $today = Carbon::today();
+        $registros = Temperature::whereDate('created_at', $today)->get();
+
+        $cantidad = $registros->count();
+
+        if($registro_numero == 1 && $cantidad < 1){
+
+            $this->dispatchBrowserEvent('swal', [
+                'title' => 'Ops! Ocurrio un error',
+                'text' => '¡No es posible crear la transacción, verifica los datos!' . $e,
+                'icon' => 'error'
+            ]);
+
+        }else if($registro_numero == 2 && $cantidad < 2) {
+
+            $this->dispatchBrowserEvent('swal', [
+                'title' => 'Ops! Ocurrio un error',
+                'text' => '¡No es posible crear la transacción, verifica los datos!' . $e,
+                'icon' => 'error'
+            ]);
+
+        }
+
     }
 
     public function render()

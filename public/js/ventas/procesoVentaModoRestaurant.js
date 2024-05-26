@@ -140,14 +140,29 @@ if (cantidadMesas !== null) {
     for (var i = 1; i <= cantidadMesas; i++) {
         // Llamar a la función crearMesa y pasar el número de mesa como parámetro
         crearMesa(i);
+
     }
 }
 
 // Función para crear una mesa y asignar el evento de doble clic
 function crearMesa(numMesa) {
+    var etiquetaMesa = mostrarEtiquetaPorMesa(numMesa);
+
     var mesaBox = document.createElement("div");
     mesaBox.className = "mesa-box";
-    mesaBox.textContent = "Mesa " + numMesa;
+
+    var mesaTexto = document.createElement("div");
+    mesaTexto.className = "mesa-texto";
+    mesaTexto.textContent = "Mesa " + numMesa;
+
+    mesaBox.appendChild(mesaTexto);
+
+    if (etiquetaMesa) {
+        var etiquetaDiv = document.createElement("div");
+        etiquetaDiv.className = "etiqueta-mesa";
+        etiquetaDiv.textContent = etiquetaMesa;
+        mesaBox.appendChild(etiquetaDiv);
+    }
 
     mesaBox.dataset.numero = numMesa; // Agregar atributo de datos para almacenar el número de la mesa
     document.getElementById("mesas-container").appendChild(mesaBox);
