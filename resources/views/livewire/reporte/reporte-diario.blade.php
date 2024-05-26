@@ -18,10 +18,10 @@
                 </div>
                 <div class="col-lg-2 float-right text-right">
                     <div class="dropdown mr-4 mt-3">
-                        <a class="alert-link dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                        <button class="btn btn-outline-light dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
                             data-bs-toggle="dropdown" aria-expanded="false">
                             Generar Recibo
-                        </a>
+                        </button>
 
                         <ul class="dropdown-menu text-dark" aria-labelledby="dropdownMenuLink">
                             <li> <a class="dropdown-item text-dark" href=""><i class="bi bi-download"></i>
