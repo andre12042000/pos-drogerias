@@ -214,12 +214,22 @@
                                             </td>
                                             {{-- Metodo de pago  --}}
                                             <td>
-                                                @if ($venta->cashesable->metodopago)
-                                                {{ ucwords($venta->cashesable->metodopago->name) }}
+                                                @php
+                                                $metodopago = $venta->cashesable->metodopago;
 
-                                                @else
-                                                   N/A
-                                                @endif
+                                                // Intentar decodificar JSON
+                                                $decoded = json_decode($metodopago);
+
+                                                // Verificar si la decodificación fue exitosa y tiene el campo 'name'
+                                                if (json_last_error() === JSON_ERROR_NONE && isset($decoded->name)) {
+                                                    $metodopagoName = $decoded->name;
+                                                } else {
+                                                    // Asumir que es una cadena de texto simple
+                                                    $metodopagoName = $metodopago;
+                                                }
+                                            @endphp
+
+                                            {{ mb_strtoupper($metodopagoName) }}
 
                                             </td>
 
