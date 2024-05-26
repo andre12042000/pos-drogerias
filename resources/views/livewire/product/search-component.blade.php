@@ -113,6 +113,8 @@
             let precio_unitario = 0;
             let iva = 0;
 
+
+
             if(parseInt(productData.inventario.cantidad_caja) === 0 && parseInt(productData.inventario.cantidad_blister) === 0 && parseInt(productData.inventario.cantidad_unidad) === 0){
                 mostrarError('No hay productos en stock, por favor verifica el inventario y vuelve a intentarlo');
                 return;
@@ -129,12 +131,18 @@
                 iva = productData.valor_iva_unidad;
             }
 
+            if (precio_unitario === null || precio_unitario === 0 || precio_unitario === undefined) {
+                mostrarError('No es posible vender este producto, con esa presentación');
+                return;
+            }
+
             var orders = JSON.parse(localStorage.getItem('ordersPos')) || []; //Obtenemos el localstorage
 
             // Verificar si el producto ya está en el pedido para MOSTRADOR
             var existingOrder = orders.find(function(order) {
                 return order.producto_id === productData.id && order.forma === selectedOption;
             });
+
 
             if (existingOrder) {
                 // Si el producto ya está en el pedido con la misma forma, aumenta la cantidad y actualiza el total
@@ -150,7 +158,7 @@
                     code: productData.code,
                     nombre: productData.name,
                     cantidad: 1,
-                    precio_unitario: precio_unitario, // Supongo que aquí está el precio unitario del producto
+                    precio_unitario: precio_unitario, // precio unitario del producto
                     iva: iva,
                     descuento: 0,
                     total: precio_unitario // Inicialmente establecido como el total igual al precio unitario
