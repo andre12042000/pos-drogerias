@@ -11,305 +11,415 @@
 @section('content')
     @include('popper::assets')
 
-
-    <form method="POST" action="{{ route('update.estadistica') }}">
-        @csrf
-        <div class="input-group py-2 mb-3 col-4">
-            <span class="input-group-text">Mes - Año</span>
-            <input type="month" class="form-control" placeholder="mes - año" id="mes_anio" name="mes_anio"
-                value="{{ $filter_fecha ?? $fecha_actual }}">
-            <button type="submit" class="btn btn-outline-success" title="Recargar Estadísticas"><i
-                    class="bi bi-arrow-clockwise"></i></button>
-        </div>
-
-    </form>
-
-
-    <div class="row ">
-        <div class="col-lg-3 col-6 ">
-            <!-- small box -->
-            <div class="small-box bg-success">
-                <div class="inner">
-                    <h3>$ {{ number_format($cantidad_ventas, 0) }}</h3>
-
-                    <p>Ventas Mensuales </p>
-                </div>
-                <div class="icon">
-                    <i class="las la-cash-register "></i>
-                </div>
-
-            </div>
-        </div>
-        <!-- ./col -->
-        <div class="col-lg-3 col-6">
-            <!-- small box -->
-            <div class="small-box bg-lightblue">
-                <div class="inner">
-                    <h3>$ {{ number_format($cantidad_compras, 0) }}</h3>
-
-                    <p>Compras Mensuales</p>
-                </div>
-                <div class="icon">
-                    <i class="ion ion-arrow-graph-up-right "></i>
-                </div>
-
-            </div>
-        </div>
-        <!-- ./col -->
-        <div class="col-lg-3 col-6">
-            <!-- small box -->
-            <div class="small-box bg-secondary">
-                <div class="inner">
-                    <h3>$ {{ number_format($cantidad_abonos, 0) }}</h3>
-
-                    <p>Abonos Mensuales</p>
-                </div>
-                <div class="icon">
-                    <i class="las la-donate"></i>
-                </div>
-
-            </div>
-        </div>
-        <!-- ./col -->
-        <div class="col-lg-3 col-6">
-            <!-- small box -->
-            <div class="small-box bg-warning">
-                <div class="inner">
-                    <h3>$ {{ number_format($cantidad_deuda, 0) }}</h3>
-
-                    <p>Cartera</p>
-                </div>
-                <div class="icon">
-                    <i class="ion ion-social-usd-outline "></i>
-                </div>
-
-            </div>
-        </div>
-        <!-- ./col -->
-        <div class="col-lg-4 ">
-            <!-- small box -->
-            <div class="small-box bg-teal">
-                <div class="inner">
-                    <h3>$ {{ number_format($recaudo_cartera, 0) }}</h3>
-
-                    <p>Recuado Cartera</p>
-                </div>
-                <div class="icon">
-                    <i class="fas fa-hand-holding-usd"></i>
-                </div>
-
-            </div>
-        </div>
-        <!-- ./col -->
-        <div class="col-lg-4 ">
-            <!-- small box -->
-            <div class="small-box bg-secondary">
-                <div class="inner">
-                    <h3>$ {{ number_format($cantidad_consumo, 0) }}</h3>
-
-                    <p>Consumo Interno</p>
-                </div>
-                <div class="icon">
-                    <i class="fas fa-file-invoice-dollar"></i>
-                </div>
-
-            </div>
-        </div>
-        <!-- ./col -->
-        <div class="col-lg-4 ">
-            <!-- small box -->
-            <div class="small-box bg-dark">
-                <div class="inner">
-                    <h3>$ {{ number_format($cantidad_gastos, 0) }}</h3>
-
-                    <p>Gastos</p>
-                </div>
-                <div class="icon">
-                    <i class="far fa-money-bill-alt"></i>
-                </div>
-
-            </div>
-        </div>
-        <!-- ./col -->
+@if ($role == 'Administrador')
+<form method="POST" action="{{ route('update.estadistica') }}">
+    @csrf
+    <div class="input-group py-2 mb-3 col-4">
+        <span class="input-group-text">Mes - Año</span>
+        <input type="month" class="form-control" placeholder="mes - año" id="mes_anio" name="mes_anio"
+            value="{{ $filter_fecha ?? $fecha_actual }}">
+        <button type="submit" class="btn btn-outline-success" title="Recargar Estadísticas"><i
+                class="bi bi-arrow-clockwise"></i></button>
     </div>
 
+</form>
 
-    <div class="row ">
-        <div class="col-lg-12">
-            <div class="card bg-info" style="height: 350px;">
-                <div class="card-header border-0">
-                    <div class="d-flex justify-content-between">
-                        <h3 class="">Ingresos de {{\Carbon\Carbon::parse($mes_actual)->locale('es_ES')->translatedFormat(('F'))}} </h3>
-                        <div class="d-flex">
-                            <p class="d-flex flex-column">
-                                <span class="mt-2">Total ingresos $ {{ number_format($total_ingresos, 0) }} </span>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-body" style="background-color: #c4eefb; color:black">
-                    <div class="position-relative mb-4">
-                        {{-- <canvas id="salesChart"  style="height: 180px;"></canvas> --}}
-                        <canvas id="chart" style="height: 500px;" height="180px"></canvas>
+
+<div class="row ">
+    <div class="col-lg-3 col-6 ">
+        <!-- small box -->
+        <div class="small-box bg-success">
+            <div class="inner">
+                <h3>$ {{ number_format($cantidad_ventas, 0) }}</h3>
+
+                <p>Ventas Mensuales </p>
+            </div>
+            <div class="icon">
+                <i class="las la-cash-register "></i>
+            </div>
+
+        </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-lightblue">
+            <div class="inner">
+                <h3>$ {{ number_format($cantidad_compras, 0) }}</h3>
+
+                <p>Compras Mensuales</p>
+            </div>
+            <div class="icon">
+                <i class="ion ion-arrow-graph-up-right "></i>
+            </div>
+
+        </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-secondary">
+            <div class="inner">
+                <h3>$ {{ number_format($cantidad_abonos, 0) }}</h3>
+
+                <p>Abonos Mensuales</p>
+            </div>
+            <div class="icon">
+                <i class="las la-donate"></i>
+            </div>
+
+        </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-warning">
+            <div class="inner">
+                <h3>$ {{ number_format($cantidad_deuda, 0) }}</h3>
+
+                <p>Cartera</p>
+            </div>
+            <div class="icon">
+                <i class="ion ion-social-usd-outline "></i>
+            </div>
+
+        </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-4 ">
+        <!-- small box -->
+        <div class="small-box bg-teal">
+            <div class="inner">
+                <h3>$ {{ number_format($recaudo_cartera, 0) }}</h3>
+
+                <p>Recuado Cartera</p>
+            </div>
+            <div class="icon">
+                <i class="fas fa-hand-holding-usd"></i>
+            </div>
+
+        </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-4 ">
+        <!-- small box -->
+        <div class="small-box bg-secondary">
+            <div class="inner">
+                <h3>$ {{ number_format($cantidad_consumo, 0) }}</h3>
+
+                <p>Consumo Interno</p>
+            </div>
+            <div class="icon">
+                <i class="fas fa-file-invoice-dollar"></i>
+            </div>
+
+        </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-4 ">
+        <!-- small box -->
+        <div class="small-box bg-dark">
+            <div class="inner">
+                <h3>$ {{ number_format($cantidad_gastos, 0) }}</h3>
+
+                <p>Gastos</p>
+            </div>
+            <div class="icon">
+                <i class="far fa-money-bill-alt"></i>
+            </div>
+
+        </div>
+    </div>
+    <!-- ./col -->
+</div>
+
+
+<div class="row ">
+    <div class="col-lg-12">
+        <div class="card bg-info" style="height: 350px;">
+            <div class="card-header border-0">
+                <div class="d-flex justify-content-between">
+                    <h3 class="">Ingresos de {{\Carbon\Carbon::parse($mes_actual)->locale('es_ES')->translatedFormat(('F'))}} </h3>
+                    <div class="d-flex">
+                        <p class="d-flex flex-column">
+                            <span class="mt-2">Total ingresos $ {{ number_format($total_ingresos, 0) }} </span>
+                        </p>
                     </div>
                 </div>
             </div>
+            <div class="card-body" style="background-color: #c4eefb; color:black">
+                <div class="position-relative mb-4">
+                    {{-- <canvas id="salesChart"  style="height: 180px;"></canvas> --}}
+                    <canvas id="chart" style="height: 500px;" height="180px"></canvas>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="card bg-success ">
-        <div class="card-header ">
-            <h3>Nuestros Mejores Clientes </h3>
-        </div>
-        <div class="card-body " style="background-color: #d1e7d1; color:black">
+</div>
+<div class="card bg-success ">
+    <div class="card-header ">
+        <h3>Nuestros Mejores Clientes </h3>
+    </div>
+    <div class="card-body " style="background-color: #d1e7d1; color:black">
 
-            <div class="table-responsive ">
-                <table class="table table-success table-striped " id="tabProducts">
-                    <thead>
+        <div class="table-responsive ">
+            <table class="table table-success table-striped " id="tabProducts">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Teléfono</th>
+                        <th>Dirección</th>
+                        <th>Deuda</th>
+                        <th>Compra Total</th>
+                        <th>Producto Mas Comprado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse ($clientes as $client)
                         <tr>
-                            <th>Nombre</th>
-                            <th>Teléfono</th>
-                            <th>Dirección</th>
-                            <th>Deuda</th>
-                            <th>Compra Total</th>
-                            <th>Producto Mas Comprado</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse ($clientes as $client)
-                            <tr>
-                                <td>{{ mb_strtoupper($client['cliente']) }} </td>
-                                <td>{{ $client['telefono'] }} </td>
-                                <td>@if ($client['direccion'])
-                                    {{ $client['direccion'] }}
-                                @else
-                                   <span class="text-secondary">Sin Dirección</span>
-                                @endif  </td>
-                                <td>$ {{number_format($client['deuda']) }} </td>
-                                <td>$ {{number_format($client['total_compras']) }} </td>
-                                <td>{{mb_strtoupper( $client['producto_mas_comprado']) }} </td>
+                            <td>{{ mb_strtoupper($client['cliente']) }} </td>
+                            <td>{{ $client['telefono'] }} </td>
+                            <td>@if ($client['direccion'])
+                                {{ $client['direccion'] }}
+                            @else
+                               <span class="text-secondary">Sin Dirección</span>
+                            @endif  </td>
+                            <td>$ {{number_format($client['deuda']) }} </td>
+                            <td>$ {{number_format($client['total_compras']) }} </td>
+                            <td>{{mb_strtoupper( $client['producto_mas_comprado']) }} </td>
 
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="10">
-                                    <p>No se encontraron registros...</p>
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="10">
+                                <p>No se encontraron registros...</p>
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{{-- ventas y compras y gastos --}}
+<div class="row mt-4" style="height: 250px; ">
+    <div class="container-fluid">
+        <div class="row">
+            <!-- /.col-md-6 -->
+            <div class="col-lg-4" width="200" height="200">
+
+                <div class="card card-outline card-success">
+                    {{--  Ventas ultimos meses  --}}
+                    <canvas id="myChart" style="height: 200px;"></canvas>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card card-outline card-primary">
+                    {{--  Compras ultimos meses  --}}
+                    <canvas id="myChartPurchase" style="height: 200px"></canvas>
+                </div>
+            </div>
+
+            <div class="col-lg-4" width="200" height="200">
+
+                <div class="card card-outline card-danger">
+                    {{--  Ventas ultimos meses  --}}
+                    <canvas id="myChartGastos" style="height: 200px;"></canvas>
+                </div>
             </div>
         </div>
     </div>
-{{-- ventas y compras y gastos --}}
-    <div class="row mt-4" style="height: 250px; ">
-        <div class="container-fluid">
-            <div class="row">
-                <!-- /.col-md-6 -->
-                <div class="col-lg-4" width="200" height="200">
-
-                    <div class="card card-outline card-success">
-                        {{--  Ventas ultimos meses  --}}
-                        <canvas id="myChart" style="height: 200px;"></canvas>
-                    </div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="card card-outline card-primary">
-                        {{--  Compras ultimos meses  --}}
-                        <canvas id="myChartPurchase" style="height: 200px"></canvas>
-                    </div>
-                </div>
-
-                <div class="col-lg-4" width="200" height="200">
-
-                    <div class="card card-outline card-danger">
-                        {{--  Ventas ultimos meses  --}}
-                        <canvas id="myChartGastos" style="height: 200px;"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
 {{-- clientes y gastos --}}
 
 
 
 
-        <div class="row mt-4">
+    <div class="row mt-4">
 
-            <div class="col-lg-6">
-                <div class="card bg-success">
-                    <div class="card-header">
-                        <h3>Productos más vendidos </h3>
-                    </div>
-                    <div class="card-body " style="background-color: #D1E7DD; color:black">
-
-                        <div class="table-responsive ">
-                            <table class="table table-success table-striped " id="tabProducts">
-                                <thead>
-                                    <tr>
-                                        <th>Nombre</th>
-                                        <th>Código</th>
-                                        <th class="text-center">Cantidad Vendida</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @forelse ($topProducts as $product)
-                                        <tr>
-                                            <td title="{{$product->name}}">{{ substr($product->name, 0, 22) }}... </td>
-                                            <td title="{{$product->code}}">{{ substr($product->code, 0, 15) }}... </td>
-                                            <td class="text-center">{{ $product->total_quantity }} </td>
-                                        </tr>
-                                    @empty
-                                        <tr>
-                                            <td colspan="10">
-                                                <p>No se encontraron registros...</p>
-                                            </td>
-                                        </tr>
-                                    @endforelse
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+        <div class="col-lg-6">
+            <div class="card bg-success">
+                <div class="card-header">
+                    <h3>Productos más vendidos </h3>
                 </div>
-            </div>
-            <div class="col-lg-6">
+                <div class="card-body " style="background-color: #D1E7DD; color:black">
 
-                <div class="card bg-danger ml-3">
-                    <div class="card-header ">
-                        <h3>Productos menos vendidos </h3>
-                    </div>
-                    <div class="card-body " style="background-color: #e7d1d1; color:black">
-
-                        <div class="table-responsive ">
-                            <table class="table table-danger table-striped " id="tabProducts">
-                                <thead>
+                    <div class="table-responsive ">
+                        <table class="table table-success table-striped " id="tabProducts">
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Código</th>
+                                    <th class="text-center">Cantidad Vendida</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse ($topProducts as $product)
                                     <tr>
-                                        <th>Nombre</th>
-                                        <th>Código</th>
-                                        <th class="text-center">Cantidad Vendida</th>
+                                        <td title="{{$product->name}}">{{ substr($product->name, 0, 22) }}... </td>
+                                        <td title="{{$product->code}}">{{ substr($product->code, 0, 15) }}... </td>
+                                        <td class="text-center">{{ $product->total_quantity }} </td>
                                     </tr>
-                                </thead>
-                                <tbody>
-                                    @forelse ($MinProducts as $product)
-                                        <tr>
-                                            <td title="{{$product->name}}">{{ substr($product->name, 0, 22) }}... </td>
-                                            <td title="{{$product->code}}">{{ substr($product->code, 0, 15) }}... </td>
-                                            <td class="text-center">{{ $product->total_quantity }} </td>
-                                        </tr>
-                                    @empty
-                                        <tr>
-                                            <td colspan="10">
-                                                <p>No se encontraron registros...</p>
-                                            </td>
-                                        </tr>
-                                    @endforelse
-                                </tbody>
-                            </table>
-                        </div>
+                                @empty
+                                    <tr>
+                                        <td colspan="10">
+                                            <p>No se encontraron registros...</p>
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
+        <div class="col-lg-6">
+
+            <div class="card bg-danger ml-3">
+                <div class="card-header ">
+                    <h3>Productos menos vendidos </h3>
+                </div>
+                <div class="card-body " style="background-color: #e7d1d1; color:black">
+
+                    <div class="table-responsive ">
+                        <table class="table table-danger table-striped " id="tabProducts">
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Código</th>
+                                    <th class="text-center">Cantidad Vendida</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse ($MinProducts as $product)
+                                    <tr>
+                                        <td title="{{$product->name}}">{{ substr($product->name, 0, 22) }}... </td>
+                                        <td title="{{$product->code}}">{{ substr($product->code, 0, 15) }}... </td>
+                                        <td class="text-center">{{ $product->total_quantity }} </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="10">
+                                            <p>No se encontraron registros...</p>
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+   @else
+   <div class="row ">
+    <div class="col-lg-3 col-6 ">
+        <!-- small box -->
+        <div class="small-box bg-success">
+            <div class="inner">
+                <h3>$ {{ number_format($cantidad_ventas, 0) }}</h3>
+
+                <p>Ventas </p>
+            </div>
+            <div class="icon">
+                <i class="las la-cash-register "></i>
+            </div>
+
+        </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-lightblue">
+            <div class="inner">
+                <h3>$ {{ number_format($cantidad_compras, 0) }}</h3>
+
+                <p>Compras </p>
+            </div>
+            <div class="icon">
+                <i class="ion ion-arrow-graph-up-right "></i>
+            </div>
+
+        </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-secondary">
+            <div class="inner">
+                <h3>$ {{ number_format($cantidad_abonos, 0) }}</h3>
+
+                <p>Abonos </p>
+            </div>
+            <div class="icon">
+                <i class="las la-donate"></i>
+            </div>
+
+        </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-warning">
+            <div class="inner">
+                <h3>$ {{ number_format($cantidad_deuda, 0) }}</h3>
+
+                <p>Cartera</p>
+            </div>
+            <div class="icon">
+                <i class="ion ion-social-usd-outline "></i>
+            </div>
+
+        </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-4 ">
+        <!-- small box -->
+        <div class="small-box bg-teal">
+            <div class="inner">
+                <h3>$ {{ number_format($recaudo_cartera, 0) }}</h3>
+
+                <p>Recuado Cartera</p>
+            </div>
+            <div class="icon">
+                <i class="fas fa-hand-holding-usd"></i>
+            </div>
+
+        </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-4 ">
+        <!-- small box -->
+        <div class="small-box bg-secondary">
+            <div class="inner">
+                <h3>$ {{ number_format($cantidad_consumo, 0) }}</h3>
+
+                <p>Consumo Interno</p>
+            </div>
+            <div class="icon">
+                <i class="fas fa-file-invoice-dollar"></i>
+            </div>
+
+        </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-4 ">
+        <!-- small box -->
+        <div class="small-box bg-dark">
+            <div class="inner">
+                <h3>$ {{ number_format($cantidad_gastos, 0) }}</h3>
+
+                <p>Gastos</p>
+            </div>
+            <div class="icon">
+                <i class="far fa-money-bill-alt"></i>
+            </div>
+
+        </div>
+    </div>
+    <!-- ./col -->
+</div>
+@endif
+
     @stop
 
     @section('css')

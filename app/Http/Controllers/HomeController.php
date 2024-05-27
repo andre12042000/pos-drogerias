@@ -15,6 +15,7 @@ use App\Models\Purchase;
 use App\Models\SaleDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -96,7 +97,36 @@ class HomeController extends Controller
         $purchasemonths = $compras_ultimos_meses['months'];
         $purchasetotals = $compras_ultimos_meses['totals'];
 
-        return view('home', compact('clientes', 'gastostotals', 'gastosmonths', 'MinProducts', 'recaudo_cartera', 'fecha_actual', 'filter_fecha', 'cantidad_consumo', 'cantidad_gastos', 'purchasemonths', 'purchasetotals', 'data', 'total_ingresos', 'mes_actual', 'topProducts', 'cantidad_ventas', 'cantidad_abonos', 'cantidad_compras', 'cantidad_deuda', 'months', 'totals'));
+
+        $user = Auth::user();
+
+        if ($user->hasRole('Administrador')) {
+            // El usuario tiene el rol de administrador
+            $role = 'Administrador';
+
+        } else {
+            // El usuario tiene otro rol o no tiene rol asignado
+            $role = 'otro';
+
+            $cantidad_ventas = $cashes->where('cashesable_type', 'App\Models\Sale')->where('user_id')->sum('total');
+            $cantidad_abonos = $cashes->where('cashesable_type', 'App\Models\Abono')->where('user_id')->sum('total');
+            //datos cajero
+            $this->cajeroventas();
+            $this->cajerocompras();
+            $this->cajeroabonos();
+            $this->cajerocartera();
+            $this->cajerorecaudocartera();
+            $this->cajeroconsumointerno();
+            $this->cajerogastos();
+
+
+        }
+
+
+
+
+
+        return view('home', compact('role', 'clientes', 'gastostotals', 'gastosmonths', 'MinProducts', 'recaudo_cartera', 'fecha_actual', 'filter_fecha', 'cantidad_consumo', 'cantidad_gastos', 'purchasemonths', 'purchasetotals', 'data', 'total_ingresos', 'mes_actual', 'topProducts', 'cantidad_ventas', 'cantidad_abonos', 'cantidad_compras', 'cantidad_deuda', 'months', 'totals'));
     }
 
     public function actilizarestadisticas(Request $request)

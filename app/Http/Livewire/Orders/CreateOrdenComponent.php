@@ -76,16 +76,19 @@ class CreateOrdenComponent extends Component
         $equipos = Equipos::all();
 
 
-        $tecnicoRole = Role::where('name', 'Técnico')->first();
+        $tecnicoRole = Role::where('name', 'Operativo')->first();
 
         if ($tecnicoRole) {
             // Obtener los usuarios que tienen el rol 'tecnico'
             $tecnicos = $tecnicoRole->users()->get();
             // $usuariosTecnicos = User::role('tecnico')->get();
+            if (count($tecnicos) < 1) {
+                session()->flash('warning', 'No hay técnicos registrados en el sistema');
+            }
+        }else{
+            $tecnicos = [];
         }
-        if (count($tecnicos) < 1) {
-            session()->flash('warning', 'No hay técnicos registrados en el sistema');
-        }
+
 
 
         return view('livewire.orders.create-orden-component', compact('providers', 'equipos', 'tecnicos', 'products'));
