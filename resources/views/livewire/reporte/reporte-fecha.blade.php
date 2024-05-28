@@ -38,7 +38,7 @@
                 <div class=" col-lg-2 float-right text-right">
                     <div class="dropdown mr-4 mt-3">
                         <button class="btn btn-outline-light dropdown-toggle" @if($ventas->isEmpty()) disabled @endif href="#" role="button" id="dropdownMenuLink"
-                            data-bs-toggle="dropdown" aria-expanded="false">
+                            data-toggle="dropdown" aria-expanded="false">
                             Generar Recibo
                             <div wire:loading wire:target="exportarventas">
                                 <img src="{!! Config::get('app.URL') !!}/img/loading.gif" width="20px"
