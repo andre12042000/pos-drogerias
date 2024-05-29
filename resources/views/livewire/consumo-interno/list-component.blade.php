@@ -38,8 +38,8 @@
                         <input type="text" class="form-control" placeholder="Buscar registro" aria-label="Username"
                             aria-describedby="basic-addon1" wire:model="buscar">
 
-                        <a  class="btn btn-light text-black float-right ml-2" href="{{ route('consumo_interno.create') }}" >Nuevo <i class="las la-plus-circle"></i></a>
-                    </div>
+{{--                         <a  class="btn btn-light text-black float-right ml-2" href="{{ route('consumo_interno.create') }}" >Nuevo <i class="las la-plus-circle"></i></a>
+ --}}                    </div>
                 </div>
             </div>
         </div>

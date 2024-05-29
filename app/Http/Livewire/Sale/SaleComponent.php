@@ -152,7 +152,7 @@ class SaleComponent extends Component
 
         $cantidad = $registros->count();
 
-        if($registro_numero == 1 && $cantidad < 1){
+     /*    if($registro_numero == 1 && $cantidad < 1){
 
             $this->dispatchBrowserEvent('swal', [
                 'title' => 'Ops! Ocurrio un error',
@@ -168,7 +168,7 @@ class SaleComponent extends Component
                 'icon' => 'error'
             ]);
 
-        }
+        } */
 
     }
 
