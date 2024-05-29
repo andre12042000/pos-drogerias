@@ -155,7 +155,6 @@ class CreateComponent extends Component
 
     function guardarDatosEvent($data)
     {
-
         $photo = $this->image;
 
         if(isset($photo) && $photo instanceof \Illuminate\Http\UploadedFile){
@@ -171,6 +170,15 @@ class CreateComponent extends Component
         $this->precio_blister = isset($data['precio_blister']) ? (float) $data['precio_blister'] : 0;
         $this->costo_unidad = isset($data['costo_unidad']) ? (float) $data['costo_unidad'] : 0;
         $this->precio_unidad = isset($data['precio_unidad']) ? (float) $data['precio_unidad'] : 0;
+        $this->disponible_blister = isset($data['disponible_blister']) ? (float) $data['disponible_blister'] : 0;
+        $this->disponible_unidad = isset($data['disponible_unidad']) ? (float) $data['disponible_unidad'] : 0;
+
+        $this->contenido_interno_blister = isset($data['contenido_interno_blister']) ? (float) $data['contenido_interno_blister'] : 0;
+        $this->contenido_interno_unidad = isset($data['contenido_interno_unidad']) ? (float) $data['contenido_interno_unidad'] : 0;
+        $this->contenido_interno_caja = isset($data['contenido_interno_caja']) ? (float) $data['contenido_interno_caja'] : 1;
+
+
+
         $this->valor_iva_caja = self::calcularIvaPrecioVenta($this->precio_caja, $this->iva_product);
         $this->valor_iva_blister = self::calcularIvaPrecioVenta($this->precio_blister, $this->iva_product);
         $this->valor_iva_unidad = self::calcularIvaPrecioVenta($this->precio_unidad, $this->iva_product);

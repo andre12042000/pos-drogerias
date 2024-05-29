@@ -5,7 +5,6 @@
     <div class="card">
         <div class="card-header">
             <div class="container">
-
                 <div class="row mb-2 mt-3">
                     <div class="col-sm-4">
                         <select class="form-select" aria-label="Default select example" id="tipoOperacion"
@@ -350,27 +349,54 @@
         }
     });
 
+
     window.addEventListener('seleccionarProductoEvent', function(event) { //Evento que trae los datos desde el backend
+        mostrarDatosLocalStorageEnTabla();
+         // Obtener referencias a los elementos del modal
+    const modal = document.getElementById("addProductCode");
+    const selectPresentacionCreate = document.getElementById("selectPresentacionCreate");
+    const cantidadInputCreate = document.getElementById("cantidadInputCreate");
+    const precioUnitarioInputCreate = document.getElementById("precioUnitarioInputCreate");
+    const totalPrecioCompraInputCreate = document.getElementById("totalPrecioCompraInputCreate");
+    const ivaInputCreate = document.getElementById("ivaInputCreate");
+    const inputDescuentoCreate = document.getElementById("inputDescuentoCreate");
+    const descuentoPorcentajeCreate = document.getElementById("descuentoPorcentajeCreate");
+    const descuentoValorFijoCreate = document.getElementById("descuentoValorFijoCreate");
 
-        // Mostrar el modal
-        const modal = document.getElementById("addProductCode");
-        const modalContent = document.getElementById("modalContent");
-        modal.style.display = "block";
+    // Limpiar los valores de los inputs y elementos a sus valores iniciales
+    if (selectPresentacionCreate) selectPresentacionCreate.value = "";
+    if (cantidadInputCreate) cantidadInputCreate.value = "";
+    if (precioUnitarioInputCreate) precioUnitarioInputCreate.value = "";
+    if (totalPrecioCompraInputCreate) totalPrecioCompraInputCreate.value = "";
+    if (ivaInputCreate) ivaInputCreate.value = "";
+    if (inputDescuentoCreate) inputDescuentoCreate.value = "";
+    if (descuentoPorcentajeCreate) descuentoPorcentajeCreate.checked = false;
+    if (descuentoValorFijoCreate) descuentoValorFijoCreate.checked = false;
 
-        productoEditar = event.detail;
+    // Restaurar variables a valores iniciales
+    productoEditar = "";
 
-        precioUnitarioInputCreate.value = productoEditar.precio_caja;
-        totalPrecioCompraInputCreate.value = productoEditar.precio_caja;
-        deshabilitarOpcionesSelect();
+    // Mostrar el modal
+    modal.style.display = "block";
+
+    // Asignar los valores recibidos del evento
+    productoEditar = event.detail;
+    if (precioUnitarioInputCreate) precioUnitarioInputCreate.value = productoEditar.precio_caja;
+    if (totalPrecioCompraInputCreate) totalPrecioCompraInputCreate.value = productoEditar.precio_caja;
+    if (cantidadInputCreate) cantidadInputCreate.value = 1;
+    if (selectPresentacionCreate) selectPresentacionCreate.value = 'disponible_caja';
+
+    // Llamar a la función para deshabilitar opciones del select si es necesario
+    deshabilitarOpcionesSelect();
     });
 
     function deshabilitarOpcionesSelect() {
         const opciones = selectPresentacionCreate.options;
 
         for (let i = 0; i < opciones.length; i++) {
-            if (opciones[i].value === 'disponible_caja' && productoEditar.disponible_caja === 0) {
+           /*  if (opciones[i].value === 'disponible_caja' && productoEditar.disponible_caja === 0) {
                 opciones[i].disabled = true;
-            }
+            } */
 
             if (opciones[i].value === 'disponible_blister' && productoEditar.disponible_blister === 0) {
                 opciones[i].disabled = true;
@@ -562,29 +588,46 @@
     }
 
     function cerrarModalYLimpiarCreate() {
-        const modal = document.getElementById("addProductCode");
+    // Mostrar datos del LocalStorage en la tabla
+    mostrarDatosLocalStorageEnTabla();
 
-        modal.style.display = "none";
+    // Ocultar el modal
+    const modal = document.getElementById("addProductCode");
+    if (modal) modal.style.display = "none";
+
+    // Restaurar variables a valores iniciales
+    productoEditar = "";
+
+    // Restaurar los valores de los inputs y elementos a sus valores iniciales
+    const buscarProductoCodigo = document.getElementById("buscarProductoCodigo");
+    if (buscarProductoCodigo) buscarProductoCodigo.value = "";
+
+    // Restaurar valores del Modal Crear Item
+    const selectPresentacionCreate = document.getElementById("selectPresentacionCreate");
+    const cantidadInputCreate = document.getElementById("cantidadInputCreate");
+    const precioUnitarioInputCreate = document.getElementById("precioUnitarioInputCreate");
+    const totalPrecioCompraInputCreate = document.getElementById("totalPrecioCompraInputCreate");
+    const ivaInputCreate = document.getElementById("ivaInputCreate");
+    const inputDescuentoCreate = document.getElementById("inputDescuentoCreate");
+    const descuentoPorcentajeCreate = document.getElementById("descuentoPorcentajeCreate");
+    const descuentoValorFijoCreate = document.getElementById("descuentoValorFijoCreate");
+
+    if (selectPresentacionCreate) selectPresentacionCreate.value = "";
+    if (cantidadInputCreate) cantidadInputCreate.value = "";
+    if (precioUnitarioInputCreate) precioUnitarioInputCreate.value = "";
+    if (totalPrecioCompraInputCreate) totalPrecioCompraInputCreate.value = "";
+    if (ivaInputCreate) ivaInputCreate.value = "";
+    if (inputDescuentoCreate) inputDescuentoCreate.value = "";
+    if (descuentoPorcentajeCreate) descuentoPorcentajeCreate.checked = false;
+    if (descuentoValorFijoCreate) descuentoValorFijoCreate.checked = false;
+
+    // Llamar a la función limpiarSearchCode
+    limpiarSearchCode();
+}
 
 
-        ivaUnitario = 0;
-        productoEditar = '';
-        indiceItem = '';
-        ivaInputCreate.value = '';
-        precioUnitarioInputCreate.value = '';
-        inputDescuentoCreate.value = '';
-        selectPresentacionCreate = '';
-        cantidadInputCreate = '';
-        totalPrecioCompraInputCreate = '';
-
-        limpiarSearchCode();
-        mostrarDatosLocalStorageEnTabla();
-
-    }
 
     cerrarModalBtnCreate.addEventListener('click', cerrarModalYLimpiarCreate);
-
-
 
 
 
