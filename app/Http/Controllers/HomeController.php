@@ -122,17 +122,26 @@ class HomeController extends Controller
                 return $cash->sale->total; // Sumar el campo total de la relación sale
             });
 
+            $cashes = Cash::select(DB::raw('DAY(created_at) as day'), 'cashesable_type', DB::raw('SUM(quantity) as total'))
+            ->where(DB::raw('DATE_FORMAT(created_at, "%Y-%m")'), $currentMonth)
+            ->groupBy('day', 'cashesable_type')
+            ->get();
+            $currentDay = date('j'); // Obtener el día actual (sin ceros iniciales)
 
-       /*       $cantidad_abonos = \App\Models\Cash::where('cashesable_type', 'App\Models\Abono')
-            ->where('user_id', $userId)
-            ->whereDate('created_at', $currentDate)
-            ->with('abono') // Asegurarse de cargar la relación
-            ->get()
-            ->sum(function ($cash) {
-                return $cash->abono->total; // Sumar el campo total de la relación sale
-            }); */
+            // Filtrar y sumar los totales de los abonos del día actual
+            $cantidad_abonos = $cashes->where('day', $currentDay)
+                ->where('cashesable_type', 'App\Models\Abono')
+                ->sum('total');
+
+
 
             $cantidad_compras =  $this->cajeroobtenercantidadcompras($currentDate, $userId);
+            $cantidad_deuda = $this->cajeroobtenerdeudas($currentDate, $userId);
+            $cantidad_gastos = $this->cajeroobtenercantidadgastos($currentDate, $userId);
+            $cantidad_consumo = $this->cajeroobtenercantidadconsumointerno($currentDate, $userId);
+            $recaudo_cartera = $this->cajeroobtenerrecuadocartera($currentDate, $userId);
+
+
         }
 
 
@@ -354,11 +363,12 @@ class HomeController extends Controller
 
     //perfil de cajero
 
-    function cajeroobtenercantidadgastos($currentMonth)
+    function cajeroobtenercantidadgastos($currentDate, $userId)
     {
         $gastos = DB::table('gastos')
             ->where('status', '=', 'APLICADO')
-            ->where(DB::raw('DATE_FORMAT(created_at, "%Y-%m")'), '=', $currentMonth)
+            ->where('user_id', $userId)
+        ->where(DB::raw('DATE(created_at)'), '=', $currentDate)
             ->sum('total');
 
         if (is_null($gastos)) {
@@ -370,11 +380,12 @@ class HomeController extends Controller
         return $total;
     }
 
-    function cajeroobtenercantidadconsumointerno($currentMonth)
+    function cajeroobtenercantidadconsumointerno($currentDate, $userId)
     {
         $consumos = DB::table('consumo_internos')
             ->where('status', '=', 'APLICADA')
-            ->where(DB::raw('DATE_FORMAT(created_at, "%Y-%m")'), '=', $currentMonth)
+            ->where('user_id', $userId)
+            ->where(DB::raw('DATE(created_at)'), '=', $currentDate)
             ->sum('total');
         if (is_null($consumos)) {
             $total = 0;
@@ -403,23 +414,23 @@ class HomeController extends Controller
         return $total;
     }
 
-    function cajeroobtenerdeudas()
+    function cajeroobtenerdeudas($currentDate, $userId)
     {
-        $deudas = Orders::sum('saldo');
+        $deudas = Orders::where('user_id', $userId)->where('created_at', $currentDate)->sum('saldo');
         $saldo_clientes = Client::sum('deuda');
-        if (is_null($deudas)) {
+        if ($deudas <= 0) {
             $total = null;
         } else {
             $total = $deudas + $saldo_clientes;
         }
-
         return $total;
     }
 
-    function cajeroobtenerrecuadocartera()
+    function cajeroobtenerrecuadocartera($currentDate, $userId)
     {
 
-        $totalQuantity = Cash::where('cashesable_type', 'App\Models\PagoCreditos')->sum('quantity');
+        $totalQuantity = Cash::where('cashesable_type', 'App\Models\PagoCreditos') ->where('user_id', $userId)
+        ->where(DB::raw('DATE(created_at)'), '=', $currentDate)->sum('quantity');
 
 
         return $totalQuantity;
