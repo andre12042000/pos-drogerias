@@ -310,6 +310,7 @@
             </div>
         </div>
     </div>
+
 @else
 <div class="row py-3">
     <div class="col-lg-3 col-6 ">

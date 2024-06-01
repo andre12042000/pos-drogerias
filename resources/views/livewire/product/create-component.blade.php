@@ -364,9 +364,13 @@
                     </div>
                     <div class="row">
                         <div class="col-4">
-                            @if ($image != null || $image != '')
-                                <div class="mb-4"> <img style="height: 100px; width: 100px;"
-                                        src="{{ $image->temporaryUrl() }}" alt="">
+                            @if ($image instanceof \Illuminate\Http\UploadedFile)
+                                <div class="mb-4">
+                                    <img style="height: 100px; width: 100px;" src="{{ $image->temporaryUrl() }}" alt="Imagen">
+                                </div>
+                            @elseif (!is_null($image) && $image !== '')
+                                <div class="mb-4">
+                                    <img style="height: 100px; width: 100px;" src="{{ asset('storage/' . $image) }}" alt="Imagen">
                                 </div>
                             @endif
                         </div>
@@ -396,6 +400,33 @@
 <script src="{{ asset('js/productos/validacionesProductCreate.js') }}"></script>
 <script src="{{ asset('js/productos/calculoIva.js') }}"></script>
 <script>
+     window.addEventListener('producto_guardado', event => {
+
+        Swal.fire({
+            position: "center",
+            icon: "success",
+            title: "Producto guardado correctamente",
+            showConfirmButton: false,
+            timer: 1500
+        }).then(() => {
+            setTimeout(() => {
+                location.reload();
+            }, 0);
+        });
+    })
+
+    window.addEventListener('swal_error', event => {
+        Swal.fire({
+            position: "center",
+            icon: "error",
+            title: "Error",
+            text: event.detail.message,
+            showConfirmButton: true,
+        });
+    });
+
+
+
     window.addEventListener('alert', event => {
 
         Swal.fire(

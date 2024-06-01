@@ -155,13 +155,7 @@ class CreateComponent extends Component
 
     function guardarDatosEvent($data)
     {
-        $photo = $this->image;
 
-        if(isset($photo) && $photo instanceof \Illuminate\Http\UploadedFile){
-            $this->image = $photo->store('livewire-tem');
-        } else {
-            $this->image = null;
-        }
 
         $this->costo_caja = isset($data['costo_caja']) ? (float) $data['costo_caja'] : 0;
         $this->iva_product = isset($data['iva_product']) ? (float) $data['iva_product'] : 0;
@@ -194,8 +188,8 @@ class CreateComponent extends Component
             'category_id'               => 'required',
             'subcategory_id'            => 'required',
             'status'                    => 'required',
-            'stock_min'                 => 'required|min:1',
-            'stock_max'                 => 'required|min:1',
+            'stock_min'                 => 'required|min:0',
+            'stock_max'                 => 'required|min:0',
             'stock'                     => 'required',
             'iva_product'               => 'required',
             'disponible_caja'           => 'required',
@@ -212,15 +206,15 @@ class CreateComponent extends Component
 
 
         if($this->disponible_blister > 0){
-            $rules['contenido_interno_blister'] = ['required', 'numeric', 'min:1'];
-            $rules['costo_blister'] = ['required', 'numeric', 'min:1'];
-            $rules['precio_blister'] = ['required', 'numeric', 'min:1'];
+            $rules['contenido_interno_blister'] = ['required', 'numeric', 'min:0'];
+            $rules['costo_blister'] = ['required', 'numeric', 'min:0'];
+            $rules['precio_blister'] = ['required', 'numeric', 'min:0'];
         }
 
         if($this->disponible_unidad > 0){
-            $rules['contenido_interno_unidad'] = ['required', 'numeric', 'min:1'];
-            $rules['costo_unidad'] = ['required', 'numeric', 'min:1'];
-            $rules['precio_unidad'] = ['required', 'numeric', 'min:1'];
+            $rules['contenido_interno_unidad'] = ['required', 'numeric', 'min:0'];
+            $rules['costo_unidad'] = ['required', 'numeric', 'min:0'];
+            $rules['precio_unidad'] = ['required', 'numeric', 'min:0'];
         }
 
 
@@ -242,11 +236,27 @@ class CreateComponent extends Component
 
     function save($validatedData)
     {
+        try {
+            // Verificar si se ha subido una imagen
+            if ($this->image instanceof \Illuminate\Http\UploadedFile) {
+                // Guardar la imagen en el directorio temporal 'livewire-temp'
+                $this->image = $this->image->store('livewire-temp');
+            } else {
+                // Si no se ha subido una imagen, establecer la variable como null
+                $this->image = null;
+            }
+
+            // Aquí puedes añadir más lógica si es necesario
+        } catch (\Exception $e) {
+            // En caso de error, enviar un evento al navegador con el mensaje de error
+            $this->dispatchBrowserEvent('swal_error', ['message' => $e->getMessage()]);
+        }
+
+        // Crear el producto en la base de datos
         $producto = Product::create($validatedData);
 
-        $this->emit('reloadProductEvent', $producto);
-
-        $this->dispatchBrowserEvent('close-modal');
+        // Enviar un evento al navegador indicando que el producto ha sido guardado
+        $this->dispatchBrowserEvent('producto_guardado');
 
     }
 
