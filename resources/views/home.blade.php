@@ -11,7 +11,7 @@
 @section('content')
     @include('popper::assets')
 
-@if ($role == 'Administrado')
+@if ($role == 'Administrador')
 <form method="POST" action="{{ route('update.estadistica') }}">
     @csrf
     <div class="input-group py-2 mb-3 col-4">
@@ -319,7 +319,7 @@
             <div class="inner">
                 <h3>$ {{ number_format($cantidad_ventas2, 0) }}</h3>
 
-                <p>Ventas Mensuales </p>
+                <p>Ventas  </p>
             </div>
             <div class="icon">
                 <i class="las la-cash-register "></i>
@@ -334,7 +334,7 @@
             <div class="inner">
                 <h3>$ {{ number_format($cantidad_compras, 0) }}</h3>
 
-                <p>Compras Mensuales</p>
+                <p>Compras </p>
             </div>
             <div class="icon">
                 <i class="ion ion-arrow-graph-up-right "></i>
@@ -349,7 +349,7 @@
             <div class="inner">
                 <h3>$ {{ number_format($cantidad_abonos, 0) }}</h3>
 
-                <p>Abonos Mensuales</p>
+                <p>Abonos </p>
             </div>
             <div class="icon">
                 <i class="las la-donate"></i>

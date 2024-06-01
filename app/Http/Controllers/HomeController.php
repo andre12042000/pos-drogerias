@@ -121,17 +121,18 @@ class HomeController extends Controller
             ->sum(function ($cash) {
                 return $cash->sale->total; // Sumar el campo total de la relación sale
             });
-            $cantidad_abonos = \App\Models\Cash::where('cashesable_type', 'App\Models\abono')
+
+
+       /*       $cantidad_abonos = \App\Models\Cash::where('cashesable_type', 'App\Models\Abono')
             ->where('user_id', $userId)
             ->whereDate('created_at', $currentDate)
             ->with('abono') // Asegurarse de cargar la relación
             ->get()
             ->sum(function ($cash) {
                 return $cash->abono->total; // Sumar el campo total de la relación sale
-            });
+            }); */
 
-
-
+            $cantidad_compras =  $this->cajeroobtenercantidadcompras($currentDate, $userId);
         }
 
 
@@ -349,4 +350,79 @@ class HomeController extends Controller
 
         return $datos;
     }
+
+
+    //perfil de cajero
+
+    function cajeroobtenercantidadgastos($currentMonth)
+    {
+        $gastos = DB::table('gastos')
+            ->where('status', '=', 'APLICADO')
+            ->where(DB::raw('DATE_FORMAT(created_at, "%Y-%m")'), '=', $currentMonth)
+            ->sum('total');
+
+        if (is_null($gastos)) {
+            $total = 0;
+        } else {
+            $total = $gastos;
+        }
+
+        return $total;
+    }
+
+    function cajeroobtenercantidadconsumointerno($currentMonth)
+    {
+        $consumos = DB::table('consumo_internos')
+            ->where('status', '=', 'APLICADA')
+            ->where(DB::raw('DATE_FORMAT(created_at, "%Y-%m")'), '=', $currentMonth)
+            ->sum('total');
+        if (is_null($consumos)) {
+            $total = 0;
+        } else {
+            $total = $consumos;
+        }
+
+        return $total;
+    }
+
+    function cajeroobtenercantidadcompras($currentDate, $userId)
+    {
+        $currentDate = date('Y-m-d');
+        $cantidad_compras = DB::table('purchases')
+        ->where('status', '=', 'APLICADO')
+        ->where('user_id', $userId)
+        ->where(DB::raw('DATE(created_at)'), '=', $currentDate)
+        ->sum('total');
+
+        if (is_null($cantidad_compras)) {
+            $total = 0;
+        } else {
+            $total = $cantidad_compras;
+        }
+
+        return $total;
+    }
+
+    function cajeroobtenerdeudas()
+    {
+        $deudas = Orders::sum('saldo');
+        $saldo_clientes = Client::sum('deuda');
+        if (is_null($deudas)) {
+            $total = null;
+        } else {
+            $total = $deudas + $saldo_clientes;
+        }
+
+        return $total;
+    }
+
+    function cajeroobtenerrecuadocartera()
+    {
+
+        $totalQuantity = Cash::where('cashesable_type', 'App\Models\PagoCreditos')->sum('quantity');
+
+
+        return $totalQuantity;
+    }
+
 }
