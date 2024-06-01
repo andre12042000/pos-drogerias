@@ -25,6 +25,9 @@ class EditProductComponent extends Component
     public $disponible_blister_edit, $disponible_unidad_edit, $product_id;
     public $code_edit, $name_edit, $iva_edit, $stock_minimo_edit, $stock_maximo_edit, $blister_por_caja_edit, $unidad_por_caja_edit;
     public $CostoPorCajaEdit, $CostoPorBlisterEdit, $CostoPorUnidadEdit, $PrecioVentaCajaEdit, $PrecioVentaBlisterEdit, $PrecioVentaUnidadEdit, $status;
+    public $existingImageUrl;
+
+
     public function Mount()
     {
         $this->categorias     =  Category::orderBy('name', 'ASC')->get();
@@ -62,6 +65,9 @@ class EditProductComponent extends Component
         $this->disponible_blister_edit = $product['disponible_blister'] ?? 0;
         $this->disponible_unidad_edit = $product['disponible_unidad'] ?? 0;
         $this->status = $product['status'];
+
+        $this->existingImageUrl = $product['image'];
+
         self::estadosDisponibilidadBlister($this->disponible_blister_edit);
         self::estadosDisponibilidadUnidad($this->disponible_unidad_edit);
         self::obtenerPorcentajesGanancia($product['presentacion_id']);
@@ -117,13 +123,6 @@ class EditProductComponent extends Component
     public function actualizarProduct()
     {
 
-        $img = $this->image;
-
-        if(isset($img) && $img instanceof \Illuminate\Http\UploadedFile){
-            $this->image = $img->store('livewire-tem');
-        } else {
-            $this->image = null;
-        }
         $rules = [
             'code_edit'                     => 'required|min:4|max:254|unique:products,code,' . $this->product_id,
             'name_edit'                     => 'required|min:4|max:254',
@@ -238,11 +237,23 @@ class EditProductComponent extends Component
                 'valor_iva_caja'            => $ivas['iva_caja'],
                 'valor_iva_blister'         => $ivas['iva_blister'],
                 'valor_iva_unidad'          => $ivas['iva_unidad'],
-                'image'                     => $this->image,
                 'is_materia_prima'          => $this->is_materia_prima,
             ]);
 
-             return redirect()->route('inventarios.product')->with('success', 'Se ha actualizado correctamente el producto: ' . $product->name);
+            if($this->image){
+
+                if(isset($this->image) && $this->image instanceof \Illuminate\Http\UploadedFile){
+                    $imagen = $this->image->store('livewire-tem');
+                }
+
+                $product->update([
+                    'image'     => $imagen,
+                ]);
+
+            }
+
+            return redirect()->route('inventarios.product')->with('success', 'Se ha actualizado correctamente el producto: ' . $product->name);
+
          } catch (\Exception $e) {
 
             $errorCode = $e->getMessage();

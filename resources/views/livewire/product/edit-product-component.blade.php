@@ -157,6 +157,7 @@
                     <div class="row">
                         <div class=" col-6">
 
+
                             <label>Imagen Producto</label>
                             <input class="form-control" type="file" id="image" name="image"
                                 wire:model="image">
@@ -429,3 +430,31 @@
 
     }
 </script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Función para actualizar el precio de venta en un 30% del costo
+        function updatePrice(costInputId, priceInputId) {
+            const costInput = document.getElementById(costInputId);
+            const priceInput = document.getElementById(priceInputId);
+
+            if (costInput && priceInput) {
+                costInput.addEventListener('input', function () {
+                    const cost = parseFloat(costInput.value);
+                    if (!isNaN(cost)) {
+                        const price = cost * 1.30;
+                        priceInput.value = price.toFixed(0); // Redondear a 2 decimales
+                    } else {
+                        priceInput.value = '';
+                    }
+                });
+            }
+        }
+
+        // Asociar los eventos a cada par de costo/precio
+        updatePrice('CostoPorCajaEdit', 'PrecioVentaCajaEdit');
+        updatePrice('CostoPorBlisterEdit', 'PrecioVentaBlisterEdit');
+        updatePrice('CostoPorUnidadEdit', 'PrecioVentaUnidadEdit');
+    });
+</script>
+
