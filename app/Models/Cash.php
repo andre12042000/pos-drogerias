@@ -20,4 +20,14 @@ class Cash extends Model
       public function user(){
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    public function sale()
+    {
+        return $this->belongsTo(Sale::class, 'cashesable_id');
+    }
+
+    public function abono()
+    {
+        return $this->belongsTo(Abono::class, 'cashesable_id');
+    }
 }

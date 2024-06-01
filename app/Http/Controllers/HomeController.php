@@ -6,6 +6,7 @@ use DateTime;
 use Carbon\Carbon;
 use App\Models\Cash;
 use App\Models\Sale;
+use App\Models\User;
 use App\Models\Abono;
 use App\Models\Client;
 use App\Models\Gastos;
@@ -103,30 +104,38 @@ class HomeController extends Controller
         if ($user->hasRole('Administrador')) {
             // El usuario tiene el rol de administrador
             $role = 'Administrador';
-
+            $cantidad_ventas2 = '01098';
         } else {
             // El usuario tiene otro rol o no tiene rol asignado
             $role = 'otro';
+            $userId = auth()->id();
+            $hoy = Carbon::now();
+            $currentDate = Carbon::today(); // Obtiene la fecha de hoy sin la hora
 
-            $cantidad_ventas = $cashes->where('cashesable_type', 'App\Models\Sale')->where('user_id')->sum('total');
-            $cantidad_abonos = $cashes->where('cashesable_type', 'App\Models\Abono')->where('user_id')->sum('total');
-            //datos cajero
-            $this->cajeroventas();
-            $this->cajerocompras();
-            $this->cajeroabonos();
-            $this->cajerocartera();
-            $this->cajerorecaudocartera();
-            $this->cajeroconsumointerno();
-            $this->cajerogastos();
+
+            $cantidad_ventas2 = \App\Models\Cash::where('cashesable_type', 'App\Models\Sale')
+            ->where('user_id', $userId)
+            ->whereDate('created_at', $currentDate)
+            ->with('sale') // Asegurarse de cargar la relación
+            ->get()
+            ->sum(function ($cash) {
+                return $cash->sale->total; // Sumar el campo total de la relación sale
+            });
+            $cantidad_abonos = \App\Models\Cash::where('cashesable_type', 'App\Models\abono')
+            ->where('user_id', $userId)
+            ->whereDate('created_at', $currentDate)
+            ->with('abono') // Asegurarse de cargar la relación
+            ->get()
+            ->sum(function ($cash) {
+                return $cash->abono->total; // Sumar el campo total de la relación sale
+            });
+
 
 
         }
 
 
-
-
-
-        return view('home', compact('role', 'clientes', 'gastostotals', 'gastosmonths', 'MinProducts', 'recaudo_cartera', 'fecha_actual', 'filter_fecha', 'cantidad_consumo', 'cantidad_gastos', 'purchasemonths', 'purchasetotals', 'data', 'total_ingresos', 'mes_actual', 'topProducts', 'cantidad_ventas', 'cantidad_abonos', 'cantidad_compras', 'cantidad_deuda', 'months', 'totals'));
+        return view('home', compact('cantidad_ventas2', 'role', 'clientes', 'gastostotals', 'gastosmonths', 'MinProducts', 'recaudo_cartera', 'fecha_actual', 'filter_fecha', 'cantidad_consumo', 'cantidad_gastos', 'purchasemonths', 'purchasetotals', 'data', 'total_ingresos', 'mes_actual', 'topProducts', 'cantidad_ventas', 'cantidad_abonos', 'cantidad_compras', 'cantidad_deuda', 'months', 'totals'));
     }
 
     public function actilizarestadisticas(Request $request)

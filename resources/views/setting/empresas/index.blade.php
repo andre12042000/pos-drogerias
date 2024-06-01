@@ -58,7 +58,7 @@
                 @forelse ($empresas as $empresa)
                 <tr>
                     <td>{{ ucwords($empresa->name) }}</td>
-                    <td>{{ ($empresa->nit) }}</td>
+                    <td>{{ $empresa->nit }} - {{ $empresa->dv }}</td>
                     <td>{{ ($empresa->telefono) }}</td>
                     <td>{{ ($empresa->email) }}</td>
                     <td>{{ ($empresa->pre_facturacion) }}</td>

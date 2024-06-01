@@ -11,7 +11,7 @@
 @section('content')
     @include('popper::assets')
 
-
+@if ($role == 'Administrado')
 <form method="POST" action="{{ route('update.estadistica') }}">
     @csrf
     <div class="input-group py-2 mb-3 col-4">
@@ -310,6 +310,116 @@
             </div>
         </div>
     </div>
+@else
+<div class="row py-3">
+    <div class="col-lg-3 col-6 ">
+        <!-- small box -->
+        <div class="small-box bg-success">
+            <div class="inner">
+                <h3>$ {{ number_format($cantidad_ventas2, 0) }}</h3>
+
+                <p>Ventas Mensuales </p>
+            </div>
+            <div class="icon">
+                <i class="las la-cash-register "></i>
+            </div>
+
+        </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-lightblue">
+            <div class="inner">
+                <h3>$ {{ number_format($cantidad_compras, 0) }}</h3>
+
+                <p>Compras Mensuales</p>
+            </div>
+            <div class="icon">
+                <i class="ion ion-arrow-graph-up-right "></i>
+            </div>
+
+        </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-secondary">
+            <div class="inner">
+                <h3>$ {{ number_format($cantidad_abonos, 0) }}</h3>
+
+                <p>Abonos Mensuales</p>
+            </div>
+            <div class="icon">
+                <i class="las la-donate"></i>
+            </div>
+
+        </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-warning">
+            <div class="inner">
+                <h3>$ {{ number_format($cantidad_deuda, 0) }}</h3>
+
+                <p>Cartera</p>
+            </div>
+            <div class="icon">
+                <i class="ion ion-social-usd-outline "></i>
+            </div>
+
+        </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-4 ">
+        <!-- small box -->
+        <div class="small-box bg-teal">
+            <div class="inner">
+                <h3>$ {{ number_format($recaudo_cartera, 0) }}</h3>
+
+                <p>Recuado Cartera</p>
+            </div>
+            <div class="icon">
+                <i class="fas fa-hand-holding-usd"></i>
+            </div>
+
+        </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-4 ">
+        <!-- small box -->
+        <div class="small-box bg-secondary">
+            <div class="inner">
+                <h3>$ {{ number_format($cantidad_consumo, 0) }}</h3>
+
+                <p>Consumo Interno</p>
+            </div>
+            <div class="icon">
+                <i class="fas fa-file-invoice-dollar"></i>
+            </div>
+
+        </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-4 ">
+        <!-- small box -->
+        <div class="small-box bg-dark">
+            <div class="inner">
+                <h3>$ {{ number_format($cantidad_gastos, 0) }}</h3>
+
+                <p>Gastos</p>
+            </div>
+            <div class="icon">
+                <i class="far fa-money-bill-alt"></i>
+            </div>
+
+        </div>
+    </div>
+    <!-- ./col -->
+</div>
+@endif
+
 
     @stop
 
