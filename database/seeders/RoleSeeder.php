@@ -28,5 +28,8 @@ class RoleSeeder extends Seeder
 
         $role = Role::create(['name' => 'Asistente']);
         $role->permissions()->attach([]);
+
+        $role = Role::create(['name' => 'Operativo']);
+        $role->permissions()->attach([]);
     }
 }

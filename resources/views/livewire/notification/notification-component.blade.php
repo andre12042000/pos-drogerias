@@ -43,9 +43,8 @@
                             </select>
                         </div>
                     </div> --}}
-                    <div class="col-sm-3"> <a class=" btn btn-outline-light"
-                            href="{{ route('markAsRead') }}" id="mark-all"><strong><i class="bi bi-check2-all"></i> Marcar
-                                todas como leídas</strong></a>
+                    <div class="col-sm-3 float-end text-end"> <button title="Marcar todas como leídas" class=" btn btn-outline-light"
+                            href="{{ route('markAsRead') }}" id="mark-all"><strong class=""><i class="bi bi-check2-all"></i> </strong></button>
                     </div>
                 </div>
             </div>
@@ -70,9 +69,8 @@
                                 <td>{{ $notificacion['data']['title'] }}</td>
                                 <td>{{ $notificacion['data']['text'] }}</td>
                                 <td class="text-center">
-                                    <button type="submit" class="mark-as-read btn btn-outline-success btn-sm"
-                                        data-id="{{ $notificacion['id'] }}" wire:click="marcar_leida"> <i class="bi bi-check2"></i> Marcar como
-                                        leída</button>
+                                    <button type="submit" title="Marcar como leída" class="mark-as-read btn btn-outline-danger btn-sm"
+                                        data-id="{{ $notificacion['id'] }}" wire:click="marcar_leida"> <i class="bi bi-trash3-fill"></i> </button>
                                     {{-- <a @popper(Marcar como leída ) class="btn btn-outline-success btn-sm"
                                 wire:click="marcar_leida({{ $notificacion['id'] }})" role="button"><i
                                     class="las la-check-double"></i></a> --}}

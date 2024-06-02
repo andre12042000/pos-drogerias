@@ -47,7 +47,7 @@ window.addEventListener('calcularDatosEvent', event => {
         precio_venta_unidad.classList.add('disabled');
     }
 
-    calcularPreciosVenta();
+
 
 })
 
@@ -79,7 +79,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
      function obtenerPreciosDeVenta() {
 
-        calcularPreciosVenta();
+       // calcularPreciosVenta();
     }
 
     submitDataBack.addEventListener('click', function() {

@@ -48,7 +48,7 @@
             <div class="col-lg-3 float-right text-right">
                 <br>
                 <div class="dropdown mr-4">
-                    <a class="alert-link dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                    <a class="alert-link dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-expanded="false">
                       Generar Recibo
                     </a>
 

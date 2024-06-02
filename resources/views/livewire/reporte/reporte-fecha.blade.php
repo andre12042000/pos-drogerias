@@ -33,21 +33,34 @@
 
                 <div class="text-center col-lg-2 mt-2">
                     <label class="col-lg-12">Cantidad de registros</label>
-                    <span class="col-lg-12">{{$cantidad}}</span>
+                    <span class="col-lg-12">{{$count}}</span>
                 </div>
-                <div class="col-lg-2 float-right text-right">
+                <div class=" col-lg-2 float-right text-right">
                     <div class="dropdown mr-4 mt-3">
-                        <a class="alert-link dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                            data-bs-toggle="dropdown" aria-expanded="false">
+                        <button class="btn btn-outline-light dropdown-toggle" @if($ventas->isEmpty()) disabled @endif href="#" role="button" id="dropdownMenuLink"
+                            data-toggle="dropdown" aria-expanded="false">
                             Generar Recibo
-                        </a>
+                            <div wire:loading wire:target="exportarventas">
+                                <img src="{!! Config::get('app.URL') !!}/img/loading.gif" width="20px"
+                                    class="img-fluid" alt="">
+                            </div>
+
+                            <div wire:loading wire:target="imprimirInforme">
+                                <img src="{!! Config::get('app.URL') !!}/img/loading.gif" width="20px"
+                                    class="img-fluid" alt="">
+                            </div>
+                        </button>
 
                         <ul class="dropdown-menu text-dark" aria-labelledby="dropdownMenuLink">
-                            <li> <a class="dropdown-item text-dark" href=""><i class="bi bi-download"></i>
-                                    Descargar PDF </a></li>
-                            <li> <a href="JavaScript:void(0);" class="dropdown-item text-dark"
+                            <li> <a style="cursor: pointer" class="dropdown-item text-dark" wire:click="exportarventas"><i class="bi bi-download"></i>
+                                    Descargar Excel
+
+                                </a></li>
+                            <li> <a style="cursor: pointer" href="JavaScript:void(0);" class="dropdown-item text-dark"
                                     wire:click="imprimirInforme"> <i class="bi bi-printer"></i> Imprimir informe</a>
                             </li>
+
+
 
                         </ul>
                     </div>
@@ -129,11 +142,11 @@
                     <div class="card">
                         <div class="card-header">
                             <div class="row">
-                                <div class="col-8">
-                                    <h4 class="card-title ml-3"><strong>Detalles</strong></h4>
+                                <div class="col-8 text-center">
+                                    <h1 class="card-title ml-3 mt-2"><strong >Detalles</strong></h1>
                                 </div>
                                 <div class="col-4 detalles-select-wrapper">
-                                    <select class="form-control detalles-select" id="opcionesDetalles"
+                                    <select class="form-select detalles-select" id="opcionesDetalles"
                                         wire:model = 'filtro_operaciones'>
                                         <option value="">Todas operaciones</option>
                                         <option value="App\Models\Sale">Ventas</option>
@@ -212,11 +225,22 @@
                                             </td>
                                             {{-- Metodo de pago  --}}
                                             <td>
-                                                @if ($venta->cashesable->metodopago)
-                                                    {{ ucwords($venta->cashesable->metodopago->name) }}
-                                                @else
-                                                   N/A
-                                                @endif
+                                                @php
+                                                $metodopago = $venta->cashesable->metodopago;
+
+                                                // Intentar decodificar JSON
+                                                $decoded = json_decode($metodopago);
+
+                                                // Verificar si la decodificación fue exitosa y tiene el campo 'name'
+                                                if (json_last_error() === JSON_ERROR_NONE && isset($decoded->name)) {
+                                                    $metodopagoName = $decoded->name;
+                                                } else {
+                                                    // Asumir que es una cadena de texto simple
+                                                    $metodopagoName = $metodopago;
+                                                }
+                                            @endphp
+
+                                            {{ mb_strtoupper($metodopagoName) }}
 
                                             </td>
 

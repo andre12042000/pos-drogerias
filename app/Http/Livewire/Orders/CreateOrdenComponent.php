@@ -33,6 +33,7 @@ class CreateOrdenComponent extends Component
     public $saldo = 0;
     public $metodo_pago = 1;
     public $showEdit  = false;
+    public $buscar;
 
     public $error_search = false;
 
@@ -63,23 +64,34 @@ class CreateOrdenComponent extends Component
 
     public function render()
     {
+
+        $products = Product::with('inventario')
+        ->search($this->buscar)
+        ->orderBy('name', 'asc')
+        ->active()
+        ->take(10)
+        ->get();
+
         $providers = Provider::all();
         $equipos = Equipos::all();
 
 
-        $tecnicoRole = Role::where('name', 'Técnico')->first();
+        $tecnicoRole = Role::where('name', 'Operativo')->first();
 
         if ($tecnicoRole) {
             // Obtener los usuarios que tienen el rol 'tecnico'
             $tecnicos = $tecnicoRole->users()->get();
             // $usuariosTecnicos = User::role('tecnico')->get();
-        }
-        if (count($tecnicos) < 1) {
-            session()->flash('warning', 'No hay técnicos registrados en el sistema');
+            if (count($tecnicos) < 1) {
+                session()->flash('warning', 'No hay técnicos registrados en el sistema');
+            }
+        }else{
+            $tecnicos = [];
         }
 
 
-        return view('livewire.orders.create-orden-component', compact('providers', 'equipos', 'tecnicos'));
+
+        return view('livewire.orders.create-orden-component', compact('providers', 'equipos', 'tecnicos', 'products'));
     }
 
     public function searchProductCode()

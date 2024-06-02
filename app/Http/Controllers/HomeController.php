@@ -6,6 +6,7 @@ use DateTime;
 use Carbon\Carbon;
 use App\Models\Cash;
 use App\Models\Sale;
+use App\Models\User;
 use App\Models\Abono;
 use App\Models\Client;
 use App\Models\Gastos;
@@ -15,6 +16,7 @@ use App\Models\Purchase;
 use App\Models\SaleDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -41,8 +43,15 @@ class HomeController extends Controller
         } else {
             $currentMonth = $filter_fecha;
         }
+        if($currentMonth != $mes_actual){
+            Carbon::setLocale('es');
+            $fecha = Carbon::createFromFormat('Y-m', $currentMonth);
+            $mes_actual = $fecha->format('F');
 
-        $mes_actual = ucfirst(utf8_encode(\Carbon\Carbon::now()->locale('es')->monthName));
+        }else{
+            $mes_actual = ucfirst(utf8_encode(\Carbon\Carbon::now()->locale('es')->monthName));
+
+        }
 
 
 
@@ -89,7 +98,54 @@ class HomeController extends Controller
         $purchasemonths = $compras_ultimos_meses['months'];
         $purchasetotals = $compras_ultimos_meses['totals'];
 
-        return view('home', compact('clientes', 'gastostotals', 'gastosmonths', 'MinProducts', 'recaudo_cartera', 'fecha_actual', 'filter_fecha', 'cantidad_consumo', 'cantidad_gastos', 'purchasemonths', 'purchasetotals', 'data', 'total_ingresos', 'mes_actual', 'topProducts', 'cantidad_ventas', 'cantidad_abonos', 'cantidad_compras', 'cantidad_deuda', 'months', 'totals'));
+
+        $user = Auth::user();
+
+        if ($user->hasRole('Administrador')) {
+            // El usuario tiene el rol de administrador
+            $role = 'Administrador';
+            $cantidad_ventas2 = '01098';
+        } else {
+            // El usuario tiene otro rol o no tiene rol asignado
+            $role = 'otro';
+            $userId = auth()->id();
+            $hoy = Carbon::now();
+            $currentDate = Carbon::today(); // Obtiene la fecha de hoy sin la hora
+
+
+            $cantidad_ventas2 = \App\Models\Cash::where('cashesable_type', 'App\Models\Sale')
+            ->where('user_id', $userId)
+            ->whereDate('created_at', $currentDate)
+            ->with('sale') // Asegurarse de cargar la relación
+            ->get()
+            ->sum(function ($cash) {
+                return $cash->sale->total; // Sumar el campo total de la relación sale
+            });
+
+            $cashes = Cash::select(DB::raw('DAY(created_at) as day'), 'cashesable_type', DB::raw('SUM(quantity) as total'))
+            ->where(DB::raw('DATE_FORMAT(created_at, "%Y-%m")'), $currentMonth)
+            ->groupBy('day', 'cashesable_type')
+            ->get();
+            $currentDay = date('j'); // Obtener el día actual (sin ceros iniciales)
+
+            // Filtrar y sumar los totales de los abonos del día actual
+            $cantidad_abonos = $cashes->where('day', $currentDay)
+                ->where('cashesable_type', 'App\Models\Abono')
+                ->sum('total');
+
+
+
+            $cantidad_compras =  $this->cajeroobtenercantidadcompras($currentDate, $userId);
+            $cantidad_deuda = $this->cajeroobtenerdeudas($currentDate, $userId);
+            $cantidad_gastos = $this->cajeroobtenercantidadgastos($currentDate, $userId);
+            $cantidad_consumo = $this->cajeroobtenercantidadconsumointerno($currentDate, $userId);
+            $recaudo_cartera = $this->cajeroobtenerrecuadocartera($currentDate, $userId);
+
+
+        }
+
+
+        return view('home', compact('cantidad_ventas2', 'role', 'clientes', 'gastostotals', 'gastosmonths', 'MinProducts', 'recaudo_cartera', 'fecha_actual', 'filter_fecha', 'cantidad_consumo', 'cantidad_gastos', 'purchasemonths', 'purchasetotals', 'data', 'total_ingresos', 'mes_actual', 'topProducts', 'cantidad_ventas', 'cantidad_abonos', 'cantidad_compras', 'cantidad_deuda', 'months', 'totals'));
     }
 
     public function actilizarestadisticas(Request $request)
@@ -303,4 +359,81 @@ class HomeController extends Controller
 
         return $datos;
     }
+
+
+    //perfil de cajero
+
+    function cajeroobtenercantidadgastos($currentDate, $userId)
+    {
+        $gastos = DB::table('gastos')
+            ->where('status', '=', 'APLICADO')
+            ->where('user_id', $userId)
+        ->where(DB::raw('DATE(created_at)'), '=', $currentDate)
+            ->sum('total');
+
+        if (is_null($gastos)) {
+            $total = 0;
+        } else {
+            $total = $gastos;
+        }
+
+        return $total;
+    }
+
+    function cajeroobtenercantidadconsumointerno($currentDate, $userId)
+    {
+        $consumos = DB::table('consumo_internos')
+            ->where('status', '=', 'APLICADA')
+            ->where('user_id', $userId)
+            ->where(DB::raw('DATE(created_at)'), '=', $currentDate)
+            ->sum('total');
+        if (is_null($consumos)) {
+            $total = 0;
+        } else {
+            $total = $consumos;
+        }
+
+        return $total;
+    }
+
+    function cajeroobtenercantidadcompras($currentDate, $userId)
+    {
+        $currentDate = date('Y-m-d');
+        $cantidad_compras = DB::table('purchases')
+        ->where('status', '=', 'APLICADO')
+        ->where('user_id', $userId)
+        ->where(DB::raw('DATE(created_at)'), '=', $currentDate)
+        ->sum('total');
+
+        if (is_null($cantidad_compras)) {
+            $total = 0;
+        } else {
+            $total = $cantidad_compras;
+        }
+
+        return $total;
+    }
+
+    function cajeroobtenerdeudas($currentDate, $userId)
+    {
+        $deudas = Orders::where('user_id', $userId)->where('created_at', $currentDate)->sum('saldo');
+        $saldo_clientes = Client::sum('deuda');
+        if ($deudas <= 0) {
+            $total = null;
+        } else {
+            $total = $deudas + $saldo_clientes;
+        }
+        return $total;
+    }
+
+    function cajeroobtenerrecuadocartera($currentDate, $userId)
+    {
+
+        $totalQuantity = Cash::where('cashesable_type', 'App\Models\PagoCreditos') ->where('user_id', $userId)
+        ->where(DB::raw('DATE(created_at)'), '=', $currentDate)->sum('quantity');
+
+
+        return $totalQuantity;
+    }
+
 }

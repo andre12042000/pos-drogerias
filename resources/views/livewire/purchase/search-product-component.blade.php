@@ -69,9 +69,6 @@
             </div>
 
             <div class="row mt-4">
-
-
-
                 <input type="hidden" id="porcentaje_por_caja" name="porcentaje_por_caja" wire:model = 'porcentaje_por_caja' disabled>
                 <input type="hidden" id="porcentaje_por_blister" name="porcentaje_por_blister" wire:model = 'porcentaje_por_blister' disabled>
                 <input type="hidden" id="porcentaje_por_unidad" name="porcentaje_por_unidad" wire:model = 'porcentaje_por_unidad' disabled>
@@ -150,7 +147,7 @@
 
                         <div class="form-floating mb-3">
                             <input type="number" class="form-control" wire:model.defer = 'precio_compra' id="precio_compra"
-                                placeholder="name@example.com" disabled>
+                                placeholder="name@example.com" pattern="\d*" oninput="validateNumber(this)" disabled>
                             <label for="floatingInput">Precio de compra</label>
                         </div>
 
@@ -160,7 +157,7 @@
 
                         <div class="form-floating mb-3">
                             <input type="number" class="form-control" wire:model.defer = 'iva' id="iva" min='0' max="99"
-                                placeholder="name@example.com" disabled onchange="validarIva()">
+                                placeholder="name@example.com" disabled onchange="validarIva()" pattern="\d*" oninput="validateNumber(this)">
                             <label for="floatingInput">Iva</label>
                         </div>
 
@@ -182,7 +179,7 @@
 
                         <div class="form-floating mb-3">
                             <input type="number" class="form-control" wire:model.defer = 'precio_venta_caja' id="precio_venta_caja"
-                                placeholder="name@example.com" disabled min="1">
+                                placeholder="name@example.com" disabled min="1" pattern="\d*" oninput="validateNumber(this)">
                             <label for="floatingInput">Precio de venta caja</label>
                         </div>
 
@@ -192,7 +189,7 @@
                     <div class="col-4">
                         <div class="form-floating mb-3">
                             <input type="number" class="form-control" wire:model.defer = 'precio_venta_blister' id="precio_venta_blister"
-                                placeholder="name@example.com" disabled min="0">
+                                placeholder="name@example.com" disabled min="0" pattern="\d*" oninput="validateNumber(this)">
                             <label for="floatingInput">Precio de venta blister</label>
                         </div>
                     </div>
@@ -200,7 +197,7 @@
                     <div class="col-4">
                         <div class="form-floating mb-3">
                             <input type="number" class="form-control" wire:model.defer = 'precio_venta_unidad' id="precio_venta_unidad"
-                                placeholder="name@example.com" disabled min="0">
+                                placeholder="name@example.com" disabled min="0" pattern="\d*" oninput="validateNumber(this)">
                             <label for="floatingInput">Precio de venta unidad</label>
                         </div>
                     </div>
@@ -242,6 +239,12 @@
 @section('js')
 
 <script src="{{ asset('js/compras/addProduct.js') }}"></script>
+
+<script>
+    function validateNumber(input) {
+        input.value = input.value.replace(/[^0-9]/g, '');
+    }
+</script>
 
 @stop
 

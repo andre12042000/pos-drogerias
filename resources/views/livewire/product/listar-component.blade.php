@@ -47,6 +47,7 @@
                                 class="btn btn-outline-light float-right ml-2">Nuevo Producto Elaborado <i
                                     class="bi bi-columns-gap"></i></button>
                         @endcan
+                        <button class="btn btn-outline-light ml-2" title="Descargar Inventario" wire:click="descagarinventario"><i class="bi bi-file-earmark-excel"></i></button>
 
 
                     </div>

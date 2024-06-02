@@ -3,13 +3,16 @@
 namespace App\Http\Livewire\Reporte;
 
 use App\Models\Cash;
-use App\Models\Gastos;
-use App\Models\MetodoPago;
 use App\Models\Sale;
-use App\Traits\ImprimirTrait;
+use App\Models\Gastos;
 use Livewire\Component;
+use App\Models\MetodoPago;
 use Livewire\WithPagination;
+use App\Traits\ImprimirTrait;
 use Illuminate\Support\Carbon;
+use App\Exports\ExportDatosVentas;
+use App\Models\Purchase;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ReporteFecha extends Component
 {
@@ -36,6 +39,8 @@ class ReporteFecha extends Component
     public $totalConsumoInterno_imprimir = 0;
     public $filtro_operaciones;
     public $search = '';
+    public $totales = [];
+
 
     public function mount(){
 
@@ -51,6 +56,14 @@ class ReporteFecha extends Component
         ->when($search, function ($query) use ($search) {
             $query->where('cashesable_type', $search);
         });
+
+        $count = Cash::whereBetween('created_at', [$this->desde, $this->hasta])
+    ->with('cashesable')
+    ->orderBy('id', 'desc')
+    ->when($search, function ($query) use ($search) {
+        $query->where('cashesable_type', $search);
+    })
+    ->count();
 
         $ventas = $data->paginate($this->cantidad_registros);
         $data_obtener_valores = $data->get();
@@ -78,7 +91,11 @@ class ReporteFecha extends Component
         $this->facturasAnuladas_imprimir = $facturasAnuladas;
         $this->metodosDePagoGroup_imprimir = $metodosDePagoGroup;
 
-        return view('livewire.reporte.reporte-fecha', compact('ventas', 'totalVenta', 'totalAbono', 'OtrosConceptos', 'metodosDePagoGroup', 'facturasAnuladas', 'pagoCreditos', 'totalGastos', 'totalConsumoInterno'));
+
+
+
+
+        return view('livewire.reporte.reporte-fecha', compact('count', 'ventas', 'totalVenta', 'totalAbono', 'OtrosConceptos', 'metodosDePagoGroup', 'facturasAnuladas', 'pagoCreditos', 'totalGastos', 'totalConsumoInterno'));
     }
 
 
@@ -205,7 +222,7 @@ class ReporteFecha extends Component
         $reciboBody[] = ['label' => '', 'value' => ''];
 
 
-        
+
 
         // Métodos de pago
         foreach ($this->metodosDePagoGroup_imprimir as $nombreMetodoPago => $total) {
@@ -266,4 +283,47 @@ class ReporteFecha extends Component
 
         return $data;
     }
+
+
+
+    public function exportarventas(){
+        self::reemplazarFiltros();
+        $search = $this->search;
+
+
+        $compras = Purchase::whereBetween('created_at', [$this->desde, $this->hasta])->orderBy('id', 'desc');
+
+        $cantidad_registros = 10000;
+
+        $compras_mes = $compras->paginate($cantidad_registros);
+
+        $data = Cash::whereBetween('created_at', [$this->desde, $this->hasta])
+        ->with('cashesable')
+        ->orderBy('id', 'desc')
+        ->when($search, function ($query) use ($search) {
+            $query->where('cashesable_type', $search);
+        });
+
+
+
+        $ventas = $data->paginate($cantidad_registros);
+
+        $this->totales[] =[
+            'totalventa' => $this->totalVenta_imprimir,
+            'totalAbono' => $this->totalAbono_imprimir,
+            'totalGastos' => $this->totalGastos_imprimir,
+            'totalConsumoInterno' => $this->totalConsumoInterno_imprimir,
+            'OtrosConceptos' => $this->OtrosConceptos_imprimir,
+            'pagoCreditos' => $this->pagoCreditos_imprimir,
+            'facturasAnuladas' => $this->facturasAnuladas_imprimir,
+            'metodosDePagoGroup' => $this->metodosDePagoGroup_imprimir,
+
+
+
+        ];
+
+
+    return Excel::download(new ExportDatosVentas($ventas, $this->totales, $compras_mes), 'Reporteventas.xlsx');
+
+     }
 }

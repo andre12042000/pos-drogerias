@@ -2,20 +2,23 @@
 
 namespace App\Http\Livewire\Product;
 
-use App\Models\Category;
 use App\Models\Combo;
-use App\Models\Inventario;
-use App\Models\Laboratorio;
-use App\Models\OrdersDetails;
-use App\Models\Presentacion;
 use App\Models\Product;
-use App\Models\PurchaseDetail;
-use App\Models\SaleDetail;
-use App\Models\Subcategoria;
-use App\Models\Ubicacion;
-use App\Models\Vencimientos;
 use Livewire\Component;
+use App\Models\Category;
+use App\Models\Ubicacion;
+use App\Models\Inventario;
+use App\Models\SaleDetail;
+use App\Models\Laboratorio;
+use App\Models\Presentacion;
+use App\Models\Subcategoria;
+use App\Models\Vencimientos;
 use Livewire\WithPagination;
+use App\Models\OrdersDetails;
+use App\Models\PurchaseDetail;
+use App\Exports\ExportInventario;
+use Maatwebsite\Excel\Facades\Excel;
+
 
 class ListarComponent extends Component
 {
@@ -313,5 +316,15 @@ class ListarComponent extends Component
     public function beforeDomUpdate($newPage, $perPage, $search)
     {
         $this->resetPage();
+    }
+
+    public function descagarinventario(){
+
+        $data = Inventario::join('products', 'inventarios.product_id', '=', 'products.id')
+        ->orderBy('products.name', 'asc')
+        ->get();
+
+        return Excel::download(new ExportInventario($data), 'Inventario.xlsx');
+
     }
 }

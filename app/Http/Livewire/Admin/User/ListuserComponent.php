@@ -32,7 +32,7 @@ class ListuserComponent extends Component
                         ->orderBy('name', 'ASC')
                         ->search($this->search)
                         ->estado($this->filter_estado)
-                        ->where('id', '>', '1')
+                        /* ->where('id', '>', '1') */
                         ->paginate($this->cantidad_registros);
 
         return view('livewire.admin.user.list-user-component', compact('users'));

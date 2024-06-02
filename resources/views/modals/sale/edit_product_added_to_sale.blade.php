@@ -52,7 +52,7 @@
                     <div class="col-md-8">
                         <div class="input-group mb-3">
                             <input type="number" class="form-control" aria-label="Text input with dropdown button" id="inputDescuento" disabled style="height: 50px;">
-                            <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="descuentoBtn" style="height: 50px; width: 50px;"></button>
+                            <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false" id="descuentoBtn" style="height: 50px; width: 50px;"></button>
                             <ul class="dropdown-menu dropdown-menu-end">
                               <li>
                                 <div class="form-check form-check-inline m-2">

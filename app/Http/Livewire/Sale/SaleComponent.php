@@ -18,6 +18,7 @@ use App\Models\MetodoPago;
 use App\Models\Product;
 use App\Models\Sale;
 use App\Models\SaleDetail;
+use App\Models\Temperature;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -32,13 +33,41 @@ class SaleComponent extends Component
 
     public function buscarProductoCodigo($code)
     {
-        $product = Product::where('code', $code)->first();
+        $product = Product::where('code', $code)->with('inventario')->first();
 
         if($product){
-            $this->dispatchBrowserEvent('seleccionarProductoEvent', $product);
+            if($product->inventario->cantidad_caja === "0" && $product->inventario->cantidad_blister === "0" && $product->inventario->cantidad_unidad === "0"){
+                $mensaje = 'No hay stock del producto' . $product->name . ' verifica el inventario y vuelve a intentarlo';
+                $this->dispatchBrowserEvent('mostrarErrorLivewire', ['mensaje' => $mensaje]);
+                return false;
+            }
+
+            if($product->disponible_caja == 1 && $product->disponible_blister == 0 && $product->disponible_unidad == 0){
+
+                $dataProduct = [];  //En caso que el producto solo este disponible por caja, pasa directamente al localstorage
+
+                $dataProduct = [
+                    'code'              => $product->code,
+                    'descuento'         => 0,
+                    'forma'             => 'disponible_caja',
+                    'iva'               => $product->valor_iva_caja,
+                    'key'               => date('YmdHis'),
+                    'nombre'            => $product->name,
+                    'precio_unitario'   => $product->precio_caja,
+                    'producto_id'       => $product->id,
+                    'total'             => $product->precio_caja,
+                    'cantidad'          => 1,
+                ];
+
+                $this->dispatchBrowserEvent('addProductLocalStorageDesdeCode', ['dataProduct' => $dataProduct]);
+            }else{
+                $this->dispatchBrowserEvent('seleccionarProductoEvent', $product);
+            }
+
         }else{
-            $mensaje = 'El producto no existe';
-            $this->dispatchBrowserEvent('error-busqueda', ['mensaje' => $mensaje]);
+            $mensaje = 'El producto con codigo: ' . $code . '  no existe';
+            $this->dispatchBrowserEvent('mostrarErrorLivewire', ['mensaje' => $mensaje]);
+            return false;
         }
 
 
@@ -101,6 +130,46 @@ class SaleComponent extends Component
         $this->empresa = Empresa::find(1);
         $this->clientes = Client::orderBy('name', 'asc')->get();
         $this->metodos_pago = MetodoPago::where('status', 'ACTIVE')->orderBy('id', 'desc')->get();
+
+        date_default_timezone_set('America/New_York');
+
+        // Obtener la hora actual
+        $horaActual = date('H');
+
+        if($horaActual > '9' && $horaActual <= '12'){
+            self::consultarRegistroTemperatura(1);  //Opcion de busqueda en la mañana
+        }else if($horaActual > '14' && $horaActual <= '16'){
+            self::consultarRegistroTemperatura(2); //opcion de busqueda en la tarde
+        }
+
+
+    }
+
+    function consultarRegistroTemperatura($registro_numero){
+
+        $today = Carbon::today();
+        $registros = Temperature::whereDate('created_at', $today)->get();
+
+        $cantidad = $registros->count();
+
+     /*    if($registro_numero == 1 && $cantidad < 1){
+
+            $this->dispatchBrowserEvent('swal', [
+                'title' => 'Ops! Ocurrio un error',
+                'text' => '¡No es posible crear la transacción, verifica los datos!' . $e,
+                'icon' => 'error'
+            ]);
+
+        }else if($registro_numero == 2 && $cantidad < 2) {
+
+            $this->dispatchBrowserEvent('swal', [
+                'title' => 'Ops! Ocurrio un error',
+                'text' => '¡No es posible crear la transacción, verifica los datos!' . $e,
+                'icon' => 'error'
+            ]);
+
+        } */
+
     }
 
     public function render()
@@ -359,7 +428,6 @@ class SaleComponent extends Component
     function guardarTipoVenta($dataVenta)  //Incluye proceso de venta y venta crédito
     {
      try {
-
         $tipo = $dataVenta['tipoOperacion'];
 
          DB::transaction(function () use ($tipo, $dataVenta) {
@@ -428,14 +496,14 @@ class SaleComponent extends Component
                 self::cortesia($venta);
             }
 
+
             event(new  VentaRealizada($venta));
 
-            if ($dataVenta['imprimir'] > 0) {
-                self::Imprimirecibo($venta->id);
-            }
-
-
             $this->dispatchBrowserEvent('proceso-guardado', ['venta' => $venta->full_nro]);
+
+            if ($dataVenta['imprimir'] === "1") {
+                return redirect()->route('ventas.pos.imprimir.recibo', $venta->id);
+            }
 
           });
         } catch (\Exception $e) {
@@ -450,6 +518,8 @@ class SaleComponent extends Component
 
             report($e->getMessage());
         }
+
+
     }
 
     function detallesVenta($venta, $dataProducts)
@@ -534,8 +604,8 @@ class SaleComponent extends Component
 
     public function Imprimirecibo($venta)
     {
-
         return redirect()->route('ventas.pos.imprimir.recibo', $venta);
+
     }
 
     /*-----------------Pasar los datos a caja -----------------------*/

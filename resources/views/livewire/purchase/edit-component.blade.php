@@ -72,11 +72,10 @@
                                     </button>
                                 </div>
                                 @error('purchaseDetails')
-                                <div class="text-center mt-2">
-                                    <span class="text-danger">¡Se requiere al menos un producto en los detalles de compra.!</span>
-                                </div>
-
-                            @enderror
+                                    <div class="text-center mt-2">
+                                        <span class="text-danger">¡Se requiere al menos un producto en los detalles de compra.!</span>
+                                    </div>
+                                 @enderror
                             </div>
                         </div>
                     </div>

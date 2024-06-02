@@ -41,6 +41,11 @@
 
     <!-- Modal para crear categoría -->
     @include('modals.abono.abono')
+    @include('modals.orders.create')
+    @include('modals.mantenimiento.equipos.equipo')
+    @include('modals.mantenimiento.equipos.searchequipos')
+    @include('modals.client.create')
+    @include('modals.client.search')
 
 @stop
 
@@ -52,14 +57,6 @@
     <script>
         console.log('Hi!');
     </script>
-    <script>
-        function setFocusName() {
-            $('#name').focus();
-        }
 
-        $("#usuariomodal").on('shown.bs.modal', function() {
-            setTimeout(setFocusName, 0);
-        });
-    </script>
 
 @stop

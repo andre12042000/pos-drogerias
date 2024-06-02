@@ -383,14 +383,14 @@ return [
                     'can'        => 'Acceso Gastos',
 
                 ],
-                /* [
+                 [
                     'text'       => 'Ordenes de trabajo',
                     'classes'    => 'text-white',
                     'icon'       => 'bi bi-list-ol',
                     'icon_color' => 'white',
                     'route'      => 'orders.index',
                     'can'        => 'Acceso Ordenes Trabajo',
-                ], */
+                ],
             ],
         ],
         [
@@ -446,7 +446,7 @@ return [
             ],
         ],
 
-      /*    [
+          [
             'text'       => 'Mantenimiento',
             'classes'    => 'text-white',
             'icon'       => 'fas fa-tools',
@@ -463,7 +463,7 @@ return [
                 ],
 
             ],
-        ], */
+        ],
 
         [
             'text'       => 'Terceros',
