@@ -143,7 +143,7 @@ class SaleController extends Controller
 
                 $nombreConcepto = str_pad($nombreConcepto, 16); // Ajusta el ancho según tus necesidades
 
-                $totalRecaudo = "$" . number_format($detalle->price *  $detalle->quantity, 0); // Quita los decimales
+                $totalRecaudo = $printer->text(iconv("UTF-8", "CP437", "$")) . number_format($detalle->price *  $detalle->quantity, 0); // Quita los decimales
                 $totalRecaudo = str_pad($totalRecaudo, 11, " ", STR_PAD_LEFT);
 
                 $cant = $detalle->quantity;
@@ -156,7 +156,7 @@ class SaleController extends Controller
 
             $printer->text("--------------------------------\n");
             $printer->text("\n");
-            $printer->text("Total: $ " . number_format($sales->total, 0) . "\n");
+            $printer->text(iconv("UTF-8", "CP437", "Total: $ " . number_format($sales->total, 0) . "\n"));
             $printer->text("\n");
             $printer->text("Gracias por tu compra! \n");
             $printer->text("\n");
