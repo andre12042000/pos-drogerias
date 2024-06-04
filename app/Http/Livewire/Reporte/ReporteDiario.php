@@ -5,14 +5,17 @@ namespace App\Http\Livewire\Reporte;
 use Carbon\Carbon;
 use App\Models\Cash;
 use App\Models\Sale;
+use App\Models\User;
+use App\Models\Gastos;
 use Livewire\Component;
+use App\Models\Purchase;
 use App\Models\MetodoPago;
 use Livewire\WithPagination;
+use App\Traits\ImprimirTrait;
+use App\Exports\ExportDatosVentas;
 use App\Exports\ExportVentaDiaria;
-use App\Models\Gastos;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Traits\ImprimirTrait;
 
 
 class ReporteDiario extends Component
@@ -22,6 +25,8 @@ class ReporteDiario extends Component
     protected $paginationTheme = 'bootstrap';
     public $cantidad_registros = 50;
     public  $buscar;
+    public $user;
+    public $totales = [];
 
     public $cantidad = 0;
 
@@ -44,8 +49,8 @@ class ReporteDiario extends Component
         $hoy = $hoy->format('Y-m-d');
 
         $search = $this->search;
-
-        $data = Cash::whereDate('created_at', $hoy)
+        $usuarios = User::where('status', 'ACTIVO')->get();
+        $data = Cash::whereDate('created_at', $hoy)->cajero($this->user)
             ->with('cashesable')->orderBy('id', 'desc')
             ->when($search, function ($query) use ($search) {
                 $query->where('cashesable_type', $search);
@@ -79,7 +84,7 @@ class ReporteDiario extends Component
 
 
 
-        return view('livewire.reporte.reporte-diario', compact('ventas', 'hoy', 'totalVenta', 'totalAbono', 'OtrosConceptos', 'metodosDePagoGroup', 'facturasAnuladas', 'pagoCreditos', 'totalGastos', 'totalConsumoInterno'));
+        return view('livewire.reporte.reporte-diario', compact('usuarios', 'ventas', 'hoy', 'totalVenta', 'totalAbono', 'OtrosConceptos', 'metodosDePagoGroup', 'facturasAnuladas', 'pagoCreditos', 'totalGastos', 'totalConsumoInterno'));
     }
 
     public function updatedFiltroOperaciones($value)
@@ -90,7 +95,7 @@ class ReporteDiario extends Component
 
     public function obtenerValorTipoDeOperacion()
     {
-        $ventas = Cash::whereDate('created_at', now()->toDateString())
+        $ventas = Cash::whereDate('created_at', now()->toDateString())->cajero($this->user)
             ->get();
 
         $totalPorTipoOperacion = $ventas->groupBy('cashesable_type')->map(function ($group) {
@@ -105,7 +110,7 @@ class ReporteDiario extends Component
     {
         $todosLosMetodosPago = MetodoPago::where('status', 'ACTIVE')->get();
 
-        $ventas = Sale::with('metodopago')
+        $ventas = Sale::with('metodopago')->cajero($this->user)
             ->whereDate('created_at', now()->toDateString())
             ->get();
 
@@ -126,7 +131,7 @@ class ReporteDiario extends Component
 
     function obtenerAnulaciones()
     {
-        $anulaciones = Sale::where('status', 'ANULADA')
+        $anulaciones = Sale::where('status', 'ANULADA')->cajero($this->user)
             ->whereDate('created_at', now()->toDateString())
             ->sum('valor_anulado');
 
@@ -220,4 +225,41 @@ class ReporteDiario extends Component
 
         return $data;
     }
+
+    public function exportarventas(){
+        $search = $this->search;
+        $hoy = Carbon::now();
+        $hoy = $hoy->format('Y-m-d');
+
+        $compras = Purchase::whereDate('created_at', $hoy)->cajero($this->user)->orderBy('id', 'desc');
+
+        $cantidad_registros = 10000;
+
+        $compras_mes = $compras->paginate($cantidad_registros);
+
+        $data = Cash::whereDate('created_at', $hoy)->cajero($this->user)
+        ->with('cashesable')
+        ->orderBy('id', 'desc')
+        ->when($search, function ($query) use ($search) {
+            $query->where('cashesable_type', $search);
+        });
+        $ventas = $data->paginate($cantidad_registros);
+        $this->totales[] =[
+            'totalventa' => $this->totalVenta_imprimir,
+            'totalAbono' => $this->totalAbono_imprimir,
+            'totalGastos' => $this->totalGastos_imprimir,
+            'totalConsumoInterno' => $this->totalConsumoInterno_imprimir,
+            'OtrosConceptos' => $this->OtrosConceptos_imprimir,
+            'pagoCreditos' => $this->pagoCreditos_imprimir,
+            'facturasAnuladas' => $this->facturasAnuladas_imprimir,
+            'metodosDePagoGroup' => $this->metodosDePagoGroup_imprimir,
+
+
+
+        ];
+
+
+    return Excel::download(new ExportDatosVentas($ventas, $this->totales, $compras_mes), 'Reporteventasdia.xlsx');
+
+     }
 }

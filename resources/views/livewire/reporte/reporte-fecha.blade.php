@@ -142,8 +142,19 @@
                     <div class="card">
                         <div class="card-header">
                             <div class="row">
-                                <div class="col-8 text-center">
+                                <div class="col-4 text-center">
                                     <h1 class="card-title ml-3 mt-2"><strong >Detalles</strong></h1>
+
+                                </div>
+                                <div class="col-4">
+                                    <select class="form-select detalles-select" id="opcionesDetalles"
+                                    wire:model = 'user'>
+                                    <option value="">Usuarios</option>
+
+                                    @foreach ($usuarios as $user)
+                                    <option value="{{$user->id}}">{{mb_strtoupper($user->name)}}</option>
+                             @endforeach
+                                </select>
                                 </div>
                                 <div class="col-4 detalles-select-wrapper">
                                     <select class="form-select detalles-select" id="opcionesDetalles"

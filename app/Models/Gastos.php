@@ -31,4 +31,13 @@ class Gastos extends Model
     public function user(){
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    public function scopeCajero($query, $user)
+    {
+        if (strlen($user) > 0) {
+            return $query->where('user_id', $user);
+        } else {
+            return $query;
+        }
+    }
 }

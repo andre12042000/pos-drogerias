@@ -88,4 +88,13 @@ class Purchase extends Model
 
 
     }
+    public function scopeCajero($query, $user)
+    {
+        if (strlen($user) > 0) {
+            return $query->where('user_id', $user);
+        } else {
+            return $query;
+        }
+    }
+
 }

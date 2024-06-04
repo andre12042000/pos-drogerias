@@ -30,4 +30,13 @@ class Cash extends Model
     {
         return $this->belongsTo(Abono::class, 'cashesable_id');
     }
+
+    public function scopeCajero($query, $user)
+    {
+        if (strlen($user) > 0) {
+            return $query->where('user_id', $user);
+        } else {
+            return $query;
+        }
+    }
 }

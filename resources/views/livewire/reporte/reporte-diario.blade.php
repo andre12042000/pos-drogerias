@@ -4,10 +4,10 @@
     <div class="card card-info">
         <div class="card-header">
             <div class="form-row">
-                <div class="mt-2 col-lg-4">
+                <div class="mt-2 col-lg-3">
                     <h3>Reportes diario</h3>
                 </div>
-                <div class="text-center col-lg-3">
+                <div class="text-center col-lg-2">
                     <label class="col-lg-12">Fecha de consulta</label>
                     <span class="col-lg-12"> {{ \Carbon\Carbon::parse($hoy)->format('d M Y') }}</span>
                 </div>
@@ -16,8 +16,10 @@
                     <label class="col-lg-12">Cantidad de registros</label>
                     <span class="col-lg-12">{{ $cantidad }}</span>
                 </div>
-                <div class="col-lg-2 float-right text-right">
-                    <div class="dropdown mr-4 mt-3">
+
+
+                <div class="col-lg-4 float-right text-right">
+                    <div class="dropdown mr-4 mt-2">
                         <button class="btn btn-outline-light dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
                             data-toggle="dropdown" aria-expanded="false">
                             Generar Recibo
@@ -34,8 +36,8 @@
                         </button>
 
                         <ul class="dropdown-menu text-dark" aria-labelledby="dropdownMenuLink">
-                            <li> <a class="dropdown-item text-dark" href=""><i class="bi bi-download"></i>
-                                    Descargar PDF </a></li>
+                            <li> <a class="dropdown-item text-dark" wire:click="exportarventas"><i class="bi bi-download"></i>
+                                    Descargar Excel </a></li>
                             <li> <a href="JavaScript:void(0);" class="dropdown-item text-dark"
                                     wire:click="imprimirInforme"> <i class="bi bi-printer"></i> Imprimir informe</a>
                             </li>
@@ -119,11 +121,21 @@
                     <div class="card">
                         <div class="card-header">
                             <div class="row">
-                                <div class="col-8">
+                                <div class="col-4">
                                     <h4 class="card-title ml-3"><strong>Detalles</strong></h4>
                                 </div>
+                                <div class="col-4">
+                                    <select class="form-select detalles-select" id="opcionesDetalles"
+                                    wire:model = 'user'>
+                                    <option value="">Usuarios</option>
+
+                                    @foreach ($usuarios as $user)
+                                    <option value="{{$user->id}}">{{mb_strtoupper($user->name)}}</option>
+                             @endforeach
+                                </select>
+                                </div>
                                 <div class="col-4 detalles-select-wrapper">
-                                    <select class="form-control detalles-select" id="opcionesDetalles"
+                                    <select class="form-select detalles-select" id="opcionesDetalles"
                                         wire:model = 'filtro_operaciones'>
                                         <option value="">Todas operaciones</option>
                                         <option value="App\Models\Sale">Ventas</option>

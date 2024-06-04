@@ -4,14 +4,15 @@ namespace App\Http\Livewire\Reporte;
 
 use App\Models\Cash;
 use App\Models\Sale;
+use App\Models\User;
 use App\Models\Gastos;
 use Livewire\Component;
+use App\Models\Purchase;
 use App\Models\MetodoPago;
 use Livewire\WithPagination;
 use App\Traits\ImprimirTrait;
 use Illuminate\Support\Carbon;
 use App\Exports\ExportDatosVentas;
-use App\Models\Purchase;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ReporteFecha extends Component
@@ -23,6 +24,7 @@ class ReporteFecha extends Component
     public $filter_desde, $filter_hasta;
     public $desde;
     public $hasta;
+    public $user;
 
     public  $buscar;
 
@@ -47,17 +49,17 @@ class ReporteFecha extends Component
     }
     public function render()
     {
-
+        $usuarios = User::where('status', 'ACTIVO')->get();
         $search = $this->search;
 
-        $data = Cash::whereBetween('created_at', [$this->desde, $this->hasta])
+        $data = Cash::whereBetween('created_at', [$this->desde, $this->hasta])->cajero($this->user)
         ->with('cashesable')
         ->orderBy('id', 'desc')
         ->when($search, function ($query) use ($search) {
             $query->where('cashesable_type', $search);
         });
 
-        $count = Cash::whereBetween('created_at', [$this->desde, $this->hasta])
+        $count = Cash::whereBetween('created_at', [$this->desde, $this->hasta])->cajero($this->user)
     ->with('cashesable')
     ->orderBy('id', 'desc')
     ->when($search, function ($query) use ($search) {
@@ -91,11 +93,7 @@ class ReporteFecha extends Component
         $this->facturasAnuladas_imprimir = $facturasAnuladas;
         $this->metodosDePagoGroup_imprimir = $metodosDePagoGroup;
 
-
-
-
-
-        return view('livewire.reporte.reporte-fecha', compact('count', 'ventas', 'totalVenta', 'totalAbono', 'OtrosConceptos', 'metodosDePagoGroup', 'facturasAnuladas', 'pagoCreditos', 'totalGastos', 'totalConsumoInterno'));
+        return view('livewire.reporte.reporte-fecha', compact('usuarios', 'count', 'ventas', 'totalVenta', 'totalAbono', 'OtrosConceptos', 'metodosDePagoGroup', 'facturasAnuladas', 'pagoCreditos', 'totalGastos', 'totalConsumoInterno'));
     }
 
 
@@ -104,7 +102,21 @@ class ReporteFecha extends Component
     {
         $this->validate([
             'filter_hasta'  => 'required',
-        ]);
+        ],['filter_hasta.required' => 'Campo obligatorio']);
+
+        self::reemplazarFiltros();
+
+    }
+
+    public function updatedUser()
+    {
+        $this->validate([
+            'filter_hasta'  => 'required',
+            'filter_desde'  => 'required',
+        ],[ 'filter_hasta.required' => 'Campo obligatorio',
+            'filter_desde.required' => 'Campo obligatorio',
+]);
+
 
         self::reemplazarFiltros();
 
@@ -134,7 +146,7 @@ class ReporteFecha extends Component
 
     public function obtenerValorTipoDeOperacion()
     {
-        $ventas = Cash::whereBetween('created_at', [$this->desde, $this->hasta])
+        $ventas = Cash::whereBetween('created_at', [$this->desde, $this->hasta])->cajero($this->user)
             ->get();
 
         $totalPorTipoOperacion = $ventas->groupBy('cashesable_type')->map(function ($group) {
@@ -149,7 +161,7 @@ class ReporteFecha extends Component
     {
         $todosLosMetodosPago = MetodoPago::where('status', 'ACTIVE')->get();
 
-        $ventas = Sale::with('metodopago')
+        $ventas = Sale::with('metodopago')->cajero($this->user)
             ->whereBetween('created_at', [$this->desde, $this->hasta])
             ->get();
 
@@ -170,7 +182,7 @@ class ReporteFecha extends Component
 
     function obtenerAnulaciones()
     {
-        $anulaciones = Sale::where('status', 'ANULADA')
+        $anulaciones = Sale::where('status', 'ANULADA')->cajero($this->user)
             ->whereBetween('created_at', [$this->desde, $this->hasta])
             ->sum('valor_anulado');
 
@@ -275,7 +287,7 @@ class ReporteFecha extends Component
     function obtenerDetallesGastos()
     {
 
-        $data = Gastos::whereBetween('created_at', [$this->desde, $this->hasta])
+        $data = Gastos::whereBetween('created_at', [$this->desde, $this->hasta])->cajero($this->user)
             ->where('status', 'APLICADO')
             ->orderBy('created_at', 'ASC')
             ->get();
@@ -297,7 +309,7 @@ class ReporteFecha extends Component
 
         $compras_mes = $compras->paginate($cantidad_registros);
 
-        $data = Cash::whereBetween('created_at', [$this->desde, $this->hasta])
+        $data = Cash::whereBetween('created_at', [$this->desde, $this->hasta])->cajero($this->user)
         ->with('cashesable')
         ->orderBy('id', 'desc')
         ->when($search, function ($query) use ($search) {
