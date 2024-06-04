@@ -6,32 +6,27 @@
                 <div class="mt-3 col-lg-3">
                     <h3>Reportes fecha</h3>
                 </div>
-                <div class="text-center col-lg-5">
+                <div class="text-center col-lg-4">
                     <div class="row">
-                        <div class="col-sm-5 my-1">
+                        <div class="col-sm-6 my-1">
                             Desde <input type="date" class="form-control" id="inlineFormInputGroupUsername" placeholder="Username" wire:model='filter_desde' id="desde" name="desde" max="{{ date('Y-m-d') }}">
                             @error('filter_desde')
                             <span class="text-white">{{ $message }}</span>
                             @enderror
                         </div>
 
-                        <div class="col-sm-5 my-1">
+                        <div class="col-sm-6 my-1">
                             Hasta
                             <input type="date" class="form-control" id="inlineFormInputGroupUsername" placeholder="Username" wire:model='filter_hasta' id="hasta" name="hasta" max="{{ date('Y-m-d') }}">
                             @error('filter_hasta')
                             <span class="text-white">{{ $message }}</span>
                             @enderror
                         </div>
-
-                        <div class="col-sm-2 mt-4 my-1">
-
-                        </div>
-
                     </div>
 
                 </div>
 
-                <div class="text-center col-lg-2 mt-2">
+                <div class="text-center col-lg-3 mt-2">
                     <label class="col-lg-12">Cantidad de registros</label>
                     <span class="col-lg-12">{{$count}}</span>
                 </div>
