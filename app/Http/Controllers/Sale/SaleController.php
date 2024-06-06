@@ -89,7 +89,8 @@ class SaleController extends Controller
                 $numeoridentidad = 'No disponible';
             }
 
-            $fecha = \Carbon\Carbon::parse($sales->created_at)->locale('es_ES')->formatLocalized('%d %B %Y ');
+/*             $fecha = \Carbon\Carbon::parse($sales->created_at)->locale('es_ES')->formatLocalized('%d %B %Y ');
+ */            $fecha = \Carbon\Carbon::parse($sales->created_at)->format('d M Y');
 
             $connector = new WindowsPrintConnector($printerName);
             $printer = new Printer($connector);
@@ -103,7 +104,7 @@ class SaleController extends Controller
             $printer->text("\n");
             $printer->setJustification(Printer::JUSTIFY_CENTER);
             $printer->text(strtoupper($empresa->name) . "\n");
-            $printer->text("NIT: " . $empresa->nit . "\n");
+            $printer->text("NIT: " . $empresa->nit . "-".$empresa->dv . "\n");
             $printer->text("Telefono: " . $empresa->telefono . "\n");
             $printer->text($empresa->email . "\n");
             $printer->text($empresa->direccion . "\n");
@@ -111,7 +112,7 @@ class SaleController extends Controller
             $printer->text("Recibo: " . $sales->full_nro . "\n");
             $printer->text("Cliente: " . $sales->client->name . "\n");
             $printer->text("Identificacion: " . $numeoridentidad . "\n");
-            $printer->text("Metodo de Pago: " . $sales->metodopago->name . "\n");
+            $printer->text("Metodo de pago: " . $sales->metodopago->name . "\n");
             $printer->text("Fecha: " . $fecha . "\n");
             $printer->text("Cajero: " . $sales->user->name . "\n");
             $printer->text("\n");
@@ -143,7 +144,7 @@ class SaleController extends Controller
 
                 $nombreConcepto = str_pad($nombreConcepto, 16); // Ajusta el ancho según tus necesidades
 
-                $totalRecaudo = $printer->text(iconv("UTF-8", "CP437", "$")) . number_format($detalle->price *  $detalle->quantity, 0); // Quita los decimales
+                $totalRecaudo = number_format($detalle->price *  $detalle->quantity, 0); // Quita los decimales
                 $totalRecaudo = str_pad($totalRecaudo, 11, " ", STR_PAD_LEFT);
 
                 $cant = $detalle->quantity;
@@ -156,7 +157,7 @@ class SaleController extends Controller
 
             $printer->text("--------------------------------\n");
             $printer->text("\n");
-            $printer->text(iconv("UTF-8", "CP437", "Total: $ " . number_format($sales->total, 0) . "\n"));
+            $printer->text(iconv("UTF-8", "CP437", "Total: " . number_format($sales->total, 0) . "\n"));
             $printer->text("\n");
             $printer->text("Gracias por tu compra! \n");
             $printer->text("\n");
