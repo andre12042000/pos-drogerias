@@ -19,10 +19,10 @@ class CreateComponent extends Component
         $this->nit           = $provider['nit'];
         $this->email         = $provider['email'];
         $this->address       = $provider['address'];
-       
+
     }
     protected $rules = [
-        'nit'       => 'nullable|integer|digits_between:6,14|unique:providers,nit',
+        'nit'       => 'nullable|unique:providers,nit',
         'name'      => 'required|min:3|max:254|unique:providers,name',
         'phone'     => 'nullable|integer|digits_between:6,14',
         'address'   => 'nullable|min:4|max:100',
@@ -30,8 +30,6 @@ class CreateComponent extends Component
     ];
 
     protected $messages = [
-        'nit.digits_between'         => 'El campo Nit debe tener al menos 6 y maximo 14 caracteres',
-        'nit.integer'                => 'El campo Nit solo acepta numeros',
         'nit.unique'                 => 'El campo nit ya se encuentra registrado',
         'name.required'              => 'El campo nombre es requerido',
         'name.min'                   => 'El campo nombre debe tener al menos 3 caracteres',
@@ -89,13 +87,13 @@ class CreateComponent extends Component
     {
         $this->validate(
             [
-                'nit'       => 'nullable|integer|digits_between:6,14|unique:providers,nit,'. $this->selected_id,
+                'nit'       => 'nullable|unique:providers,nit,'. $this->selected_id,
                 'name'      => 'required|min:3|max:254|unique:providers,name,'. $this->selected_id,
                 'phone'     => 'nullable|integer|digits_between:6,14',
                 'address'   => 'nullable|min:4|max:100',
                 'email'     => 'nullable|string|email|max:255',
             ]);
-      
+
         $provider = Provider::find($this->selected_id);
 
         $provider->update([

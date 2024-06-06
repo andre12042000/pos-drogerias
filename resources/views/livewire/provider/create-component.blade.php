@@ -16,7 +16,7 @@
         <div class="form-group row">
           <label for="staticEmail" class="col-sm-4 col-form-label">Nit</label>
           <div class="col-sm-8">
-            <input type="number" wire:model.lazy="nit" id="nit" name="nit" class="form-control @if($nit == '') @else @error('nit') is-invalid @else is-valid @enderror @endif" id="exampleFormControlInput1" placeholder="Número de identificación tributaria" autocomplete="off" autofocus>
+            <input type="text" wire:model.lazy="nit" id="nit" name="nit" class="form-control @if($nit == '') @else @error('nit') is-invalid @else is-valid @enderror @endif" id="exampleFormControlInput1" placeholder="Número de identificación tributaria" autocomplete="off" autofocus>
             @error('nit')
             <span class="text-danger">{{ $message }}</span>
             @enderror
