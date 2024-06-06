@@ -197,6 +197,8 @@ class CreateComponent extends Component
             'disponible_unidad'         => 'nullable',
             'costo_caja'                => 'required',
             'precio_caja'               => 'required',
+            'precio_blister'            => 'nullable',
+            'precio_unidad'             => 'nullable',
             'valor_iva_caja'            => 'required',
             'valor_iva_blister'         => 'required',
             'valor_iva_unidad'          => 'required',
@@ -216,6 +218,7 @@ class CreateComponent extends Component
             $rules['costo_unidad'] = ['required', 'numeric', 'min:0'];
             $rules['precio_unidad'] = ['required', 'numeric', 'min:0'];
         }
+
 
 
         $validatedData = $this->validate($rules);
