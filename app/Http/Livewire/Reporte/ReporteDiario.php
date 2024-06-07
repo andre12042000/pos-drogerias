@@ -219,8 +219,15 @@ class ReporteDiario extends Component
 
         // Convertir a JSON si es necesario
         //   $reciboBodyJSON = json_encode($reciboBody);
+if($this->user == null){
+    $cajero = 'Todos';
+}else{
+    $cajero =  User::find($this->user);
+    $cajero = $cajero->name;
 
-        $this->imprimirRecibo($reciboBody);
+}
+
+        $this->imprimirRecibo($reciboBody, $cajero);
     }
 
     function obtenerDetallesGastos()

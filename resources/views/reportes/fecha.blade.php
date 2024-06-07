@@ -38,4 +38,16 @@
 <script>
     console.log('Hi!');
 </script>
+<script>
+
+    window.addEventListener("alert-error-imprimir", (event) => {
+
+        Swal.fire({
+            icon: "error",
+            title: "Oops... ocurrió un error",
+            text:"Verifica la conexión de la impresora o comunícate con soporte técnico!",
+        });
+    });
+        </script>
+
 @stop

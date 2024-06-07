@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Auth;
 trait ImprimirTrait
 {
     use ObtenerImpresora;
-    public function imprimirRecibo($reciboBody)
+    public function imprimirRecibo($reciboBody, $cajero)
     {
         try {
             // Obtener la instancia de la empresa
@@ -51,8 +51,8 @@ trait ImprimirTrait
             $printer->text($empresa->email . "\n");
             $printer->text($empresa->direccion . "\n");
             $fechaHoraImpresion = date('Y-m-d H:i:s');
-            $printer->text("Cierre" . $fechaHoraImpresion . "\n");
-            $printer->text("Usuario: " . Auth::user()->name . "\n");
+            $printer->text("Cierre: " . $fechaHoraImpresion . "\n");
+            $printer->text("Imprime: " . Auth::user()->name . "\n");
             $printer->text("\n");
             $printer->text("\n");
 
@@ -69,12 +69,14 @@ trait ImprimirTrait
             }
 
             $printer->text("--------------------------------\n");
+            $printer->text("Cajero: " . $cajero . "\n");
 
             $printer->cut();
             $printer->close();
+
         } catch (\Exception $e) {
-            dd($e->getMessage());
-            echo "Error: " . $e->getMessage();
+            $this->dispatchBrowserEvent('alert-error-imprimir');
+
         }
     }
 
