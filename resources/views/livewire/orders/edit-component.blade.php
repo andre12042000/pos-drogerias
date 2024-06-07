@@ -70,7 +70,7 @@
                             </li>
 
                             <li class="list-group-item  justify-content-between align-items-center">
-<strong>Asignacion de operario</strong>
+<strong>Asignación de operario</strong>
 <div class="row">
     <div class="col-10">
 
