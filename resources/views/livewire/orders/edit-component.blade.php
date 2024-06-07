@@ -7,6 +7,29 @@
                 class="bi bi-arrow-left-circle"></i> Atrás</a>
 
     </div>
+    @if (session()->has('success'))
+        <div class="alert alert-success alert-dismissible fade show t:0.2 mt-5 " role="alert">
+            <i class="bi bi-exclamation-triangle bold"></i> {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {{ session()->forget('success') }}
+    @endif
+
+    @if (session()->has('warning'))
+        <div class="alert alert-warning alert-dismissible fade show t:0.2 mt-5 " role="alert">
+            <i class="bi bi-exclamation-triangle bold"></i> {{ session('warning') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {{ session()->forget('warning') }}
+    @endif
+
+    @if (session()->has('danger'))
+        <div class="alert alert-danger alert-dismissible fade show t:0.2 mt-5 " role="alert">
+            <i class="bi bi-exclamation-triangle bold"></i> {{ session('danger') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {{ session()->forget('danger') }}
+    @endif
     <div class="card-body mt-4">
         <div class="row">
             <div class="col-lg-5">
@@ -47,45 +70,39 @@
                             </li>
 
                             <li class="list-group-item  justify-content-between align-items-center">
-
-                                <div class="form-floating col-12">
-                                    <select class="form-select" id="floatingSelect"
-                                        aria-label="Floating label select example" wire:model="asignado">
-                                        <option selected>Seleccionar Técnico</option>
-                                        @foreach ($tecnicos as $tecnico)
-                                            <option value="{{ $tecnico->id }}">{{ $tecnico->name }}</option>
-                                        @endforeach
+<strong>Asignacion de operario</strong>
+<div class="row">
+    <div class="col-10">
 
 
-                                    </select>
-                                    <label for="floatingSelect">Asignar a técnico</label>
-                                </div>
+        <select @if($orden_asignada == 1)disabled @endif class="form-select  @error('asignado') is-invalid @elseif($asignado != '') is-valid @enderror" aria-label="Default select example" wire:model="asignado">
+            <option value="">Seleccionar Operario</option>
+            @foreach ($tecnicos as $tecnico)
+                <option value="{{ $tecnico->id }}">{{ $tecnico->name }}</option>
+            @endforeach
+          </select>
+          @error('asignado')
+          <span class="text-danger">{{ $message }}</span>
+      @enderror
+    </div>
+    <div class="col-2">
+        @if ($orden_asignada != 1)
+        <button wire:click="actualizarasignacion" title="Asiganar"  class="btn btn-outline-success @if ($tecnicos->isEmpty()) disabled @endif"><i class="bi bi-arrow-clockwise"></i></button>
+        @else
+        <button wire:click="eliminarasignacion" title="Eliminar asignación" class="btn btn-outline-danger"><i class="bi bi-trash3-fill"></i></button>
+        @endif
 
-                                @if (session()->has('warning'))
-                                    <div class="alert alert-warning alert-dismissible fade show t:0.2 mt-2 "
-                                        role="alert">
-                                        <i class="bi bi-exclamation-triangle bold"></i> {{ session('warning') }}
-                                        <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                            aria-label="Close"></button>
-                                    </div>
+    </div>
 
-
-
-                                    {{ session()->forget('warning') }}
-                                @endif
-
-                                @if (session()->has('success'))
-                                    <div class="alert alert-success alert-dismissible fade show t:0.2 mt-2 "
-                                        role="alert">
-                                        <i class="bi bi-exclamation-triangle bold"></i> {{ session('success') }}
-                                        <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                            aria-label="Close"></button>
-                                    </div>
+</div>
 
 
 
-                                    {{ session()->forget('success') }}
-                                @endif
+
+
+
+
+
                             </li>
 
 
@@ -142,27 +159,8 @@
                         <hr>
 
                         <ul class="mt-5">
-                            <div class="col columna-cuentas " style="background-color: #d1fad3">
-                                <div class="costo-compra mt-2">
-                                    <label>Subtotal:</label>
-                                    <span class="subtotal float-end text-end"></span>
-                                </div>
-                                <div class="costo-compra mt-2">
-                                    <label>Descuento: </label>
-                                    <span class="descuento float-end text-end"></span>
-                                </div>
 
-                                <div class="costo-compra mt-2">
-                                    <label>IVA:</label>
-                                    <span class="iva float-end text-end"></span>
-                                </div>
-                                <div class="costo-compra mt-1">
-                                    <label>Total:</label>
-                                    <span class="total float-end text-end"
-                                        style="font-size: 24px; font-weight: bold;"></span>
-                                </div>
-                            </div>
-<br>
+                            <br>
                             <li
                                 class="list-group-item d-flex justify-content-between align-items-center @if ($saldo > 0) list-group-item-danger
                         @else
@@ -170,9 +168,10 @@
                                 <label class="form-control-label" for="nombre"><strong>SALDO</strong></label>
                                 <p class="text-bold">$ {{ number_format($saldo, 0) }}</p>
                             </li>
-                            @if ($saldo < 0 )
-                            <strong>Nota:  </strong> <span>Tienes un saldo a favor de</span> $ {{ number_format(abs($saldo), 0) }}
-                        @endif
+                            @if ($saldo < 0)
+                                <strong>Nota: </strong> <span>Tienes un saldo a favor de</span> $
+                                {{ number_format(abs($saldo), 0) }}
+                            @endif
                         </ul>
 
 
@@ -220,7 +219,9 @@
                                             <td class="text-center">$ {{ number_format($detalle->price, 0) }}</td>
                                             <td class="text-center">{{ $detalle->quantity }}</td>
                                             <td class="text-center">$ {{ $detalle->price * $detalle->quantity }}</td>
-                                            <td><a style="cursor: pointer" wire:click="eliminarproducto({{$detalle->id}})"><i class=" text-darkbi bi-trash3-fill"></i></a></td>
+                                            <td><a style="cursor: pointer"
+                                                    wire:click="eliminarproducto({{ $detalle->id }})"><i
+                                                        class=" text-darkbi bi-trash3-fill"></i></a></td>
 
                                         </tr>
                                     @endforeach
@@ -260,7 +261,7 @@
                                             <td>{{ $loop->iteration }}</td>
                                             <td class="text-center">
                                                 {{ \Carbon\Carbon::parse($abono->created_at)->format('d M
-                                                                                                                                                                                                                                                                                                                                                                                        Y') }}
+                                                                                                                                                                                                                                                                                                                                                                                                                                        Y') }}
                                             </td>
                                             <td class="text-center">{{ $abono->full_nro }}</td>
                                             <td class="text-center">{{ $abono->metodopago }}</td>
@@ -305,7 +306,6 @@
                         <table class="table" id="tablaProductos">
                             <thead>
                                 <tr>
-
                                     <th scope="col">Código</th>
                                     <th scope="col">Descripción</th>
                                     <th scope="col">Forma</th>
@@ -314,12 +314,23 @@
                                     <th scope="col" class="text-end">Iva</th>
                                     <th scope="col" class="text-end">Descuento</th>
                                     <th scope="col" class="text-end">Total</th>
-
                                 </tr>
                             </thead>
                             <tbody>
 
+
                             </tbody>
+                            <tr class="mt-3">
+
+                                <th colspan="2">Descuento: <span class="descuento float-end text-end"></span></th>
+                                <th colspan="2">IVA: <span class="iva float-end text-end"></span></th>
+                                <th colspan="2"> Subtotal:<span class="subtotal float-end text-end"></span></th>
+                                <th colspan="2">Total: <span class="total float-end text-end"
+                                        style=" font-weight: bold;"></span></th>
+
+
+
+                            </tr>
                         </table>
                     </div>
 
@@ -339,9 +350,9 @@
 
 
     <script>
-            document.getElementById('miBoton').addEventListener('click', function () {
-                ejecutarProcesoGuardado();
-    });
+        document.getElementById('miBoton').addEventListener('click', function() {
+            ejecutarProcesoGuardado();
+        });
         /*--------------------Asignación de variables a objetos html ---------------*/
         var ivaUnitario = 0; //Usado en el modal de editar Item
         var totalDescontado = 0;
@@ -403,39 +414,40 @@
         descuentoValorFijo.addEventListener('change', handleChange);
 
         function calcularVueltos() {
-        const totalSpan = document.querySelector('.total');
-        const totalTexto = totalSpan.textContent;
+            const totalSpan = document.querySelector('.total');
+            const totalTexto = totalSpan.textContent;
 
-        // Eliminar el símbolo de la moneda ($) y los separadores de miles (.)
-        const totalLimpio = totalTexto.replace(/[$.]/g, '');
+            // Eliminar el símbolo de la moneda ($) y los separadores de miles (.)
+            const totalLimpio = totalTexto.replace(/[$.]/g, '');
 
-        // Convertir a número entero
-        const totalEntero = parseInt(totalLimpio);
+            // Convertir a número entero
+            const totalEntero = parseInt(totalLimpio);
 
-        const inputCantidadPagada = document.getElementById('inputCantidadPagada');
-        const inputCambio = document.getElementById('inputCambio');
+            const inputCantidadPagada = document.getElementById('inputCantidadPagada');
+            const inputCambio = document.getElementById('inputCambio');
 
-        if (!isNaN(totalEntero)) {
-            // Obtener la cantidad pagada
-            let cantidadPagada = parseFloat(inputCantidadPagada.value);
+            if (!isNaN(totalEntero)) {
+                // Obtener la cantidad pagada
+                let cantidadPagada = parseFloat(inputCantidadPagada.value);
 
-            // Verificar si la cantidad pagada es válida y mayor que cero
-            if (!isNaN(cantidadPagada) && cantidadPagada > 0) {
-                let cambio = cantidadPagada - totalEntero;
+                // Verificar si la cantidad pagada es válida y mayor que cero
+                if (!isNaN(cantidadPagada) && cantidadPagada > 0) {
+                    let cambio = cantidadPagada - totalEntero;
 
-                // Mostrar el cambio solo si es mayor o igual a cero
-                if (cambio >= 0) {
-                    inputCambio.value = cambio.toFixed(0); // Mostrar el cambio sin decimales
+                    // Mostrar el cambio solo si es mayor o igual a cero
+                    if (cambio >= 0) {
+                        inputCambio.value = cambio.toFixed(0); // Mostrar el cambio sin decimales
+                    } else {
+                        inputCambio.value = "La cantidad pagada es insuficiente";
+                    }
                 } else {
-                    inputCambio.value = "La cantidad pagada es insuficiente";
+                    inputCambio.value = "Ingrese una cantidad válida";
                 }
             } else {
-                inputCambio.value = "Ingrese una cantidad válida";
+                inputCambio.value = "No se pudo calcular el cambio";
             }
-        } else {
-            inputCambio.value = "No se pudo calcular el cambio";
         }
-    }
+
         function cambioCliente() {
             if (cliente.value > 1) {
                 cambiarClienteHelp.style.display = 'none';
@@ -970,7 +982,7 @@
             // Calcular total sumando el subtotal, el impuesto y restando el descuento
             subtotal = total - (ivaTotal);
 
-            if(descuentoTotal > 0){
+            if (descuentoTotal > 0) {
                 total = total - descuentoTotal;
             }
 
@@ -1042,12 +1054,12 @@
             const datos = {
 
                 'productos': orderPosArray,
-
                 'totales': totales,
             };
 
             Livewire.emit('guardardetallesordenEvent', datos);
 
+            limpiartabla();
         }
 
         function validaciones() {
@@ -1352,12 +1364,12 @@
             });
         });
 
-        document.addEventListener('DOMContentLoaded', function () {
-        Livewire.on('procesoGuardadoCompleto', function () {
-            window.dispatchEvent(new CustomEvent('proceso-guardado-completo'));
+        document.addEventListener('DOMContentLoaded', function() {
+            Livewire.on('procesoGuardadoCompleto', function() {
+                window.dispatchEvent(new CustomEvent('proceso-guardado-completo'));
+            });
         });
-    });
-
+        limpiarLocalStorage();
 
         window.addEventListener("proceso-guardado-completo", (event) => {
 
@@ -1372,12 +1384,31 @@
             localStorage.setItem("orderstrabajoPos", JSON.stringify(filteredOrders));
 
         });
-
-
     </script>
 
-    @section('js')
+
         <script>
+
+
+
+
+function limpiarLocalStorage() {
+        let orders = JSON.parse(localStorage.getItem("ordersPos")) || [];
+
+        // Filtrar los pedidos que quieres mantener en un nuevo array
+        let filteredOrders = orders.filter(order => {
+            return false; // Esto elimina todos los pedidos
+        });
+
+        // Actualizar el localStorage con los datos filtrados
+        localStorage.setItem("ordersPos", JSON.stringify(filteredOrders));
+    }
+
+
+
+
+
+
             $(document).ready(function() {
                 $(".js-example-basic-single").select2();
 
@@ -1395,12 +1426,12 @@
                 });
             });
 
-            function limpiartabla(){
+            function limpiartabla() {
                 localStorage.removeItem('orderstrabajoPos');
             }
         </script>
 
-    @stop
+
 
 
     @section('css')

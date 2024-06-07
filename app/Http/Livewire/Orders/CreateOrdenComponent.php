@@ -31,7 +31,6 @@ class CreateOrdenComponent extends Component
     public $total_venta = 0;
     public $abono = 0;
     public $saldo = 0;
-    public $metodo_pago = 1;
     public $showEdit  = false;
     public $buscar;
 
@@ -208,13 +207,11 @@ class CreateOrdenComponent extends Component
             return false;
         }
 
-
-
         $this->validate([
             'client_id'         => 'required',
             'total_venta'       => 'nullable|integer|between:0,10000000',
             'descripcion'       => 'nullable|min:5|max:254',
-            'metodo_pago'       => 'required',
+
         ],[
             'client_id.required'        => 'El campo cliente es requerido',
         ]);
@@ -253,21 +250,10 @@ class CreateOrdenComponent extends Component
             }
         }
 
-        $detalle_abono = [
-            'full_nro'          => $this->nro_order,
-            'client_id'         => $this->client_id,
-            'user_id'           => Auth::user()->id,
-            'amount'            => $this->abono,
-            'payment_method'    => $this->metodo_pago,
-            'abonableble_id'    => $order->id,
-            'abonable_type'     => 'App\Models\Orders',
-        ];
-
-        $this->AddAbono($detalle_abono);
 
         $this->CrearHistorial($order->id, $this->asignar);
 
-        return redirect()->route('orders.index')->with('status', 'Orden creada correctamente!');
+        return redirect()->route('orders.edit', $order)->with('status', 'Orden creada correctamente!');
 
 
     }

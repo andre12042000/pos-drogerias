@@ -32,7 +32,7 @@ class CompraAbonoComponent extends Component
 
     public function CompraTransaccionEvent($transaccion, $type)
     {
-            
+
         $this->saldo_formateado  = '$' . number_format($transaccion['saldo'], 0);;
         $this->tipo         = $type;
         $this->selected_id  = $transaccion['id'];
@@ -50,6 +50,7 @@ class CompraAbonoComponent extends Component
 
     public function updatedAbonar()
     {
+
         if($this->abonar > 0){
             $this->nuevo_saldo = $this->saldo - $this->abonar;
 
@@ -61,7 +62,7 @@ class CompraAbonoComponent extends Component
         }else{
             $this->nuevo_saldo = '';
         }
-    
+
     }
 
     public function save()
@@ -78,7 +79,7 @@ class CompraAbonoComponent extends Component
         }
 
         $detalle_abono = [
-          
+
             'user_id'           => Auth::user()->id,
             'amount'            => $this->abonar,
             'payment_method'    => $this->metodo_pago,
@@ -98,7 +99,7 @@ class CompraAbonoComponent extends Component
 
     }
 
-  
+
     public function descontarSaldo()
     {
         $purchase = Purchase::findOrFail($this->selected_id);
@@ -124,7 +125,7 @@ class CompraAbonoComponent extends Component
     {
         $this->cancel();
         $this->dispatchBrowserEvent('close-modal');
-      
+
     }
 
     public function cancel()
@@ -136,5 +137,5 @@ class CompraAbonoComponent extends Component
 
 }
 
-   
+
 

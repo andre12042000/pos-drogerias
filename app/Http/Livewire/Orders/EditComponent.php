@@ -23,6 +23,7 @@ class EditComponent extends Component
     public $productssale = [];
     public $showEdit  = false;
     public  $cantidad_item, $total_item, $item_update, $precio_unitario_item, $asignado, $codigo_de_producto;
+    public $orden_asignada = 0;
 
     protected $listeners = ['ProductEvent', 'guardardetallesordenEvent'];
     public function ProductEvent($product, $precio)
@@ -232,14 +233,14 @@ class EditComponent extends Component
         $this->details = $order->details;
         $this->detail_abonos = $order->abonos;
         $this->order = $order;
-
-
         $this->asignado = $order->assigned;
+        $this->ComprobarAsignacionOrden();
+
     }
     public function render()
     {
 
-        $tecnicoRole = Role::where('name', 'Técnico')->first();
+        $tecnicoRole = Role::where('name', 'Operativo')->first();
 
         if ($tecnicoRole) {
             // Obtener los usuarios que tienen el rol 'tecnico'
@@ -296,7 +297,6 @@ class EditComponent extends Component
        }
 
 
-
         $empresa = Empresa::find(1);
         $historiales = HistorialAsiganacion::where('order_id', $this->id_order)->get();
         return view('livewire.orders.edit-component', compact('empresa', 'historiales', 'tecnicos'))->extends('adminlte::page');
@@ -320,24 +320,58 @@ class EditComponent extends Component
         $this->emit('UpdateEvent',  $order);
     }
 
+    public function ComprobarAsignacionOrden(){
 
-    public function updatedAsignado($value)
+        if($this->order->assigned == NULL){
+            $this->orden_asignada = 0;
+        }else{
+            $this->orden_asignada = 1;
+        }
+    }
+
+
+    public function actualizarasignacion()
     {
 
-        if ($value == 'Seleccionar Técnico') {
-            session()->flash('warning', 'Debes seleccionar un técncio');
+
+        if ($this->asignado == null) {
+
+        $this->validate([
+            'asignado'         => 'required',
+
+
+        ],[
+            'asignado.required'        => 'Este campo es requerido',
+        ]);
         } else {
             $order = Orders::findorfail($this->id_order);
-            if ($order->assigned != $value) {
-                $this->CrearHistorial($this->id_order, $value);
+            if ($order->assigned != $this->asignado) {
+                $this->CrearHistorial($this->id_order, $this->asignado);
                 $order->update([
-                    'assigned'    => $value,
+                    'assigned'    => $this->asignado,
                 ]);
                 session()->flash('success', 'Asignación realizada exitosamente!');
+                $this->resetErrorBag();
+                return redirect()->route('orders.edit', $order);
+
             }
         }
     }
 
+
+    public function eliminarasignacion()
+    {
+            $order = Orders::findorfail($this->id_order);
+                $order->update([
+                    'assigned'    => NULL,
+                ]);
+                session()->flash('danger', 'Asignación eliminada exitosamente!');
+                $this->asignado = '';
+                return redirect()->route('orders.edit', $order);
+
+
+
+    }
 
 
 

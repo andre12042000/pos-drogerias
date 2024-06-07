@@ -32,6 +32,9 @@
 @include('modals.client.search')
 @include('modals.client.create')
 @include('modals.products.search')
+@include('modals.orders.edit')
+@include('modals.mantenimiento.equipos.equipo')
+@include('modals.mantenimiento.equipos.searchequipos')
 
 
 @stop

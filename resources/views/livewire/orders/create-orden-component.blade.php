@@ -1,6 +1,6 @@
 <div class="modal-dialog " theme="primary">
     <div class="modal-content">
-        <div class="modal-header bg-info">
+        <div class="modal-header text-white" style="background-color: #17A2B8">
             <h5 class="modal-title " id="staticBackdropLabel"> <strong>Nueva orden de trabajo</strong> </h5>
             <button type="button" class="btn-close float-end" data-dismiss="modal" wire:click="cancel"
                 aria-label="Close"></button>
@@ -63,21 +63,7 @@
                               </div>
                         </div>
 
-                        <div class="col-12">
-                            <div class="row ">
-                                <div class="col-12">
-                                  <label for="inputPassword6" class="">Método de pago</label>
-                                </div>
-                                <div class="col-12">
-                                    <div class="input-group ">
-                                        @include('includes.metodospago')
-                                    </div>
-                                </div>
-                                @error('metodo_pago')
-                            <span class="text-danger">{{ $message }}</span>
-                            @enderror
-                              </div>
-                        </div>
+
                         <div class="col-12">
                             <label for="exampleInputEmail1" class="form-label">Descripción</label>
                             <div class="form-floating">
@@ -471,23 +457,14 @@
     @include('modals.mantenimiento.equipos.equipo')
     @include('modals.mantenimiento.equipos.searchequipos')
  --}}
- @include('modals.orders.edit')
- @include('modals.mantenimiento.equipos.equipo')
- @include('modals.mantenimiento.equipos.searchequipos')
+
 <script>
         function redirigir() {
             location.replace('{!! Config::get('app.URL') !!}/orders');
         }
     </script>
 
-<script>
-    window.addEventListener('close-modal', event => {
-                     //alert('Hola mundo');
-                        $('#modalEquipos').hide();
-                        $('body').removeClass('modal-open');
-                        $('.modal-backdrop').remove();
-                    })
-</script>
+
 
 <script>
 
