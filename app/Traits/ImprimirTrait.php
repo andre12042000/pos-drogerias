@@ -46,19 +46,25 @@ trait ImprimirTrait
             $printer->text("\n");
             $printer->setJustification(Printer::JUSTIFY_CENTER);
             $printer->text(strtoupper($empresa->name) . "\n");
-            $printer->text("NIT: " . $empresa->nit . "\n");
+            $printer->text("NIT: " . $empresa->nit . "-". $empresa->dv . "\n");
             $printer->text("Telefono: " . $empresa->telefono . "\n");
             $printer->text($empresa->email . "\n");
             $printer->text($empresa->direccion . "\n");
             $fechaHoraImpresion = date('Y-m-d H:i:s');
-            $printer->text("Fecha y Hora de Impresión: " . $fechaHoraImpresion . "\n");
+            $printer->text("Cierre" . $fechaHoraImpresion . "\n");
             $printer->text("Usuario: " . Auth::user()->name . "\n");
             $printer->text("\n");
             $printer->text("\n");
 
             // Imprimir el cuerpo del recibo
             foreach ($reciboBody as $item) {
-                $printer->text($item['label'] . "  " . $item['value'] . "\n");
+
+                $item = str_pad($item['label'], 16);
+                $valor = str_pad($item['value'], 15, " ", STR_PAD_LEFT);
+                $lineaImpresion = $item . $valor . "\n";
+
+                $printer->text($lineaImpresion);
+
             }
 
             $printer->text("--------------------------------\n");

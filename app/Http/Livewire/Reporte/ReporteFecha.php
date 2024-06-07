@@ -35,7 +35,7 @@ class ReporteFecha extends Component
     public $totalAbono_imprimir = 0;
     public $OtrosConceptos_imprimir = 0;
     public $facturasAnuladas_imprimir = 0;
-    public $metodosDePagoGroup_imprimir = 0;
+    public $metodosDePagoGroup_imprimir;
     public $pagoCreditos_imprimir = 0;
     public $totalGastos_imprimir = 0;
     public $totalConsumoInterno_imprimir = 0;
@@ -157,12 +157,23 @@ class ReporteFecha extends Component
         return $totalPorTipoOperacion;
     }
 
+
+
+    function quitarTildes($cadena) {
+        $noPermitidos = array(
+            'á' => 'a', 'é' => 'e', 'í' => 'i', 'ó' => 'o', 'ú' => 'u',
+            'Á' => 'A', 'É' => 'E', 'Í' => 'I', 'Ó' => 'O', 'Ú' => 'U',
+            'ñ' => 'n', 'Ñ' => 'N'
+        );
+        return strtr($cadena, $noPermitidos);
+    }
+
     public function obtenerValoresMetodoDePago()
     {
         $todosLosMetodosPago = MetodoPago::where('status', 'ACTIVE')->get();
 
         $ventas = Sale::with('metodopago')->cajero($this->user)
-            ->whereBetween('created_at', [$this->desde, $this->hasta])
+            ->whereDate('created_at', now()->toDateString())
             ->get();
 
 
@@ -172,7 +183,8 @@ class ReporteFecha extends Component
 
         // Itera sobre todos los métodos de pago y calcula la suma de ventas
         foreach ($todosLosMetodosPago as $metodoPago) {
-            $totalPorMetodoPago[$metodoPago->name] = $ventas
+            $nombreSinTildes = $this->quitarTildes($metodoPago->name);
+            $totalPorMetodoPago[$nombreSinTildes] = $ventas
                 ->where('metodo_pago_id', $metodoPago->id)
                 ->sum('total');
         }
@@ -213,22 +225,22 @@ class ReporteFecha extends Component
         // Sección 1
         $reciboBody[] = [
             'label' => 'TOTAL RECAUDO:',
-            'value' => '$ ' . number_format($this->totalVenta_imprimir + $this->pagoCreditos_imprimir, 0),
+            'value' =>  number_format($this->totalVenta_imprimir + $this->pagoCreditos_imprimir, 0),
         ];
 
         $reciboBody[] = [
             'label' => 'ABONOS:',
-            'value' => '$ ' . number_format($this->totalAbono_imprimir, 0),
+            'value' =>  number_format($this->totalAbono_imprimir, 0),
         ];
 
         $reciboBody[] = [
             'label' => 'OTROS CONCEPTOS:',
-            'value' => '$ ' . number_format($this->OtrosConceptos_imprimir, 0),
+            'value' =>  number_format($this->OtrosConceptos_imprimir, 0),
         ];
 
         $reciboBody[] = [
             'label' => 'PAGO CRÉDITOS:',
-            'value' => '$ ' . number_format($this->pagoCreditos_imprimir, 0),
+            'value' =>  number_format($this->pagoCreditos_imprimir, 0),
         ];
 
         $reciboBody[] = ['label' => '', 'value' => ''];
@@ -240,7 +252,7 @@ class ReporteFecha extends Component
         foreach ($this->metodosDePagoGroup_imprimir as $nombreMetodoPago => $total) {
             $reciboBody[] = [
                 'label' => $nombreMetodoPago . ':',
-                'value' => '$ ' . number_format($total, 0),
+                'value' =>  number_format($total, 0),
             ];
         }
 
@@ -250,17 +262,17 @@ class ReporteFecha extends Component
         // Sección 2
         $reciboBody[] = [
             'label' => 'V. ANULADAS:',
-            'value' => '$ ' . number_format($this->facturasAnuladas_imprimir, 0),
+            'value' =>  number_format($this->facturasAnuladas_imprimir, 0),
         ];
 
         $reciboBody[] = [
             'label' => 'CON. INTERNO:',
-            'value' => '$ ' . number_format($this->totalConsumoInterno_imprimir, 0),
+            'value' =>  number_format($this->totalConsumoInterno_imprimir, 0),
         ];
 
         $reciboBody[] = [
             'label' => 'GASTOS OP.:',
-            'value' => '$ ' . number_format($this->totalGastos_imprimir, 0),
+            'value' =>  number_format($this->totalGastos_imprimir, 0),
         ];
 
         if ($this->totalGastos_imprimir > 0) {
@@ -273,7 +285,7 @@ class ReporteFecha extends Component
             foreach ($gastos as $gasto) {
                 $reciboBody[] = [
                     'label' => $gasto->descripcion,
-                    'value' => '$ ' . number_format($gasto->total, 0),
+                    'value' =>  number_format($gasto->total, 0),
                 ];
             }
         }

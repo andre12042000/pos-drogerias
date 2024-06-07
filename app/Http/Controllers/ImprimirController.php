@@ -63,17 +63,17 @@ class ImprimirController extends Controller
 
                         $reciboBody[] = [
                             'label' => 'Saldo recibido',
-                            'value' => '$ ' . number_format($detalle->saldo_recibido, 0),
+                            'value' =>  number_format($detalle->saldo_recibido, 0),
                         ];
 
                         $reciboBody[] = [
                             'label' => 'Valor pagado',
-                            'value' => '$ ' . number_format($detalle->valor_pagado, 0),
+                            'value' =>  number_format($detalle->valor_pagado, 0),
                         ];
 
                         $reciboBody[] = [
                             'label' => 'Saldo',
-                            'value' => '$ ' . number_format($detalle->saldo_restante, 0),
+                            'value' =>  number_format($detalle->saldo_restante, 0),
                         ];
 
                         $reciboBody[] = [
@@ -86,7 +86,7 @@ class ImprimirController extends Controller
 
                 $reciboBody[] = [
                     'label' => 'TOTAL PAGADO',
-                    'value' => '$ ' . number_format($recibo->valor, 0),
+                    'value' =>  number_format($recibo->valor, 0),
                 ];
 
 
@@ -146,7 +146,7 @@ class ImprimirController extends Controller
                     $total = $detalle->quantity * $detalle->price;
                     $reciboBody[] = [
                         'label' => $detalle->quantity . ' ' . $detalle->product->name,
-                        'value' => '$ ' . number_format($total, 0),
+                        'value' =>  number_format($total, 0),
                     ];
 
             }
@@ -159,7 +159,7 @@ class ImprimirController extends Controller
 
             $reciboBody[] = [
                 'label' => 'TOTAL',
-                 'value' => '$ ' . number_format($recibo->total, 0),
+                 'value' =>  number_format($recibo->total, 0),
             ];
 
 
