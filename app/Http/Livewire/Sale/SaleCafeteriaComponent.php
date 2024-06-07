@@ -115,7 +115,7 @@ class SaleCafeteriaComponent extends Component
                 }
 
                 if ($dataVenta['cajero']) {
-                    $cajero = $dataVenta['cajero'];
+                    $cajero = Auth::user()->id;
                 } else {
                     $cajero = Auth::user()->id;
                 }

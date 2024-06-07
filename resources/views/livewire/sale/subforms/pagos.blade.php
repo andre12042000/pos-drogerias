@@ -21,7 +21,7 @@
     </div>
 
 </div>
-<div class="row mt-2">
+ <div class="row mt-2" style=" display: none;">
     <div class="input-group" style="height: 38px; max-width: 100%">
         <select name="cajero" class="form-control" id="cajero">
             @foreach ($cajeros as $cajero)
