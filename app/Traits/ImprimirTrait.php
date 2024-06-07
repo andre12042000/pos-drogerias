@@ -59,9 +59,10 @@ trait ImprimirTrait
             // Imprimir el cuerpo del recibo
             foreach ($reciboBody as $item) {
 
-                $item = str_pad($item['label'], 16);
+                $metodo = str_pad($item['label'], 16);
+
                 $valor = str_pad($item['value'], 15, " ", STR_PAD_LEFT);
-                $lineaImpresion = $item . $valor . "\n";
+                $lineaImpresion = $metodo . $valor . "\n";
 
                 $printer->text($lineaImpresion);
 
