@@ -5,3 +5,9 @@
 
 
 </div>
+
+<script>
+    document.getElementById('closeModalButton').addEventListener('click', function() {
+        $('#searchproductrestaurant').modal('hide');
+    });
+</script>

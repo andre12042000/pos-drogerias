@@ -9,7 +9,7 @@
                     <input @popper(Buscador) type="text" class="form-control" placeholder="Buscar producto"
                         aria-label="Username" aria-describedby="basic-addon1" wire:model="buscar">
                 </div>
-                <button type="button" class="btn-close " data-dismiss="modal" id="closeModalButton" wire:click="cancel"
+                <button type="button" class="btn-close" id="closeModalButton" wire:click="cancel"
                     aria-label="Close"></button>
 
             </div>
