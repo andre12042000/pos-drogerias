@@ -1,4 +1,5 @@
 <div x-data>
+
     @include('popper::assets')
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
@@ -124,6 +125,11 @@
                 precio_unitario = productData.precio_unidad;
             }
 
+            if (precio_unitario === null || precio_unitario === 0 || precio_unitario === undefined) {
+                mostrarError('No es posible vender este producto, con esa presentación');
+                return;
+            }
+
             var orders = JSON.parse(localStorage.getItem('orders')) || []; //Obtenemos el localstorage
 
             // Verificar si el producto ya está en el pedido para MOSTRADOR
@@ -162,6 +168,14 @@
             mostrarProductosMostrador();
 
         }
+    }
+
+    function mostrarError(mensaje) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: mensaje
+        });
     }
 
 </script>
