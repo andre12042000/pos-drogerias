@@ -175,11 +175,15 @@
                                             <td>
                                                 @if ($venta->cashesable_type == 'App\Models\Sale')
                                                     @if ($venta->cashesable->tipo_operacion == 'VENTA')
-                                                        <span class="badge badge-pill badge-primary">
+                                                        <span class="badge badge-pill badge-success">
                                                             Venta</span>
+                                                    @elseif($venta->cashesable->tipo_operacion == 'CORTESIA')
+                                                        <span class="badge badge-pill badge-primary">
+                                                            Cortesia</span>
+
                                                     @else
-                                                        <span class="badge badge-pill badge-warning">
-                                                            Crédito</span>
+                                                    <span class="badge badge-pill badge-warning">
+                                                        Crédito</span>
                                                     @endif
                                                 @elseif ($venta->cashesable_type == 'App\Models\PagoCreditos')
                                                     <span class="badge badge-pill badge-success">

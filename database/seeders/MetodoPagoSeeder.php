@@ -28,5 +28,10 @@ class MetodoPagoSeeder extends Seeder
             'name'          => 'CRÉDITO',
             'status'        => 'ACTIVE',
         ]);
+
+        MetodoPago::create([
+            'name'          => 'CORTESIA',
+            'status'        => 'ACTIVE',
+        ]);
     }
 }
