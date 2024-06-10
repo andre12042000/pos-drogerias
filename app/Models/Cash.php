@@ -39,4 +39,21 @@ class Cash extends Model
             return $query;
         }
     }
+
+    public function saleFilteredByCajero($user)
+{
+    return $this->hasOne(Sale::class, 'cashesable_id')
+                ->whereHas('user', function ($query) use ($user) {
+                    $query->cajero($user);
+                });
+}
+
+public function busqueda($user)
+{
+    return $this->sale()->whereHas('user', function($query) use ($user) {
+        $query->cajero($user);
+    });
+}
+
+
 }

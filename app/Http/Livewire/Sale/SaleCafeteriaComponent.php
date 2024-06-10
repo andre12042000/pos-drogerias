@@ -232,7 +232,7 @@ class SaleCafeteriaComponent extends Component
     public function ventaContado($sale)
     {
         $sale->cashs()->create([
-            'user_id'           => Auth::user()->id,
+            'user_id'           => $sale['user_id'],
             'cashesable_id'     => $sale['id'],
             'quantity'          => $sale['total'],
         ]);
@@ -241,7 +241,7 @@ class SaleCafeteriaComponent extends Component
     public function ventaCredito($sale)
     {
         $sale->cashs()->create([
-            'user_id'           => Auth::user()->id,
+            'user_id'           => $sale['user_id'],
             'cashesable_id'     => $sale['id'],
             'quantity'          => 0,
         ]);
@@ -250,7 +250,7 @@ class SaleCafeteriaComponent extends Component
     public function cortesia($sale)
     {
         $sale->cashs()->create([
-            'user_id'           => Auth::user()->id,
+            'user_id'           => $sale['user_id'],
             'cashesable_id'     => $sale['id'],
             'quantity'          => 0,
         ]);
