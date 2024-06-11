@@ -162,6 +162,22 @@ class SaleController extends Controller
             $printer->text("Gracias por tu compra! \n");
             $printer->text("\n");
             $printer->text("\n");
+
+/*  // Comando para abrir el cajón monedero (intenta varios)
+ $drawerOpenCommands = [
+    "\x1B\x70\x00\x19\xFA", // Comando común
+    "\x1B\x70\x30\x39\x37"  // Otro comando posible
+];
+
+foreach ($drawerOpenCommands as $command) {
+    $printer->getPrintConnector()->write($command);
+} */
+
+/*  // Comando para abrir el cajón monedero
+ $drawerOpenCommand = "\x1B\x70\x00\x19\xFA";
+ $printer->getPrintConnector()->write($drawerOpenCommand); */
+
+
             $printer->pulse();
             $printer->cut();
             $printer->close();
