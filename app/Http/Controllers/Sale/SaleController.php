@@ -162,7 +162,7 @@ class SaleController extends Controller
             $printer->text("Gracias por tu compra! \n");
             $printer->text("\n");
             $printer->text("\n");
-
+            $printer->pulse();
             $printer->cut();
             $printer->close();
         } catch (\Exception $e) {

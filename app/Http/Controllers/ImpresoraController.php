@@ -64,7 +64,7 @@ class ImpresoraController extends Controller
             $printer->bitImage($escposResizedImg);
             $printer->text("\n");
             $printer->setJustification(Printer::JUSTIFY_CENTER);
-            $printer->text("NIT: " . $empresa->nit . "\n");
+            $printer->text("NIT: " . $empresa->nit .  $empresa->dv . "\n");
             $printer->text("Telefono: " . $empresa->telefono . "\n");
             $printer->text($empresa->email . "\n");
             $printer->text($empresa->direccion . "\n");
@@ -76,6 +76,9 @@ class ImpresoraController extends Controller
             $printer->text("--------------------------------\n");
             $printer->text("Gracias por tu compra! \n");
             $printer->text("\n");
+            // Comando para abrir el cajón monedero
+        $printer->pulse();
+
             $printer->cut();
             $printer->close();
         } catch (\Exception $e) {

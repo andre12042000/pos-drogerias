@@ -1,5 +1,5 @@
 <div>
-    @section('title', 'Motivo Anualción')
+    @section('title', 'Motivo Anulación')
 
     @section('content_header')
 
@@ -9,7 +9,7 @@
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">Parametros</li>
 
-                    <li class="breadcrumb-item active" aria-current="page">Motivo Anualción</li>
+                    <li class="breadcrumb-item active" aria-current="page">Motivo Anulación</li>
                 </ol>
             </nav>
         </div>
@@ -23,7 +23,7 @@
 
             <div class="row">
                 <div class="col-sm-6">
-                    <h3>Motivo Anualción</h3>
+                    <h3>Motivo Anulación</h3>
                 </div>
 
 
@@ -37,7 +37,7 @@
                             <option value="100">100</option>
                         </select>
                         <span class="input-group-text" id="basic-addon1"><i class="bi bi-search"></i></span>
-                        <input type="text" class="form-control" placeholder="Buscar motivo anualción" aria-label="Username"
+                        <input type="text" class="form-control" placeholder="Buscar motivo anulación" aria-label="Username"
                             aria-describedby="basic-addon1" wire:model="buscar">
 
                         <button type="button" class="btn btn-outline-light float-right ml-2" data-toggle="modal"

@@ -1,7 +1,7 @@
 <div class="modal-dialog" theme="primary">
     <div class="modal-content">
         <div class="modal-header bg-primary">
-            <h5 class="modal-title " id="staticBackdropLabel"> <strong>Gestión de motivos anualción</strong> </h5>
+            <h5 class="modal-title " id="staticBackdropLabel"> <strong>Gestión de motivos anulación</strong> </h5>
             <button type="button" class="btn-close" data-dismiss="modal" wire:click="cancel" aria-label="Close"></button>
         </div>
         @include('popper::assets')

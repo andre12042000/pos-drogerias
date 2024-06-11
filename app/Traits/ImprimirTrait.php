@@ -70,7 +70,7 @@ trait ImprimirTrait
 
             $printer->text("--------------------------------\n");
             $printer->text("Cajero: " . $cajero . "\n");
-
+            $printer->pulse();
             $printer->cut();
             $printer->close();
 
