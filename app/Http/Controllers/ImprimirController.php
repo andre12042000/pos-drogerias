@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use Dompdf\Dompdf;
+use App\Models\User;
 use App\Models\Empresa;
 use App\Models\Cotizacion;
 use App\Models\PagoCreditos;
 use Illuminate\Http\Request;
 use App\Models\ConsumoInterno;
 use App\Models\CotizacionDetalle;
+use Illuminate\Support\Facades\Auth;
 USE App\Traits\ImprimirTrait;
 
 class ImprimirController extends Controller
@@ -90,7 +92,13 @@ class ImprimirController extends Controller
                 ];
 
 
-                $this->imprimirRecibo($reciboBody);
+                    $user_id = Auth::user()->id;
+                    $cajero =  User::find($user_id);
+                    $cajero = $cajero->name;
+
+
+
+                        $this->imprimirRecibo($reciboBody, $cajero);
 
             } catch (\Exception $e) {
                 echo "Error: " . $e->getMessage();
@@ -165,7 +173,14 @@ class ImprimirController extends Controller
 
 
 
-            $this->imprimirRecibo($reciboBody);
+
+                    $user_id = Auth::user()->id;
+                    $cajero =  User::find($user_id);
+                    $cajero = $cajero->name;
+
+
+
+                        $this->imprimirRecibo($reciboBody, $cajero);
 
         } catch (\Exception $e) {
             echo "Error: " . $e->getMessage();
