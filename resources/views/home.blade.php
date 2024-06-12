@@ -147,12 +147,12 @@
                     </div>
                 </div>
             </div>
-            <div class="card-body" style="background-color: #c4eefb; color:black">
-                <div class="position-relative mb-4">
-                    {{-- <canvas id="salesChart"  style="height: 180px;"></canvas> --}}
-                    <canvas id="chart" style="height: 500px;" height="180px"></canvas>
+            <div class="card-body" style="background-color: #c4eefb; color: black">
+                <div class="position-relative mb-4" style="position: relative; width: 100%; height: 100%;">
+                    <canvas id="chart"></canvas>
                 </div>
             </div>
+
         </div>
     </div>
 </div>
@@ -430,54 +430,77 @@
 
     @section('js')
         <script>
-            var ctx = document.getElementById('chart').getContext('2d');
-            var chart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: [
+       window.addEventListener('load', resizeCanvas);
+window.addEventListener('resize', resizeCanvas);
+
+function resizeCanvas() {
+    const canvas = document.getElementById('chart');
+    const parent = canvas.parentElement;
+
+    canvas.width = parent.clientWidth;
+    canvas.height = parent.clientHeight;
+
+    drawChart(); // Redibuja el gráfico cada vez que se redimensiona el canvas
+}
+
+function drawChart() {
+    const ctx = document.getElementById('chart').getContext('2d');
+
+    // Destruir el gráfico existente si ya existe
+    if (window.myChart) {
+        window.myChart.destroy();
+    }
+
+    // Crear un nuevo gráfico
+    window.myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: [
+                @foreach ($data as $item)
+                    '{{ $item['day'] }}',
+                @endforeach
+            ],
+            datasets: [{
+                    label: 'Ventas',
+                    data: [
                         @foreach ($data as $item)
-                            '{{ $item['day'] }}',
+                            {{ $item['ventas'] }},
                         @endforeach
                     ],
-                    datasets: [{
-                            label: 'Ventas',
-                            data: [
-                                @foreach ($data as $item)
-                                    {{ $item['ventas'] }},
-                                @endforeach
-                            ],
-                            backgroundColor: 'rgba(41, 205, 25, 0.5)',
-                            borderColor: 'rgba(41, 205, 25, 1)',
-                            borderWidth: 1,
-
-
-                        },
-                        {
-                            label: 'Abonos',
-                            data: [
-                                @foreach ($data as $item)
-                                    {{ $item['abonos'] }},
-                                @endforeach
-                            ],
-                            backgroundColor: 'rgba(65, 70, 75, 0.5)',
-                            borderColor: 'rgba(65, 70, 75, 1)',
-                            borderWidth: 1,
-
-
-                        }
-
-                    ]
+                    backgroundColor: 'rgba(41, 205, 25, 0.5)',
+                    borderColor: 'rgba(41, 205, 25, 1)',
+                    borderWidth: 1,
                 },
-                options: {
-                    scales: {
-                        yAxes: [{
-                            ticks: {
-                                beginAtZero: true
-                            }
-                        }]
-                    }
+                {
+                    label: 'Abonos',
+                    data: [
+                        @foreach ($data as $item)
+                            {{ $item['abonos'] }},
+                        @endforeach
+                    ],
+                    backgroundColor: 'rgba(65, 70, 75, 0.5)',
+                    borderColor: 'rgba(65, 70, 75, 1)',
+                    borderWidth: 1,
                 }
-            });
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
+}
+
+// Llama a resizeCanvas para establecer el tamaño inicial
+resizeCanvas();
+
         </script>
 
         <script>
