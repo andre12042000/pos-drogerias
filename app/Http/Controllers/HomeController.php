@@ -101,7 +101,9 @@ class HomeController extends Controller
 
         $user = Auth::user();
 
-        if ($user->hasRole('Administrador')) {
+
+
+        if ($user->hasRole('Administrador') OR $user->hasRole('administrador')) {
             // El usuario tiene el rol de administrador
             $role = 'Administrador';
             $cantidad_ventas2 = '01098';
