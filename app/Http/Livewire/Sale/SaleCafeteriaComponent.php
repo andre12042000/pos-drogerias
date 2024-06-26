@@ -68,6 +68,7 @@ class SaleCafeteriaComponent extends Component
 
     public function ProcesarCompra($data)
     {
+
         if ($data['tipoOperacion'] == 'VENTA') {
             $tipo = 'VENTA';
         } elseif ($data['tipoOperacion'] == 'CREDITO') {
@@ -170,6 +171,7 @@ class SaleCafeteriaComponent extends Component
                 if ($dataVenta['imprimirRecibo'] > 0) {
                     self::Imprimirecibo($venta->id);
                 }
+
 
 
                 $this->dispatchBrowserEvent('venta-generada', ['venta' => $venta->full_nro, 'tuplas' => $detalles]);
