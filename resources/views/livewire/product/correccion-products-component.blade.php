@@ -94,8 +94,8 @@
     </tbody>
     </table>
 
-@include('modals.products.corregirproducts')
-</div>
+{{-- @include('modals.products.corregirproducts')
+ --}}</div>
 
 <script>
     window.addEventListener('abrirModalEdicion', event => {

@@ -446,10 +446,7 @@ function resizeCanvas() {
 function drawChart() {
     const ctx = document.getElementById('chart').getContext('2d');
 
-    // Destruir el gráfico existente si ya existe
-    if (window.myChart) {
-        window.myChart.destroy();
-    }
+
 
     // Crear un nuevo gráfico
     window.myChart = new Chart(ctx, {

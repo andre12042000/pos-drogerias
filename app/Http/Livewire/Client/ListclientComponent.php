@@ -33,7 +33,7 @@ class ListclientComponent extends Component
 
     public function render()
     {
-        $clients = Client::search($this->search)
+        $clients = Client::search($this->search)->orderBy('deuda', 'desc')
                         ->paginate($this->cantidad_registros);
 
         return view('livewire.client.list-client-component', compact('clients'));
