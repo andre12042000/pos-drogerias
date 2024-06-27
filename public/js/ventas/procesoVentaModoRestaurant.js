@@ -1,7 +1,8 @@
 let subTotal = 0;
 let iva = 0;
 let TOTAL = 0;
-
+const totalCambio = document.querySelector(".cambio");
+totalCambio.textContent = 0;
 let resultadoCalculo = {};
 
 // Asignar los valores a los elementos HTML
@@ -173,6 +174,16 @@ function crearMesa(numMesa) {
     mesaBox.addEventListener("click", function () {
         mostrarVistaMesas();
         filtrarPedidosPorMesa(numMesa);
+        const TotalElement = document.querySelector(".TOTAL");
+        TotalElement.textContent = 0; // Mostrar el total a pagar formateado como moneda colombiana sin decimal
+
+        const subTotalElement = document.querySelector(".subTotal");
+        subTotalElement.textContent = 0;
+
+        const totalCambio = document.querySelector(".cambio");
+        totalCambio.textContent = 0;
+        const valorPagadoElement = document.getElementById('valor_pagado');
+    valorPagadoElement.value = ''; // Actualizar el valor del input a 0
     });
 
     mesaBox.addEventListener("dblclick", function () {
@@ -194,11 +205,22 @@ function mostrarEtiquetaPorMesa(mesa) {
 }
 
 function mostrarVistaMesas() {
+
     document.getElementById("cuentas_por_mesas").style.display = "block";
     document.getElementById("cuentas_mostrador").style.display = "none";
 }
 
 function mostrarVistaMostrador() {
+    const TotalElement = document.querySelector(".TOTAL");
+    TotalElement.textContent = 0; // Mostrar el total a pagar formateado como moneda colombiana sin decimal
+
+    const subTotalElement = document.querySelector(".subTotal");
+    subTotalElement.textContent = 0;
+
+    const totalCambio = document.querySelector(".cambio");
+    totalCambio.textContent = 0;
+    const valorPagadoElement = document.getElementById('valor_pagado');
+valorPagadoElement.value = ''; // Actualizar el valor del input a 0
     document.getElementById("cuentas_por_mesas").style.display = "none";
     document.getElementById("cuentas_mostrador").style.display = "block";
 }
@@ -569,7 +591,32 @@ function pasarValoresPagoVista(totalPagar, tuplasAPagar) {
         totalConIva: totalConIva,
     };
 
+
     actualizarEstadoBotonPagar(totalPagar);
+
+    recalcularCambio(totalPagar, formatter);
+
+
+}
+
+function recalcularCambio(totalPagar, formatter) {
+    const inputValorPagado = document.getElementById('valor_pagado');
+    inputValorPagado.addEventListener('input', function() {
+        var valorPagado = parseFloat(this.value);
+        var cambio = valorPagado - totalPagar;
+        const totalCambioFormatted = formatter.format(cambio);
+
+        const totalCambio = document.querySelector(".cambio");
+        if (!isNaN(cambio)) {
+            totalCambio.textContent = cambio >= 0 ? totalCambioFormatted : 'Monto insuficiente';
+        } else {
+            totalCambio.textContent = '';
+        }
+    });
+
+    // Trigger the input event to recalculate the change based on the initial value
+    const event = new Event('input');
+    inputValorPagado.dispatchEvent(event);
 }
 
 function actualizarEstadoBotonPagar(totalPagar) {
@@ -690,6 +737,7 @@ function mostrarProductosMostrador() {
             // Agregar el evento onclick para eliminar el producto del localStorage
             botonEliminar.onclick = function () {
                 eliminarItemMostrador(detalle.producto_id, detalle.forma); // Llama a la función eliminarProducto con el índice del producto
+
             };
 
             // Agregar el botón al DOM
@@ -712,7 +760,6 @@ function eliminarItemMostrador(producto, forma) {
         if (result.isConfirmed) {
             // Llamar a la función para eliminar el pedido del local storage
             eliminarProductoLocalStorageMostrador(producto, forma);
-
             // Actualizar la vista filtrando los pedidos por mesa
             mostrarProductosMostrador();
         }
@@ -724,13 +771,17 @@ function eliminarProductoLocalStorageMostrador(producto_id, forma) {
     let orders = JSON.parse(localStorage.getItem("orders")) || [];
     let ordenesMostrador = orders.filter((order) => order.mesa === mesa);
 
-    // Recorrer las órdenes en la sección de mostrador
-    ordenesMostrador.forEach((orden, index) => {
-        // Recorrer los detalles de la orden actual para buscar el producto_id
-        orden.detalles.forEach((detalle, detalleIndex) => {
+    // Recorrer las órdenes en la sección de mostrador de atrás hacia adelante
+    for (let i = ordenesMostrador.length - 1; i >= 0; i--) {
+        let orden = ordenesMostrador[i];
+
+        // Recorrer los detalles de la orden actual de atrás hacia adelante
+        for (let j = orden.detalles.length - 1; j >= 0; j--) {
+            let detalle = orden.detalles[j];
+
             if (detalle.producto_id === producto_id && detalle.forma === forma) {
                 // Paso 1: Eliminar el detalle si se encuentra
-                orden.detalles.splice(detalleIndex, 1);
+                orden.detalles.splice(j, 1);
 
                 // Paso 2: Actualizar los datos en el localStorage
                 localStorage.setItem("orders", JSON.stringify(orders));
@@ -738,16 +789,17 @@ function eliminarProductoLocalStorageMostrador(producto_id, forma) {
                 // Paso 3: Verificar si la orden no tiene más detalles
                 if (orden.detalles.length === 0) {
                     // Eliminar la orden si no tiene más detalles
-                    orders.splice(index, 1);
+                    orders.splice(orders.indexOf(orden), 1);
                     localStorage.setItem("orders", JSON.stringify(orders));
-                    console.log("Orden eliminada porque ya no tiene detalles");
                 }
-
+                calcularTotalMostrador();
                 // Salir del bucle una vez que se elimine el detalle
                 return;
             }
-        });
-    });
+        }
+
+
+    }
 }
 
 
@@ -808,7 +860,16 @@ checkboxPagarMostrador.addEventListener("change", function () {
     if (checkboxPagarMostrador.checked) {
         calcularTotalMostrador();
     } else {
-        // El checkbox está deseleccionado
+        const TotalElement = document.querySelector(".TOTAL");
+        TotalElement.textContent = 0; // Mostrar el total a pagar formateado como moneda colombiana sin decimal
+
+        const subTotalElement = document.querySelector(".subTotal");
+        subTotalElement.textContent = 0;
+
+        const totalCambio = document.querySelector(".cambio");
+        totalCambio.textContent = 0;
+        const valorPagadoElement = document.getElementById('valor_pagado');
+    valorPagadoElement.value = ''; // Actualizar el valor del input a 0
     }
 });
 
@@ -981,6 +1042,7 @@ function eliminarPedidoLocalStorageMostrador() {
 
     // Paso 4: Actualizar el localStorage con los datos filtrados
     localStorage.setItem("orders", JSON.stringify(orders));
+
 }
 
 /*----------------------Procesos script modal agregar productos mesa ---------------------------*/

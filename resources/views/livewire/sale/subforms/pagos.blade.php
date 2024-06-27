@@ -91,7 +91,7 @@
         <div class="col columna-cuentas">
             <div class="costo-compra mt-3">
                 <label>Subtotal:</label>
-                <span class="subTotal" style="font-size: 1.5em;
+                <span class="subTotal" style="font-size: 1.0em;
                 text-align: right;"></span>
             </div>
             <div class="costo-compra mt-3">
@@ -119,11 +119,23 @@
 
             <div class="costo-compra mt-3">
                 <label>IVA:</label>
-                <span class="iva" style="font-size: 1.5em;"></span>
+                <span class="iva" style="font-size: 1.0em;"></span>
             </div>
             <div class="costo-compra total mt-3">
                 <label>Total:</label>
-                <span class="TOTAL" style="font-size: 1.5em;"></span>
+                <span class="TOTAL" style="font-size: 1.0em;" id="total"></span>
+            </div>
+
+            <div class="costo-compra mt-3">
+                <label>Ingreso:</label>
+                <input type="number" class="form-control text-end" aria-label="Text input with dropdown button" id="valor_pagado" >
+
+            </div>
+
+            <div class="costo-compra  mt-3">
+                <label>Cambio:</label>
+                <span class="cambio text-danger" style="font-size: 1.0em;
+                text-align: right;" id="cambio"></span>
             </div>
         </div>
     </div>

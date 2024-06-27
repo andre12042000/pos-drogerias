@@ -5,7 +5,7 @@
         <div class="row">
             <div class="col-md-7">
 
-                <div class="card" id="cuentas_mostrador" style="height: 550px;">
+                <div class="card" id="cuentas_mostrador" style="height: 600px;">
 
                     <div class="row m-2">
                         <div class="col-sm-3">
@@ -63,13 +63,13 @@
                     {{-- Contenido dinámico --}}
                 </div>
 
-                <div class="card" id="cuentas_por_mesas" style="height: 550px;">
+                <div class="card" id="cuentas_por_mesas" style="height: 600px;">
                     {{-- Contenido dinámico --}}
                 </div>
 
             </div>
             <div class="col-md-5">
-                <div class="card" id="componente_pago" style="height: 550px;">
+                <div class="card" id="componente_pago" style="height: 600px;">
                     @include('livewire.sale.subforms.pagos')
                 </div>
             </div>
@@ -92,6 +92,7 @@
 @include('modals.sale.editarcantidadmesas')
 @include('modals.client.create')
 @include('modals.products.search_product_restaurant')
+
 
 <style>
     .container-fluid {

@@ -10,7 +10,7 @@
                         aria-label="Username" aria-describedby="basic-addon1" wire:model="buscar">
                 </div>
                 <button type="button" class="btn-close" id="closeModalButton" wire:click="cancel"
-                    aria-label="Close"></button>
+                data-dismiss="modal"   aria-label="Close"></button>
 
             </div>
             <div class="modal-body">
@@ -103,7 +103,11 @@
     </style>
 
 @stop
-
+<script>
+    document.getElementById('closeModalButton').addEventListener('click', function() {
+        $('#searchproductrestaurant').modal('hide');
+    });
+</script>
 
 <script>
     function handlePriceClick(event) {
@@ -166,7 +170,7 @@
             localStorage.setItem('orders', JSON.stringify(orders));
 
             mostrarProductosMostrador();
-
+            calcularTotalMostrador()
         }
     }
 
