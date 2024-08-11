@@ -147,8 +147,8 @@
                                     <option value="">Usuarios</option>
 
                                     @foreach ($usuarios as $user)
-                                    <option value="{{$user->id}}">{{mb_strtoupper($user->name)}}</option>
-                             @endforeach
+                                        <option value="{{$user->id}}">{{mb_strtoupper($user->name)}}</option>
+                                    @endforeach
                                 </select>
                                 </div>
                                 <div class="col-4 detalles-select-wrapper">

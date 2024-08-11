@@ -53,19 +53,19 @@ class ReporteFecha extends Component
         $search = $this->search;
 
         $data = Cash::whereBetween('created_at', [$this->desde, $this->hasta])->cajero($this->user)
-        ->with('cashesable')
-        ->orderBy('id', 'desc')
-        ->when($search, function ($query) use ($search) {
-            $query->where('cashesable_type', $search);
-        });
+                ->with('cashesable')
+                ->orderBy('id', 'desc')
+                ->when($search, function ($query) use ($search) {
+                    $query->where('cashesable_type', $search);
+                });
 
         $count = Cash::whereBetween('created_at', [$this->desde, $this->hasta])->cajero($this->user)
-    ->with('cashesable')
-    ->orderBy('id', 'desc')
-    ->when($search, function ($query) use ($search) {
-        $query->where('cashesable_type', $search);
-    })
-    ->count();
+                ->with('cashesable')
+                ->orderBy('id', 'desc')
+                ->when($search, function ($query) use ($search) {
+                    $query->where('cashesable_type', $search);
+                })
+                ->count();
 
         $ventas = $data->paginate($this->cantidad_registros);
         $data_obtener_valores = $data->get();
@@ -173,7 +173,7 @@ class ReporteFecha extends Component
         $todosLosMetodosPago = MetodoPago::where('status', 'ACTIVE')->get();
 
         $ventas = Sale::with('metodopago')->cajero($this->user)
-            ->whereDate('created_at', now()->toDateString())
+            ->whereBetween('created_at', [$this->desde, $this->hasta])
             ->get();
 
 
