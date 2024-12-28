@@ -287,9 +287,9 @@ class EditProductComponent extends Component
                 'presentacion_id'           => $this->presentacion_id,
                 'category_id'               => $this->categoria_id,
                 'subcategoria_id'           => $this->subcategoria_id,
-                'valor_iva_caja'            => $ivas['iva_caja'],
-                'valor_iva_blister'         => $ivas['iva_blister'],
-                'valor_iva_unidad'          => $ivas['iva_unidad'],
+                'valor_iva_caja'            => 0,
+                'valor_iva_blister'         => 0,
+                'valor_iva_unidad'          => 0,
                 'is_materia_prima'          => $this->is_materia_prima,
             ]);
 
