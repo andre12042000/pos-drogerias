@@ -37,8 +37,17 @@ class EditProductComponent extends Component
         $this->laboratorios  =  Laboratorio::orderBy('name', 'ASC')->get();
     }
 
+
+
+    function obtenerPorcentajeGanancia($presentacion_id)
+    {
+        dd($presentacion_id);
+
+    }
+
     public function obtenerDetallesProducto($product)
     {
+
         $this->product_id = $product['id'];
         $this->code_edit = $product['code'];
         $this->name_edit = $product['name'];
@@ -73,12 +82,50 @@ class EditProductComponent extends Component
         self::obtenerPorcentajesGanancia($product['presentacion_id']);
     }
 
+    public function updatedCostoPorCajaEdit($value){
+
+        if($this->iva_edit > 0 && !is_null($this->iva_edit)){
+            $iva = ($this->CostoPorCajaEdit * $this->iva_edit) / 100;
+        }else{
+            $iva = 0;
+        }
+
+        $ganancia = ($this->CostoPorCajaEdit * $this->presentacion->por_caja) / 100;
+
+        $precio_venta_caja = round($value + $iva + $ganancia);
+
+
+        $this->PrecioVentaCajaEdit = $precio_venta_caja;
+
+        if($this->blister_por_caja_edit > 0 && !is_null($this->blister_por_caja_edit)){
+           $this->CostoPorBlisterEdit =  round(($this->CostoPorCajaEdit + $iva) / $this->blister_por_caja_edit);
+           $this->PrecioVentaBlisterEdit = round($this->PrecioVentaCajaEdit / $this->blister_por_caja_edit);
+        }else{
+            $this->CostoPorBlisterEdit = 0;
+            $this->PrecioVentaBlisterEdit = 0;
+        }
+
+        if($this->unidad_por_caja_edit > 0 && !is_null($this->unidad_por_caja_edit)){
+            $this->CostoPorUnidadEdit =  round(($this->CostoPorCajaEdit + $iva) / $this->unidad_por_caja_edit);
+            $this->PrecioVentaUnidadEdit = round($this->PrecioVentaCajaEdit / $this->unidad_por_caja_edit);
+         }else{
+             $this->CostoPorUnidadEdit = 0;
+             $this->PrecioVentaUnidadEdit = 0;
+
+         }
+    }
+
+
+
     function estadosDisponibilidadBlister($estado)
     {
         if ($estado > 0) {
             $this->estado_blister = '';
         } else {
             $this->estado_blister = 'disabled';
+            $this->blister_por_caja_edit = 0;
+            $this->CostoPorBlisterEdit = 0;
+            $this->PrecioVentaBlisterEdit = 0;
         }
     }
 
@@ -87,6 +134,10 @@ class EditProductComponent extends Component
         if ($estado > 0) {
             $this->estado_unidad = '';
         } else {
+            $this->unidad_por_caja_edit = 0;
+            $this->CostoPorUnidadEdit = 0;
+            $this->PrecioVentaUnidadEdit = 0;
+
             $this->estado_unidad = 'disabled';
         }
     }
@@ -204,13 +255,15 @@ class EditProductComponent extends Component
             ];
         }
 
+
+
         $this->validate($rules, $messages);
 
           try {
 
             $product = Product::findOrFail($this->product_id);
 
-            $ivas = self::calcularIvas($this->PrecioVentaCajaEdit, $this->iva_edit);
+            $ivas = self::calcularIvas($this->CostoPorCajaEdit, $this->iva_edit);
 
             $product->update([
                 'code'                      => $this->code_edit,
@@ -262,15 +315,15 @@ class EditProductComponent extends Component
         }
     }
 
-    function calcularIvas($precio_venta_caja, $porcentajeIva)
+    function calcularIvas($costo_caja, $porcentajeIva)
     {
 
         $data = [];
         if ($porcentajeIva > 0) {
-            $iva_caja = $precio_venta_caja * ($porcentajeIva / 100);
+            $iva_caja = ($costo_caja * $porcentajeIva) / 100;
 
             if ($this->blister_por_caja_edit > 0) {
-                $precio_blister = $precio_venta_caja / $this->blister_por_caja_edit;
+                $precio_blister = $costo_caja / $this->blister_por_caja_edit;
                 $iva_blister = round($precio_blister * ($porcentajeIva / 100), 0);
             } else {
                 $iva_blister = 0;
@@ -278,7 +331,7 @@ class EditProductComponent extends Component
             }
 
             if ($this->disponible_unidad_edit > 0) {
-                $precio_unidad = $precio_venta_caja / $this->unidad_por_caja_edit;
+                $precio_unidad = $costo_caja / $this->unidad_por_caja_edit;
                 $iva_unidad = round($precio_unidad * ($porcentajeIva / 100), 0);
             } else {
                 $iva_unidad = 0;

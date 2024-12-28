@@ -115,7 +115,7 @@ function calcularPrecioVentaCaja() {
 
     var ganancia = parseFloat(costo_caja * (gananciaPorcentaje / 100));
     var costo_con_ganancia = costo_caja + ganancia;
-    var iva = costo_con_ganancia * ivaPorcentaje;
+    var iva = costo_caja * ivaPorcentaje;
     var precio_venta_completo = costo_caja + ganancia + iva;
 
 

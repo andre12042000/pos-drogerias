@@ -308,7 +308,7 @@
                             <div class="form-floating mb-3">
                                 <input type="number" class="form-control" id="PrecioVentaCajaEdit"
                                     name="PrecioVentaCajaEdit" placeholder="name@example.com" min="0"
-                                    value="0" wire:model.lazy = 'PrecioVentaCajaEdit'
+                                    value="0" wire:model = 'PrecioVentaCajaEdit'
                                     oninput="limitarNumerosEnteros(this)">
                                 <label for="floatingInput">Precio venta caja</label>
                                 @error('PrecioVentaCajaEdit')
@@ -432,29 +432,31 @@
 </script>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // Función para actualizar el precio de venta en un 30% del costo
-        function updatePrice(costInputId, priceInputId) {
-            const costInput = document.getElementById(costInputId);
-            const priceInput = document.getElementById(priceInputId);
+    // document.addEventListener('DOMContentLoaded', function () {
+    //     // Función para actualizar el precio de venta en un 30% del costo
+    //     function updatePrice(costInputId, priceInputId) {
 
-            if (costInput && priceInput) {
-                costInput.addEventListener('input', function () {
-                    const cost = parseFloat(costInput.value);
-                    if (!isNaN(cost)) {
-                        const price = cost * 1.30;
-                        priceInput.value = price.toFixed(0); // Redondear a 2 decimales
-                    } else {
-                        priceInput.value = '';
-                    }
-                });
-            }
-        }
 
-        // Asociar los eventos a cada par de costo/precio
-        updatePrice('CostoPorCajaEdit', 'PrecioVentaCajaEdit');
-        updatePrice('CostoPorBlisterEdit', 'PrecioVentaBlisterEdit');
-        updatePrice('CostoPorUnidadEdit', 'PrecioVentaUnidadEdit');
-    });
+    //         const costInput = document.getElementById(costInputId);
+    //         const priceInput = document.getElementById(priceInputId);
+
+    //         if (costInput && priceInput) {
+    //             costInput.addEventListener('input', function () {
+    //                 const cost = parseFloat(costInput.value);
+    //                 if (!isNaN(cost)) {
+    //                     const price = cost * 1.30;
+    //                     priceInput.value = price.toFixed(0); // Redondear a 2 decimales
+    //                 } else {
+    //                     priceInput.value = '';
+    //                 }
+    //             });
+    //         }
+    //     }
+
+    //     // Asociar los eventos a cada par de costo/precio
+    //     updatePrice('CostoPorCajaEdit', 'PrecioVentaCajaEdit');
+    //     updatePrice('CostoPorBlisterEdit', 'PrecioVentaBlisterEdit');
+    //     updatePrice('CostoPorUnidadEdit', 'PrecioVentaUnidadEdit');
+    // });
 </script>
 

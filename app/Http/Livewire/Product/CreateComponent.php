@@ -29,6 +29,7 @@ class CreateComponent extends Component
     public $disponible_unidad = 0;
     public $iva_product = 0;
     public $valor_iva_caja, $valor_iva_blister, $valor_iva_unidad;
+    public $data_direct;
 
     public $costo_caja, $costo_blister, $costo_unidad;
     public $precio_caja, $precio_blister, $precio_unidad;
@@ -155,13 +156,12 @@ class CreateComponent extends Component
 
     function guardarDatosEvent($data)
     {
-
-
+        $this->data_direct = $data;
         $this->costo_caja = isset($data['costo_caja']) ? (float) $data['costo_caja'] : 0;
         $this->iva_product = isset($data['iva_product']) ? (float) $data['iva_product'] : 0;
         $this->precio_caja = isset($data['precio_caja']) ? (float) $data['precio_caja'] : 0;
-        $this->costo_blister = isset($data['costo_blister']) ? (float) $data['costo_blister'] : 0;
         $this->precio_blister = isset($data['precio_blister']) ? (float) $data['precio_blister'] : 0;
+        $this->costo_blister = isset($data['costo_blister']) ? (float) $data['costo_blister'] : 0;
         $this->costo_unidad = isset($data['costo_unidad']) ? (float) $data['costo_unidad'] : 0;
         $this->precio_unidad = isset($data['precio_unidad']) ? (float) $data['precio_unidad'] : 0;
         $this->disponible_blister = isset($data['disponible_blister']) ? (float) $data['disponible_blister'] : 0;
@@ -173,11 +173,10 @@ class CreateComponent extends Component
 
 
 
-        $this->valor_iva_caja = self::calcularIvaPrecioVenta($this->precio_caja, $this->iva_product);
-        $this->valor_iva_blister = self::calcularIvaPrecioVenta($this->precio_blister, $this->iva_product);
-        $this->valor_iva_unidad = self::calcularIvaPrecioVenta($this->precio_unidad, $this->iva_product);
+        $this->valor_iva_caja = self::calcularIvaPrecioVenta($this->costo_caja, $this->iva_product);
+        $this->valor_iva_blister = self::calcularIvaPrecioVenta($this->costo_blister, $this->iva_product);
+        $this->valor_iva_unidad = self::calcularIvaPrecioVenta($this->costo_unidad, $this->iva_product);
 
-      //  dd($this->valor_iva_caja, $this->valor_iva_blister, $this->valor_iva_unidad);
 
         $rules = [
             'code'                      => 'required|min:4|max:50|unique:products,code',
@@ -256,7 +255,37 @@ class CreateComponent extends Component
         }
 
         // Crear el producto en la base de datos
-        $producto = Product::create($validatedData);
+        $producto = Product::create([
+            'code'                      => $this->code,
+            'name'                      => $this->name,
+            'status'                    => $this->status,
+            'iva_product'               => $this->iva_product,
+            'valor_iva_caja'            => $this->valor_iva_caja,
+            'valor_iva_blister'         => $this->valor_iva_blister,
+            'valor_iva_unidad'          => $this->valor_iva_unidad,
+            'stock'                     => $this->stock,
+            'stock_min'                 => $this->stock_min,
+            'stock_max'                 => $this->stock_max,
+            'image'                     => $this->image,
+            'disponible_caja'           => 1,
+            'disponible_blister'        => ($this->contenido_interno_blister !== null && $this->contenido_interno_blister > 0) ? 1 : 0,
+            'disponible_unidad'         => ($this->contenido_interno_unidad !== null && $this->contenido_interno_unidad > 0) ? 1 : 0,
+            'contenido_interno_caja'    => 1,
+            'contenido_interno_blister' => ($this->contenido_interno_blister !== null && $this->contenido_interno_blister > 0) ? $this->contenido_interno_blister : 0,
+            'contenido_interno_unidad'  => ($this->contenido_interno_unidad !== null && $this->contenido_interno_unidad > 0) ? $this->contenido_interno_unidad : 0,
+            'costo_caja'                => $this->costo_caja,
+            'costo_blister'             => ($this->costo_blister !== null && $this->costo_blister > 0) ? $this->costo_blister : 0,
+            'costo_unidad'              => ($this->costo_unidad !== null && $this->costo_unidad > 0) ? $this->costo_unidad : 0,
+            'precio_caja'               => $this->precio_caja,
+            'precio_blister'            => ($this->precio_blister !== null && $this->precio_blister > 0) ? $this->precio_blister : 0,
+            'precio_unidad'             => ($this->precio_unidad !== null && $this->precio_unidad > 0) ? $this->precio_unidad : 0,
+            'medida_id'                 => null,
+            'brand_id'                  => null,
+            'exento'                    => 0,
+            'excluido'                  => 0,
+            'no_gravado'                => 0,
+            'gravado'                   => 0,
+        ]);
 
         // Enviar un evento al navegador indicando que el producto ha sido guardado
         $this->dispatchBrowserEvent('producto_guardado');
